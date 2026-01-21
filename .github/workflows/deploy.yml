@@ -14,16 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VODIEN_SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -p ${{ secrets.VODIEN_PORT }} ${{ secrets.VODIEN_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
-
-      - name: Deploy via rsync
-        run: |
-          rsync -avzr --delete --exclude='.git*' \
-            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.VODIEN_PORT }} -o StrictHostKeyChecking=no -o BatchMode=yes" \
-            wp-content/ \
-            ${{ secrets.VODIEN_USER }}@${{ secrets.VODIEN_HOST }}:${{ secrets.VODIEN_PATH }}/wp-content/
+      - name: Deploy via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          server: ${{ secrets.VODIEN_HOST }}
+          port: ${{ secrets.VODIEN_PORT }}
+          username: ${{ secrets.VODIEN_USER }}
+          ssh_private_key: ${{ secrets.VODIEN_SSH_KEY }}
+          local_path: './wp-content/*'
+          remote_path: '${{ secrets.VODIEN_PATH }}/wp-content/'
+          sftpArgs: '-o StrictHostKeyChecking=no'
