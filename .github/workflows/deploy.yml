@@ -14,13 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy via SFTP
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.VODIEN_HOST }}
-          port: ${{ secrets.VODIEN_PORT }}
           username: ${{ secrets.VODIEN_USER }}
-          ssh_private_key: ${{ secrets.VODIEN_SSH_KEY }}
-          local_path: './wp-content/*'
-          remote_path: '${{ secrets.VODIEN_PATH }}/wp-content/'
-          sftpArgs: '-o StrictHostKeyChecking=no'
+          password: ${{ secrets.VODIEN_PASSWORD }}
+          local-dir: ./wp-content/
+          server-dir: ${{ secrets.VODIEN_PATH }}/wp-content/
+          dangerous-clean-slate: false
