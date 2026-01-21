@@ -24,3 +24,6 @@ Thumbs.db
 # Backup files
 *.bak
 *~
+
+# Theme zip files (large binaries)
+*.zip
