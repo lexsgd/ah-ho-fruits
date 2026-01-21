@@ -12,13 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VODIEN_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p ${{ secrets.VODIEN_PORT }} ${{ secrets.VODIEN_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
       - name: Deploy via rsync
-        uses: burnett01/rsync-deployments@6.0.0
-        with:
-          switches: -avzr --delete --exclude='.git*'
-          path: wp-content/
-          remote_path: ${{ secrets.VODIEN_PATH }}/wp-content/
-          remote_host: ${{ secrets.VODIEN_HOST }}
-          remote_user: ${{ secrets.VODIEN_USER }}
-          remote_key: ${{ secrets.VODIEN_SSH_KEY }}
-          remote_port: ${{ secrets.VODIEN_PORT }}
+        run: |
+          rsync -avzr --delete --exclude='.git*' \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.VODIEN_PORT }} -o StrictHostKeyChecking=no -o BatchMode=yes" \
+            wp-content/ \
+            ${{ secrets.VODIEN_USER }}@${{ secrets.VODIEN_HOST }}:${{ secrets.VODIEN_PATH }}/wp-content/
