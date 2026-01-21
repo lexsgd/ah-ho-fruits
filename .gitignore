@@ -1,0 +1,26 @@
+# WordPress core (managed by host)
+*.sql
+*.log
+node_modules/
+
+# Local dev
+db_data/
+
+# Secrets
+.env
+deploy-key
+deploy-key.pub
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Backup files
+*.bak
+*~
