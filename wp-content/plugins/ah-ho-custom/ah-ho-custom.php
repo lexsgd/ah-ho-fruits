@@ -1,0 +1,68 @@
+<?php
+/**
+ * Plugin Name: Ah Ho Fruits Custom
+ * Plugin URI: https://heymag.app
+ * Description: Custom functionality for Ah Ho Fruits - WooCommerce custom order statuses
+ * Version: 1.0.0
+ * Author: Ah Ho Fruits
+ * Author URI: https://heymag.app
+ * Text Domain: ah-ho-custom
+ * Domain Path: /languages
+ * Requires at least: 6.0
+ * Requires PHP: 7.4
+ * WC requires at least: 8.0
+ * WC tested up to: 9.0
+ */
+
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
+
+// Define plugin constants
+define('AH_HO_CUSTOM_VERSION', '1.0.0');
+define('AH_HO_CUSTOM_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('AH_HO_CUSTOM_PLUGIN_URL', plugin_dir_url(__FILE__));
+
+/**
+ * Check if WooCommerce is active
+ */
+function ah_ho_check_woocommerce() {
+    if (!class_exists('WooCommerce')) {
+        add_action('admin_notices', function() {
+            echo '<div class="error"><p><strong>Ah Ho Fruits Custom</strong> requires WooCommerce to be installed and active.</p></div>';
+        });
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Initialize plugin
+ */
+function ah_ho_custom_init() {
+    if (!ah_ho_check_woocommerce()) {
+        return;
+    }
+
+    // Include custom order statuses
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/custom-order-statuses.php';
+}
+add_action('plugins_loaded', 'ah_ho_custom_init');
+
+/**
+ * Activation hook
+ */
+function ah_ho_custom_activate() {
+    // Flush rewrite rules
+    flush_rewrite_rules();
+}
+register_activation_hook(__FILE__, 'ah_ho_custom_activate');
+
+/**
+ * Deactivation hook
+ */
+function ah_ho_custom_deactivate() {
+    // Flush rewrite rules
+    flush_rewrite_rules();
+}
+register_deactivation_hook(__FILE__, 'ah_ho_custom_deactivate');
