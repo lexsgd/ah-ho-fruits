@@ -3,7 +3,7 @@
  * Plugin Name: Ah Ho Fruits - Invoicing & Packing Lists
  * Plugin URI: https://heymag.app
  * Description: Custom PDF invoices, packing lists, and delivery orders for Ah Ho Fruits. Features: Sequential invoice numbering, consolidated packing lists sorted by postal code + delivery date, customer notes highlighting (allergies/gifts).
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Ah Ho Fruits
  * Author URI: https://heymag.app
  * Text Domain: ah-ho-invoicing
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AH_HO_INVOICING_VERSION', '1.0.0');
+define('AH_HO_INVOICING_VERSION', '1.1.0');
 define('AH_HO_INVOICING_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AH_HO_INVOICING_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('AH_HO_INVOICING_CACHE_DIR', WP_CONTENT_DIR . '/pdf-cache/');
@@ -71,6 +71,8 @@ function ah_ho_invoicing_init() {
     // Load plugin classes
     require_once AH_HO_INVOICING_PLUGIN_DIR . 'includes/class-pdf-generator.php';
     require_once AH_HO_INVOICING_PLUGIN_DIR . 'includes/class-invoice.php';
+    require_once AH_HO_INVOICING_PLUGIN_DIR . 'includes/class-packing-slip.php';
+    require_once AH_HO_INVOICING_PLUGIN_DIR . 'includes/class-delivery-order.php';
     require_once AH_HO_INVOICING_PLUGIN_DIR . 'includes/class-cache-manager.php';
     require_once AH_HO_INVOICING_PLUGIN_DIR . 'includes/class-metabox.php';
 

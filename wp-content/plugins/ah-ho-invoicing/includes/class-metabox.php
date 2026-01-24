@@ -182,13 +182,13 @@ class AH_HO_Metabox {
                 break;
 
             case 'packing-slip':
-                // Will be implemented in Phase 2
-                wp_die(__('Packing slip functionality coming soon', 'ah-ho-invoicing'));
+                $pdf_path = AH_HO_Packing_Slip::generate($order_id);
+                $filename = "packing-slip-{$order_id}.pdf";
                 break;
 
             case 'delivery-order':
-                // Will be implemented in Phase 2
-                wp_die(__('Delivery order functionality coming soon', 'ah-ho-invoicing'));
+                $pdf_path = AH_HO_Delivery_Order::generate($order_id);
+                $filename = "delivery-order-{$order_id}.pdf";
                 break;
 
             default:
