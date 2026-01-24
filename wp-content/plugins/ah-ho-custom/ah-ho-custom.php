@@ -60,9 +60,8 @@ function ah_ho_custom_init() {
     // Include custom email notifications
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/custom-emails.php';
 
-    // Include salesperson functionality (TEMPORARY: Commenting out to debug)
-    // TODO: Re-enable these one by one to find the issue
-    // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-roles.php';
+    // Include salesperson functionality - Testing one file at a time
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-roles.php';
     // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-attribution.php';
     // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-query-filters.php';
     // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-settings.php';
@@ -74,12 +73,11 @@ add_action('plugins_loaded', 'ah_ho_custom_init');
  * Activation hook
  */
 function ah_ho_custom_activate() {
-    // TEMPORARY: Disabled salesperson role registration for debugging
     // Load salesperson roles file first (needed for role registration)
-    // require_once plugin_dir_path(__FILE__) . 'includes/salesperson-roles.php';
+    require_once plugin_dir_path(__FILE__) . 'includes/salesperson-roles.php';
 
     // Register salesperson role directly
-    // ah_ho_register_salesperson_role();
+    ah_ho_register_salesperson_role();
 
     // Trigger other activation hooks
     do_action('ah_ho_custom_activate');
