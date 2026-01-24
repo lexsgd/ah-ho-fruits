@@ -1,0 +1,51 @@
+/**
+ * Invoice PDF Styles
+ *
+ * Note: Dompdf has limited CSS support
+ * - Use HTML tables for layout (not Flexbox/Grid)
+ * - Avoid complex CSS3 properties
+ * - Keep styles simple and inline where possible
+ */
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.invoice-container {
+    padding: 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+/* Override WooCommerce price styles for better PDF rendering */
+.woocommerce-Price-amount {
+    font-weight: normal;
+}
+
+.woocommerce-Price-currencySymbol {
+    font-weight: normal;
+}
+
+/* Print styles */
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .invoice-container {
+        padding: 0;
+    }
+}
