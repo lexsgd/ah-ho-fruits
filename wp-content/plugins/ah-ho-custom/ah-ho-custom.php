@@ -3,7 +3,7 @@
  * Plugin Name: Ah Ho Fruits Custom
  * Plugin URI: https://heymag.app
  * Description: Custom functionality for Ah Ho Fruits - WooCommerce custom order statuses
- * Version: 1.1.1
+ * Version: 1.2.0
  * Author: Ah Ho Fruits
  * Author URI: https://heymag.app
  * Text Domain: ah-ho-custom
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AH_HO_CUSTOM_VERSION', '1.1.1');
+define('AH_HO_CUSTOM_VERSION', '1.2.0');
 define('AH_HO_CUSTOM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AH_HO_CUSTOM_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -59,6 +59,13 @@ function ah_ho_custom_init() {
 
     // Include custom email notifications
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/custom-emails.php';
+
+    // Include salesperson functionality
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-roles.php';
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-attribution.php';
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-query-filters.php';
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-settings.php';
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-dashboard.php';
 }
 add_action('plugins_loaded', 'ah_ho_custom_init');
 
@@ -66,6 +73,15 @@ add_action('plugins_loaded', 'ah_ho_custom_init');
  * Activation hook
  */
 function ah_ho_custom_activate() {
+    // Load salesperson roles file first (needed for role registration)
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-roles.php';
+
+    // Register salesperson role directly
+    ah_ho_register_salesperson_role();
+
+    // Trigger other activation hooks
+    do_action('ah_ho_custom_activate');
+
     // Flush rewrite rules
     flush_rewrite_rules();
 }
@@ -75,6 +91,9 @@ register_activation_hook(__FILE__, 'ah_ho_custom_activate');
  * Deactivation hook
  */
 function ah_ho_custom_deactivate() {
+    // Trigger salesperson role cleanup
+    do_action('ah_ho_custom_deactivate');
+
     // Flush rewrite rules
     flush_rewrite_rules();
 }

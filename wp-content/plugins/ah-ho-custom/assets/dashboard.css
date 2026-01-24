@@ -1,0 +1,26 @@
+/**
+ * Salesperson Commission Dashboard Styles
+ *
+ * Additional styling for commission dashboards
+ * (Main styles are embedded in PHP files for simplicity)
+ */
+
+/* Future enhancements can be added here */
+
+/* Example: Responsive adjustments */
+@media (max-width: 768px) {
+    .ah-ho-summary-cards {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Example: Print styles for commission reports */
+@media print {
+    .ah-ho-card {
+        break-inside: avoid;
+    }
+
+    .button, .tablenav {
+        display: none;
+    }
+}
