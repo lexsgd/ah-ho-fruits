@@ -195,3 +195,95 @@ function ah_ho_save_commission_rate_field($user_id) {
     }
 }
 
+/**
+ * Add Tools submenu page for role creation
+ */
+add_action('admin_menu', 'ah_ho_add_role_tools_page');
+function ah_ho_add_role_tools_page() {
+    add_submenu_page(
+        'tools.php',
+        'Create Salesperson Role',
+        'Salesperson Role',
+        'manage_options',
+        'ah-ho-create-salesperson-role',
+        'ah_ho_render_role_tools_page'
+    );
+}
+
+function ah_ho_render_role_tools_page() {
+    if (!current_user_can('manage_options')) {
+        wp_die('Unauthorized');
+    }
+
+    // Handle form submission
+    if (isset($_POST['create_role']) && check_admin_referer('ah_ho_create_role')) {
+        // Force remove and recreate
+        remove_role('ah_ho_salesperson');
+        ah_ho_register_salesperson_role();
+
+        echo '<div class="notice notice-success"><p><strong>Success!</strong> Salesperson role has been created.</p></div>';
+    }
+
+    $role = get_role('ah_ho_salesperson');
+
+    ?>
+    <div class="wrap">
+        <h1>Salesperson Role Management</h1>
+
+        <?php if ($role): ?>
+            <div class="notice notice-info">
+                <p><strong>Salesperson role exists!</strong> You can now select it when creating users.</p>
+            </div>
+
+            <h2>Current Role Capabilities</h2>
+            <table class="widefat">
+                <thead>
+                    <tr>
+                        <th>Capability</th>
+                        <th>Granted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($role->capabilities as $cap => $grant): ?>
+                        <tr>
+                            <td><?php echo esc_html($cap); ?></td>
+                            <td><?php echo $grant ? '✅ Yes' : '❌ No'; ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <p>&nbsp;</p>
+            <form method="post">
+                <?php wp_nonce_field('ah_ho_create_role'); ?>
+                <input type="hidden" name="create_role" value="1">
+                <button type="submit" class="button button-secondary">Recreate Role (Force Refresh)</button>
+            </form>
+
+        <?php else: ?>
+            <div class="notice notice-warning">
+                <p><strong>Salesperson role does not exist yet.</strong></p>
+            </div>
+
+            <form method="post">
+                <?php wp_nonce_field('ah_ho_create_role'); ?>
+                <input type="hidden" name="create_role" value="1">
+                <p>
+                    <button type="submit" class="button button-primary button-hero">Create Salesperson Role Now</button>
+                </p>
+            </form>
+        <?php endif; ?>
+
+        <hr>
+
+        <h2>Next Steps</h2>
+        <ol>
+            <li>Click the button above to create the Salesperson role</li>
+            <li>Go to <a href="<?php echo admin_url('user-new.php'); ?>">Users > Add New</a></li>
+            <li>Select "Salesperson" from the Role dropdown</li>
+            <li>Create your first salesperson user</li>
+        </ol>
+    </div>
+    <?php
+}
+
