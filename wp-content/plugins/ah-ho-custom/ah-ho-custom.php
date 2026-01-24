@@ -74,7 +74,7 @@ add_action('plugins_loaded', 'ah_ho_custom_init');
  */
 function ah_ho_custom_activate() {
     // Load salesperson roles file first (needed for role registration)
-    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-roles.php';
+    require_once plugin_dir_path(__FILE__) . 'includes/salesperson-roles.php';
 
     // Register salesperson role directly
     ah_ho_register_salesperson_role();
