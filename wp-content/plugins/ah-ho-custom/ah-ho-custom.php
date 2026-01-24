@@ -60,12 +60,12 @@ function ah_ho_custom_init() {
     // Include custom email notifications
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/custom-emails.php';
 
-    // Include salesperson functionality
+    // Include salesperson functionality (TESTING: Enable one at a time)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-roles.php';
-    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-attribution.php';
-    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-query-filters.php';
-    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-settings.php';
-    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-dashboard.php';
+    // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-attribution.php';
+    // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-query-filters.php';
+    // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-settings.php';
+    // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-dashboard.php';
 }
 add_action('plugins_loaded', 'ah_ho_custom_init');
 
