@@ -3,7 +3,7 @@
  * Plugin Name: Ah Ho Fruits - Invoicing & Packing Lists
  * Plugin URI: https://heymag.app
  * Description: Custom PDF invoices, packing lists, and delivery orders for Ah Ho Fruits. Features: Sequential invoice numbering, consolidated packing lists sorted by postal code + delivery date, customer notes highlighting (allergies/gifts).
- * Version: 1.2.0
+ * Version: 1.3.0
  * Author: Ah Ho Fruits
  * Author URI: https://heymag.app
  * Text Domain: ah-ho-invoicing
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AH_HO_INVOICING_VERSION', '1.2.0');
+define('AH_HO_INVOICING_VERSION', '1.3.0');
 define('AH_HO_INVOICING_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AH_HO_INVOICING_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('AH_HO_INVOICING_CACHE_DIR', WP_CONTENT_DIR . '/pdf-cache/');
@@ -78,6 +78,7 @@ function ah_ho_invoicing_init() {
     require_once AH_HO_INVOICING_PLUGIN_DIR . 'includes/class-custom-order-status.php';
     require_once AH_HO_INVOICING_PLUGIN_DIR . 'includes/class-email-attachments.php';
     require_once AH_HO_INVOICING_PLUGIN_DIR . 'includes/class-settings.php';
+    require_once AH_HO_INVOICING_PLUGIN_DIR . 'includes/class-admin-page.php';
 
     // Initialize classes
     AH_HO_PDF_Generator::init();
@@ -86,6 +87,7 @@ function ah_ho_invoicing_init() {
     AH_HO_Custom_Order_Status::init();
     AH_HO_Email_Attachments::init();
     AH_HO_Settings::init();
+    AH_HO_Admin_Page::init();
 }
 add_action('plugins_loaded', 'ah_ho_invoicing_init');
 
