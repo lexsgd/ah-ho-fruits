@@ -1,6 +1,7 @@
 # Composer dependencies
-/vendor/
-composer.lock
+# NOTE: vendor/ is committed for Vodien deployment (no Composer on server)
+# /vendor/
+# composer.lock
 
 # Cache directory (generated PDFs)
 /cache/
