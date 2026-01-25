@@ -31,6 +31,8 @@ $table_prefix = 'wpgr_';
 define( 'WP_DEBUG', false );
 
 /* Add any custom values here */
+define( 'WP_HOME', 'https://fruits.heymag.app' );
+define( 'WP_SITEURL', 'https://fruits.heymag.app' );
 
 /* That's all, stop editing! Happy publishing. */
 
