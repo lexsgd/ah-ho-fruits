@@ -15,18 +15,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download and check error_log
+      - name: Check latest errors and WordPress files
         run: |
           sudo apt-get update
           sudo apt-get install -y lftp
-          echo "Downloading error_log to check for errors:"
+          echo "Downloading error_log and wp-config.php:"
           lftp -e "set ssl:verify-certificate no; \
                    open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
                    cd public_html/ah-ho-fruits; \
                    get error_log; \
+                   get wp-config.php; \
+                   ls -la wp-config.php; \
+                   ls -la index.php; \
+                   ls -la wp-settings.php; \
                    bye"
-          echo "=== Last 100 lines of error_log ==="
-          tail -100 error_log || echo "Could not read error_log"
+          echo "=== Last 50 lines of error_log (most recent errors) ==="
+          tail -50 error_log | grep "25-Jan-2026" || echo "No errors from today, showing all recent:"
+          tail -20 error_log
+          echo ""
+          echo "=== Checking wp-config.php for DB settings ==="
+          grep "DB_NAME\|DB_USER\|DB_HOST" wp-config.php | head -5 || echo "Could not read wp-config"
 
       - name: Deploy wp-content via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
