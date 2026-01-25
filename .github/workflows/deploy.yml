@@ -10,6 +10,7 @@ on:
       - 'version.php'
       - 'check-files.php'
       - '.htaccess'
+      - 'wp-config.php'
   workflow_dispatch:
 
 jobs:
