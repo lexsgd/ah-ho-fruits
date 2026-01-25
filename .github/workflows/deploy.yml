@@ -15,14 +15,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Delete problematic .htaccess via FTP (one-time cleanup)
+      - name: Diagnose server files and delete .htaccess
         run: |
           sudo apt-get update
           sudo apt-get install -y lftp
+          echo "Listing files in public_html/ah-ho-fruits/:"
           lftp -e "set ssl:verify-certificate no; \
                    open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
                    cd public_html/ah-ho-fruits; \
+                   ls -la; \
+                   echo '---Deleting .htaccess---'; \
                    rm -f .htaccess; \
+                   echo '---Listing after delete---'; \
+                   ls -la .htaccess; \
                    bye"
 
       - name: Deploy wp-content via FTP
