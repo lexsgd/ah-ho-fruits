@@ -7,7 +7,6 @@ on:
       - 'wp-content/**'
       - '.github/workflows/**'
       - 'robots.txt'
-      - '.htaccess'
   workflow_dispatch:
 
 jobs:
@@ -26,7 +25,7 @@ jobs:
           server-dir: public_html/ah-ho-fruits/wp-content/
           dangerous-clean-slate: false
 
-      - name: Deploy root files (robots.txt, .htaccess) via FTP
+      - name: Deploy root files (robots.txt only) via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.VODIEN_HOST }}
@@ -48,3 +47,4 @@ jobs:
             **/*.yml
             **/*.sh
             **/docker-compose.yml
+            **/.htaccess
