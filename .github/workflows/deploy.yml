@@ -15,30 +15,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Clear PHP OPcache and verify site
+      - name: Deploy and run PHP diagnostic tests
         run: |
           sudo apt-get update
           sudo apt-get install -y lftp
-          echo "Deploying cache clear script:"
+          echo "Deploying PHP test files:"
           lftp -e "set ssl:verify-certificate no; \
                    open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
                    cd public_html/ah-ho-fruits; \
-                   put clear-opcache.php; \
-                   ls -la clear-opcache.php; \
+                   put phpinfo.php; \
+                   put wp-test.php; \
                    bye"
-          echo "Triggering OPcache clear via HTTP:"
-          curl -s "https://fruits.heymag.app/clear-opcache.php"
           echo ""
-          echo "Waiting 5 seconds for cache to clear..."
-          sleep 5
-          echo "Testing if site is now accessible:"
-          curl -sI "https://fruits.heymag.app/" | head -5
+          echo "=== Test 1: Is PHP working at all? ==="
+          curl -s "https://fruits.heymag.app/phpinfo.php" | head -10
           echo ""
-          echo "Deleting cache clear script:"
+          echo "=== Test 2: Can WordPress load? ==="
+          curl -s "https://fruits.heymag.app/wp-test.php"
+          echo ""
+          echo "=== Test 3: What's the actual homepage error? ==="
+          curl -s "https://fruits.heymag.app/" 2>&1 | head -50
+          echo ""
+          echo "Cleaning up test files:"
           lftp -e "set ssl:verify-certificate no; \
                    open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
                    cd public_html/ah-ho-fruits; \
-                   rm -f clear-opcache.php; \
+                   rm -f phpinfo.php wp-test.php clear-opcache.php; \
                    bye"
 
       - name: Deploy wp-content via FTP
