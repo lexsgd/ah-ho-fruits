@@ -148,15 +148,49 @@ if (empty($delivery_date)) {
                 <td style="padding: 8px; border: 1px solid #ddd;">
                     <strong><?php echo esc_html($item->get_name()); ?></strong>
                     <?php
-                    // Display item meta (variations)
+                    // Extract product notes and gift data for special highlighting
+                    $product_notes = wc_get_order_item_meta($item_id, __('Special Requests', 'ah-ho-fruits'), true);
+                    $is_gift = wc_get_order_item_meta($item_id, __('Gift', 'ah-ho-fruits'), true);
+                    $gift_message = wc_get_order_item_meta($item_id, __('Gift Message', 'ah-ho-fruits'), true);
+
+                    // Display item meta (variations - excluding our custom addons)
                     $item_data = $item->get_formatted_meta_data();
                     if (!empty($item_data)):
                     ?>
                         <br><small style="color: #666;">
-                            <?php foreach ($item_data as $meta): ?>
+                            <?php foreach ($item_data as $meta):
+                                // Skip our custom addon fields (they're shown below)
+                                if (in_array($meta->display_key, [__('Special Requests', 'ah-ho-fruits'), __('Gift', 'ah-ho-fruits'), __('Gift Message', 'ah-ho-fruits')])) {
+                                    continue;
+                                }
+                            ?>
                                 <?php echo esc_html($meta->display_key); ?>: <?php echo wp_kses_post($meta->display_value); ?>
                             <?php endforeach; ?>
                         </small>
+                    <?php endif; ?>
+
+                    <?php
+                    // Display Product Notes (Highlighted for driver)
+                    if (!empty($product_notes)):
+                    ?>
+                        <div style="margin-top: 6px; padding: 6px; background-color: #e8f5e9; border-left: 3px solid #2E7D32; font-size: 12px;">
+                            <strong style="color: #2E7D32;">📝 Customer Requests:</strong><br>
+                            <span style="font-weight: bold; color: #000; font-size: 14px;"><?php echo nl2br(esc_html($product_notes)); ?></span>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php
+                    // Display Gift Message (Highlighted for driver)
+                    if ($is_gift === __('Yes', 'ah-ho-fruits')):
+                    ?>
+                        <div style="margin-top: 6px; padding: 6px; background-color: #fff3cd; border-left: 3px solid #ff6f00; font-size: 12px;">
+                            <strong style="color: #ff6f00; font-size: 14px;">🎁 GIFT - Include Gift Card!</strong>
+                            <?php if (!empty($gift_message)): ?>
+                                <br><span style="font-style: italic; color: #000; font-weight: bold; font-size: 13px;">
+                                    "<?php echo nl2br(esc_html($gift_message)); ?>"
+                                </span>
+                            <?php endif; ?>
+                        </div>
                     <?php endif; ?>
                 </td>
                 <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">

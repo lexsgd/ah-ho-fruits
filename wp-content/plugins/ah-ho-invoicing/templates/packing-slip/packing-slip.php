@@ -98,15 +98,50 @@ echo AH_HO_Packing_Slip::format_customer_notes($order);
                 <td style="padding: 10px; vertical-align: top; border: 1px solid #ddd;">
                     <strong><?php echo esc_html($item->get_name()); ?></strong>
                     <?php
-                    // Display item meta (variations, custom options)
+                    // Extract product notes and gift data for special highlighting
+                    $product_notes = wc_get_order_item_meta($item_id, __('Special Requests', 'ah-ho-fruits'), true);
+                    $is_gift = wc_get_order_item_meta($item_id, __('Gift', 'ah-ho-fruits'), true);
+                    $gift_message = wc_get_order_item_meta($item_id, __('Gift Message', 'ah-ho-fruits'), true);
+
+                    // Display item meta (variations, custom options - excluding our custom addons)
                     $item_data = $item->get_formatted_meta_data();
                     if (!empty($item_data)):
                     ?>
                         <br><small style="color: #666;">
-                            <?php foreach ($item_data as $meta): ?>
+                            <?php foreach ($item_data as $meta):
+                                // Skip our custom addon fields (they're shown below)
+                                if (in_array($meta->display_key, [__('Special Requests', 'ah-ho-fruits'), __('Gift', 'ah-ho-fruits'), __('Gift Message', 'ah-ho-fruits')])) {
+                                    continue;
+                                }
+                            ?>
                                 <?php echo esc_html($meta->display_key); ?>: <?php echo wp_kses_post($meta->display_value); ?><br>
                             <?php endforeach; ?>
                         </small>
+                    <?php endif; ?>
+
+                    <?php
+                    // Display Product Notes (Green box)
+                    if (!empty($product_notes)):
+                    ?>
+                        <div style="margin-top: 8px; padding: 8px; background-color: #e8f5e9; border-left: 3px solid #2E7D32; font-size: 11px;">
+                            <strong style="color: #2E7D32;">📝 SPECIAL REQUESTS:</strong><br>
+                            <span style="font-weight: bold; color: #000;"><?php echo nl2br(esc_html($product_notes)); ?></span>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php
+                    // Display Gift Message (Yellow box)
+                    if ($is_gift === __('Yes', 'ah-ho-fruits')):
+                    ?>
+                        <div style="margin-top: 8px; padding: 8px; background-color: #fff3cd; border-left: 3px solid #ff6f00; font-size: 11px;">
+                            <strong style="color: #ff6f00;">🎁 GIFT ITEM</strong>
+                            <?php if (!empty($gift_message)): ?>
+                                <br><span style="font-style: italic; color: #000; font-weight: bold;">
+                                    Message: "<?php echo nl2br(esc_html($gift_message)); ?>"
+                                </span>
+                            <?php endif; ?>
+                            <br><strong style="color: #856404; font-size: 10px;">⚠️ Remember to print gift card for delivery</strong>
+                        </div>
                     <?php endif; ?>
                 </td>
                 <td style="padding: 10px; text-align: center; vertical-align: top; border: 1px solid #ddd;">
