@@ -15,26 +15,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check latest errors and WordPress files
+      - name: Clear PHP OPcache and verify site
         run: |
           sudo apt-get update
           sudo apt-get install -y lftp
-          echo "Downloading error_log and wp-config.php:"
+          echo "Deploying cache clear script:"
           lftp -e "set ssl:verify-certificate no; \
                    open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
                    cd public_html/ah-ho-fruits; \
-                   get error_log; \
-                   get wp-config.php; \
-                   ls -la wp-config.php; \
-                   ls -la index.php; \
-                   ls -la wp-settings.php; \
+                   put clear-opcache.php; \
+                   ls -la clear-opcache.php; \
                    bye"
-          echo "=== Last 50 lines of error_log (most recent errors) ==="
-          tail -50 error_log | grep "25-Jan-2026" || echo "No errors from today, showing all recent:"
-          tail -20 error_log
+          echo "Triggering OPcache clear via HTTP:"
+          curl -s "https://fruits.heymag.app/clear-opcache.php"
           echo ""
-          echo "=== Checking wp-config.php for DB settings ==="
-          grep "DB_NAME\|DB_USER\|DB_HOST" wp-config.php | head -5 || echo "Could not read wp-config"
+          echo "Waiting 5 seconds for cache to clear..."
+          sleep 5
+          echo "Testing if site is now accessible:"
+          curl -sI "https://fruits.heymag.app/" | head -5
+          echo ""
+          echo "Deleting cache clear script:"
+          lftp -e "set ssl:verify-certificate no; \
+                   open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
+                   cd public_html/ah-ho-fruits; \
+                   rm -f clear-opcache.php; \
+                   bye"
 
       - name: Deploy wp-content via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
