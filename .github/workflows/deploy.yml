@@ -8,6 +8,7 @@ on:
       - '.github/workflows/**'
       - 'robots.txt'
       - 'wp-config.php'
+      - '.htaccess'
   workflow_dispatch:
 
 jobs:
@@ -16,17 +17,42 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cleanup diagnostic files and restore original state
+      - name: Cleanup diagnostic files
         run: |
           sudo apt-get update
           sudo apt-get install -y lftp
-          echo "Removing .htaccess and diagnostic files to restore original state:"
+          echo "Removing diagnostic files:"
           lftp -e "set ssl:verify-certificate no; \
                    open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
                    cd public_html/ah-ho-fruits; \
-                   rm -f .htaccess phpinfo.php wp-test.php clear-opcache.php test-php.php check-files.php check-wp-urls.php; \
+                   rm -f phpinfo.php wp-test.php clear-opcache.php test-php.php check-files.php check-wp-urls.php; \
                    bye"
           echo "Cleanup complete"
+
+      - name: Deploy .htaccess via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.VODIEN_HOST }}
+          username: ${{ secrets.VODIEN_USER }}
+          password: ${{ secrets.VODIEN_PASSWORD }}
+          local-dir: ./
+          server-dir: public_html/ah-ho-fruits/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/node_modules/**
+            **/wp-content/**
+            **/docs/**
+            **/sql/**
+            **/.env
+            **/deploy-key*
+            **/deploy.sh
+            **/*.md
+            **/*.yml
+            **/*.sh
+            **/docker-compose.yml
+            **/wp-config.php
+            **/robots.txt
 
       - name: Deploy wp-content via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
