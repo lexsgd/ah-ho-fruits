@@ -19,19 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cleanup diagnostic files
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y lftp
-          echo "Removing diagnostic files:"
-          lftp -e "set ssl:verify-certificate no; \
-                   open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
-                   cd public_html/ah-ho-fruits; \
-                   rm -f phpinfo.php wp-test.php clear-opcache.php test-php.php check-files.php check-wp-urls.php; \
-                   bye"
-          echo "Cleanup complete"
-
-      - name: Deploy .htaccess via FTP
+      - name: Deploy all files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.VODIEN_HOST }}
@@ -42,43 +30,8 @@ jobs:
           dangerous-clean-slate: false
           exclude: |
             **/.git*
+            **/.github/**
             **/node_modules/**
-            **/wp-content/**
-            **/docs/**
-            **/sql/**
-            **/.env
-            **/deploy-key*
-            **/deploy.sh
-            **/*.md
-            **/*.yml
-            **/*.sh
-            **/docker-compose.yml
-            **/wp-config.php
-            **/robots.txt
-
-      - name: Deploy wp-content via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.VODIEN_HOST }}
-          username: ${{ secrets.VODIEN_USER }}
-          password: ${{ secrets.VODIEN_PASSWORD }}
-          local-dir: ./wp-content/
-          server-dir: public_html/ah-ho-fruits/wp-content/
-          dangerous-clean-slate: false
-
-      - name: Deploy root files (robots.txt only) via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.VODIEN_HOST }}
-          username: ${{ secrets.VODIEN_USER }}
-          password: ${{ secrets.VODIEN_PASSWORD }}
-          local-dir: ./
-          server-dir: public_html/ah-ho-fruits/
-          dangerous-clean-slate: false
-          exclude: |
-            **/.git*
-            **/node_modules/**
-            **/wp-content/**
             **/docs/**
             **/sql/**
             **/.env
