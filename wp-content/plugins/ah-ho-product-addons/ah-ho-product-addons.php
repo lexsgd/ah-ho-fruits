@@ -19,6 +19,15 @@ define( 'AH_HO_ADDONS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'AH_HO_ADDONS_URL', plugin_dir_url( __FILE__ ) );
 
 /**
+ * Declare compatibility with WooCommerce features
+ */
+add_action( 'before_woocommerce_init', function() {
+    if ( class_exists( '\Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
+        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+    }
+} );
+
+/**
  * Check WooCommerce dependency and initialize plugin
  */
 add_action( 'plugins_loaded', 'ah_ho_addons_init' );
