@@ -1,6 +1,6 @@
 # Ah Ho Fruit - robots.txt
 # Last Updated: 2026-01-25
-# Domain: ahhofruit.com
+# Current Domain: fruits.heymag.app (migrating to ahhofruit.com)
 
 User-agent: *
 
@@ -36,4 +36,5 @@ Disallow: /*?fbclid=*
 Disallow: /*?utm_*
 
 # Sitemap location
-Sitemap: https://ahhofruit.com/sitemap_index.xml
+Sitemap: https://fruits.heymag.app/sitemap_index.xml
+# Note: Will update to https://ahhofruit.com/sitemap_index.xml during migration
