@@ -120,27 +120,27 @@ echo AH_HO_Packing_Slip::format_customer_notes($order);
                     <?php endif; ?>
 
                     <?php
-                    // Display Product Notes (Green box)
+                    // Display Product Notes (Green box - B&W compatible: single border, dotted pattern)
                     if (!empty($product_notes)):
                     ?>
-                        <div style="margin-top: 8px; padding: 8px; background-color: #e8f5e9; border-left: 3px solid #2E7D32; font-size: 11px;">
-                            <strong style="color: #2E7D32;">📝 SPECIAL REQUESTS:</strong><br>
-                            <span style="font-weight: bold; color: #000;"><?php echo nl2br(esc_html($product_notes)); ?></span>
+                        <div style="margin-top: 8px; padding: 10px; background-color: #e8f5e9; background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(46,125,50,0.05) 10px, rgba(46,125,50,0.05) 20px); border: 2px solid #2E7D32; border-radius: 3px; font-size: 11px;">
+                            <strong style="color: #2E7D32; font-size: 12px;">📝 SPECIAL REQUESTS (Preferences/Allergies):</strong><br>
+                            <span style="font-weight: bold; color: #000; font-size: 11px;"><?php echo nl2br(esc_html($product_notes)); ?></span>
                         </div>
                     <?php endif; ?>
 
                     <?php
-                    // Display Gift Message (Yellow box)
+                    // Display Gift Message (Yellow box - B&W compatible: double border, checkered pattern)
                     if ($is_gift === __('Yes', 'ah-ho-fruits')):
                     ?>
-                        <div style="margin-top: 8px; padding: 8px; background-color: #fff3cd; border-left: 3px solid #ff6f00; font-size: 11px;">
-                            <strong style="color: #ff6f00;">🎁 GIFT ITEM</strong>
+                        <div style="margin-top: 8px; padding: 12px; background-color: #fff3cd; background-image: repeating-linear-gradient(0deg, transparent, transparent 5px, rgba(255,111,0,0.08) 5px, rgba(255,111,0,0.08) 10px), repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(255,111,0,0.08) 5px, rgba(255,111,0,0.08) 10px); border: 3px double #ff6f00; border-radius: 3px; font-size: 11px;">
+                            <strong style="color: #ff6f00; font-size: 13px;">🎁🎁 GIFT ITEM - PRINT GIFT CARD 🎁🎁</strong>
                             <?php if (!empty($gift_message)): ?>
-                                <br><span style="font-style: italic; color: #000; font-weight: bold;">
+                                <br><span style="font-style: italic; color: #000; font-weight: bold; font-size: 11px;">
                                     Message: "<?php echo nl2br(esc_html($gift_message)); ?>"
                                 </span>
                             <?php endif; ?>
-                            <br><strong style="color: #856404; font-size: 10px;">⚠️ Remember to print gift card for delivery</strong>
+                            <br><strong style="color: #856404; font-size: 11px; margin-top: 4px; display: block;">⚠️⚠️ Remember to print gift card for delivery ⚠️⚠️</strong>
                         </div>
                     <?php endif; ?>
                 </td>
