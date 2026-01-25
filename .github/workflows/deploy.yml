@@ -18,17 +18,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Remove problematic .htaccess file from server
+      - name: Clean up old diagnostic files
         run: |
           sudo apt-get update
           sudo apt-get install -y lftp
-          echo "Removing .htaccess file that causes HTTP 500 error:"
+          echo "Removing old diagnostic files:"
           lftp -e "set ssl:verify-certificate no; \
                    open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
                    cd public_html/ah-ho-fruits; \
-                   rm -f .htaccess phpinfo.php wp-test.php clear-opcache.php test-php.php; \
+                   rm -f phpinfo.php wp-test.php clear-opcache.php test-php.php; \
                    bye"
-          echo ".htaccess removed from server"
+          echo "Cleanup complete"
 
       - name: Deploy wp-content via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
