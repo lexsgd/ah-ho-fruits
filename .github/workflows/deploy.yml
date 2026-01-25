@@ -75,4 +75,3 @@ jobs:
             **/*.yml
             **/*.sh
             **/docker-compose.yml
-            **/.htaccess
