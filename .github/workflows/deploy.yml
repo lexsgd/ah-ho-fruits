@@ -18,17 +18,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Clean up old diagnostic files
+      - name: Deploy .htaccess and cleanup diagnostic files
         run: |
           sudo apt-get update
           sudo apt-get install -y lftp
-          echo "Removing old diagnostic files:"
+          echo "Deploying .htaccess and removing old diagnostic files:"
           lftp -e "set ssl:verify-certificate no; \
                    open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
                    cd public_html/ah-ho-fruits; \
+                   put .htaccess; \
                    rm -f phpinfo.php wp-test.php clear-opcache.php test-php.php; \
                    bye"
-          echo "Cleanup complete"
+          echo "Deployment complete"
 
       - name: Deploy wp-content via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
