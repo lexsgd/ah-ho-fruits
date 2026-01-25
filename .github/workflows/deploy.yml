@@ -15,6 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Delete problematic .htaccess via FTP (one-time cleanup)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lftp
+          lftp -e "set ssl:verify-certificate no; \
+                   open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
+                   cd public_html/ah-ho-fruits; \
+                   rm -f .htaccess; \
+                   bye"
+
       - name: Deploy wp-content via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
