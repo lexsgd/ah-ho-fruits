@@ -15,20 +15,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Diagnose server files and delete .htaccess
+      - name: Download and check error_log
         run: |
           sudo apt-get update
           sudo apt-get install -y lftp
-          echo "Listing files in public_html/ah-ho-fruits/:"
+          echo "Downloading error_log to check for errors:"
           lftp -e "set ssl:verify-certificate no; \
                    open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
                    cd public_html/ah-ho-fruits; \
-                   ls -la; \
-                   echo '---Deleting .htaccess---'; \
-                   rm -f .htaccess; \
-                   echo '---Listing after delete---'; \
-                   ls -la .htaccess; \
+                   get error_log; \
                    bye"
+          echo "=== Last 100 lines of error_log ==="
+          tail -100 error_log || echo "Could not read error_log"
 
       - name: Deploy wp-content via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
