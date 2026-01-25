@@ -1,0 +1,39 @@
+# Ah Ho Fruit - robots.txt
+# Last Updated: 2026-01-25
+# Domain: ahhofruit.com
+
+User-agent: *
+
+# Allow crawling of uploads (product images)
+Allow: /wp-content/uploads/
+
+# Block WordPress admin
+Disallow: /wp-admin/
+Allow: /wp-admin/admin-ajax.php
+
+# Block WooCommerce functional pages
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /my-account/
+Disallow: /addons/
+
+# Block query parameters that create duplicate content
+Disallow: /*?add-to-cart=*
+Disallow: /*?orderby=*
+Disallow: /*?filter*
+Disallow: /*?s=*
+Disallow: /*?removed_item=*
+
+# Block WordPress core directories
+Disallow: /wp-includes/
+Disallow: /wp-json/
+Disallow: /xmlrpc.php
+Disallow: /readme.html
+Disallow: /license.txt
+
+# Block tracking and session URLs
+Disallow: /*?fbclid=*
+Disallow: /*?utm_*
+
+# Sitemap location
+Sitemap: https://ahhofruit.com/sitemap_index.xml

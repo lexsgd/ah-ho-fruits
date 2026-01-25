@@ -6,6 +6,8 @@ on:
     paths:
       - 'wp-content/**'
       - '.github/workflows/**'
+      - 'robots.txt'
+      - '.htaccess'
   workflow_dispatch:
 
 jobs:
@@ -14,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy via FTP
+      - name: Deploy wp-content via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.VODIEN_HOST }}
@@ -23,3 +25,26 @@ jobs:
           local-dir: ./wp-content/
           server-dir: public_html/ah-ho-fruits/wp-content/
           dangerous-clean-slate: false
+
+      - name: Deploy root files (robots.txt, .htaccess) via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.VODIEN_HOST }}
+          username: ${{ secrets.VODIEN_USER }}
+          password: ${{ secrets.VODIEN_PASSWORD }}
+          local-dir: ./
+          server-dir: public_html/ah-ho-fruits/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/node_modules/**
+            **/wp-content/**
+            **/docs/**
+            **/sql/**
+            **/.env
+            **/deploy-key*
+            **/deploy.sh
+            **/*.md
+            **/*.yml
+            **/*.sh
+            **/docker-compose.yml
