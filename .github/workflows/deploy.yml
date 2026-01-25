@@ -7,9 +7,6 @@ on:
       - 'wp-content/**'
       - '.github/workflows/**'
       - 'robots.txt'
-      - 'version.php'
-      - 'check-files.php'
-      - '.htaccess'
       - 'wp-config.php'
   workflow_dispatch:
 
@@ -19,18 +16,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy .htaccess and cleanup diagnostic files
+      - name: Cleanup diagnostic files and restore original state
         run: |
           sudo apt-get update
           sudo apt-get install -y lftp
-          echo "Deploying .htaccess and removing old diagnostic files:"
+          echo "Removing .htaccess and diagnostic files to restore original state:"
           lftp -e "set ssl:verify-certificate no; \
                    open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
                    cd public_html/ah-ho-fruits; \
-                   put .htaccess; \
-                   rm -f phpinfo.php wp-test.php clear-opcache.php test-php.php; \
+                   rm -f .htaccess phpinfo.php wp-test.php clear-opcache.php test-php.php check-files.php check-wp-urls.php; \
                    bye"
-          echo "Deployment complete"
+          echo "Cleanup complete"
 
       - name: Deploy wp-content via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
