@@ -15,33 +15,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy and run PHP diagnostic tests
+      - name: Remove problematic .htaccess file from server
         run: |
           sudo apt-get update
           sudo apt-get install -y lftp
-          echo "Deploying PHP test files:"
+          echo "Removing .htaccess file that causes HTTP 500 error:"
           lftp -e "set ssl:verify-certificate no; \
                    open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
                    cd public_html/ah-ho-fruits; \
-                   put phpinfo.php; \
-                   put wp-test.php; \
+                   rm -f .htaccess phpinfo.php wp-test.php clear-opcache.php test-php.php; \
                    bye"
-          echo ""
-          echo "=== Test 1: Is PHP working at all? ==="
-          curl -s "https://fruits.heymag.app/phpinfo.php" | head -10
-          echo ""
-          echo "=== Test 2: Can WordPress load? ==="
-          curl -s "https://fruits.heymag.app/wp-test.php"
-          echo ""
-          echo "=== Test 3: What's the actual homepage error? ==="
-          curl -s "https://fruits.heymag.app/" 2>&1 | head -50
-          echo ""
-          echo "Cleaning up test files:"
-          lftp -e "set ssl:verify-certificate no; \
-                   open -u ${{ secrets.VODIEN_USER }},${{ secrets.VODIEN_PASSWORD }} ${{ secrets.VODIEN_HOST }}; \
-                   cd public_html/ah-ho-fruits; \
-                   rm -f phpinfo.php wp-test.php clear-opcache.php; \
-                   bye"
+          echo ".htaccess removed from server"
 
       - name: Deploy wp-content via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
