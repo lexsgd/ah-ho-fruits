@@ -9,6 +9,8 @@ on:
       - 'robots.txt'
       - 'wp-config.php'
       - '.htaccess'
+      - '*.html'
+      - '*.php'
   workflow_dispatch:
 
 jobs:
