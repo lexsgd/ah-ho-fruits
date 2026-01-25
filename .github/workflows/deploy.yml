@@ -8,6 +8,7 @@ on:
       - '.github/workflows/**'
       - 'robots.txt'
       - 'version.php'
+      - '.htaccess'
   workflow_dispatch:
 
 jobs:
