@@ -48,22 +48,33 @@ add_action('wp_head', function() {
        ======================================== */
 
     /* Hero section with dark background - keep white text */
-    .fusion-fullwidth.fusion-builder-row-1 h1,
-    .fusion-fullwidth.fusion-builder-row-1 h2,
-    .fusion-fullwidth.fusion-builder-row-1 h3,
-    .fusion-fullwidth.fusion-builder-row-1 h4,
-    .fusion-fullwidth.fusion-builder-row-1 p,
-    .fusion-fullwidth.fusion-builder-row-1 span,
-    .fusion-fullwidth.fusion-builder-row-1 div,
-    .fusion-fullwidth[data-bg-url] h1,
-    .fusion-fullwidth[data-bg-url] h2,
-    .fusion-fullwidth[data-bg-url] h3,
-    .fusion-fullwidth[data-bg-url] h4,
-    .fusion-fullwidth[data-bg-url] p,
-    .fusion-fullwidth[data-bg-url] span,
-    .fusion-fullwidth[data-bg-url] div {
+    .fusion-builder-row-4 h1,
+    .fusion-builder-row-4 h2,
+    .fusion-builder-row-4 h3,
+    .fusion-builder-row-4 h4,
+    .fusion-builder-row-4 p,
+    .fusion-builder-row-4 span:not(.fusion-button),
+    .fusion-builder-row-4 div:not(.fusion-button-wrapper),
+    .fusion-builder-row-4 .fusion-title-heading {
         color: #ffffff !important;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
+    }
+
+    /* Any fullwidth section with background slider or dark overlay */
+    .fusion-fullwidth.has-mask-background h1,
+    .fusion-fullwidth.has-mask-background h2,
+    .fusion-fullwidth.has-mask-background h3,
+    .fusion-fullwidth.has-mask-background h4,
+    .fusion-fullwidth.has-mask-background p,
+    .fusion-fullwidth.has-mask-background span:not(.fusion-button),
+    .fusion-fullwidth.has-pattern-background h1,
+    .fusion-fullwidth.has-pattern-background h2,
+    .fusion-fullwidth.has-pattern-background h3,
+    .fusion-fullwidth.has-pattern-background h4,
+    .fusion-fullwidth.has-pattern-background p,
+    .fusion-fullwidth.has-pattern-background span:not(.fusion-button) {
+        color: #ffffff !important;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
     }
 
     /* Category cards with image overlays - keep readable on dark images */
@@ -75,11 +86,7 @@ add_action('wp_head', function() {
     }
 
     /* Dark background sections - keep white text */
-    [class*="fusion-builder-row"][style*="background-color: rgb(51, 51, 51)"] *,
-    [class*="fusion-builder-row"][style*="background-color: #333"] *,
-    .fusion-fullwidth.dark-background *,
-    section[style*="background-color: rgb(51, 51, 51)"] *,
-    section[style*="background-color: #333"] * {
+    .fusion-fullwidth.dark-background *:not(.fusion-button) {
         color: #ffffff !important;
     }
 
