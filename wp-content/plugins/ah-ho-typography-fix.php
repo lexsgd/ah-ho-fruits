@@ -47,7 +47,7 @@ add_action('wp_head', function() {
        Keep white/light text on dark sections
        ======================================== */
 
-    /* Hero section with dark background - keep white text */
+    /* Hero section ONLY (row-4) - has dark background overlay */
     .fusion-builder-row-4 h1,
     .fusion-builder-row-4 h2,
     .fusion-builder-row-4 h3,
@@ -56,23 +56,6 @@ add_action('wp_head', function() {
     .fusion-builder-row-4 span:not(.fusion-button),
     .fusion-builder-row-4 div:not(.fusion-button-wrapper),
     .fusion-builder-row-4 .fusion-title-heading {
-        color: #ffffff !important;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
-    }
-
-    /* Any fullwidth section with background slider or dark overlay */
-    .fusion-fullwidth.has-mask-background h1,
-    .fusion-fullwidth.has-mask-background h2,
-    .fusion-fullwidth.has-mask-background h3,
-    .fusion-fullwidth.has-mask-background h4,
-    .fusion-fullwidth.has-mask-background p,
-    .fusion-fullwidth.has-mask-background span:not(.fusion-button),
-    .fusion-fullwidth.has-pattern-background h1,
-    .fusion-fullwidth.has-pattern-background h2,
-    .fusion-fullwidth.has-pattern-background h3,
-    .fusion-fullwidth.has-pattern-background h4,
-    .fusion-fullwidth.has-pattern-background p,
-    .fusion-fullwidth.has-pattern-background span:not(.fusion-button) {
         color: #ffffff !important;
         text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8) !important;
     }
