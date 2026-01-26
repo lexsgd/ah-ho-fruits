@@ -20,6 +20,22 @@ function ah_ho_create_legal_pages() {
 
     // Terms and Conditions content
     $terms_content = <<<'HTML'
+<div class="ah-ho-legal-page" style="color: #2c3e50 !important; font-size: 16px !important; line-height: 1.8 !important; max-width: 900px; margin: 0 auto; padding: 20px;">
+<style>
+.ah-ho-legal-page p,
+.ah-ho-legal-page li,
+.ah-ho-legal-page td { color: #2c3e50 !important; font-size: 16px !important; line-height: 1.8 !important; margin-bottom: 16px !important; }
+.ah-ho-legal-page h2 { color: #1a1a1a !important; font-size: 28px !important; font-weight: 700 !important; margin-top: 40px !important; margin-bottom: 20px !important; line-height: 1.3 !important; }
+.ah-ho-legal-page h3 { color: #1a1a1a !important; font-size: 22px !important; font-weight: 600 !important; margin-top: 30px !important; margin-bottom: 16px !important; line-height: 1.4 !important; }
+.ah-ho-legal-page h4 { color: #1a1a1a !important; font-size: 18px !important; font-weight: 600 !important; margin-top: 24px !important; margin-bottom: 12px !important; line-height: 1.4 !important; }
+.ah-ho-legal-page ul,
+.ah-ho-legal-page ol { margin-left: 24px !important; margin-bottom: 20px !important; }
+.ah-ho-legal-page li { margin-bottom: 8px !important; }
+.ah-ho-legal-page hr { border: none !important; border-top: 1px solid #e0e0e0 !important; margin: 32px 0 !important; }
+.ah-ho-legal-page strong { color: #1a1a1a !important; font-weight: 600 !important; }
+.ah-ho-legal-page a { color: #2563eb !important; text-decoration: underline !important; }
+.ah-ho-legal-page a:hover { color: #1d4ed8 !important; }
+</style>
 <p><strong>Last Updated:</strong> 26 January 2026</p>
 
 <p>Welcome to Ah Ho Fruit Trading Co ("we," "our," or "us"). These Terms and Conditions govern your use of our website at <strong>ahhofruit.com</strong> (currently accessible at fruits.heymag.app) and your purchase of products from us.</p>
@@ -293,10 +309,27 @@ Website: ahhofruit.com</p>
 <hr>
 
 <p><em>By using our website and services, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.</em></p>
+</div>
 HTML;
 
     // Privacy Policy content
     $privacy_content = <<<'HTML'
+<div class="ah-ho-legal-page" style="color: #2c3e50 !important; font-size: 16px !important; line-height: 1.8 !important; max-width: 900px; margin: 0 auto; padding: 20px;">
+<style>
+.ah-ho-legal-page p,
+.ah-ho-legal-page li,
+.ah-ho-legal-page td { color: #2c3e50 !important; font-size: 16px !important; line-height: 1.8 !important; margin-bottom: 16px !important; }
+.ah-ho-legal-page h2 { color: #1a1a1a !important; font-size: 28px !important; font-weight: 700 !important; margin-top: 40px !important; margin-bottom: 20px !important; line-height: 1.3 !important; }
+.ah-ho-legal-page h3 { color: #1a1a1a !important; font-size: 22px !important; font-weight: 600 !important; margin-top: 30px !important; margin-bottom: 16px !important; line-height: 1.4 !important; }
+.ah-ho-legal-page h4 { color: #1a1a1a !important; font-size: 18px !important; font-weight: 600 !important; margin-top: 24px !important; margin-bottom: 12px !important; line-height: 1.4 !important; }
+.ah-ho-legal-page ul,
+.ah-ho-legal-page ol { margin-left: 24px !important; margin-bottom: 20px !important; }
+.ah-ho-legal-page li { margin-bottom: 8px !important; }
+.ah-ho-legal-page hr { border: none !important; border-top: 1px solid #e0e0e0 !important; margin: 32px 0 !important; }
+.ah-ho-legal-page strong { color: #1a1a1a !important; font-weight: 600 !important; }
+.ah-ho-legal-page a { color: #2563eb !important; text-decoration: underline !important; }
+.ah-ho-legal-page a:hover { color: #1d4ed8 !important; }
+</style>
 <p><strong>Last Updated:</strong> 26 January 2026</p>
 
 <p>AH HO FRUIT TRADING CO ("we," "our," or "us") is committed to protecting your privacy and personal data. This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you visit our website <strong>ahhofruit.com</strong> (currently accessible at fruits.heymag.app) and use our services.</p>
@@ -619,6 +652,7 @@ Website: ahhofruit.com</p>
 <hr>
 
 <p><em>By using our website and services, you acknowledge that you have read and understood this Privacy Policy and consent to the collection, use, and disclosure of your personal data as described herein.</em></p>
+</div>
 HTML;
 
     // Create Terms and Conditions page
