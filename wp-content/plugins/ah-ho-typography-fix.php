@@ -42,6 +42,47 @@ add_action('wp_head', function() {
         font-weight: 700 !important;
     }
 
+    /* ========================================
+       EXCEPTIONS FOR DARK BACKGROUNDS
+       Keep white/light text on dark sections
+       ======================================== */
+
+    /* Hero section with dark background - keep white text */
+    .fusion-fullwidth.fusion-builder-row-1 h1,
+    .fusion-fullwidth.fusion-builder-row-1 h2,
+    .fusion-fullwidth.fusion-builder-row-1 h3,
+    .fusion-fullwidth.fusion-builder-row-1 h4,
+    .fusion-fullwidth.fusion-builder-row-1 p,
+    .fusion-fullwidth.fusion-builder-row-1 span,
+    .fusion-fullwidth.fusion-builder-row-1 div,
+    .fusion-fullwidth[data-bg-url] h1,
+    .fusion-fullwidth[data-bg-url] h2,
+    .fusion-fullwidth[data-bg-url] h3,
+    .fusion-fullwidth[data-bg-url] h4,
+    .fusion-fullwidth[data-bg-url] p,
+    .fusion-fullwidth[data-bg-url] span,
+    .fusion-fullwidth[data-bg-url] div {
+        color: #ffffff !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    /* Category cards with image overlays - keep readable on dark images */
+    .fusion-image-wrapper h2,
+    .fusion-image-wrapper h3,
+    .fusion-image-wrapper h4 {
+        color: #ffffff !important;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    /* Dark background sections - keep white text */
+    [class*="fusion-builder-row"][style*="background-color: rgb(51, 51, 51)"] *,
+    [class*="fusion-builder-row"][style*="background-color: #333"] *,
+    .fusion-fullwidth.dark-background *,
+    section[style*="background-color: rgb(51, 51, 51)"] *,
+    section[style*="background-color: #333"] * {
+        color: #ffffff !important;
+    }
+
     /* Heading sizes */
     h1 { font-size: 36px !important; }
     h2 { font-size: 28px !important; }
