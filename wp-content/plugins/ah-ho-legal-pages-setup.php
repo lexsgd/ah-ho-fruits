@@ -655,23 +655,39 @@ Website: ahhofruit.com</p>
 </div>
 HTML;
 
-    // Create Terms and Conditions page
-    $terms_page_id = wp_insert_post( array(
+    // Create or update Terms and Conditions page
+    $existing_terms = get_page_by_path( 'terms-and-conditions', OBJECT, 'page' );
+    $terms_page_data = array(
         'post_title'   => 'Terms and Conditions',
         'post_content' => $terms_content,
         'post_status'  => 'publish',
         'post_type'    => 'page',
         'post_name'    => 'terms-and-conditions',
-    ) );
+    );
+    if ( $existing_terms ) {
+        $terms_page_data['ID'] = $existing_terms->ID;
+        wp_update_post( $terms_page_data );
+        $terms_page_id = $existing_terms->ID;
+    } else {
+        $terms_page_id = wp_insert_post( $terms_page_data );
+    }
 
-    // Create Privacy Policy page
-    $privacy_page_id = wp_insert_post( array(
+    // Create or update Privacy Policy page
+    $existing_privacy = get_page_by_path( 'privacy-policy', OBJECT, 'page' );
+    $privacy_page_data = array(
         'post_title'   => 'Privacy Policy',
         'post_content' => $privacy_content,
         'post_status'  => 'publish',
         'post_type'    => 'page',
         'post_name'    => 'privacy-policy',
-    ) );
+    );
+    if ( $existing_privacy ) {
+        $privacy_page_data['ID'] = $existing_privacy->ID;
+        wp_update_post( $privacy_page_data );
+        $privacy_page_id = $existing_privacy->ID;
+    } else {
+        $privacy_page_id = wp_insert_post( $privacy_page_data );
+    }
 
     // Set Privacy Policy page in WordPress settings
     if ( $privacy_page_id ) {
@@ -782,7 +798,9 @@ function ah_ho_legal_pages_admin_notice() {
             </ul>
             <p><strong>Auto-Configuration Complete:</strong></p>
             <ul>
-                <li>✅ Both pages published and live</li>
+                <li>✅ Both pages created/updated with readable styling</li>
+                <li>✅ Dark text color for readability (no more yellow text!)</li>
+                <li>✅ Proper spacing and typography</li>
                 <li>✅ WooCommerce Terms page configured</li>
                 <li>✅ WordPress Privacy page configured</li>
                 <?php if ( isset( $created_data['footer_menu_updated'] ) && $created_data['footer_menu_updated'] ) : ?>
@@ -793,7 +811,7 @@ function ah_ho_legal_pages_admin_notice() {
             </ul>
             <p><strong>Next Steps:</strong></p>
             <ol>
-                <li>Review both pages to ensure accuracy</li>
+                <li><strong>View the pages</strong> to see the improved styling (dark readable text, proper spacing)</li>
                 <li>Visit your website footer to verify menu links appear</li>
                 <li><strong>You can now deactivate and delete this plugin</strong></li>
             </ol>
