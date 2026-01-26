@@ -649,12 +649,84 @@ HTML;
         update_option( 'woocommerce_terms_page_id', $terms_page_id );
     }
 
+    // Add to footer menu
+    $footer_menu_updated = ah_ho_add_to_footer_menu( $terms_page_id, $privacy_page_id );
+
     // Add admin notice
     add_option( 'ah_ho_legal_pages_created', array(
-        'terms_page_id'   => $terms_page_id,
-        'privacy_page_id' => $privacy_page_id,
-        'created_at'      => current_time( 'mysql' ),
+        'terms_page_id'      => $terms_page_id,
+        'privacy_page_id'    => $privacy_page_id,
+        'footer_menu_updated' => $footer_menu_updated,
+        'created_at'         => current_time( 'mysql' ),
     ) );
+}
+
+/**
+ * Add legal pages to footer menu
+ */
+function ah_ho_add_to_footer_menu( $terms_page_id, $privacy_page_id ) {
+    // Get all registered menus
+    $locations = get_theme_mod( 'nav_menu_locations' );
+
+    // Find footer menu (common footer menu locations in Avada theme)
+    $footer_menu_id = null;
+    $footer_locations = array( 'footer_menu', 'footer', 'secondary', 'footer-menu' );
+
+    foreach ( $footer_locations as $location ) {
+        if ( isset( $locations[ $location ] ) ) {
+            $footer_menu_id = $locations[ $location ];
+            break;
+        }
+    }
+
+    // If no footer menu found, try to find menu by name
+    if ( ! $footer_menu_id ) {
+        $menus = wp_get_nav_menus();
+        foreach ( $menus as $menu ) {
+            if ( stripos( $menu->name, 'footer' ) !== false ) {
+                $footer_menu_id = $menu->term_id;
+                break;
+            }
+        }
+    }
+
+    // If still no footer menu, create one
+    if ( ! $footer_menu_id ) {
+        $menu_id = wp_create_nav_menu( 'Footer Menu' );
+        if ( ! is_wp_error( $menu_id ) ) {
+            $footer_menu_id = $menu_id;
+
+            // Try to assign to footer location
+            if ( isset( $footer_locations[0] ) ) {
+                $locations[ $footer_locations[0] ] = $footer_menu_id;
+                set_theme_mod( 'nav_menu_locations', $locations );
+            }
+        }
+    }
+
+    if ( $footer_menu_id ) {
+        // Add Terms and Conditions to footer menu
+        wp_update_nav_menu_item( $footer_menu_id, 0, array(
+            'menu-item-title'     => 'Terms and Conditions',
+            'menu-item-object'    => 'page',
+            'menu-item-object-id' => $terms_page_id,
+            'menu-item-type'      => 'post_type',
+            'menu-item-status'    => 'publish',
+        ) );
+
+        // Add Privacy Policy to footer menu
+        wp_update_nav_menu_item( $footer_menu_id, 0, array(
+            'menu-item-title'     => 'Privacy Policy',
+            'menu-item-object'    => 'page',
+            'menu-item-object-id' => $privacy_page_id,
+            'menu-item-type'      => 'post_type',
+            'menu-item-status'    => 'publish',
+        ) );
+
+        return true;
+    }
+
+    return false;
 }
 
 // Admin notice after activation
@@ -666,17 +738,29 @@ function ah_ho_legal_pages_admin_notice() {
     if ( $created_data ) {
         ?>
         <div class="notice notice-success is-dismissible">
-            <p><strong>Legal Pages Created Successfully!</strong></p>
+            <p><strong>Legal Pages Setup Complete! 🎉</strong></p>
             <ul>
                 <li>✅ Terms and Conditions: <a href="<?php echo get_permalink( $created_data['terms_page_id'] ); ?>" target="_blank">View Page</a> | <a href="<?php echo get_edit_post_link( $created_data['terms_page_id'] ); ?>">Edit</a></li>
                 <li>✅ Privacy Policy: <a href="<?php echo get_permalink( $created_data['privacy_page_id'] ); ?>" target="_blank">View Page</a> | <a href="<?php echo get_edit_post_link( $created_data['privacy_page_id'] ); ?>">Edit</a></li>
+                <?php if ( isset( $created_data['footer_menu_updated'] ) && $created_data['footer_menu_updated'] ) : ?>
+                    <li>✅ Footer menu updated with legal page links</li>
+                <?php endif; ?>
+            </ul>
+            <p><strong>Auto-Configuration Complete:</strong></p>
+            <ul>
+                <li>✅ Both pages published and live</li>
+                <li>✅ WooCommerce Terms page configured</li>
+                <li>✅ WordPress Privacy page configured</li>
+                <?php if ( isset( $created_data['footer_menu_updated'] ) && $created_data['footer_menu_updated'] ) : ?>
+                    <li>✅ Footer menu updated automatically</li>
+                <?php else : ?>
+                    <li>⚠️ Footer menu: Please add pages manually (Appearance → Menus)</li>
+                <?php endif; ?>
             </ul>
             <p><strong>Next Steps:</strong></p>
             <ol>
                 <li>Review both pages to ensure accuracy</li>
-                <li>Add links to footer menu (Appearance → Menus)</li>
-                <li>WooCommerce Terms page has been auto-configured</li>
-                <li>WordPress Privacy page has been auto-configured</li>
+                <li>Visit your website footer to verify menu links appear</li>
                 <li><strong>You can now deactivate and delete this plugin</strong></li>
             </ol>
         </div>
