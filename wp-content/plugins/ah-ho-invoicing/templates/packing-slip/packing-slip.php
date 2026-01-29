@@ -91,7 +91,7 @@ echo AH_HO_Packing_Slip::format_customer_notes($order);
             $quantity = $item->get_quantity();
             $total_items += $quantity;
 
-            $item_weight = $product ? ($product->get_weight() * $quantity) : 0;
+            $item_weight = $product ? ((float) $product->get_weight() * $quantity) : 0;
             $total_weight += $item_weight;
         ?>
             <tr style="border-bottom: 1px solid #ddd;">

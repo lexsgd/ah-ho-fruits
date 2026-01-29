@@ -153,7 +153,7 @@ foreach ($orders_data as $index => $data):
                     $product = $item->get_product();
                     $quantity = $item->get_quantity();
                     $order_items += $quantity;
-                    $item_weight = $product ? ($product->get_weight() * $quantity) : 0;
+                    $item_weight = $product ? ((float) $product->get_weight() * $quantity) : 0;
                     $order_weight += $item_weight;
                 ?>
                     <tr style="font-size: 11px;">
