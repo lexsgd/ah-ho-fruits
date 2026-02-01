@@ -12,6 +12,40 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Debug: Show all registered payment gateway IDs in admin
+ * Remove this after finding the correct PayNow gateway ID
+ */
+add_action('admin_notices', 'ah_ho_debug_payment_gateways');
+
+function ah_ho_debug_payment_gateways() {
+    // Only show on WooCommerce settings page for admins
+    if (!current_user_can('manage_woocommerce')) {
+        return;
+    }
+
+    $screen = get_current_screen();
+    if (!$screen || strpos($screen->id, 'woocommerce') === false) {
+        return;
+    }
+
+    if (!function_exists('WC') || !WC()->payment_gateways()) {
+        return;
+    }
+
+    $gateways = WC()->payment_gateways()->payment_gateways();
+    $gateway_list = [];
+
+    foreach ($gateways as $gateway) {
+        $status = $gateway->enabled === 'yes' ? '✓' : '✗';
+        $gateway_list[] = sprintf('%s %s (%s)', $status, $gateway->get_title(), $gateway->id);
+    }
+
+    echo '<div class="notice notice-info"><p><strong>Payment Gateway IDs (Debug):</strong><br>';
+    echo implode('<br>', $gateway_list);
+    echo '</p></div>';
+}
+
+/**
  * Set PayNow as the default payment method
  *
  * Common PayNow gateway IDs:
