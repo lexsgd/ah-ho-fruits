@@ -355,4 +355,81 @@ class AH_HO_Delivery_Date_Helper {
 
         return $samples;
     }
+
+    /**
+     * Check if any delivery date meta fields exist
+     *
+     * @return bool True if delivery date fields are found
+     */
+    public static function has_delivery_date_fields() {
+        $stats = self::get_meta_key_stats();
+        return !empty($stats);
+    }
+
+    /**
+     * Query orders by ORDER DATE (date_created) - fallback when no delivery date plugin
+     *
+     * @param string $order_date Date in Y-m-d format
+     * @param array $statuses Order statuses to include
+     * @return array Order IDs
+     */
+    public static function get_orders_by_order_date($order_date, $statuses = array('wc-processing')) {
+        // Normalize the input date
+        $normalized_date = self::normalize_date($order_date, 'Y-m-d');
+        if (!$normalized_date) {
+            return array();
+        }
+
+        // Calculate date range (full day)
+        $date_start = $normalized_date . ' 00:00:00';
+        $date_end = $normalized_date . ' 23:59:59';
+
+        // Query orders by date_created
+        $args = array(
+            'status'       => $statuses,
+            'limit'        => -1,
+            'date_created' => $date_start . '...' . $date_end,
+            'return'       => 'ids',
+        );
+
+        return wc_get_orders($args);
+    }
+
+    /**
+     * Smart query: tries delivery date first, falls back to order date
+     *
+     * @param string $date Date in Y-m-d format
+     * @param array $statuses Order statuses to include
+     * @param bool $use_order_date_fallback Whether to fallback to order date
+     * @return array ['order_ids' => array, 'date_type' => 'delivery'|'order']
+     */
+    public static function get_orders_by_date_smart($date, $statuses = array('wc-processing'), $use_order_date_fallback = true) {
+        // First check if we have delivery date fields
+        $has_delivery_fields = self::has_delivery_date_fields();
+
+        if ($has_delivery_fields) {
+            // Try delivery date first
+            $order_ids = self::get_orders_by_delivery_date($date, $statuses);
+            if (!empty($order_ids)) {
+                return array(
+                    'order_ids' => $order_ids,
+                    'date_type' => 'delivery',
+                );
+            }
+        }
+
+        // Fallback to order date
+        if ($use_order_date_fallback) {
+            $order_ids = self::get_orders_by_order_date($date, $statuses);
+            return array(
+                'order_ids' => $order_ids,
+                'date_type' => 'order',
+            );
+        }
+
+        return array(
+            'order_ids' => array(),
+            'date_type' => null,
+        );
+    }
 }

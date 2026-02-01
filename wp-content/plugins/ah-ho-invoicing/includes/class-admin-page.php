@@ -56,7 +56,7 @@ class AH_HO_Admin_Page {
             <div class="card">
                 <h2><?php _e('Generate Consolidated Packing Slip', 'ah-ho-invoicing'); ?></h2>
                 <p class="description">
-                    <?php _e('Generate a single packing slip for multiple orders, sorted by delivery date and postal code. Perfect for warehouse batch preparation.', 'ah-ho-invoicing'); ?>
+                    <?php _e('Generate a single packing slip for multiple orders, sorted by date and postal code. Perfect for warehouse batch preparation.', 'ah-ho-invoicing'); ?>
                 </p>
 
                 <form method="post" id="ah-ho-consolidated-form">
@@ -65,16 +65,16 @@ class AH_HO_Admin_Page {
                     <table class="form-table">
                         <tr>
                             <th scope="row">
-                                <label for="delivery_date"><?php _e('Delivery Date', 'ah-ho-invoicing'); ?></label>
+                                <label for="delivery_date"><?php _e('Order Date', 'ah-ho-invoicing'); ?></label>
                             </th>
                             <td>
                                 <input type="date"
                                        id="delivery_date"
                                        name="delivery_date"
-                                       value="<?php echo esc_attr(date('Y-m-d', strtotime('+1 day'))); ?>"
+                                       value="<?php echo esc_attr(date('Y-m-d')); ?>"
                                        required>
                                 <p class="description">
-                                    <?php _e('Generate packing slip for all orders scheduled for this delivery date.', 'ah-ho-invoicing'); ?>
+                                    <?php _e('Generate packing slip for all orders placed on this date. (Uses delivery date if available, otherwise order date)', 'ah-ho-invoicing'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -99,12 +99,12 @@ class AH_HO_Admin_Page {
                             </th>
                             <td>
                                 <select id="sort_by" name="sort_by">
-                                    <option value="date_postal" selected><?php _e('Delivery Date → Postal Code', 'ah-ho-invoicing'); ?></option>
-                                    <option value="postal_date"><?php _e('Postal Code → Delivery Date', 'ah-ho-invoicing'); ?></option>
+                                    <option value="date_postal" selected><?php _e('Date → Postal Code', 'ah-ho-invoicing'); ?></option>
+                                    <option value="postal_date"><?php _e('Postal Code → Date', 'ah-ho-invoicing'); ?></option>
                                     <option value="order_id"><?php _e('Order Number', 'ah-ho-invoicing'); ?></option>
                                 </select>
                                 <p class="description">
-                                    <?php _e('Recommended: Delivery Date → Postal Code for route optimization.', 'ah-ho-invoicing'); ?>
+                                    <?php _e('Recommended: Date → Postal Code for route optimization.', 'ah-ho-invoicing'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -160,7 +160,7 @@ class AH_HO_Admin_Page {
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="bulk_delivery_date"><?php _e('Delivery Date (Optional)', 'ah-ho-invoicing'); ?></label>
+                                <label for="bulk_delivery_date"><?php _e('Order Date (Optional)', 'ah-ho-invoicing'); ?></label>
                             </th>
                             <td>
                                 <input type="date"
@@ -168,7 +168,7 @@ class AH_HO_Admin_Page {
                                        name="bulk_delivery_date"
                                        value="">
                                 <p class="description">
-                                    <?php _e('Leave empty to include all orders with selected status.', 'ah-ho-invoicing'); ?>
+                                    <?php _e('Leave empty to include all orders with selected status. (Uses delivery date if available, otherwise order date)', 'ah-ho-invoicing'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -390,7 +390,7 @@ class AH_HO_Admin_Page {
                 <?php if (empty($meta_key_stats)): ?>
                 <tr>
                     <td colspan="3">
-                        <em><?php _e('No delivery date meta fields detected on any orders. If you are using a delivery date plugin, please check that it is saving delivery dates to order meta.', 'ah-ho-invoicing'); ?></em>
+                        <span style="color: #0073aa;">✓ <?php _e('Using order date for filtering (no delivery date plugin detected). This works perfectly fine!', 'ah-ho-invoicing'); ?></span>
                     </td>
                 </tr>
                 <?php else: ?>
@@ -434,27 +434,13 @@ class AH_HO_Admin_Page {
         $order_statuses = isset($_POST['order_status']) ? array_map('sanitize_text_field', $_POST['order_status']) : array('wc-processing');
         $sort_by = sanitize_text_field($_POST['sort_by']);
 
-        // Query orders by delivery date and status using helper (auto-detects meta key)
-        $order_ids = AH_HO_Delivery_Date_Helper::get_orders_by_delivery_date($delivery_date, $order_statuses);
+        // Query orders using smart method (tries delivery date, falls back to order date)
+        $result = AH_HO_Delivery_Date_Helper::get_orders_by_date_smart($delivery_date, $order_statuses, true);
+        $order_ids = $result['order_ids'];
+        $date_type = $result['date_type'];
 
         if (empty($order_ids)) {
-            // Provide helpful debug info
-            $detected_key = AH_HO_Delivery_Date_Helper::get_meta_key();
-            $stats = AH_HO_Delivery_Date_Helper::get_meta_key_stats();
-
-            $error_msg = __('No orders found for this delivery date and status.', 'ah-ho-invoicing');
-
-            if (empty($stats)) {
-                $error_msg .= ' ' . __('No delivery date meta fields detected on any orders. Make sure your delivery date plugin is saving dates to orders.', 'ah-ho-invoicing');
-            } else {
-                $error_msg .= sprintf(
-                    ' ' . __('Detected meta key: %s. Found %d orders with delivery dates.', 'ah-ho-invoicing'),
-                    $detected_key,
-                    array_sum($stats)
-                );
-            }
-
-            wp_send_json_error($error_msg);
+            wp_send_json_error(__('No orders found for this date and status.', 'ah-ho-invoicing'));
         }
 
         // Generate consolidated packing slip
@@ -495,11 +481,12 @@ class AH_HO_Admin_Page {
         $delivery_date = isset($_POST['delivery_date']) ? sanitize_text_field($_POST['delivery_date']) : '';
         $document_type = sanitize_text_field($_POST['document_type']);
 
-        // Query orders - use helper if delivery date specified
+        // Query orders - use smart method if date specified
         if (!empty($delivery_date)) {
-            $order_ids = AH_HO_Delivery_Date_Helper::get_orders_by_delivery_date($delivery_date, $order_statuses);
+            $result = AH_HO_Delivery_Date_Helper::get_orders_by_date_smart($delivery_date, $order_statuses, true);
+            $order_ids = $result['order_ids'];
         } else {
-            // No delivery date filter, just get by status
+            // No date filter, just get by status
             $args = array(
                 'status' => $order_statuses,
                 'limit'  => -1,
@@ -509,23 +496,7 @@ class AH_HO_Admin_Page {
         }
 
         if (empty($order_ids)) {
-            $error_msg = __('No orders found matching your criteria.', 'ah-ho-invoicing');
-
-            if (!empty($delivery_date)) {
-                $detected_key = AH_HO_Delivery_Date_Helper::get_meta_key();
-                $stats = AH_HO_Delivery_Date_Helper::get_meta_key_stats();
-
-                if (empty($stats)) {
-                    $error_msg .= ' ' . __('No delivery date meta fields detected on any orders.', 'ah-ho-invoicing');
-                } else {
-                    $error_msg .= sprintf(
-                        ' ' . __('Detected meta key: %s.', 'ah-ho-invoicing'),
-                        $detected_key
-                    );
-                }
-            }
-
-            wp_send_json_error($error_msg);
+            wp_send_json_error(__('No orders found matching your criteria.', 'ah-ho-invoicing'));
         }
 
         // Create ZIP file
