@@ -3,7 +3,7 @@
  * Plugin Name: Ah Ho Fruits Custom
  * Plugin URI: https://heymag.app
  * Description: Custom functionality for Ah Ho Fruits - WooCommerce custom order statuses
- * Version: 1.3.0
+ * Version: 1.2.3
  * Author: Ah Ho Fruits
  * Author URI: https://heymag.app
  * Text Domain: ah-ho-custom
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AH_HO_CUSTOM_VERSION', '1.3.0');
+define('AH_HO_CUSTOM_VERSION', '1.2.3');
 define('AH_HO_CUSTOM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AH_HO_CUSTOM_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -63,12 +63,13 @@ function ah_ho_custom_init() {
     // Include salesperson functionality
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-roles.php';
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-settings.php';
-    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-attribution.php';
-    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-query-filters.php';
-    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-dashboard.php';
+    // TEMPORARILY DISABLED - causing critical error in wp-admin
+    // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-attribution.php';
+    // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-query-filters.php';
+    // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-dashboard.php';
 
     // Include wholesale pricing for B2B orders
-    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/wholesale-pricing.php';
+    // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/wholesale-pricing.php';
 }
 add_action('plugins_loaded', 'ah_ho_custom_init');
 
