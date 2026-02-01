@@ -135,7 +135,7 @@ class AH_HO_Admin_Page {
             <div class="card" style="margin-top: 20px;">
                 <h2><?php _e('Bulk Download PDFs', 'ah-ho-invoicing'); ?></h2>
                 <p class="description">
-                    <?php _e('Download all invoices, packing slips, or delivery orders for a date range.', 'ah-ho-invoicing'); ?>
+                    <?php _e('Download individual PDFs for all orders matching your criteria, packaged in a ZIP file.', 'ah-ho-invoicing'); ?>
                 </p>
 
                 <form method="post" id="ah-ho-bulk-download-form">
@@ -144,20 +144,32 @@ class AH_HO_Admin_Page {
                     <table class="form-table">
                         <tr>
                             <th scope="row">
-                                <label for="bulk_start_date"><?php _e('Date Range', 'ah-ho-invoicing'); ?></label>
+                                <label for="bulk_order_status"><?php _e('Order Status', 'ah-ho-invoicing'); ?></label>
+                            </th>
+                            <td>
+                                <select id="bulk_order_status" name="bulk_order_status[]" multiple style="width: 300px; height: 100px;">
+                                    <option value="wc-processing" selected><?php _e('Processing', 'ah-ho-invoicing'); ?></option>
+                                    <option value="wc-on-hold"><?php _e('On Hold', 'ah-ho-invoicing'); ?></option>
+                                    <option value="wc-out-for-delivery"><?php _e('Out for Delivery', 'ah-ho-invoicing'); ?></option>
+                                    <option value="wc-completed"><?php _e('Completed', 'ah-ho-invoicing'); ?></option>
+                                </select>
+                                <p class="description">
+                                    <?php _e('Hold Ctrl/Cmd to select multiple statuses.', 'ah-ho-invoicing'); ?>
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label for="bulk_delivery_date"><?php _e('Delivery Date (Optional)', 'ah-ho-invoicing'); ?></label>
                             </th>
                             <td>
                                 <input type="date"
-                                       id="bulk_start_date"
-                                       name="bulk_start_date"
-                                       value="<?php echo esc_attr(date('Y-m-d', strtotime('-7 days'))); ?>"
-                                       required>
-                                <span> <?php _e('to', 'ah-ho-invoicing'); ?> </span>
-                                <input type="date"
-                                       id="bulk_end_date"
-                                       name="bulk_end_date"
-                                       value="<?php echo esc_attr(date('Y-m-d')); ?>"
-                                       required>
+                                       id="bulk_delivery_date"
+                                       name="bulk_delivery_date"
+                                       value="">
+                                <p class="description">
+                                    <?php _e('Leave empty to include all orders with selected status.', 'ah-ho-invoicing'); ?>
+                                </p>
                             </td>
                         </tr>
                         <tr>
@@ -166,25 +178,38 @@ class AH_HO_Admin_Page {
                             </th>
                             <td>
                                 <select id="bulk_document_type" name="bulk_document_type">
-                                    <option value="invoice"><?php _e('Invoices', 'ah-ho-invoicing'); ?></option>
-                                    <option value="packing-slip"><?php _e('Packing Slips', 'ah-ho-invoicing'); ?></option>
                                     <option value="delivery-order"><?php _e('Delivery Orders', 'ah-ho-invoicing'); ?></option>
+                                    <option value="packing-slip"><?php _e('Packing Slips', 'ah-ho-invoicing'); ?></option>
+                                    <option value="invoice"><?php _e('Invoices', 'ah-ho-invoicing'); ?></option>
+                                    <option value="all"><?php _e('All Documents (Delivery + Packing + Invoice)', 'ah-ho-invoicing'); ?></option>
                                 </select>
                             </td>
                         </tr>
                     </table>
 
                     <p class="submit">
-                        <button type="submit" class="button button-secondary">
+                        <button type="submit" class="button button-primary button-large">
                             📦 <?php _e('Download All PDFs (ZIP)', 'ah-ho-invoicing'); ?>
                         </button>
                         <span class="spinner" style="float: none;"></span>
                     </p>
                 </form>
 
+                <div id="ah-ho-bulk-result" style="display: none; margin-top: 20px;">
+                    <div class="notice notice-success">
+                        <p>
+                            <strong><?php _e('ZIP file generated successfully!', 'ah-ho-invoicing'); ?></strong><br>
+                            <a href="#" id="ah-ho-bulk-download-link" class="button button-primary" target="_blank">
+                                📥 <?php _e('Download ZIP', 'ah-ho-invoicing'); ?>
+                            </a>
+                            <span id="ah-ho-bulk-order-count"></span>
+                        </p>
+                    </div>
+                </div>
+
                 <p class="description">
                     <strong><?php _e('Note:', 'ah-ho-invoicing'); ?></strong>
-                    <?php _e('PDFs will be generated on-demand and packaged into a ZIP file for download.', 'ah-ho-invoicing'); ?>
+                    <?php _e('PDFs will be generated on-demand and packaged into a ZIP file. This may take a moment for large orders.', 'ah-ho-invoicing'); ?>
                 </p>
             </div>
 
@@ -250,7 +275,38 @@ class AH_HO_Admin_Page {
             // Bulk download form
             $('#ah-ho-bulk-download-form').on('submit', function(e) {
                 e.preventDefault();
-                alert('Bulk ZIP download feature coming in v1.4. For now, use consolidated packing slip or download individual PDFs from order pages.');
+
+                var $form = $(this);
+                var $button = $form.find('button[type="submit"]');
+                var $spinner = $form.find('.spinner');
+                var $result = $('#ah-ho-bulk-result');
+
+                $button.prop('disabled', true).text('⏳ Generating PDFs...');
+                $spinner.addClass('is-active');
+                $result.hide();
+
+                $.post(ajaxurl, {
+                    action: 'ah_ho_bulk_download_pdfs',
+                    order_status: $('#bulk_order_status').val(),
+                    delivery_date: $('#bulk_delivery_date').val(),
+                    document_type: $('#bulk_document_type').val(),
+                    _wpnonce: $('#ah_ho_bulk_nonce').val()
+                }, function(response) {
+                    $button.prop('disabled', false).html('📦 <?php _e('Download All PDFs (ZIP)', 'ah-ho-invoicing'); ?>');
+                    $spinner.removeClass('is-active');
+
+                    if (response.success) {
+                        $('#ah-ho-bulk-download-link').attr('href', response.data.download_url);
+                        $('#ah-ho-bulk-order-count').text('(' + response.data.order_count + ' orders, ' + response.data.pdf_count + ' PDFs)');
+                        $result.show();
+                    } else {
+                        alert('Error: ' + response.data);
+                    }
+                }).fail(function() {
+                    $button.prop('disabled', false).html('📦 <?php _e('Download All PDFs (ZIP)', 'ah-ho-invoicing'); ?>');
+                    $spinner.removeClass('is-active');
+                    alert('Request failed. Please try again.');
+                });
             });
         });
         </script>
@@ -367,7 +423,166 @@ class AH_HO_Admin_Page {
             'order_count'  => count($order_ids),
         ));
     }
+
+    /**
+     * AJAX handler for bulk PDF download (ZIP)
+     */
+    public static function ajax_bulk_download() {
+        // Increase limits for bulk operations
+        ini_set('memory_limit', '512M');
+        set_time_limit(300); // 5 minutes max
+
+        // Check permissions
+        if (!current_user_can('manage_woocommerce')) {
+            wp_send_json_error('Unauthorized');
+        }
+
+        // Verify nonce
+        if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'ah_ho_bulk_download')) {
+            wp_send_json_error('Security check failed');
+        }
+
+        $order_statuses = isset($_POST['order_status']) ? array_map('sanitize_text_field', $_POST['order_status']) : array('wc-processing');
+        $delivery_date = isset($_POST['delivery_date']) ? sanitize_text_field($_POST['delivery_date']) : '';
+        $document_type = sanitize_text_field($_POST['document_type']);
+
+        // Build query args
+        $args = array(
+            'status' => $order_statuses,
+            'limit'  => -1,
+            'return' => 'ids',
+        );
+
+        // Add delivery date filter if specified
+        if (!empty($delivery_date)) {
+            $args['meta_key'] = '_delivery_date';
+            $args['meta_value'] = $delivery_date;
+        }
+
+        $order_ids = wc_get_orders($args);
+
+        if (empty($order_ids)) {
+            wp_send_json_error(__('No orders found matching your criteria.', 'ah-ho-invoicing'));
+        }
+
+        // Create ZIP file
+        $zip_filename = 'bulk-pdfs-' . date('Y-m-d-His') . '.zip';
+        $zip_path = AH_HO_INVOICING_CACHE_DIR . $zip_filename;
+
+        $zip = new ZipArchive();
+        if ($zip->open($zip_path, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            wp_send_json_error(__('Failed to create ZIP file.', 'ah-ho-invoicing'));
+        }
+
+        $pdf_count = 0;
+        $errors = array();
+
+        foreach ($order_ids as $order_id) {
+            $order = wc_get_order($order_id);
+            if (!$order) {
+                continue;
+            }
+
+            // Get order info for filename
+            $order_number = $order->get_order_number();
+            $customer_name = $order->get_shipping_first_name() ?: $order->get_billing_first_name();
+            $customer_name = sanitize_file_name($customer_name);
+
+            try {
+                // Generate requested document types
+                $docs_to_generate = array();
+
+                if ($document_type === 'all') {
+                    $docs_to_generate = array('delivery-order', 'packing-slip', 'invoice');
+                } else {
+                    $docs_to_generate = array($document_type);
+                }
+
+                foreach ($docs_to_generate as $doc_type) {
+                    $pdf_path = null;
+                    $pdf_name = '';
+
+                    switch ($doc_type) {
+                        case 'delivery-order':
+                            $pdf_path = AH_HO_Delivery_Order::generate($order_id);
+                            $pdf_name = "delivery-order-{$order_number}-{$customer_name}.pdf";
+                            break;
+
+                        case 'packing-slip':
+                            $pdf_path = AH_HO_Packing_Slip::generate($order_id);
+                            $pdf_name = "packing-slip-{$order_number}-{$customer_name}.pdf";
+                            break;
+
+                        case 'invoice':
+                            if (class_exists('AH_HO_Invoice')) {
+                                $pdf_path = AH_HO_Invoice::generate($order_id);
+                                $pdf_name = "invoice-{$order_number}-{$customer_name}.pdf";
+                            }
+                            break;
+                    }
+
+                    if ($pdf_path && file_exists($pdf_path)) {
+                        $zip->addFile($pdf_path, $pdf_name);
+                        $pdf_count++;
+                    }
+                }
+            } catch (Exception $e) {
+                $errors[] = "Order #{$order_number}: " . $e->getMessage();
+            }
+
+            // Free memory between orders
+            unset($order);
+            gc_collect_cycles();
+        }
+
+        $zip->close();
+
+        if ($pdf_count === 0) {
+            unlink($zip_path);
+            wp_send_json_error(__('No PDFs could be generated. Please check if the document templates exist.', 'ah-ho-invoicing'));
+        }
+
+        // Create download URL with nonce
+        $download_url = admin_url('admin-ajax.php?action=ah_ho_download_bulk_zip&path=' . urlencode($zip_filename) . '&_wpnonce=' . wp_create_nonce('ah_ho_download_bulk_zip'));
+
+        wp_send_json_success(array(
+            'download_url' => $download_url,
+            'order_count'  => count($order_ids),
+            'pdf_count'    => $pdf_count,
+            'errors'       => $errors,
+        ));
+    }
 }
+
+/**
+ * AJAX handler for downloading bulk ZIP
+ */
+add_action('wp_ajax_ah_ho_download_bulk_zip', function() {
+    if (!current_user_can('manage_woocommerce')) {
+        wp_die('Unauthorized');
+    }
+
+    if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'ah_ho_download_bulk_zip')) {
+        wp_die('Security check failed');
+    }
+
+    $filename = sanitize_file_name($_GET['path']);
+    $zip_path = AH_HO_INVOICING_CACHE_DIR . $filename;
+
+    if (!file_exists($zip_path)) {
+        wp_die('ZIP file not found. It may have expired. Please generate again.');
+    }
+
+    // Download ZIP
+    header('Content-Type: application/zip');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Content-Length: ' . filesize($zip_path));
+    readfile($zip_path);
+
+    // Delete ZIP after download (cleanup)
+    unlink($zip_path);
+    exit;
+});
 
 /**
  * AJAX handler for downloading consolidated PDF
