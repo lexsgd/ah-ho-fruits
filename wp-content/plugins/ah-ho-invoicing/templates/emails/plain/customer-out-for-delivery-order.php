@@ -33,10 +33,10 @@ echo __('Contact Number:', 'ah-ho-invoicing') . "\n";
 echo esc_html($order->get_billing_phone());
 echo "\n\n";
 
-$delivery_date = get_post_meta($order->get_id(), '_delivery_date', true);
+$delivery_date = AH_HO_Delivery_Date_Helper::get_delivery_date($order, 'l, d F Y');
 if (!empty($delivery_date)) {
     echo __('Expected Delivery:', 'ah-ho-invoicing') . "\n";
-    echo esc_html(date('l, d F Y', strtotime($delivery_date)));
+    echo esc_html($delivery_date);
     echo "\n\n";
 }
 

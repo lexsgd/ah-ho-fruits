@@ -345,6 +345,10 @@ class AH_HO_Admin_Page {
         }
         $cache_size_mb = round($cache_size / 1024 / 1024, 2);
 
+        // Get delivery date meta key info
+        $detected_meta_key = AH_HO_Delivery_Date_Helper::get_meta_key();
+        $meta_key_stats = AH_HO_Delivery_Date_Helper::get_meta_key_stats();
+
         ?>
         <table class="widefat" style="margin-top: 10px;">
             <thead>
@@ -372,6 +376,43 @@ class AH_HO_Admin_Page {
                 </tr>
             </tbody>
         </table>
+
+        <h3 style="margin-top: 20px;"><?php _e('Delivery Date Detection', 'ah-ho-invoicing'); ?></h3>
+        <table class="widefat">
+            <thead>
+                <tr>
+                    <th><?php _e('Meta Key', 'ah-ho-invoicing'); ?></th>
+                    <th><?php _e('Orders with Data', 'ah-ho-invoicing'); ?></th>
+                    <th><?php _e('Status', 'ah-ho-invoicing'); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($meta_key_stats)): ?>
+                <tr>
+                    <td colspan="3">
+                        <em><?php _e('No delivery date meta fields detected on any orders. If you are using a delivery date plugin, please check that it is saving delivery dates to order meta.', 'ah-ho-invoicing'); ?></em>
+                    </td>
+                </tr>
+                <?php else: ?>
+                    <?php foreach ($meta_key_stats as $meta_key => $count): ?>
+                    <tr>
+                        <td><code><?php echo esc_html($meta_key); ?></code></td>
+                        <td><?php echo esc_html(number_format($count)); ?></td>
+                        <td>
+                            <?php if ($meta_key === $detected_meta_key): ?>
+                                <span style="color: green; font-weight: bold;">✓ <?php _e('Active', 'ah-ho-invoicing'); ?></span>
+                            <?php else: ?>
+                                <span style="color: #999;"><?php _e('Available', 'ah-ho-invoicing'); ?></span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+        <p class="description">
+            <?php _e('The plugin automatically detects which delivery date meta key is in use. If multiple are found, the most common one is used.', 'ah-ho-invoicing'); ?>
+        </p>
         <?php
     }
 
@@ -393,19 +434,27 @@ class AH_HO_Admin_Page {
         $order_statuses = isset($_POST['order_status']) ? array_map('sanitize_text_field', $_POST['order_status']) : array('wc-processing');
         $sort_by = sanitize_text_field($_POST['sort_by']);
 
-        // Query orders by delivery date and status
-        $args = array(
-            'status'      => $order_statuses,
-            'limit'       => -1,
-            'meta_key'    => '_delivery_date',
-            'meta_value'  => $delivery_date,
-            'return'      => 'ids',
-        );
-
-        $order_ids = wc_get_orders($args);
+        // Query orders by delivery date and status using helper (auto-detects meta key)
+        $order_ids = AH_HO_Delivery_Date_Helper::get_orders_by_delivery_date($delivery_date, $order_statuses);
 
         if (empty($order_ids)) {
-            wp_send_json_error(__('No orders found for this delivery date and status.', 'ah-ho-invoicing'));
+            // Provide helpful debug info
+            $detected_key = AH_HO_Delivery_Date_Helper::get_meta_key();
+            $stats = AH_HO_Delivery_Date_Helper::get_meta_key_stats();
+
+            $error_msg = __('No orders found for this delivery date and status.', 'ah-ho-invoicing');
+
+            if (empty($stats)) {
+                $error_msg .= ' ' . __('No delivery date meta fields detected on any orders. Make sure your delivery date plugin is saving dates to orders.', 'ah-ho-invoicing');
+            } else {
+                $error_msg .= sprintf(
+                    ' ' . __('Detected meta key: %s. Found %d orders with delivery dates.', 'ah-ho-invoicing'),
+                    $detected_key,
+                    array_sum($stats)
+                );
+            }
+
+            wp_send_json_error($error_msg);
         }
 
         // Generate consolidated packing slip
@@ -446,23 +495,37 @@ class AH_HO_Admin_Page {
         $delivery_date = isset($_POST['delivery_date']) ? sanitize_text_field($_POST['delivery_date']) : '';
         $document_type = sanitize_text_field($_POST['document_type']);
 
-        // Build query args
-        $args = array(
-            'status' => $order_statuses,
-            'limit'  => -1,
-            'return' => 'ids',
-        );
-
-        // Add delivery date filter if specified
+        // Query orders - use helper if delivery date specified
         if (!empty($delivery_date)) {
-            $args['meta_key'] = '_delivery_date';
-            $args['meta_value'] = $delivery_date;
+            $order_ids = AH_HO_Delivery_Date_Helper::get_orders_by_delivery_date($delivery_date, $order_statuses);
+        } else {
+            // No delivery date filter, just get by status
+            $args = array(
+                'status' => $order_statuses,
+                'limit'  => -1,
+                'return' => 'ids',
+            );
+            $order_ids = wc_get_orders($args);
         }
 
-        $order_ids = wc_get_orders($args);
-
         if (empty($order_ids)) {
-            wp_send_json_error(__('No orders found matching your criteria.', 'ah-ho-invoicing'));
+            $error_msg = __('No orders found matching your criteria.', 'ah-ho-invoicing');
+
+            if (!empty($delivery_date)) {
+                $detected_key = AH_HO_Delivery_Date_Helper::get_meta_key();
+                $stats = AH_HO_Delivery_Date_Helper::get_meta_key_stats();
+
+                if (empty($stats)) {
+                    $error_msg .= ' ' . __('No delivery date meta fields detected on any orders.', 'ah-ho-invoicing');
+                } else {
+                    $error_msg .= sprintf(
+                        ' ' . __('Detected meta key: %s.', 'ah-ho-invoicing'),
+                        $detected_key
+                    );
+                }
+            }
+
+            wp_send_json_error($error_msg);
         }
 
         // Create ZIP file

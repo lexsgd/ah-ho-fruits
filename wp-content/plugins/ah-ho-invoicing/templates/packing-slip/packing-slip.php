@@ -40,8 +40,8 @@ $document_title = 'PACKING SLIP';
             <strong style="font-size: 14px; display: block; margin-bottom: 5px;">Order #<?php echo esc_html($order->get_order_number()); ?></strong>
             <strong>Order Date:</strong> <?php echo esc_html($order->get_date_created()->format('d M Y')); ?><br>
             <strong>Delivery Date:</strong> <?php
-                $delivery_date = get_post_meta($order->get_id(), '_delivery_date', true);
-                echo esc_html($delivery_date ? date('d M Y', strtotime($delivery_date)) : 'Not specified');
+                $delivery_date = AH_HO_Delivery_Date_Helper::get_delivery_date($order, 'd M Y');
+                echo esc_html($delivery_date ?: 'Not specified');
             ?><br>
             <strong>Weight:</strong> <?php echo esc_html(AH_HO_Packing_Slip::get_order_weight($order)); ?> kg
         </td>

@@ -27,8 +27,8 @@ $document_title = 'DELIVERY ORDER';
 $summary = AH_HO_Delivery_Order::get_delivery_summary($order);
 $instructions = AH_HO_Delivery_Order::get_delivery_instructions($order);
 
-// Delivery date
-$delivery_date = get_post_meta($order->get_id(), '_delivery_date', true);
+// Delivery date (auto-detect meta key)
+$delivery_date = AH_HO_Delivery_Date_Helper::get_delivery_date($order, 'Y-m-d');
 if (empty($delivery_date)) {
     $delivery_date = $order->get_date_created()->format('Y-m-d');
 }

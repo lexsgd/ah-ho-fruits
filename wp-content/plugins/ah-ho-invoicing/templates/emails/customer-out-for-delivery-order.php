@@ -39,13 +39,13 @@ do_action('woocommerce_email_header', $email_heading, $email); ?>
             </td>
         </tr>
         <?php
-        $delivery_date = get_post_meta($order->get_id(), '_delivery_date', true);
+        $delivery_date = AH_HO_Delivery_Date_Helper::get_delivery_date($order, 'l, d F Y');
         if (!empty($delivery_date)):
         ?>
         <tr>
             <th scope="row" style="text-align:left; background-color: #f8f8f8;"><?php _e('Expected Delivery', 'ah-ho-invoicing'); ?></th>
             <td style="text-align:left;">
-                <strong><?php echo esc_html(date('l, d F Y', strtotime($delivery_date))); ?></strong>
+                <strong><?php echo esc_html($delivery_date); ?></strong>
             </td>
         </tr>
         <?php endif; ?>

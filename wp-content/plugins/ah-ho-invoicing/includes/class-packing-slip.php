@@ -61,8 +61,8 @@ class AH_HO_Packing_Slip {
                 continue;
             }
 
-            // Extract delivery date from order meta
-            $delivery_date = get_post_meta($order_id, '_delivery_date', true);
+            // Extract delivery date from order meta (auto-detect meta key)
+            $delivery_date = AH_HO_Delivery_Date_Helper::get_delivery_date($order, 'Y-m-d');
             if (empty($delivery_date)) {
                 // Fallback to order date if no delivery date set
                 $delivery_date = $order->get_date_created()->format('Y-m-d');
