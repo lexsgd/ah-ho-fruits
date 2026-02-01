@@ -63,8 +63,8 @@ function ah_ho_custom_init() {
     // Include salesperson functionality
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-roles.php';
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-settings.php';
-    // TEMPORARILY DISABLED - causing critical error in wp-admin
-    // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-attribution.php';
+    // TEST 1: Enable attribution only
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-attribution.php';
     // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-query-filters.php';
     // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-dashboard.php';
 
