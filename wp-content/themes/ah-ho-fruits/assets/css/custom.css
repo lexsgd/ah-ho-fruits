@@ -466,3 +466,39 @@
     color: var(--color-white);
     padding: var(--space-md);
 }
+
+/* ========================================
+   WooCommerce Checkout Order Summary Fix
+   ======================================== */
+
+/* Fix oversized product name in order summary */
+.wc-block-components-order-summary-item .wc-block-components-product-name {
+    font-size: 16px !important;
+    line-height: 1.4 !important;
+    font-weight: 600 !important;
+}
+
+/* Fix product metadata/description text */
+.wc-block-components-order-summary-item .wc-block-components-product-metadata__description {
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+}
+
+/* Fix product price in order summary */
+.wc-block-components-order-summary-item .wc-block-components-product-price {
+    font-size: 14px !important;
+}
+
+/* Ensure consistent spacing in order summary items */
+.wc-block-components-order-summary-item__description {
+    gap: 4px;
+}
+
+/* Fix H3 inside product metadata description */
+.wc-block-components-product-metadata__description h3,
+.wc-block-components-product-metadata__description h3 b {
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+    font-weight: 600 !important;
+}

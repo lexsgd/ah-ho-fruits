@@ -75,6 +75,19 @@ function ah_ho_register_settings() {
         'default'           => false,
         'sanitize_callback' => 'rest_sanitize_boolean'
     ));
+
+    // Wholesale Pricing Settings
+    register_setting('ah_ho_salesperson_settings', 'ah_ho_default_wholesale_discount', array(
+        'type'              => 'number',
+        'default'           => 0,
+        'sanitize_callback' => 'absint'
+    ));
+
+    register_setting('ah_ho_salesperson_settings', 'ah_ho_wholesale_fallback', array(
+        'type'              => 'string',
+        'default'           => 'retail',
+        'sanitize_callback' => 'sanitize_text_field'
+    ));
 }
 
 /**
@@ -217,6 +230,64 @@ function ah_ho_render_settings_page() {
                                        <?php checked(get_option('ah_ho_monthly_summary_admin', false)); ?> />
                                 <?php _e('Send monthly summary to admin', 'ah-ho-custom'); ?>
                             </label>
+                        </fieldset>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Wholesale Pricing -->
+            <h2><?php _e('Wholesale Pricing (B2B)', 'ah-ho-custom'); ?></h2>
+            <p class="description"><?php _e('Configure how wholesale prices work for salesperson orders. Set individual wholesale prices on each product\'s edit page.', 'ah-ho-custom'); ?></p>
+            <table class="form-table">
+                <tr>
+                    <th scope="row"><?php _e('Default Wholesale Discount (%)', 'ah-ho-custom'); ?></th>
+                    <td>
+                        <input type="number"
+                               name="ah_ho_default_wholesale_discount"
+                               value="<?php echo esc_attr(get_option('ah_ho_default_wholesale_discount', 0)); ?>"
+                               step="1"
+                               min="0"
+                               max="100"
+                               class="regular-text" />
+                        <p class="description"><?php _e('Default discount off retail for products without a wholesale price set. Set to 0 to require explicit wholesale prices.', 'ah-ho-custom'); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php _e('Fallback Behavior', 'ah-ho-custom'); ?></th>
+                    <td>
+                        <fieldset>
+                            <label>
+                                <input type="radio"
+                                       name="ah_ho_wholesale_fallback"
+                                       value="retail"
+                                       <?php checked(get_option('ah_ho_wholesale_fallback', 'retail'), 'retail'); ?> />
+                                <strong><?php _e('Use Retail Price', 'ah-ho-custom'); ?></strong>
+                            </label>
+                            <p class="description" style="margin-left: 25px;">
+                                <?php _e('If no wholesale price is set, use the regular retail price.', 'ah-ho-custom'); ?>
+                            </p>
+
+                            <label>
+                                <input type="radio"
+                                       name="ah_ho_wholesale_fallback"
+                                       value="discount"
+                                       <?php checked(get_option('ah_ho_wholesale_fallback', 'retail'), 'discount'); ?> />
+                                <strong><?php _e('Apply Default Discount', 'ah-ho-custom'); ?></strong>
+                            </label>
+                            <p class="description" style="margin-left: 25px;">
+                                <?php _e('Apply the default wholesale discount percentage to the retail price.', 'ah-ho-custom'); ?>
+                            </p>
+
+                            <label>
+                                <input type="radio"
+                                       name="ah_ho_wholesale_fallback"
+                                       value="block"
+                                       <?php checked(get_option('ah_ho_wholesale_fallback', 'retail'), 'block'); ?> />
+                                <strong><?php _e('Block Product', 'ah-ho-custom'); ?></strong>
+                            </label>
+                            <p class="description" style="margin-left: 25px;">
+                                <?php _e('Prevent adding products without a wholesale price to salesperson orders.', 'ah-ho-custom'); ?>
+                            </p>
                         </fieldset>
                     </td>
                 </tr>
