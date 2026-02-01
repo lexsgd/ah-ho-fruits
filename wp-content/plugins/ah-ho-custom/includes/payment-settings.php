@@ -12,115 +12,75 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Debug: Show all registered payment gateway IDs in admin
- * Remove this after finding the correct PayNow gateway ID
- */
-add_action('admin_notices', 'ah_ho_debug_payment_gateways');
-
-function ah_ho_debug_payment_gateways() {
-    // Only show on WooCommerce settings page for admins
-    if (!current_user_can('manage_woocommerce')) {
-        return;
-    }
-
-    $screen = get_current_screen();
-    if (!$screen || strpos($screen->id, 'woocommerce') === false) {
-        return;
-    }
-
-    if (!function_exists('WC') || !WC()->payment_gateways()) {
-        return;
-    }
-
-    $gateways = WC()->payment_gateways()->payment_gateways();
-    $gateway_list = [];
-
-    foreach ($gateways as $gateway) {
-        $status = $gateway->enabled === 'yes' ? '✓' : '✗';
-        $gateway_list[] = sprintf('%s %s (%s)', $status, $gateway->get_title(), $gateway->id);
-    }
-
-    echo '<div class="notice notice-info"><p><strong>Payment Gateway IDs (Debug):</strong><br>';
-    echo implode('<br>', $gateway_list);
-    echo '</p></div>';
-}
-
-/**
  * Set PayNow as the default payment method
- *
- * Common PayNow gateway IDs:
- * - stripe_paynow (Payment Plugins for Stripe WooCommerce)
- * - stripe_local_payment_paynow (alternative)
  */
 add_filter('woocommerce_default_gateway', 'ah_ho_set_default_payment_gateway');
 
 function ah_ho_set_default_payment_gateway($default_gateway) {
-    // PayNow gateway ID from Payment Plugins for Stripe
     return 'stripe_paynow';
 }
 
 /**
- * Reorder payment gateways to show PayNow first
+ * Reorder available payment gateways at checkout (frontend)
+ * This filter fires AFTER gateways are filtered for availability
  */
-add_filter('woocommerce_payment_gateways', 'ah_ho_reorder_payment_gateways', 100);
+add_filter('woocommerce_available_payment_gateways', 'ah_ho_reorder_available_gateways', 100);
 
-function ah_ho_reorder_payment_gateways($gateways) {
-    // Define preferred order (PayNow first)
-    $preferred_order = [
-        'stripe_paynow',      // PayNow (Payment Plugins for Stripe)
-        'stripe_cc',          // Credit Card
-        'stripe_googlepay',   // Google Pay
-        'stripe_applepay',    // Apple Pay
-        'stripe_link',        // Link by Stripe
-    ];
-
-    $ordered = [];
-    $remaining = [];
-
-    foreach ($gateways as $gateway) {
-        $gateway_id = is_object($gateway) ? $gateway->id : $gateway;
-        $position = array_search($gateway_id, $preferred_order);
-
-        if ($position !== false) {
-            $ordered[$position] = $gateway;
-        } else {
-            $remaining[] = $gateway;
-        }
+function ah_ho_reorder_available_gateways($gateways) {
+    if (empty($gateways) || !isset($gateways['stripe_paynow'])) {
+        return $gateways;
     }
 
-    // Sort by preferred position
-    ksort($ordered);
+    // Move PayNow to the beginning
+    $paynow = $gateways['stripe_paynow'];
+    unset($gateways['stripe_paynow']);
 
-    // Merge: preferred order first, then remaining
-    return array_merge(array_values($ordered), $remaining);
+    // Rebuild array with PayNow first
+    return array_merge(['stripe_paynow' => $paynow], $gateways);
 }
 
 /**
- * Also set default for WooCommerce Blocks checkout
+ * Set session default for new customers (before checkout loads)
  */
-add_filter('woocommerce_store_api_cart_payment_method', 'ah_ho_blocks_default_payment', 10, 2);
-
-function ah_ho_blocks_default_payment($payment_method, $cart) {
-    // If no payment method set, default to PayNow
-    if (empty($payment_method)) {
-        return 'stripe_paynow';
-    }
-    return $payment_method;
-}
-
-/**
- * Set session default for new customers
- */
-add_action('woocommerce_before_checkout_form', 'ah_ho_set_session_default_payment');
+add_action('woocommerce_before_checkout_form', 'ah_ho_set_session_default_payment', 5);
 
 function ah_ho_set_session_default_payment() {
     if (!WC()->session) {
         return;
     }
 
-    // Only set if no payment method chosen yet
+    // Force PayNow as default for new sessions
     $chosen = WC()->session->get('chosen_payment_method');
-    if (empty($chosen)) {
+    if (empty($chosen) || $chosen === 'stripe') {
         WC()->session->set('chosen_payment_method', 'stripe_paynow');
     }
+}
+
+/**
+ * Also handle WooCommerce Blocks checkout
+ */
+add_action('wp_enqueue_scripts', 'ah_ho_blocks_default_payment_js');
+
+function ah_ho_blocks_default_payment_js() {
+    if (!function_exists('is_checkout') || !is_checkout()) {
+        return;
+    }
+
+    // Inline script to set PayNow as default in Blocks checkout
+    wp_add_inline_script('wc-blocks-checkout', '
+        document.addEventListener("DOMContentLoaded", function() {
+            if (typeof wp !== "undefined" && wp.data) {
+                setTimeout(function() {
+                    const paymentStore = wp.data.select("wc/store/payment");
+                    const currentMethod = paymentStore ? paymentStore.getActivePaymentMethod() : null;
+                    if (!currentMethod || currentMethod === "stripe") {
+                        const dispatch = wp.data.dispatch("wc/store/payment");
+                        if (dispatch && dispatch.setActivePaymentMethod) {
+                            dispatch.setActivePaymentMethod("stripe_paynow");
+                        }
+                    }
+                }, 500);
+            }
+        });
+    ', 'after');
 }
