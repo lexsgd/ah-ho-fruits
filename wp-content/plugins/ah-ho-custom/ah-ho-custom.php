@@ -63,10 +63,10 @@ function ah_ho_custom_init() {
     // Include salesperson functionality
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-roles.php';
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-settings.php';
-    // TEST 2: Enable attribution + query-filters
+    // TEST 3: Enable attribution + dashboard (skip query-filters - BROKEN)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-attribution.php';
-    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-query-filters.php';
-    // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-dashboard.php';
+    // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-query-filters.php'; // BROKEN - HPOS incompatible
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/salesperson-dashboard.php';
 
     // Include wholesale pricing for B2B orders
     // require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/wholesale-pricing.php';
