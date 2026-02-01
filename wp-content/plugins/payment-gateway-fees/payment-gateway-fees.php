@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Payment Gateway Fees
  * Description: Add fees based on selected payment method at checkout
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Ah Ho Fruits
  * Requires Plugins: woocommerce
  */
@@ -57,7 +57,11 @@ class Payment_Gateway_Fees {
             return;
         }
 
-        $cart_total = $cart->get_subtotal();
+        // Calculate total including shipping (subtotal + shipping)
+        $cart_subtotal = $cart->get_subtotal();
+        $shipping_total = $cart->get_shipping_total();
+        $cart_total = $cart_subtotal + $shipping_total;
+
         $fee_amount = 0;
         $fee_type = $fee_config['type'] ?? 'percent';
 
@@ -365,7 +369,7 @@ class Payment_Gateway_Fees {
                     <select name="<?php echo esc_attr($this->option_name); ?>[<?php echo esc_attr($gateway_id); ?>][type]"
                             onchange="pgfToggleFields(this)">
                         <option value="percent" <?php selected($config['type'] ?? 'percent', 'percent'); ?>>
-                            <?php _e('Percentage of cart total', 'pgf'); ?>
+                            <?php _e('Percentage of order total (items + shipping)', 'pgf'); ?>
                         </option>
                         <option value="fixed" <?php selected($config['type'] ?? '', 'fixed'); ?>>
                             <?php _e('Fixed amount', 'pgf'); ?>
