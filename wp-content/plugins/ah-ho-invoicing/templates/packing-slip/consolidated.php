@@ -160,15 +160,107 @@ foreach ($orders_data as $index => $data):
                         <td style="padding: 5px; border: 1px solid #ddd;">
                             <strong><?php echo esc_html($item->get_name()); ?></strong>
                             <?php
-                            // Display item meta (variations)
+                            // Extract product notes and gift data - check multiple possible meta keys
+                            $special_request_keys = ['Special Requests', __('Special Requests', 'ah-ho-fruits'), 'special_requests', '_special_requests'];
+                            $gift_keys = ['Gift', __('Gift', 'ah-ho-fruits'), 'gift', '_gift'];
+                            $gift_message_keys = ['Gift Message', __('Gift Message', 'ah-ho-fruits'), 'gift_message', '_gift_message'];
+
+                            $product_notes = '';
+                            $is_gift = '';
+                            $gift_message = '';
+
+                            // Try each possible key for special requests
+                            foreach ($special_request_keys as $key) {
+                                $value = wc_get_order_item_meta($item_id, $key, true);
+                                if (!empty($value)) {
+                                    $product_notes = $value;
+                                    break;
+                                }
+                            }
+
+                            // Try each possible key for gift
+                            foreach ($gift_keys as $key) {
+                                $value = wc_get_order_item_meta($item_id, $key, true);
+                                if (!empty($value)) {
+                                    $is_gift = $value;
+                                    break;
+                                }
+                            }
+
+                            // Try each possible key for gift message
+                            foreach ($gift_message_keys as $key) {
+                                $value = wc_get_order_item_meta($item_id, $key, true);
+                                if (!empty($value)) {
+                                    $gift_message = $value;
+                                    break;
+                                }
+                            }
+
+                            // Build list of keys to skip in general meta display
+                            $skip_keys = array_merge($special_request_keys, $gift_keys, $gift_message_keys);
+
+                            // Display item meta (variations) - excluding custom addons
                             $item_data = $item->get_formatted_meta_data();
+                            $has_other_meta = false;
                             if (!empty($item_data)):
+                                foreach ($item_data as $meta):
+                                    // Skip our custom addon fields
+                                    $should_skip = false;
+                                    foreach ($skip_keys as $skip_key) {
+                                        if (strcasecmp($meta->display_key, $skip_key) === 0) {
+                                            $should_skip = true;
+                                            break;
+                                        }
+                                    }
+                                    if ($should_skip) continue;
+
+                                    // Fallback capture if not found via direct meta
+                                    if (empty($product_notes) && stripos($meta->display_key, 'special') !== false) {
+                                        $product_notes = strip_tags($meta->display_value);
+                                        continue;
+                                    }
+                                    if (empty($is_gift) && strcasecmp($meta->display_key, 'Gift') === 0) {
+                                        $is_gift = strip_tags($meta->display_value);
+                                        continue;
+                                    }
+                                    if (empty($gift_message) && stripos($meta->display_key, 'gift message') !== false) {
+                                        $gift_message = strip_tags($meta->display_value);
+                                        continue;
+                                    }
+
+                                    if (!$has_other_meta) {
+                                        echo '<br><small style="color: #666;">';
+                                        $has_other_meta = true;
+                                    }
+                                    echo esc_html($meta->display_key) . ': ' . wp_kses_post($meta->display_value) . ' ';
+                                endforeach;
+                                if ($has_other_meta) {
+                                    echo '</small>';
+                                }
+                            endif;
                             ?>
-                                <br><small style="color: #666;">
-                                    <?php foreach ($item_data as $meta): ?>
-                                        <?php echo esc_html($meta->display_key); ?>: <?php echo wp_kses_post($meta->display_value); ?>
-                                    <?php endforeach; ?>
-                                </small>
+
+                            <?php
+                            // Display Customer Requests (GREEN box - prominent for packer)
+                            if (!empty($product_notes)):
+                            ?>
+                                <div style="margin-top: 6px; padding: 8px; background-color: #e8f5e9; border: 2px solid #2E7D32; border-radius: 3px; font-size: 10px;">
+                                    <strong style="color: #2E7D32;">** Customer Requests (Preferences/Allergies):</strong><br>
+                                    <span style="font-weight: bold; color: #000;"><?php echo nl2br(esc_html($product_notes)); ?></span>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php
+                            // Display Gift Section (ORANGE box - prominent for packer)
+                            $is_gift_order = (strtolower($is_gift) === 'yes' || $is_gift === '1' || $is_gift === 'true' || !empty($gift_message));
+                            if ($is_gift_order):
+                            ?>
+                                <div style="margin-top: 6px; padding: 8px; background-color: #fff8e1; border: 2px solid #FF6F00; border-radius: 3px; font-size: 10px;">
+                                    <strong style="color: #FF6F00;">*** GIFT - Include Gift Card! ***</strong>
+                                    <?php if (!empty($gift_message)): ?>
+                                        <br><span style="font-style: italic; color: #000; font-weight: bold;">"<?php echo nl2br(esc_html($gift_message)); ?>"</span>
+                                    <?php endif; ?>
+                                </div>
                             <?php endif; ?>
                         </td>
                         <td style="padding: 5px; text-align: center; border: 1px solid #ddd;">
