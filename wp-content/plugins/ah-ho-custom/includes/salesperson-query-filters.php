@@ -1,9 +1,14 @@
 <?php
 /**
- * Salesperson Query Filtering - Multi-Layer Security
+ * Salesperson Query Filtering - Multi-Layer Security (HPOS Compatible)
  *
  * Ensures salespersons can only access their own assigned orders
  * Implements 4 layers of protection to prevent cross-salesperson data access
+ *
+ * Compatible with WooCommerce HPOS (High-Performance Order Storage)
+ *
+ * @since 1.3.0
+ * @version 1.4.0 - HPOS compatibility rewrite
  */
 
 if (!defined('ABSPATH')) {
@@ -11,121 +16,157 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * LAYER 1: Admin Order List (pre_get_posts)
- * Filter order queries to show only assigned orders for salespersons
+ * Helper function to check if current user is a salesperson
  */
-add_filter('pre_get_posts', 'ah_ho_filter_salesperson_orders');
-
-function ah_ho_filter_salesperson_orders($query) {
-    // Only apply in admin area
-    if (!is_admin() || !$query->is_main_query()) {
-        return;
-    }
-
-    // Only apply to shop_order queries
-    global $typenow;
-    if ($typenow !== 'shop_order' && get_query_var('post_type') !== 'shop_order') {
-        return;
-    }
-
+function ah_ho_is_current_user_salesperson() {
     $user = wp_get_current_user();
+    return in_array('ah_ho_salesperson', (array) $user->roles);
+}
+
+/**
+ * Helper function to get assigned salesperson from an order (HPOS compatible)
+ *
+ * @param int|WC_Order $order Order ID or order object
+ * @return int|null Salesperson user ID or null
+ */
+function ah_ho_get_order_salesperson($order) {
+    if (is_numeric($order)) {
+        $order = wc_get_order($order);
+    }
+
+    if (!$order instanceof WC_Order) {
+        return null;
+    }
+
+    $salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
+    return $salesperson_id ? (int) $salesperson_id : null;
+}
+
+/**
+ * LAYER 1: Filter WooCommerce Order Queries (HPOS Compatible)
+ *
+ * Uses woocommerce_order_query_args filter which works with both
+ * legacy post-based storage and HPOS custom tables
+ */
+add_filter('woocommerce_order_query_args', 'ah_ho_filter_salesperson_order_query', 10, 1);
+
+function ah_ho_filter_salesperson_order_query($query_args) {
+    // Only apply in admin area
+    if (!is_admin()) {
+        return $query_args;
+    }
 
     // Only filter for salespersons
-    if (!in_array('ah_ho_salesperson', $user->roles)) {
-        return;
+    if (!ah_ho_is_current_user_salesperson()) {
+        return $query_args;
     }
 
-    // Filter orders to show only those assigned to this salesperson
-    $meta_query = $query->get('meta_query') ?: array();
-    $meta_query[] = array(
+    // Add meta query to filter by assigned salesperson
+    if (!isset($query_args['meta_query'])) {
+        $query_args['meta_query'] = array();
+    }
+
+    $query_args['meta_query'][] = array(
         'key'     => '_assigned_salesperson_id',
         'value'   => get_current_user_id(),
         'compare' => '='
     );
 
-    $query->set('meta_query', $meta_query);
+    return $query_args;
 }
 
 /**
- * LAYER 2: SQL Fallback (posts_where)
- * Direct SQL filtering as backup layer
+ * LAYER 2: Filter Admin Orders List Table (HPOS Compatible)
+ *
+ * This hook fires when WooCommerce prepares the orders list in admin
  */
-add_filter('posts_where', 'ah_ho_filter_orders_sql', 10, 2);
+add_filter('woocommerce_shop_order_list_table_prepare_items_query_args', 'ah_ho_filter_orders_list_table', 10, 1);
 
-function ah_ho_filter_orders_sql($where, $query) {
-    global $wpdb, $typenow;
-
-    // Only apply in admin area
-    if (!is_admin()) {
-        return $where;
-    }
-
-    $user = wp_get_current_user();
-
+function ah_ho_filter_orders_list_table($query_args) {
     // Only filter for salespersons
-    if (!in_array('ah_ho_salesperson', $user->roles)) {
-        return $where;
+    if (!ah_ho_is_current_user_salesperson()) {
+        return $query_args;
     }
 
-    // Only apply to shop_order queries
-    if ($typenow !== 'shop_order' && get_query_var('post_type') !== 'shop_order') {
-        return $where;
+    // Add meta query filter
+    if (!isset($query_args['meta_query'])) {
+        $query_args['meta_query'] = array();
     }
 
-    // Add SQL filter
-    $where .= $wpdb->prepare(
-        " AND {$wpdb->posts}.ID IN (
-            SELECT post_id FROM {$wpdb->postmeta}
-            WHERE meta_key = '_assigned_salesperson_id'
-            AND meta_value = %d
-        )",
-        get_current_user_id()
+    $query_args['meta_query'][] = array(
+        'key'     => '_assigned_salesperson_id',
+        'value'   => get_current_user_id(),
+        'compare' => '='
     );
 
-    return $where;
+    return $query_args;
 }
 
 /**
- * LAYER 3: Direct URL Access Prevention (load-post.php)
+ * LAYER 3: Direct Order Access Prevention (HPOS Compatible)
+ *
  * Prevent accessing order edit page via direct URL
+ * Uses the admin_init hook and checks the order object directly
  */
-add_action('load-post.php', 'ah_ho_prevent_unauthorized_order_access');
+add_action('admin_init', 'ah_ho_prevent_unauthorized_order_access');
 
 function ah_ho_prevent_unauthorized_order_access() {
-    global $post;
+    global $pagenow;
 
-    // Must have a post
-    if (!$post) {
-        return;
+    // Check if we're on the order edit page
+    // HPOS uses admin.php?page=wc-orders&action=edit&id=XXX
+    // Legacy uses post.php?post=XXX&action=edit
+
+    $order_id = null;
+
+    // HPOS order edit page
+    if ($pagenow === 'admin.php' && isset($_GET['page']) && $_GET['page'] === 'wc-orders') {
+        if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
+            $order_id = absint($_GET['id']);
+        }
     }
 
-    // Only check shop orders
-    if ($post->post_type !== 'shop_order') {
-        return;
+    // Legacy order edit page (fallback for when HPOS is disabled)
+    if ($pagenow === 'post.php' && isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] === 'edit') {
+        $post_id = absint($_GET['post']);
+        if (get_post_type($post_id) === 'shop_order') {
+            $order_id = $post_id;
+        }
     }
 
-    $user = wp_get_current_user();
+    // No order being accessed
+    if (!$order_id) {
+        return;
+    }
 
     // Only check for salespersons
-    if (!in_array('ah_ho_salesperson', $user->roles)) {
+    if (!ah_ho_is_current_user_salesperson()) {
         return;
     }
 
-    // Get assigned salesperson
-    $assigned_salesperson = get_post_meta($post->ID, '_assigned_salesperson_id', true);
+    // Get the order and check assignment
+    $order = wc_get_order($order_id);
+    if (!$order) {
+        return;
+    }
+
+    $assigned_salesperson = ah_ho_get_order_salesperson($order);
 
     // If order is not assigned to current user, deny access
-    if ($assigned_salesperson != get_current_user_id()) {
+    if ($assigned_salesperson !== get_current_user_id()) {
+        ah_ho_log_unauthorized_access($order_id, get_current_user_id());
+
         wp_die(
             __('You do not have permission to access this order.', 'ah-ho-custom'),
             __('Access Denied', 'ah-ho-custom'),
-            array('response' => 403)
+            array('response' => 403, 'back_link' => true)
         );
     }
 }
 
 /**
- * LAYER 4: REST API Protection
+ * LAYER 4: REST API Protection (HPOS Compatible)
+ *
  * Prevent unauthorized API access to orders
  */
 add_filter('woocommerce_rest_check_permissions', 'ah_ho_rest_order_permissions', 10, 4);
@@ -136,19 +177,18 @@ function ah_ho_rest_order_permissions($permission, $context, $object_id, $post_t
         return $permission;
     }
 
-    $user = wp_get_current_user();
-
     // Only filter for salespersons
-    if (!in_array('ah_ho_salesperson', $user->roles)) {
+    if (!ah_ho_is_current_user_salesperson()) {
         return $permission;
     }
 
     // If accessing a specific order
     if ($object_id) {
-        $assigned_salesperson = get_post_meta($object_id, '_assigned_salesperson_id', true);
+        $assigned_salesperson = ah_ho_get_order_salesperson($object_id);
 
         // Deny if not assigned to this salesperson
-        if ($assigned_salesperson != $user->ID) {
+        if ($assigned_salesperson !== get_current_user_id()) {
+            ah_ho_log_unauthorized_access($object_id, get_current_user_id());
             return false;
         }
     }
@@ -157,48 +197,72 @@ function ah_ho_rest_order_permissions($permission, $context, $object_id, $post_t
 }
 
 /**
- * Filter WooCommerce order count for salespersons
+ * Filter REST API collection queries for salespersons
+ * Ensures listing endpoints only return assigned orders
+ */
+add_filter('woocommerce_rest_orders_prepare_object_query', 'ah_ho_filter_rest_orders_query', 10, 2);
+
+function ah_ho_filter_rest_orders_query($args, $request) {
+    // Only filter for salespersons
+    if (!ah_ho_is_current_user_salesperson()) {
+        return $args;
+    }
+
+    // Add meta query to filter by assigned salesperson
+    if (!isset($args['meta_query'])) {
+        $args['meta_query'] = array();
+    }
+
+    $args['meta_query'][] = array(
+        'key'     => '_assigned_salesperson_id',
+        'value'   => get_current_user_id(),
+        'compare' => '='
+    );
+
+    return $args;
+}
+
+/**
+ * Filter WooCommerce order count for salespersons (HPOS Compatible)
+ *
  * Ensures order counts in admin menu reflect only assigned orders
  */
-add_filter('woocommerce_menu_order_count', 'ah_ho_filter_order_count', 10, 2);
+add_filter('woocommerce_orders_count', 'ah_ho_filter_order_count', 10, 2);
 
 function ah_ho_filter_order_count($count, $status) {
-    $user = wp_get_current_user();
-
     // Only filter for salespersons
-    if (!in_array('ah_ho_salesperson', $user->roles)) {
+    if (!ah_ho_is_current_user_salesperson()) {
         return $count;
     }
 
-    // Count only assigned orders
-    $args = array(
-        'post_type'      => 'shop_order',
-        'post_status'    => $status,
-        'posts_per_page' => -1,
-        'fields'         => 'ids',
-        'meta_query'     => array(
+    // Format status properly for wc_get_orders
+    $order_status = strpos($status, 'wc-') === 0 ? $status : 'wc-' . $status;
+
+    // Count only assigned orders using wc_get_orders (HPOS compatible)
+    $orders = wc_get_orders(array(
+        'status'     => $order_status,
+        'limit'      => -1,
+        'return'     => 'ids',
+        'meta_query' => array(
             array(
                 'key'     => '_assigned_salesperson_id',
-                'value'   => $user->ID,
+                'value'   => get_current_user_id(),
                 'compare' => '='
             )
         )
-    );
+    ));
 
-    $query = new WP_Query($args);
-    return $query->found_posts;
+    return count($orders);
 }
 
 /**
  * Hide unassigned orders from salesperson dashboard widget
  */
-add_action('wp_dashboard_setup', 'ah_ho_filter_dashboard_widget');
+add_action('wp_dashboard_setup', 'ah_ho_filter_dashboard_widget', 20);
 
 function ah_ho_filter_dashboard_widget() {
-    $user = wp_get_current_user();
-
     // Only for salespersons
-    if (!in_array('ah_ho_salesperson', $user->roles)) {
+    if (!ah_ho_is_current_user_salesperson()) {
         return;
     }
 
@@ -213,7 +277,7 @@ add_filter('user_has_cap', 'ah_ho_restrict_user_profile_access', 10, 4);
 
 function ah_ho_restrict_user_profile_access($allcaps, $caps, $args, $user) {
     // Check if user is a salesperson
-    if (!in_array('ah_ho_salesperson', $user->roles)) {
+    if (!in_array('ah_ho_salesperson', (array) $user->roles)) {
         return $allcaps;
     }
 
@@ -222,7 +286,7 @@ function ah_ho_restrict_user_profile_access($allcaps, $caps, $args, $user) {
         $target_user = get_userdata($args[2]);
 
         // Prevent editing other salespersons
-        if ($target_user && in_array('ah_ho_salesperson', $target_user->roles)) {
+        if ($target_user && in_array('ah_ho_salesperson', (array) $target_user->roles)) {
             $allcaps['edit_user'] = false;
             $allcaps['edit_users'] = false;
         }
@@ -232,7 +296,42 @@ function ah_ho_restrict_user_profile_access($allcaps, $caps, $args, $user) {
 }
 
 /**
+ * Filter HPOS order table queries directly
+ *
+ * This is an additional layer for when using HPOS custom tables
+ */
+add_filter('woocommerce_order_data_store_cpt_get_orders_query', 'ah_ho_filter_hpos_order_query', 10, 2);
+
+function ah_ho_filter_hpos_order_query($query, $query_vars) {
+    // Only apply in admin
+    if (!is_admin()) {
+        return $query;
+    }
+
+    // Only filter for salespersons
+    if (!ah_ho_is_current_user_salesperson()) {
+        return $query;
+    }
+
+    // This filter is for the CPT data store, meta_query should work
+    if (!isset($query['meta_query'])) {
+        $query['meta_query'] = array();
+    }
+
+    $query['meta_query'][] = array(
+        'key'     => '_assigned_salesperson_id',
+        'value'   => get_current_user_id(),
+        'compare' => '='
+    );
+
+    return $query;
+}
+
+/**
  * Log unauthorized access attempts for security monitoring
+ *
+ * @param int $order_id The order ID that was accessed
+ * @param int $user_id The user who attempted access
  */
 function ah_ho_log_unauthorized_access($order_id, $user_id) {
     $log_entry = sprintf(
@@ -243,8 +342,17 @@ function ah_ho_log_unauthorized_access($order_id, $user_id) {
     );
 
     // Log to WordPress error log
-    error_log($log_entry);
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        error_log($log_entry);
+    }
 
-    // Optionally: Add to custom log table or send alert email
-    // This can be expanded based on security requirements
+    // Store in transient for admin review (optional - keeps last 50 attempts)
+    $recent_attempts = get_transient('ah_ho_unauthorized_attempts') ?: array();
+    array_unshift($recent_attempts, array(
+        'time'     => current_time('mysql'),
+        'user_id'  => $user_id,
+        'order_id' => $order_id
+    ));
+    $recent_attempts = array_slice($recent_attempts, 0, 50);
+    set_transient('ah_ho_unauthorized_attempts', $recent_attempts, DAY_IN_SECONDS);
 }
