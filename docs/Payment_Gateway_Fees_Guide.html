@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway Fees System Guide - Ah Ho Fruits</title>
+    <style>
+        @page {
+            margin: 1in;
+            @bottom-center {
+                content: "Ah Ho Fruits • Payment Gateway Fees System    Page " counter(page);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            font-size: 11pt;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 32pt;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+
+        h2 {
+            color: #2563eb;
+            font-size: 14pt;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        h2.section-title {
+            color: #1a1a1a;
+            font-size: 18pt;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            font-size: 13pt;
+            color: #374151;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .version {
+            text-align: center;
+            color: #999;
+            font-size: 10pt;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 10pt;
+        }
+
+        th, td {
+            border: 1px solid #e5e7eb;
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #374151;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        .summary-table th {
+            background-color: #f3f4f6;
+            color: #1a1a1a;
+            width: 200px;
+        }
+
+        .summary-table td {
+            background-color: white;
+        }
+
+        .callout {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 4px;
+            padding: 12px 15px;
+            margin: 20px 0;
+            font-size: 10pt;
+        }
+
+        .callout strong {
+            color: #92400e;
+        }
+
+        .promise-box {
+            background-color: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 4px;
+            padding: 12px 15px;
+            margin: 20px 0;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: #fef9c3;
+            color: #854d0e;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+
+        .flow-diagram {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 9pt;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .code-block {
+            background-color: #1f2937;
+            color: #e5e7eb;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 9pt;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .footer {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 9pt;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .checklist li::before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+        }
+
+        strong {
+            color: #1a1a1a;
+        }
+
+        .highlight {
+            background-color: #dbeafe;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Ah Ho Fruit</h1>
+
+<h2>Payment Gateway Fees System Guide</h2>
+
+<p class="subtitle">Operational + technical guide for adding processing fees based on payment method at checkout.</p>
+
+<p class="version">Version 1.0 • Generated on 1 Feb 2026</p>
+
+<table class="summary-table">
+    <tr>
+        <th>What it does</th>
+        <td>Adds processing fees to checkout based on selected payment method (GrabPay, PayNow, Credit Card, etc.).</td>
+    </tr>
+    <tr>
+        <th>Why it matters</th>
+        <td>Recover payment gateway costs without raising product prices. Transparent fees shown before checkout.</td>
+    </tr>
+    <tr>
+        <th>Core workflow</th>
+        <td>Customer selects payment → Fee calculated → Shown in order total → Collected automatically.</td>
+    </tr>
+    <tr>
+        <th>Biggest operational win</th>
+        <td>Zero manual fee calculation. Different rates for different gateways.</td>
+    </tr>
+    <tr>
+        <th>Key risk</th>
+        <td>Legal compliance (must disclose fees clearly) and customer perception.</td>
+    </tr>
+</table>
+
+<div class="promise-box">
+    <strong>Promise:</strong> After setup, payment fees are automatic. No manual adjustments, no spreadsheets, no missed charges.
+</div>
+
+<div class="page-break"></div>
+
+<h2 class="section-title">1. How Payment Gateway Fees Work</h2>
+
+<p>This plugin adds a fee line item to the cart when customers select specific payment methods at checkout.</p>
+
+<div class="flow-diagram">┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│ Customer adds   │────▶│ Selects payment │────▶│ Fee calculated  │────▶│ Total updated   │
+│ items to cart   │     │ method          │     │ automatically   │     │ with fee        │
+└─────────────────┘     └─────────────────┘     └─────────────────┘     └─────────────────┘
+                                                        │
+                                                        ▼
+                                               ┌─────────────────────┐
+                                               │ Fee shown as line   │
+                                               │ item: "GrabPay      │
+                                               │ Processing Fee: $3" │
+                                               └─────────────────────┘</div>
+
+<span class="tag">Real-time checkout updates</span>
+
+<table>
+    <tr>
+        <th>Event</th>
+        <th>What Happens</th>
+        <th>Customer Sees</th>
+    </tr>
+    <tr>
+        <td>Select Credit Card</td>
+        <td>2.9% fee added</td>
+        <td>"Card Processing Fee: $2.90"</td>
+    </tr>
+    <tr>
+        <td>Switch to GrabPay</td>
+        <td>Fee recalculates to 3%</td>
+        <td>"GrabPay Fee: $3.00"</td>
+    </tr>
+    <tr>
+        <td>Switch to PayNow</td>
+        <td>Fee removed (if no fee set)</td>
+        <td>No fee line item</td>
+    </tr>
+    <tr>
+        <td>Complete checkout</td>
+        <td>Fee included in order total</td>
+        <td>Receipt shows fee</td>
+    </tr>
+</table>
+
+<p><strong>Key behavior:</strong> Fees update instantly when payment method changes. No page reload required.</p>
+
+<div class="page-break"></div>
+
+<h2 class="section-title">2. Fee Types Explained</h2>
+
+<p>Three ways to charge fees, depending on your cost structure.</p>
+
+<table>
+    <tr>
+        <th>Fee Type</th>
+        <th>Formula</th>
+        <th>Example ($100 cart)</th>
+        <th>Best For</th>
+    </tr>
+    <tr>
+        <td><strong>Percentage</strong></td>
+        <td>Cart × Rate%</td>
+        <td>3% = $3.00</td>
+        <td>GrabPay, PayNow (% based fees)</td>
+    </tr>
+    <tr>
+        <td><strong>Fixed</strong></td>
+        <td>Flat amount</td>
+        <td>$2.00 = $2.00</td>
+        <td>Bank transfers, COD handling</td>
+    </tr>
+    <tr>
+        <td><strong>Fixed + Percentage</strong></td>
+        <td>Flat + (Cart × Rate%)</td>
+        <td>$0.30 + 2.9% = $3.20</td>
+        <td>Credit cards (Stripe/PayPal model)</td>
+    </tr>
+</table>
+
+<h3>Stripe Fee Reference (Singapore)</h3>
+
+<table>
+    <tr>
+        <th>Payment Method</th>
+        <th>Stripe Charges You</th>
+        <th>Suggested Customer Fee</th>
+    </tr>
+    <tr>
+        <td>Credit Card</td>
+        <td>3.4% + $0.50</td>
+        <td>3.5% or $0.50 + 3.4%</td>
+    </tr>
+    <tr>
+        <td>GrabPay</td>
+        <td>3.0%</td>
+        <td>3.0%</td>
+    </tr>
+    <tr>
+        <td>PayNow</td>
+        <td>0.5% (capped)</td>
+        <td>0.5% or absorb</td>
+    </tr>
+    <tr>
+        <td>Apple/Google Pay</td>
+        <td>3.4% + $0.50</td>
+        <td>Same as credit card</td>
+    </tr>
+</table>
+
+<div class="callout">
+    <strong>Non-negotiable:</strong> Always verify current Stripe rates at dashboard.stripe.com before setting fees.
+</div>
+
+<div class="page-break"></div>
+
+<h2 class="section-title">3. Admin Settings Interface</h2>
+
+<p>Access: <strong>WooCommerce → Gateway Fees</strong></p>
+
+<p>The settings page auto-detects all enabled payment gateways and shows configuration for each.</p>
+
+<div class="flow-diagram">┌──────────────────────────────────────────────────────────────────┐
+│ Payment Gateway Fees                                              │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │ Credit Card (stripe)                        [✓] Enable Fee │  │
+│  ├────────────────────────────────────────────────────────────┤  │
+│  │ Fee Label:    [Card Processing Fee          ]              │  │
+│  │ Fee Type:     [Fixed + Percentage           ▼]             │  │
+│  │ Percentage:   [2.9    ] %                                  │  │
+│  │ Fixed Amount: [0.30   ] $                                  │  │
+│  │ Taxable:      [ ] Apply tax to this fee                    │  │
+│  └────────────────────────────────────────────────────────────┘  │
+│                                                                   │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │ GrabPay (stripe_grabpay)                    [✓] Enable Fee │  │
+│  ├────────────────────────────────────────────────────────────┤  │
+│  │ Fee Label:    [GrabPay Processing Fee       ]              │  │
+│  │ Fee Type:     [Percentage                   ▼]             │  │
+│  │ Percentage:   [3.0    ] %                                  │  │
+│  └────────────────────────────────────────────────────────────┘  │
+│                                                                   │
+│                                        [ Save Changes ]           │
+└──────────────────────────────────────────────────────────────────┘</div>
+
+<h3>Settings Reference</h3>
+
+<table>
+    <tr>
+        <th>Setting</th>
+        <th>Description</th>
+        <th>Default</th>
+    </tr>
+    <tr>
+        <td><strong>Enable Fee</strong></td>
+        <td>Toggle fee on/off for this gateway</td>
+        <td>Off</td>
+    </tr>
+    <tr>
+        <td><strong>Fee Label</strong></td>
+        <td>Text shown to customer at checkout</td>
+        <td>"Processing Fee"</td>
+    </tr>
+    <tr>
+        <td><strong>Fee Type</strong></td>
+        <td>Percentage, Fixed, or Both</td>
+        <td>Percentage</td>
+    </tr>
+    <tr>
+        <td><strong>Percentage</strong></td>
+        <td>% of cart subtotal</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td><strong>Fixed Amount</strong></td>
+        <td>Flat fee in store currency</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td><strong>Taxable</strong></td>
+        <td>Whether GST applies to the fee</td>
+        <td>Off</td>
+    </tr>
+</table>
+
+<div class="page-break"></div>
+
+<h2 class="section-title">4. Setup Checklist</h2>
+
+<table>
+    <tr>
+        <th>Step</th>
+        <th>What to do</th>
+        <th>Verify</th>
+    </tr>
+    <tr>
+        <td><strong>Activate plugin</strong></td>
+        <td>Plugins → Payment Gateway Fees → Activate</td>
+        <td>Plugin appears in list</td>
+    </tr>
+    <tr>
+        <td><strong>Access settings</strong></td>
+        <td>WooCommerce → Gateway Fees</td>
+        <td>Settings page loads</td>
+    </tr>
+    <tr>
+        <td><strong>Enable Stripe gateways</strong></td>
+        <td>Ensure payment methods enabled in Stripe plugin</td>
+        <td>Gateways appear in settings</td>
+    </tr>
+    <tr>
+        <td><strong>Configure fees</strong></td>
+        <td>Set fee type and amount for each gateway</td>
+        <td>Values saved</td>
+    </tr>
+    <tr>
+        <td><strong>Test checkout</strong></td>
+        <td>Add item, select payment, verify fee shows</td>
+        <td>Fee displays correctly</td>
+    </tr>
+    <tr>
+        <td><strong>Switch payments</strong></td>
+        <td>Change payment method at checkout</td>
+        <td>Fee updates instantly</td>
+    </tr>
+    <tr>
+        <td><strong>Complete test order</strong></td>
+        <td>Process a real $1 order</td>
+        <td>Fee appears on invoice</td>
+    </tr>
+</table>
+
+<div class="callout">
+    <strong>Ruthless rule:</strong> Never launch without testing ALL payment methods. One broken gateway = lost sales.
+</div>
+
+<div class="page-break"></div>
+
+<h2 class="section-title">5. Customer Experience</h2>
+
+<p>What your customers see at checkout:</p>
+
+<div class="flow-diagram">┌─────────────────────────────────────────────────────────┐
+│ Order Summary                                           │
+├─────────────────────────────────────────────────────────┤
+│ Premium Fruit Basket               ×1         $50.00    │
+│ Organic Bananas (1kg)              ×2         $12.00    │
+├─────────────────────────────────────────────────────────┤
+│ Subtotal                                       $62.00   │
+│ Delivery                                        $5.00   │
+│ <span class="highlight">GrabPay Processing Fee                          $1.86</span>   │  ◀── Fee line
+├─────────────────────────────────────────────────────────┤
+│ Total                                          $68.86   │
+└─────────────────────────────────────────────────────────┘
+
+Payment Method:
+  ○ Credit Card
+  <strong>● GrabPay</strong>        ◀── Selected, fee applied
+  ○ PayNow</div>
+
+<h3>Fee Visibility Rules</h3>
+
+<table>
+    <tr>
+        <th>Scenario</th>
+        <th>Fee Shown?</th>
+        <th>Notes</th>
+    </tr>
+    <tr>
+        <td>Gateway has fee enabled</td>
+        <td>Yes</td>
+        <td>Shows as separate line item</td>
+    </tr>
+    <tr>
+        <td>Gateway has no fee configured</td>
+        <td>No</td>
+        <td>No line item appears</td>
+    </tr>
+    <tr>
+        <td>Fee is $0 (0% of cart)</td>
+        <td>No</td>
+        <td>Line hidden if amount is zero</td>
+    </tr>
+    <tr>
+        <td>Customer switches gateway</td>
+        <td>Updates</td>
+        <td>Instant recalculation</td>
+    </tr>
+</table>
+
+<div class="page-break"></div>
+
+<h2 class="section-title">6. Legal Considerations (Singapore)</h2>
+
+<table>
+    <tr>
+        <th>Requirement</th>
+        <th>Status</th>
+        <th>Notes</th>
+    </tr>
+    <tr>
+        <td>Surcharging allowed</td>
+        <td>✓ Yes</td>
+        <td>Singapore permits payment surcharges</td>
+    </tr>
+    <tr>
+        <td>Disclosure required</td>
+        <td>✓ Yes</td>
+        <td>Must show fee before payment</td>
+    </tr>
+    <tr>
+        <td>Card network rules</td>
+        <td>⚠ Check</td>
+        <td>Visa/Mastercard have surcharge caps</td>
+    </tr>
+    <tr>
+        <td>GST on fees</td>
+        <td>Optional</td>
+        <td>Consult accountant</td>
+    </tr>
+</table>
+
+<h3>Best Practices</h3>
+
+<ol>
+    <li><strong>Clear labeling</strong> — Use descriptive names like "GrabPay Processing Fee" not "Service Charge"</li>
+    <li><strong>Reasonable amounts</strong> — Don't exceed actual gateway costs significantly</li>
+    <li><strong>Consistent policy</strong> — Document your fee policy on checkout/FAQ pages</li>
+    <li><strong>Alternative offered</strong> — Consider one fee-free option (e.g., PayNow)</li>
+</ol>
+
+<div class="promise-box">
+    <strong>Recommendation:</strong> Add a line to your checkout page: "Payment processing fees help us cover transaction costs and keep product prices low."
+</div>
+
+<div class="page-break"></div>
+
+<h2 class="section-title">7. Troubleshooting</h2>
+
+<table>
+    <tr>
+        <th>Problem</th>
+        <th>Cause</th>
+        <th>Solution</th>
+    </tr>
+    <tr>
+        <td>Fee doesn't appear</td>
+        <td>Gateway not enabled in settings</td>
+        <td>WooCommerce → Gateway Fees → Enable</td>
+    </tr>
+    <tr>
+        <td>Fee doesn't update when switching</td>
+        <td>JavaScript not loaded</td>
+        <td>Check for JS errors in browser console</td>
+    </tr>
+    <tr>
+        <td>Wrong fee amount</td>
+        <td>Incorrect percentage/fixed value</td>
+        <td>Verify settings, check decimal places</td>
+    </tr>
+    <tr>
+        <td>Gateway not showing in settings</td>
+        <td>Gateway disabled in WooCommerce</td>
+        <td>Enable gateway in WooCommerce → Payments</td>
+    </tr>
+    <tr>
+        <td>Fee shows on wrong gateway</td>
+        <td>Gateway ID mismatch</td>
+        <td>Check gateway ID in settings</td>
+    </tr>
+</table>
+
+<h3>Finding Gateway IDs</h3>
+
+<p>To find the correct gateway ID:</p>
+
+<ol>
+    <li>Go to your checkout page</li>
+    <li>Right-click on payment option → <strong>Inspect</strong></li>
+    <li>Look for <code>value="gateway_id"</code> in the radio input</li>
+</ol>
+
+<p><strong>Common IDs:</strong></p>
+<ul>
+    <li><code>stripe</code> — Credit cards (Payment Plugins)</li>
+    <li><code>stripe_grabpay</code> — GrabPay</li>
+    <li><code>stripe_paynow</code> — PayNow</li>
+    <li><code>ppcp-gateway</code> — PayPal</li>
+</ul>
+
+<div class="page-break"></div>
+
+<h2 class="section-title">8. Technical Reference</h2>
+
+<h3>File Location</h3>
+
+<div class="code-block">/wp-content/plugins/payment-gateway-fees/payment-gateway-fees.php</div>
+
+<h3>WordPress Hooks Used</h3>
+
+<table>
+    <tr>
+        <th>Hook</th>
+        <th>Purpose</th>
+    </tr>
+    <tr>
+        <td><code>woocommerce_cart_calculate_fees</code></td>
+        <td>Adds fee to cart</td>
+    </tr>
+    <tr>
+        <td><code>woocommerce_after_checkout_form</code></td>
+        <td>Injects JS for real-time updates</td>
+    </tr>
+    <tr>
+        <td><code>admin_menu</code></td>
+        <td>Adds settings page</td>
+    </tr>
+    <tr>
+        <td><code>admin_init</code></td>
+        <td>Registers settings</td>
+    </tr>
+</table>
+
+<h3>Data Storage</h3>
+
+<p>Fees stored in WordPress options table:</p>
+
+<div class="code-block">Option name: pgf_gateway_fees
+Option value: {
+  "stripe": {
+    "enabled": true,
+    "label": "Card Processing Fee",
+    "type": "both",
+    "percent": 2.9,
+    "fixed": 0.30,
+    "taxable": false
+  },
+  "stripe_grabpay": {
+    "enabled": true,
+    "label": "GrabPay Fee",
+    "type": "percent",
+    "percent": 3.0,
+    "fixed": 0,
+    "taxable": false
+  }
+}</div>
+
+<div class="page-break"></div>
+
+<h2 class="section-title">9. Quick Reference Card</h2>
+
+<h3>Access Settings</h3>
+<p><strong>WooCommerce → Gateway Fees</strong></p>
+
+<h3>Common Fee Configurations</h3>
+
+<table>
+    <tr>
+        <th>Gateway</th>
+        <th>Recommended Setup</th>
+    </tr>
+    <tr>
+        <td>Credit Card</td>
+        <td>Fixed + Percent: $0.30 + 2.9%</td>
+    </tr>
+    <tr>
+        <td>GrabPay</td>
+        <td>Percent: 3.0%</td>
+    </tr>
+    <tr>
+        <td>PayNow</td>
+        <td>Percent: 0.5% (or absorb)</td>
+    </tr>
+    <tr>
+        <td>Bank Transfer</td>
+        <td>Fixed: $0 (free)</td>
+    </tr>
+</table>
+
+<h3>Checklist Before Go-Live</h3>
+
+<ul class="checklist">
+    <li>All payment gateways tested</li>
+    <li>Fee labels are customer-friendly</li>
+    <li>Fee amounts match actual costs</li>
+    <li>Test order completed successfully</li>
+    <li>Fee policy documented on website</li>
+</ul>
+
+<div class="footer">
+    <p>Ah Ho Fruits • Payment Gateway Fees System</p>
+</div>
+
+</body>
+</html>
