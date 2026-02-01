@@ -67,7 +67,7 @@ foreach ($orders_data as $data) {
 
 <!-- Sorting Information -->
 <div style="background-color: #f39c12; color: white; padding: 10px; margin-bottom: 20px; font-weight: bold;">
-    ℹ️ Orders sorted by: <strong>Delivery Date</strong> (primary) → <strong>Postal Code</strong> (secondary)
+    Orders sorted by: <strong>Date</strong> (primary) then <strong>Postal Code</strong> (secondary)
 </div>
 
 <?php
@@ -90,7 +90,7 @@ foreach ($orders_data as $index => $data):
         ?>
         <div style="page-break-before: <?php echo $date_counter > 1 ? 'always' : 'avoid'; ?>;">
             <h2 style="background-color: #2c3e50; color: white; padding: 15px; margin-top: 0; margin-bottom: 20px;">
-                📅 Delivery Date: <?php echo esc_html(date('l, d F Y', strtotime($delivery_date))); ?>
+                Order Date: <?php echo esc_html(date('l, d F Y', strtotime($delivery_date))); ?>
             </h2>
         <?php
         $date_counter++;
@@ -142,7 +142,7 @@ foreach ($orders_data as $index => $data):
                     <th style="padding: 5px; text-align: center; width: 60px; border: 1px solid #ddd;">SKU</th>
                     <th style="padding: 5px; text-align: center; width: 40px; border: 1px solid #ddd;">Qty</th>
                     <th style="padding: 5px; text-align: center; width: 60px; border: 1px solid #ddd;">Weight</th>
-                    <th style="padding: 5px; text-align: center; width: 30px; border: 1px solid #ddd;">✓</th>
+                    <th style="padding: 5px; text-align: center; width: 30px; border: 1px solid #ddd;">OK</th>
                 </tr>
             </thead>
             <tbody>
@@ -219,7 +219,7 @@ echo '</div>';
 
 <!-- Summary Footer -->
 <div style="page-break-before: avoid; margin-top: 30px; border-top: 2px solid #2c3e50; padding-top: 20px;">
-    <h3 style="color: #2c3e50;">📊 Packing Summary</h3>
+    <h3 style="color: #2c3e50;">PACKING SUMMARY</h3>
     <table style="width: 100%; border-collapse: collapse;">
         <thead>
             <tr style="background-color: #2c3e50; color: white;">
