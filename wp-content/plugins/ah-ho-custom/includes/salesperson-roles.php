@@ -25,7 +25,6 @@ function ah_ho_register_salesperson_role() {
         array(
             // Basic WordPress capabilities
             'read'                          => true,
-            'upload_files'                  => true,
 
             // WooCommerce order capabilities
             'read_shop_order'               => true,
@@ -75,7 +74,7 @@ function ah_ho_update_salesperson_role() {
     // Update capabilities to match current requirements
     $capabilities = array(
         'read'                          => true,
-        'upload_files'                  => true,
+        'upload_files'                  => false, // No Media access
         'read_shop_order'               => true,
         'read_shop_orders'              => true,
         'edit_shop_order'               => true,
@@ -217,7 +216,7 @@ function ah_ho_show_salesperson_admin_bar($disable) {
 }
 
 /**
- * Redirect salespersons to admin dashboard after login
+ * Redirect salespersons to Orders page after login
  * Uses wp_login action which fires after successful authentication
  */
 add_action('wp_login', 'ah_ho_salesperson_redirect_after_login', 10, 2);
@@ -225,7 +224,7 @@ add_action('wp_login', 'ah_ho_salesperson_redirect_after_login', 10, 2);
 function ah_ho_salesperson_redirect_after_login($user_login, $user) {
     // Check if user is a salesperson
     if (in_array('ah_ho_salesperson', (array) $user->roles)) {
-        wp_safe_redirect(admin_url());
+        wp_safe_redirect(admin_url('admin.php?page=wc-orders'));
         exit;
     }
 }
@@ -237,7 +236,7 @@ add_filter('woocommerce_login_redirect', 'ah_ho_wc_salesperson_login_redirect', 
 
 function ah_ho_wc_salesperson_login_redirect($redirect, $user) {
     if ($user && in_array('ah_ho_salesperson', (array) $user->roles)) {
-        return admin_url();
+        return admin_url('admin.php?page=wc-orders');
     }
     return $redirect;
 }
@@ -249,9 +248,20 @@ add_filter('login_redirect', 'ah_ho_wp_salesperson_login_redirect', 99, 3);
 
 function ah_ho_wp_salesperson_login_redirect($redirect_to, $requested_redirect_to, $user) {
     if (!is_wp_error($user) && in_array('ah_ho_salesperson', (array) $user->roles)) {
-        return admin_url();
+        return admin_url('admin.php?page=wc-orders');
     }
     return $redirect_to;
+}
+
+/**
+ * Hide Dashboard menu for salespersons
+ */
+add_action('admin_menu', 'ah_ho_hide_dashboard_for_salesperson', 999);
+
+function ah_ho_hide_dashboard_for_salesperson() {
+    if (current_user_can('view_salesperson_commission') && !current_user_can('manage_options')) {
+        remove_menu_page('index.php'); // Dashboard
+    }
 }
 
 
