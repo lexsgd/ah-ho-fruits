@@ -10,6 +10,88 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Recalculate commission for existing orders (admin tool)
+ *
+ * Trigger: Visit wp-admin with ?ah_ho_recalc_commission=1
+ */
+add_action('admin_init', 'ah_ho_maybe_recalculate_commissions');
+
+function ah_ho_maybe_recalculate_commissions() {
+    if (!isset($_GET['ah_ho_recalc_commission']) || $_GET['ah_ho_recalc_commission'] !== '1') {
+        return;
+    }
+
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+
+    // Verify nonce if provided
+    if (isset($_GET['_wpnonce']) && !wp_verify_nonce($_GET['_wpnonce'], 'ah_ho_recalc_commission')) {
+        return;
+    }
+
+    global $wpdb;
+
+    // Find orders with salesperson assigned but no commission calculated
+    $orders_table = $wpdb->prefix . 'wc_orders';
+    $meta_table = $wpdb->prefix . 'wc_orders_meta';
+
+    $order_ids = $wpdb->get_col("
+        SELECT DISTINCT o.id
+        FROM {$orders_table} o
+        INNER JOIN {$meta_table} sp ON o.id = sp.order_id AND sp.meta_key = '_assigned_salesperson_id'
+        LEFT JOIN {$meta_table} ca ON o.id = ca.order_id AND ca.meta_key = '_commission_amount'
+        WHERE o.type = 'shop_order'
+        AND (ca.meta_value IS NULL OR ca.meta_value = '' OR ca.meta_value = '0')
+    ");
+
+    $recalculated = 0;
+
+    foreach ($order_ids as $order_id) {
+        $order = wc_get_order($order_id);
+        if (!$order) continue;
+
+        $salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
+        if (!$salesperson_id) continue;
+
+        // Get commission rate
+        $enable_custom_rates = get_option('ah_ho_enable_custom_rates', true);
+        $rate = null;
+
+        if ($enable_custom_rates) {
+            $rate = get_user_meta($salesperson_id, '_commission_rate', true);
+        }
+
+        if (empty($rate)) {
+            $rate = get_option('ah_ho_default_commission_rate', 10);
+        }
+
+        // Calculate commission
+        $order_total = $order->get_total();
+        $commission = $order_total * ($rate / 100);
+
+        // Update order meta
+        $order->update_meta_data('_commission_rate', $rate);
+        $order->update_meta_data('_commission_amount', $commission);
+
+        if (!$order->get_meta('_commission_status', true)) {
+            $order->update_meta_data('_commission_status', 'pending');
+        }
+
+        $order->save();
+        $recalculated++;
+    }
+
+    // Show admin notice
+    add_action('admin_notices', function() use ($recalculated) {
+        printf(
+            '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+            sprintf(__('Commission recalculated for %d orders.', 'ah-ho-custom'), $recalculated)
+        );
+    });
+}
+
+/**
  * Add admin menu pages
  */
 add_action('admin_menu', 'ah_ho_add_commission_dashboard_pages');
@@ -62,6 +144,9 @@ function ah_ho_render_admin_commission_dashboard() {
         <h1 class="wp-heading-inline"><?php _e('Salesperson Commissions', 'ah-ho-custom'); ?></h1>
         <a href="<?php echo admin_url('admin.php?page=ah-ho-salesperson-settings'); ?>" class="page-title-action">
             <?php _e('Settings', 'ah-ho-custom'); ?>
+        </a>
+        <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=ah-ho-salesperson-commissions&ah_ho_recalc_commission=1'), 'ah_ho_recalc_commission'); ?>" class="page-title-action">
+            <?php _e('Recalculate All', 'ah-ho-custom'); ?>
         </a>
         <hr class="wp-header-end">
 
