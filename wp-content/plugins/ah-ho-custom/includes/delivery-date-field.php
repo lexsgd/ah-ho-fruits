@@ -125,6 +125,34 @@ function ah_ho_is_blocks_checkout() {
  */
 
 /**
+ * Enqueue Flatpickr for checkout page
+ */
+add_action('wp_enqueue_scripts', 'ah_ho_enqueue_flatpickr');
+
+function ah_ho_enqueue_flatpickr() {
+    if (!is_checkout()) {
+        return;
+    }
+
+    // Flatpickr CSS
+    wp_enqueue_style(
+        'flatpickr',
+        'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css',
+        array(),
+        '4.6.13'
+    );
+
+    // Flatpickr JS
+    wp_enqueue_script(
+        'flatpickr',
+        'https://cdn.jsdelivr.net/npm/flatpickr',
+        array(),
+        '4.6.13',
+        true
+    );
+}
+
+/**
  * Inject delivery date fields into Blocks checkout via JavaScript
  */
 add_action('wp_footer', 'ah_ho_blocks_checkout_inline_script');
@@ -140,6 +168,8 @@ function ah_ho_blocks_checkout_inline_script() {
     <script type="text/javascript">
     (function() {
         'use strict';
+
+        let flatpickrInstance = null;
 
         /**
          * Calculate minimum delivery date based on shipping method
@@ -176,16 +206,7 @@ function ah_ho_blocks_checkout_inline_script() {
                 minDate.setDate(minDate.getDate() + 1);
             }
 
-            return minDate.toISOString().split('T')[0];
-        }
-
-        /**
-         * Check if a date is a weekend
-         */
-        function isWeekend(dateString) {
-            const date = new Date(dateString);
-            const day = date.getDay();
-            return day === 0 || day === 6; // Sunday = 0, Saturday = 6
+            return minDate;
         }
 
         /**
@@ -202,17 +223,30 @@ function ah_ho_blocks_checkout_inline_script() {
             return '';
         }
 
+        /**
+         * Format date for display
+         */
+        function formatDateDisplay(date) {
+            const options = { weekday: 'short', day: 'numeric', month: 'short' };
+            return date.toLocaleDateString('en-SG', options);
+        }
+
         // Wait for checkout to be ready
         function initDeliveryDate() {
             // Check if blocks checkout exists
             const checkoutForm = document.querySelector('.wc-block-checkout');
             if (!checkoutForm) {
-                // Not blocks checkout, skip
                 return;
             }
 
             // Check if already added
             if (document.getElementById('ah-ho-delivery-date-blocks-container')) {
+                return;
+            }
+
+            // Wait for Flatpickr to load
+            if (typeof flatpickr === 'undefined') {
+                setTimeout(initDeliveryDate, 100);
                 return;
             }
 
@@ -240,15 +274,12 @@ function ah_ho_blocks_checkout_inline_script() {
                         <label for="ah_ho_delivery_date" style="display: block; margin-bottom: 8px; font-size: 14px; color: #333;">
                             Preferred Delivery Date (optional)
                         </label>
-                        <input type="date" id="ah_ho_delivery_date" name="ah_ho_delivery_date"
-                               min="${initialMinDate}"
-                               max="<?php echo esc_attr($max_date); ?>"
-                               style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
-                        <p id="ah_ho_date_error" style="margin: 8px 0 0; font-size: 12px; color: #d63638; display: none;">
-                            Weekend delivery is not available. Please select a weekday (Mon-Fri).
-                        </p>
+                        <input type="text" id="ah_ho_delivery_date" name="ah_ho_delivery_date"
+                               placeholder="Select a date..."
+                               readonly
+                               style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; background: #fff; cursor: pointer;">
                         <p id="ah_ho_date_note" style="margin: 8px 0 0; font-size: 12px; color: #666;">
-                            Earliest available: <span id="ah_ho_earliest_date">${formatDate(initialMinDate)}</span>. Weekends not available.
+                            Earliest available: <span id="ah_ho_earliest_date">${formatDateDisplay(initialMinDate)}</span>. Weekends greyed out.
                         </p>
                     </div>
                 </div>
@@ -264,25 +295,26 @@ function ah_ho_blocks_checkout_inline_script() {
 
             const dateInput = document.getElementById('ah_ho_delivery_date');
             const earliestDateSpan = document.getElementById('ah_ho_earliest_date');
-            const dateError = document.getElementById('ah_ho_date_error');
 
-            // Validate date selection (no weekends) - show inline error
-            dateInput.addEventListener('change', function() {
-                if (this.value && isWeekend(this.value)) {
-                    // Show inline error, clear the value, highlight input
-                    dateError.style.display = 'block';
-                    this.style.borderColor = '#d63638';
-                    this.value = '';
-                    // Auto-hide error after 3 seconds
-                    setTimeout(() => {
-                        dateError.style.display = 'none';
-                        dateInput.style.borderColor = '#ddd';
-                    }, 3000);
-                } else {
-                    dateError.style.display = 'none';
-                    this.style.borderColor = '#ddd';
+            // Initialize Flatpickr with weekends disabled
+            flatpickrInstance = flatpickr(dateInput, {
+                dateFormat: 'Y-m-d',
+                altInput: true,
+                altFormat: 'D, d M Y', // Display format: "Mon, 05 Feb 2026"
+                minDate: initialMinDate,
+                maxDate: '<?php echo esc_attr($max_date); ?>',
+                disable: [
+                    function(date) {
+                        // Disable weekends (Saturday = 6, Sunday = 0)
+                        return (date.getDay() === 0 || date.getDay() === 6);
+                    }
+                ],
+                locale: {
+                    firstDayOfWeek: 1 // Start week on Monday
+                },
+                onChange: function(selectedDates, dateStr) {
+                    updateHiddenFields(dateStr);
                 }
-                updateHiddenFields();
             });
 
             // Listen for shipping method changes
@@ -292,43 +324,40 @@ function ah_ho_blocks_checkout_inline_script() {
                     if (e.target.type === 'radio') {
                         const newShipping = getSelectedShippingMethod();
                         const newMinDate = getMinDeliveryDate(newShipping);
-                        dateInput.min = newMinDate;
-                        earliestDateSpan.textContent = formatDate(newMinDate);
 
-                        // Clear selected date if it's now before the new minimum
-                        if (dateInput.value && dateInput.value < newMinDate) {
-                            dateInput.value = '';
+                        // Update Flatpickr minDate
+                        if (flatpickrInstance) {
+                            flatpickrInstance.set('minDate', newMinDate);
+
+                            // Clear selected date if it's now before the new minimum
+                            const currentDate = flatpickrInstance.selectedDates[0];
+                            if (currentDate && currentDate < newMinDate) {
+                                flatpickrInstance.clear();
+                            }
                         }
+
+                        earliestDateSpan.textContent = formatDateDisplay(newMinDate);
                     }
                 });
             }
 
-            // Format date for display
-            function formatDate(dateString) {
-                const date = new Date(dateString);
-                const options = { weekday: 'short', day: 'numeric', month: 'short' };
-                return date.toLocaleDateString('en-SG', options);
-            }
-
             // Store values for WooCommerce Blocks
-            function updateHiddenFields() {
+            function updateHiddenFields(dateStr) {
                 if (window.wp && window.wp.data) {
                     const { dispatch } = window.wp.data;
                     const store = dispatch('wc/store/checkout');
                     if (store && store.setExtensionData) {
                         store.setExtensionData('ah-ho-delivery', {
-                            delivery_date: dateInput.value
+                            delivery_date: dateStr
                         });
                     }
                 }
                 // Update hidden field
                 const hiddenDate = document.getElementById('delivery_date_hidden');
                 if (hiddenDate) {
-                    hiddenDate.value = dateInput.value;
+                    hiddenDate.value = dateStr;
                 }
             }
-
-            dateInput.addEventListener('change', updateHiddenFields);
 
             // Create hidden form field as backup
             const hiddenDate = document.createElement('input');
