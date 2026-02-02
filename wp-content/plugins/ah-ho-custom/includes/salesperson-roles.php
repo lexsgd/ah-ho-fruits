@@ -97,6 +97,9 @@ function ah_ho_update_salesperson_role() {
         'list_users'                    => true,
         'read_shop_customer'            => true,
         'view_salesperson_commission'   => true,
+        // Customer management - security via ah_ho_restrict_salesperson_user_editing filter
+        'create_users'                  => true,
+        'edit_users'                    => true,
     );
 
     foreach ($capabilities as $cap => $grant) {
@@ -269,6 +272,128 @@ function ah_ho_hide_dashboard_for_salesperson() {
     if (current_user_can('view_salesperson_commission') && !current_user_can('manage_options')) {
         remove_menu_page('index.php'); // Dashboard
     }
+}
+
+/**
+ * ========================================
+ * CUSTOMER MANAGEMENT SECURITY
+ * ========================================
+ * Salespersons can only:
+ * - Edit their own profile
+ * - Create/edit users with 'customer' role
+ * - Assign only the 'customer' role
+ */
+
+/**
+ * Restrict which roles salespersons can see/assign
+ * Only show 'customer' role in the dropdown
+ */
+add_filter('editable_roles', 'ah_ho_restrict_salesperson_editable_roles');
+
+function ah_ho_restrict_salesperson_editable_roles($roles) {
+    // Only restrict for salespersons
+    if (!ah_ho_is_current_user_salesperson()) {
+        return $roles;
+    }
+
+    // Only allow customer role
+    if (isset($roles['customer'])) {
+        return array('customer' => $roles['customer']);
+    }
+
+    return array();
+}
+
+/**
+ * Prevent salespersons from editing non-customer users
+ * Allow: own profile, customers
+ * Deny: admins, shop_managers, other salespersons
+ */
+add_filter('user_has_cap', 'ah_ho_restrict_salesperson_user_editing', 10, 4);
+
+function ah_ho_restrict_salesperson_user_editing($allcaps, $caps, $args, $user) {
+    // Only check for edit_user capability
+    if (!isset($args[0]) || $args[0] !== 'edit_user') {
+        return $allcaps;
+    }
+
+    // Only restrict salespersons
+    if (!in_array('ah_ho_salesperson', (array) $user->roles)) {
+        return $allcaps;
+    }
+
+    // Get the user being edited
+    $target_user_id = isset($args[2]) ? $args[2] : 0;
+    if (!$target_user_id) {
+        return $allcaps;
+    }
+
+    // Allow editing own profile
+    if ($target_user_id == $user->ID) {
+        return $allcaps;
+    }
+
+    // Check if target user is a customer
+    $target_user = get_userdata($target_user_id);
+    if (!$target_user) {
+        $allcaps['edit_users'] = false;
+        return $allcaps;
+    }
+
+    // Only allow editing customers
+    if (!in_array('customer', (array) $target_user->roles)) {
+        $allcaps['edit_users'] = false;
+    }
+
+    return $allcaps;
+}
+
+/**
+ * Force customer role when salesperson creates a new user
+ * Prevents privilege escalation
+ */
+add_action('user_register', 'ah_ho_force_customer_role_for_salesperson_created_users', 10, 1);
+
+function ah_ho_force_customer_role_for_salesperson_created_users($user_id) {
+    // Only apply when salesperson creates user
+    if (!ah_ho_is_current_user_salesperson()) {
+        return;
+    }
+
+    // Force customer role
+    $user = new WP_User($user_id);
+    $user->set_role('customer');
+}
+
+/**
+ * Filter user list to only show customers for salespersons
+ */
+add_action('pre_get_users', 'ah_ho_filter_user_list_for_salesperson');
+
+function ah_ho_filter_user_list_for_salesperson($query) {
+    // Only on admin user list
+    if (!is_admin()) {
+        return;
+    }
+
+    // Only for salespersons
+    if (!ah_ho_is_current_user_salesperson()) {
+        return;
+    }
+
+    // Only show customers
+    $query->set('role', 'customer');
+}
+
+/**
+ * Helper: Check if current user is a salesperson
+ */
+function ah_ho_is_current_user_salesperson() {
+    $current_user = wp_get_current_user();
+    if (!$current_user || !$current_user->ID) {
+        return false;
+    }
+    return in_array('ah_ho_salesperson', (array) $current_user->roles);
 }
 
 
