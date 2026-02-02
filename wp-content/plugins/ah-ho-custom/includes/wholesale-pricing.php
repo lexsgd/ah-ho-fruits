@@ -640,3 +640,345 @@ function ah_ho_show_wholesale_summary_in_order($order) {
     <?php
 }
 add_action('woocommerce_admin_order_data_after_order_details', 'ah_ho_show_wholesale_summary_in_order');
+
+
+/**
+ * ============================================================================
+ * SECTION 8: QUICK BULK ACTIONS (Stock Status & Wholesale)
+ * ============================================================================
+ * These actions appear in the bulk actions dropdown and execute immediately
+ */
+
+/**
+ * Add custom bulk actions to product list
+ */
+add_filter('bulk_actions-edit-product', 'ah_ho_add_product_bulk_actions');
+
+function ah_ho_add_product_bulk_actions($bulk_actions) {
+    $bulk_actions['set_out_of_stock'] = __('Set to Out of Stock', 'ah-ho-custom');
+    $bulk_actions['set_in_stock'] = __('Set to In Stock', 'ah-ho-custom');
+    $bulk_actions['clear_wholesale_price'] = __('Clear Wholesale Price', 'ah-ho-custom');
+    $bulk_actions['set_wholesale_modal'] = __('Set Wholesale Price...', 'ah-ho-custom');
+    return $bulk_actions;
+}
+
+/**
+ * Handle custom bulk actions
+ */
+add_filter('handle_bulk_actions-edit-product', 'ah_ho_handle_product_bulk_actions', 10, 3);
+
+function ah_ho_handle_product_bulk_actions($redirect_to, $action, $post_ids) {
+    $processed = 0;
+
+    switch ($action) {
+        case 'set_out_of_stock':
+            foreach ($post_ids as $post_id) {
+                $product = wc_get_product($post_id);
+                if ($product) {
+                    $product->set_stock_status('outofstock');
+                    $product->save();
+                    $processed++;
+                }
+            }
+            $redirect_to = add_query_arg('ah_ho_stock_updated', $processed, $redirect_to);
+            $redirect_to = add_query_arg('ah_ho_stock_status', 'outofstock', $redirect_to);
+            break;
+
+        case 'set_in_stock':
+            foreach ($post_ids as $post_id) {
+                $product = wc_get_product($post_id);
+                if ($product) {
+                    $product->set_stock_status('instock');
+                    $product->save();
+                    $processed++;
+                }
+            }
+            $redirect_to = add_query_arg('ah_ho_stock_updated', $processed, $redirect_to);
+            $redirect_to = add_query_arg('ah_ho_stock_status', 'instock', $redirect_to);
+            break;
+
+        case 'clear_wholesale_price':
+            foreach ($post_ids as $post_id) {
+                delete_post_meta($post_id, '_wholesale_price');
+                $processed++;
+            }
+            $redirect_to = add_query_arg('ah_ho_wholesale_cleared', $processed, $redirect_to);
+            break;
+
+        case 'set_wholesale_modal':
+            // Store selected product IDs in transient for the modal
+            set_transient('ah_ho_bulk_wholesale_ids_' . get_current_user_id(), $post_ids, 300);
+            $redirect_to = add_query_arg('ah_ho_show_wholesale_modal', '1', $redirect_to);
+            break;
+    }
+
+    return $redirect_to;
+}
+
+/**
+ * Show admin notices for bulk actions
+ */
+add_action('admin_notices', 'ah_ho_bulk_action_admin_notices');
+
+function ah_ho_bulk_action_admin_notices() {
+    // Stock status update notice
+    if (!empty($_REQUEST['ah_ho_stock_updated'])) {
+        $count = intval($_REQUEST['ah_ho_stock_updated']);
+        $status = sanitize_text_field($_REQUEST['ah_ho_stock_status'] ?? '');
+        $status_label = $status === 'outofstock' ? __('Out of Stock', 'ah-ho-custom') : __('In Stock', 'ah-ho-custom');
+
+        printf(
+            '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+            sprintf(
+                _n(
+                    '%d product set to %s.',
+                    '%d products set to %s.',
+                    $count,
+                    'ah-ho-custom'
+                ),
+                $count,
+                '<strong>' . esc_html($status_label) . '</strong>'
+            )
+        );
+    }
+
+    // Wholesale cleared notice
+    if (!empty($_REQUEST['ah_ho_wholesale_cleared'])) {
+        $count = intval($_REQUEST['ah_ho_wholesale_cleared']);
+
+        printf(
+            '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+            sprintf(
+                _n(
+                    'Wholesale price cleared from %d product.',
+                    'Wholesale price cleared from %d products.',
+                    $count,
+                    'ah-ho-custom'
+                ),
+                $count
+            )
+        );
+    }
+
+    // Wholesale set notice
+    if (!empty($_REQUEST['ah_ho_wholesale_set'])) {
+        $count = intval($_REQUEST['ah_ho_wholesale_set']);
+        $price = sanitize_text_field($_REQUEST['ah_ho_wholesale_price'] ?? '');
+
+        printf(
+            '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+            sprintf(
+                _n(
+                    'Wholesale price set to %s for %d product.',
+                    'Wholesale price set to %s for %d products.',
+                    $count,
+                    'ah-ho-custom'
+                ),
+                wc_price($price),
+                $count
+            )
+        );
+    }
+}
+
+/**
+ * Render wholesale price modal on products page
+ */
+add_action('admin_footer-edit.php', 'ah_ho_render_wholesale_modal');
+
+function ah_ho_render_wholesale_modal() {
+    global $typenow;
+
+    if ($typenow !== 'product') {
+        return;
+    }
+
+    // Check if we should show the modal
+    $show_modal = isset($_GET['ah_ho_show_wholesale_modal']) && $_GET['ah_ho_show_wholesale_modal'] === '1';
+    $product_ids = get_transient('ah_ho_bulk_wholesale_ids_' . get_current_user_id());
+
+    if (!$show_modal || empty($product_ids)) {
+        return;
+    }
+
+    // Clear the transient
+    delete_transient('ah_ho_bulk_wholesale_ids_' . get_current_user_id());
+
+    $product_count = count($product_ids);
+    $product_ids_json = json_encode($product_ids);
+    ?>
+    <div id="ah-ho-wholesale-modal" class="ah-ho-modal-overlay" style="display: flex;">
+        <div class="ah-ho-modal-content">
+            <h2><?php _e('Set Wholesale Price', 'ah-ho-custom'); ?></h2>
+            <p><?php printf(_n('Set wholesale price for %d selected product:', 'Set wholesale price for %d selected products:', $product_count, 'ah-ho-custom'), $product_count); ?></p>
+
+            <form id="ah-ho-wholesale-form" method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+                <input type="hidden" name="action" value="ah_ho_bulk_set_wholesale">
+                <input type="hidden" name="product_ids" value="<?php echo esc_attr($product_ids_json); ?>">
+                <?php wp_nonce_field('ah_ho_bulk_wholesale', 'ah_ho_nonce'); ?>
+
+                <div class="ah-ho-form-row">
+                    <label for="ah_ho_wholesale_type"><?php _e('Price Type:', 'ah-ho-custom'); ?></label>
+                    <select name="wholesale_type" id="ah_ho_wholesale_type">
+                        <option value="fixed"><?php _e('Fixed Price', 'ah-ho-custom'); ?></option>
+                        <option value="percent"><?php _e('% of Regular Price', 'ah-ho-custom'); ?></option>
+                    </select>
+                </div>
+
+                <div class="ah-ho-form-row">
+                    <label for="ah_ho_wholesale_value"><?php _e('Value:', 'ah-ho-custom'); ?></label>
+                    <input type="number" name="wholesale_value" id="ah_ho_wholesale_value" step="0.01" min="0" required>
+                    <span id="ah_ho_value_hint" class="description"><?php echo get_woocommerce_currency_symbol(); ?></span>
+                </div>
+
+                <div class="ah-ho-modal-buttons">
+                    <button type="button" class="button" onclick="document.getElementById('ah-ho-wholesale-modal').style.display='none';">
+                        <?php _e('Cancel', 'ah-ho-custom'); ?>
+                    </button>
+                    <button type="submit" class="button button-primary">
+                        <?php _e('Set Wholesale Price', 'ah-ho-custom'); ?>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .ah-ho-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 100000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .ah-ho-modal-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+        }
+        .ah-ho-modal-content h2 {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .ah-ho-form-row {
+            margin-bottom: 15px;
+        }
+        .ah-ho-form-row label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .ah-ho-form-row select,
+        .ah-ho-form-row input[type="number"] {
+            width: 100%;
+            padding: 8px;
+        }
+        .ah-ho-modal-buttons {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .ah-ho-modal-buttons .button {
+            margin-left: 10px;
+        }
+    </style>
+
+    <script>
+        jQuery(document).ready(function($) {
+            $('#ah_ho_wholesale_type').on('change', function() {
+                if ($(this).val() === 'percent') {
+                    $('#ah_ho_value_hint').text('%');
+                    $('#ah_ho_wholesale_value').attr('max', '100');
+                } else {
+                    $('#ah_ho_value_hint').text('<?php echo get_woocommerce_currency_symbol(); ?>');
+                    $('#ah_ho_wholesale_value').removeAttr('max');
+                }
+            });
+
+            // Close modal on overlay click
+            $('#ah-ho-wholesale-modal').on('click', function(e) {
+                if (e.target === this) {
+                    $(this).hide();
+                }
+            });
+
+            // Close on escape
+            $(document).on('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    $('#ah-ho-wholesale-modal').hide();
+                }
+            });
+        });
+    </script>
+    <?php
+}
+
+/**
+ * Handle bulk wholesale price form submission
+ */
+add_action('admin_post_ah_ho_bulk_set_wholesale', 'ah_ho_handle_bulk_wholesale_submit');
+
+function ah_ho_handle_bulk_wholesale_submit() {
+    // Verify nonce
+    if (!isset($_POST['ah_ho_nonce']) || !wp_verify_nonce($_POST['ah_ho_nonce'], 'ah_ho_bulk_wholesale')) {
+        wp_die(__('Security check failed', 'ah-ho-custom'));
+    }
+
+    // Check permissions
+    if (!current_user_can('edit_products')) {
+        wp_die(__('Permission denied', 'ah-ho-custom'));
+    }
+
+    $product_ids = json_decode(stripslashes($_POST['product_ids']), true);
+    $type = sanitize_text_field($_POST['wholesale_type']);
+    $value = floatval($_POST['wholesale_value']);
+
+    if (empty($product_ids) || !is_array($product_ids)) {
+        wp_redirect(admin_url('edit.php?post_type=product'));
+        exit;
+    }
+
+    $processed = 0;
+    $final_price = 0;
+
+    foreach ($product_ids as $product_id) {
+        $product = wc_get_product($product_id);
+        if (!$product) {
+            continue;
+        }
+
+        if ($type === 'percent') {
+            // Calculate as percentage of regular price
+            $regular_price = floatval($product->get_regular_price());
+            if ($regular_price > 0) {
+                $final_price = $regular_price * ($value / 100);
+            } else {
+                continue;
+            }
+        } else {
+            // Fixed price
+            $final_price = $value;
+        }
+
+        update_post_meta($product_id, '_wholesale_price', wc_format_decimal($final_price));
+        $processed++;
+    }
+
+    // Redirect back with success message
+    $redirect_url = add_query_arg(array(
+        'post_type' => 'product',
+        'ah_ho_wholesale_set' => $processed,
+        'ah_ho_wholesale_price' => $final_price,
+    ), admin_url('edit.php'));
+
+    wp_redirect($redirect_url);
+    exit;
+}
