@@ -5,6 +5,10 @@
  * Adds delivery date selection to checkout and order admin.
  * Works with the Delivery Date Helper in ah-ho-invoicing plugin.
  *
+ * Supports BOTH:
+ * - Classic WooCommerce checkout (shortcode)
+ * - WooCommerce Blocks checkout (modern block-based)
+ *
  * @package AhHoCustom
  * @since 1.6.0
  */
@@ -15,12 +19,12 @@ if (!defined('ABSPATH')) {
 
 /**
  * ============================================================================
- * SECTION 1: CHECKOUT - Customer Delivery Date Selection
+ * SECTION 1A: CLASSIC CHECKOUT - Customer Delivery Date Selection
  * ============================================================================
  */
 
 /**
- * Add delivery date field to checkout
+ * Add delivery date field to classic checkout
  */
 add_action('woocommerce_before_order_notes', 'ah_ho_add_delivery_date_checkout_field');
 
@@ -81,11 +85,16 @@ function ah_ho_get_next_delivery_date() {
 }
 
 /**
- * Validate delivery date field
+ * Validate delivery date field (classic checkout)
  */
 add_action('woocommerce_checkout_process', 'ah_ho_validate_delivery_date_field');
 
 function ah_ho_validate_delivery_date_field() {
+    // Skip if using blocks checkout (handled by Store API)
+    if (ah_ho_is_blocks_checkout()) {
+        return;
+    }
+
     if (empty($_POST['delivery_date'])) {
         wc_add_notice(__('Please select a delivery date.', 'ah-ho-custom'), 'error');
         return;
@@ -101,7 +110,309 @@ function ah_ho_validate_delivery_date_field() {
 }
 
 /**
- * Save delivery date to order meta
+ * Check if using blocks checkout
+ */
+function ah_ho_is_blocks_checkout() {
+    if (class_exists('Automattic\WooCommerce\Blocks\Package')) {
+        return \Automattic\WooCommerce\Blocks\Package::feature()->is_feature_plugin_build();
+    }
+    return false;
+}
+
+
+/**
+ * ============================================================================
+ * SECTION 1B: WOOCOMMERCE BLOCKS CHECKOUT - Delivery Date Integration
+ * ============================================================================
+ */
+
+/**
+ * Register delivery date with WooCommerce Blocks Store API
+ */
+add_action('woocommerce_blocks_loaded', 'ah_ho_register_delivery_date_blocks_integration');
+
+function ah_ho_register_delivery_date_blocks_integration() {
+    // Register with Store API for checkout data
+    if (function_exists('woocommerce_store_api_register_endpoint_data')) {
+        woocommerce_store_api_register_endpoint_data(array(
+            'endpoint'        => \Automattic\WooCommerce\StoreApi\Schemas\V1\CheckoutSchema::IDENTIFIER,
+            'namespace'       => 'ah-ho-delivery',
+            'data_callback'   => 'ah_ho_delivery_date_data_callback',
+            'schema_callback' => 'ah_ho_delivery_date_schema_callback',
+            'schema_type'     => ARRAY_A,
+        ));
+    }
+
+    // Register integration
+    add_action('woocommerce_blocks_checkout_block_registration', function($integration_registry) {
+        $integration_registry->register(new AH_HO_Delivery_Date_Blocks_Integration());
+    });
+}
+
+/**
+ * Data callback for Store API
+ */
+function ah_ho_delivery_date_data_callback() {
+    return array(
+        'delivery_date'      => '',
+        'delivery_time_slot' => '',
+    );
+}
+
+/**
+ * Schema callback for Store API
+ */
+function ah_ho_delivery_date_schema_callback() {
+    return array(
+        'delivery_date' => array(
+            'description' => __('Delivery date', 'ah-ho-custom'),
+            'type'        => 'string',
+            'context'     => array('view', 'edit'),
+            'readonly'    => false,
+        ),
+        'delivery_time_slot' => array(
+            'description' => __('Delivery time slot', 'ah-ho-custom'),
+            'type'        => 'string',
+            'context'     => array('view', 'edit'),
+            'readonly'    => false,
+        ),
+    );
+}
+
+/**
+ * Save delivery date from Blocks checkout via Store API
+ */
+add_action('woocommerce_store_api_checkout_update_order_from_request', 'ah_ho_save_delivery_date_from_blocks', 10, 2);
+
+function ah_ho_save_delivery_date_from_blocks($order, $request) {
+    $extensions = $request->get_param('extensions');
+
+    if (isset($extensions['ah-ho-delivery']['delivery_date'])) {
+        $delivery_date = sanitize_text_field($extensions['ah-ho-delivery']['delivery_date']);
+        $order->update_meta_data('_delivery_date', $delivery_date);
+    }
+
+    if (isset($extensions['ah-ho-delivery']['delivery_time_slot'])) {
+        $time_slot = sanitize_text_field($extensions['ah-ho-delivery']['delivery_time_slot']);
+        $order->update_meta_data('_delivery_time_slot', $time_slot);
+    }
+}
+
+/**
+ * Blocks Integration Class
+ */
+if (class_exists('Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface')) {
+    class AH_HO_Delivery_Date_Blocks_Integration implements \Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface {
+
+        public function get_name() {
+            return 'ah-ho-delivery-date';
+        }
+
+        public function initialize() {
+            $this->register_block_frontend_scripts();
+        }
+
+        public function get_script_handles() {
+            return array('ah-ho-delivery-date-blocks');
+        }
+
+        public function get_editor_script_handles() {
+            return array('ah-ho-delivery-date-blocks');
+        }
+
+        public function get_script_data() {
+            return array(
+                'minDate'   => ah_ho_get_next_delivery_date(),
+                'maxDate'   => date('Y-m-d', strtotime('+30 days')),
+                'timeSlots' => array(
+                    array('value' => '', 'label' => __('Any time', 'ah-ho-custom')),
+                    array('value' => 'morning', 'label' => __('Morning (6am - 12pm)', 'ah-ho-custom')),
+                    array('value' => 'afternoon', 'label' => __('Afternoon (12pm - 6pm)', 'ah-ho-custom')),
+                ),
+            );
+        }
+
+        private function register_block_frontend_scripts() {
+            // Inline script instead of external file for simplicity
+            wp_register_script(
+                'ah-ho-delivery-date-blocks',
+                '',
+                array('wp-element', 'wp-components', 'wc-blocks-checkout'),
+                AH_HO_CUSTOM_VERSION,
+                true
+            );
+        }
+    }
+}
+
+/**
+ * Inject delivery date fields into Blocks checkout via JavaScript
+ */
+add_action('wp_footer', 'ah_ho_blocks_checkout_inline_script');
+
+function ah_ho_blocks_checkout_inline_script() {
+    // Only on checkout page
+    if (!is_checkout()) {
+        return;
+    }
+
+    $min_date = ah_ho_get_next_delivery_date();
+    $max_date = date('Y-m-d', strtotime('+30 days'));
+    ?>
+    <script type="text/javascript">
+    (function() {
+        'use strict';
+
+        // Wait for checkout to be ready
+        function initDeliveryDate() {
+            // Check if blocks checkout exists
+            const checkoutForm = document.querySelector('.wc-block-checkout');
+            if (!checkoutForm) {
+                // Not blocks checkout, skip
+                return;
+            }
+
+            // Check if already added
+            if (document.getElementById('ah-ho-delivery-date-blocks-container')) {
+                return;
+            }
+
+            // Find the shipping options section or contact section
+            const shippingOptions = document.querySelector('.wc-block-components-shipping-rates-control');
+            const contactInfo = document.querySelector('.wc-block-checkout__contact-fields');
+
+            // Create delivery date container
+            const container = document.createElement('div');
+            container.id = 'ah-ho-delivery-date-blocks-container';
+            container.className = 'wc-block-components-checkout-step';
+            container.innerHTML = `
+                <div class="ah-ho-delivery-date-wrapper" style="background: #f8f9fa; border: 2px solid #2ea44f; border-radius: 8px; padding: 20px; margin: 20px 0;">
+                    <h3 style="margin-top: 0; color: #2ea44f; font-size: 1.1em; margin-bottom: 15px;">📅 Delivery Date</h3>
+
+                    <div style="margin-bottom: 15px;">
+                        <label for="ah_ho_delivery_date" style="display: block; margin-bottom: 5px; font-weight: 600;">
+                            Preferred Delivery Date <span style="color: red;">*</span>
+                        </label>
+                        <input type="date" id="ah_ho_delivery_date" name="ah_ho_delivery_date"
+                               min="<?php echo esc_attr($min_date); ?>"
+                               max="<?php echo esc_attr($max_date); ?>"
+                               required
+                               style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <label for="ah_ho_delivery_time_slot" style="display: block; margin-bottom: 5px; font-weight: 600;">
+                            Delivery Time Slot
+                        </label>
+                        <select id="ah_ho_delivery_time_slot" name="ah_ho_delivery_time_slot"
+                                style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="">Any time</option>
+                            <option value="morning">Morning (6am - 12pm)</option>
+                            <option value="afternoon">Afternoon (12pm - 6pm)</option>
+                        </select>
+                    </div>
+
+                    <p style="margin: 0; font-size: 12px; color: #666;">
+                        Note: Orders placed before 2pm may be delivered same day (subject to availability).
+                    </p>
+                </div>
+            `;
+
+            // Insert after shipping options or before payment
+            if (shippingOptions) {
+                shippingOptions.parentNode.insertBefore(container, shippingOptions.nextSibling);
+            } else if (contactInfo) {
+                contactInfo.parentNode.appendChild(container);
+            } else {
+                // Fallback: insert before payment
+                const payment = document.querySelector('.wc-block-checkout__payment-method');
+                if (payment) {
+                    payment.parentNode.insertBefore(container, payment);
+                }
+            }
+
+            // Listen for form submission and add data to checkout
+            const dateInput = document.getElementById('ah_ho_delivery_date');
+            const timeInput = document.getElementById('ah_ho_delivery_time_slot');
+
+            // Validate on submit
+            checkoutForm.addEventListener('submit', function(e) {
+                if (!dateInput.value) {
+                    e.preventDefault();
+                    alert('Please select a delivery date.');
+                    dateInput.focus();
+                    return false;
+                }
+            });
+
+            // Store values for WooCommerce Blocks
+            function updateHiddenFields() {
+                // WooCommerce Blocks uses its own state management
+                // We'll use the Store API extension data
+                if (window.wp && window.wp.data) {
+                    const { dispatch } = window.wp.data;
+                    const store = dispatch('wc/store/checkout');
+                    if (store && store.setExtensionData) {
+                        store.setExtensionData('ah-ho-delivery', {
+                            delivery_date: dateInput.value,
+                            delivery_time_slot: timeInput.value
+                        });
+                    }
+                }
+            }
+
+            dateInput.addEventListener('change', updateHiddenFields);
+            timeInput.addEventListener('change', updateHiddenFields);
+
+            // Also create hidden form fields as backup
+            const hiddenDate = document.createElement('input');
+            hiddenDate.type = 'hidden';
+            hiddenDate.name = 'delivery_date';
+            hiddenDate.id = 'delivery_date_hidden';
+            checkoutForm.appendChild(hiddenDate);
+
+            const hiddenTime = document.createElement('input');
+            hiddenTime.type = 'hidden';
+            hiddenTime.name = 'delivery_time_slot';
+            hiddenTime.id = 'delivery_time_slot_hidden';
+            checkoutForm.appendChild(hiddenTime);
+
+            dateInput.addEventListener('change', function() {
+                hiddenDate.value = this.value;
+            });
+            timeInput.addEventListener('change', function() {
+                hiddenTime.value = this.value;
+            });
+        }
+
+        // Run on page load and observe DOM changes
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDeliveryDate);
+        } else {
+            initDeliveryDate();
+        }
+
+        // Also observe for dynamic content loading (React hydration)
+        const observer = new MutationObserver(function(mutations) {
+            initDeliveryDate();
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
+        // Cleanup observer after 10 seconds
+        setTimeout(function() {
+            observer.disconnect();
+        }, 10000);
+    })();
+    </script>
+    <?php
+}
+
+/**
+ * Save delivery date to order meta (classic checkout)
  */
 add_action('woocommerce_checkout_update_order_meta', 'ah_ho_save_delivery_date_field');
 
@@ -119,6 +430,54 @@ function ah_ho_save_delivery_date_field($order_id) {
         }
 
         $order->save();
+    }
+}
+
+/**
+ * Save delivery date from Blocks checkout (multiple fallback methods)
+ */
+add_action('woocommerce_checkout_order_created', 'ah_ho_save_delivery_date_blocks_fallback');
+
+function ah_ho_save_delivery_date_blocks_fallback($order) {
+    // Skip if already has delivery date
+    if ($order->get_meta('_delivery_date')) {
+        return;
+    }
+
+    // Try to get from POST data (hidden fields)
+    if (!empty($_POST['delivery_date'])) {
+        $order->update_meta_data('_delivery_date', sanitize_text_field($_POST['delivery_date']));
+        if (!empty($_POST['delivery_time_slot'])) {
+            $order->update_meta_data('_delivery_time_slot', sanitize_text_field($_POST['delivery_time_slot']));
+        }
+        $order->save();
+        return;
+    }
+
+    // Try to get from request body (Blocks checkout JSON)
+    $request_body = file_get_contents('php://input');
+    if ($request_body) {
+        $data = json_decode($request_body, true);
+        if ($data) {
+            // Check extensions
+            if (isset($data['extensions']['ah-ho-delivery']['delivery_date'])) {
+                $order->update_meta_data('_delivery_date', sanitize_text_field($data['extensions']['ah-ho-delivery']['delivery_date']));
+                if (isset($data['extensions']['ah-ho-delivery']['delivery_time_slot'])) {
+                    $order->update_meta_data('_delivery_time_slot', sanitize_text_field($data['extensions']['ah-ho-delivery']['delivery_time_slot']));
+                }
+                $order->save();
+                return;
+            }
+
+            // Check additional_fields (newer WooCommerce Blocks format)
+            if (isset($data['additional_fields']['ah_ho/delivery_date'])) {
+                $order->update_meta_data('_delivery_date', sanitize_text_field($data['additional_fields']['ah_ho/delivery_date']));
+                if (isset($data['additional_fields']['ah_ho/delivery_time_slot'])) {
+                    $order->update_meta_data('_delivery_time_slot', sanitize_text_field($data['additional_fields']['ah_ho/delivery_time_slot']));
+                }
+                $order->save();
+            }
+        }
     }
 }
 
