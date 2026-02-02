@@ -83,8 +83,9 @@ class AH_HO_Admin_Page {
                                 <label for="order_status"><?php _e('Order Status', 'ah-ho-invoicing'); ?></label>
                             </th>
                             <td>
-                                <select id="order_status" name="order_status[]" multiple style="width: 300px; height: 100px;">
+                                <select id="order_status" name="order_status[]" multiple style="width: 300px; height: 120px;">
                                     <option value="wc-processing" selected><?php _e('Processing', 'ah-ho-invoicing'); ?></option>
+                                    <option value="wc-processing-b2b" selected><?php _e('Processing - B2B', 'ah-ho-invoicing'); ?></option>
                                     <option value="wc-on-hold"><?php _e('On Hold', 'ah-ho-invoicing'); ?></option>
                                     <option value="wc-out-for-delivery"><?php _e('Out for Delivery', 'ah-ho-invoicing'); ?></option>
                                 </select>
@@ -147,8 +148,9 @@ class AH_HO_Admin_Page {
                                 <label for="bulk_order_status"><?php _e('Order Status', 'ah-ho-invoicing'); ?></label>
                             </th>
                             <td>
-                                <select id="bulk_order_status" name="bulk_order_status[]" multiple style="width: 300px; height: 100px;">
+                                <select id="bulk_order_status" name="bulk_order_status[]" multiple style="width: 300px; height: 120px;">
                                     <option value="wc-processing" selected><?php _e('Processing', 'ah-ho-invoicing'); ?></option>
+                                    <option value="wc-processing-b2b" selected><?php _e('Processing - B2B', 'ah-ho-invoicing'); ?></option>
                                     <option value="wc-on-hold"><?php _e('On Hold', 'ah-ho-invoicing'); ?></option>
                                     <option value="wc-out-for-delivery"><?php _e('Out for Delivery', 'ah-ho-invoicing'); ?></option>
                                     <option value="wc-completed"><?php _e('Completed', 'ah-ho-invoicing'); ?></option>
