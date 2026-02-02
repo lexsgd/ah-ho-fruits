@@ -87,6 +87,8 @@ function ah_ho_update_salesperson_role() {
         'delete_others_shop_orders'     => false,
         'read_product'                  => true,
         'read_products'                 => true,
+        'edit_product'                  => true,  // Required for adding products to orders
+        'edit_products'                 => true,  // Required for product search in orders
         'list_users'                    => true,
         'read_shop_customer'            => true,
         'view_salesperson_commission'   => true,
