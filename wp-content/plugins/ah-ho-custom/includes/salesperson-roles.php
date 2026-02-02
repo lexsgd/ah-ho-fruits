@@ -208,12 +208,17 @@ function ah_ho_save_commission_rate_field($user_id) {
  */
 
 /**
- * Setup B2B enhancement filters on init
- * Using init hook to ensure WordPress is fully loaded
+ * Setup B2B enhancement filters on admin_init
+ * Using admin_init to ensure WordPress admin is fully loaded
  */
-add_action('init', 'ah_ho_setup_b2b_enhancement_filters', 20);
+add_action('admin_init', 'ah_ho_setup_b2b_enhancement_filters');
 
 function ah_ho_setup_b2b_enhancement_filters() {
+    // Only run in admin context
+    if (!is_admin()) {
+        return;
+    }
+
     // Customer role restrictions for salespersons
     add_filter('editable_roles', 'ah_ho_restrict_salesperson_editable_roles');
     add_filter('pre_option_default_role', 'ah_ho_force_customer_default_role');
