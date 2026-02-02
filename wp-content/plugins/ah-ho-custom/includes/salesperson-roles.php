@@ -197,34 +197,39 @@ function ah_ho_save_commission_rate_field($user_id) {
 
 /**
  * Redirect salespersons to admin dashboard after login
- * By default WooCommerce redirects to my-account page
+ * Uses wp_login action which fires after successful authentication
  */
-add_filter('woocommerce_login_redirect', 'ah_ho_wc_salesperson_login_redirect', 10, 2);
+add_action('wp_login', 'ah_ho_salesperson_redirect_after_login', 10, 2);
+
+function ah_ho_salesperson_redirect_after_login($user_login, $user) {
+    // Check if user is a salesperson
+    if (in_array('ah_ho_salesperson', (array) $user->roles)) {
+        wp_safe_redirect(admin_url());
+        exit;
+    }
+}
+
+/**
+ * Also handle WooCommerce login redirect filter (backup)
+ */
+add_filter('woocommerce_login_redirect', 'ah_ho_wc_salesperson_login_redirect', 99, 2);
 
 function ah_ho_wc_salesperson_login_redirect($redirect, $user) {
-    // Check if user is a salesperson
-    if ($user && isset($user->roles) && in_array('ah_ho_salesperson', (array) $user->roles)) {
+    if ($user && in_array('ah_ho_salesperson', (array) $user->roles)) {
         return admin_url();
     }
     return $redirect;
 }
 
 /**
- * WordPress login redirect for salespersons
+ * WordPress login redirect filter (backup)
  */
-add_filter('login_redirect', 'ah_ho_wp_salesperson_login_redirect', 10, 3);
+add_filter('login_redirect', 'ah_ho_wp_salesperson_login_redirect', 99, 3);
 
 function ah_ho_wp_salesperson_login_redirect($redirect_to, $requested_redirect_to, $user) {
-    // Check if we have a valid user object
-    if (!isset($user->roles) || is_wp_error($user)) {
-        return $redirect_to;
-    }
-
-    // Check if user is a salesperson
-    if (in_array('ah_ho_salesperson', (array) $user->roles)) {
+    if (!is_wp_error($user) && in_array('ah_ho_salesperson', (array) $user->roles)) {
         return admin_url();
     }
-
     return $redirect_to;
 }
 
