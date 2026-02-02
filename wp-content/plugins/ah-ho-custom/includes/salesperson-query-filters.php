@@ -26,6 +26,63 @@ if (!function_exists('ah_ho_is_current_user_salesperson')) {
 }
 
 /**
+ * CRITICAL: Map meta capabilities for salesperson order access
+ *
+ * This filter runs BEFORE user_has_cap and modifies what capabilities
+ * WordPress checks. For salespersons editing their assigned orders,
+ * we return the base capabilities they already have.
+ */
+add_filter('map_meta_cap', 'ah_ho_map_order_meta_cap', 10, 4);
+
+function ah_ho_map_order_meta_cap($caps, $cap, $user_id, $args) {
+    // Only modify shop_order capabilities
+    if (!in_array($cap, array('edit_shop_order', 'read_shop_order', 'delete_shop_order'))) {
+        return $caps;
+    }
+
+    // Check if user is a salesperson
+    $user = get_userdata($user_id);
+    if (!$user || !in_array('ah_ho_salesperson', (array) $user->roles)) {
+        return $caps;
+    }
+
+    // Get the order ID from args
+    $order_id = isset($args[0]) ? $args[0] : 0;
+    if (!$order_id) {
+        return $caps;
+    }
+
+    // Get the order
+    $order = wc_get_order($order_id);
+    if (!$order) {
+        return $caps;
+    }
+
+    $assigned_salesperson = $order->get_meta('_assigned_salesperson_id', true);
+
+    // If order is assigned to this salesperson OR has no salesperson yet
+    if ($assigned_salesperson == $user_id || empty($assigned_salesperson)) {
+        // Auto-assign if no salesperson
+        if (empty($assigned_salesperson)) {
+            $order->update_meta_data('_assigned_salesperson_id', $user_id);
+            $order->update_meta_data('_commission_status', 'pending');
+            $order->save();
+        }
+
+        // Return base capability that salesperson has
+        // This effectively grants permission
+        if ($cap === 'edit_shop_order') {
+            return array('edit_shop_orders');
+        }
+        if ($cap === 'read_shop_order') {
+            return array('read_shop_orders');
+        }
+    }
+
+    return $caps;
+}
+
+/**
  * Helper function to get assigned salesperson from an order (HPOS compatible)
  *
  * @param int|WC_Order $order Order ID or order object
