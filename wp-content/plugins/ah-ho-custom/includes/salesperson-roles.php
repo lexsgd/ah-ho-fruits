@@ -309,14 +309,22 @@ add_action('edit_user_profile', 'ah_ho_add_payment_terms_field');
 add_action('user_new_form', 'ah_ho_add_payment_terms_field');
 
 function ah_ho_add_payment_terms_field($user) {
+    // Determine if this is a new user form or existing user profile
     $is_new_user = !is_object($user);
 
-    if (!$is_new_user && !in_array('customer', (array) $user->roles)) {
-        return;
+    // For existing users, only show for customers
+    if (!$is_new_user) {
+        if (!isset($user->roles) || !in_array('customer', (array) $user->roles)) {
+            return;
+        }
     }
 
-    if ($is_new_user && !ah_ho_is_current_user_salesperson() && !current_user_can('manage_options')) {
-        return;
+    // For new user form, show only for admins and salespersons
+    if ($is_new_user) {
+        // Check if user can create users (admin or salesperson with create_users cap)
+        if (!current_user_can('create_users')) {
+            return;
+        }
     }
 
     $payment_terms = $is_new_user ? '' : get_user_meta($user->ID, '_payment_terms', true);
