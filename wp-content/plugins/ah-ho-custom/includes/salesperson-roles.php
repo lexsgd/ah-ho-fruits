@@ -265,7 +265,7 @@ function ah_ho_wp_salesperson_login_redirect($redirect_to, $requested_redirect_t
 
 /**
  * Hide unnecessary menu items for salespersons
- * Keep only: WooCommerce > Orders, PDF Documents, My Commission, Users
+ * Keep only: WooCommerce > Orders, My Commission, Users
  */
 add_action('admin_menu', 'ah_ho_hide_menus_for_salesperson', 999);
 
@@ -279,6 +279,7 @@ function ah_ho_hide_menus_for_salesperson() {
     remove_menu_page('upload.php');                   // Media
     remove_menu_page('woocommerce-marketing');        // Marketing
     remove_menu_page('admin.php?page=wc-settings&tab=checkout&from=PAYMENTS_MENU_ITEM'); // Payments
+    remove_menu_page('ah-ho-pdf-bulk');               // PDF Documents
 
     // Hide WooCommerce submenus (keep only Orders)
     remove_submenu_page('woocommerce', 'wc-admin');                    // Home
