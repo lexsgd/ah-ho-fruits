@@ -258,26 +258,9 @@ function ah_ho_prevent_unauthorized_order_access() {
         return;
     }
 
-    // If order has NO salesperson assigned, auto-assign current salesperson
-    // This handles new orders where the woocommerce_new_order hook may not have saved the meta yet
-    if ($assigned_salesperson === null) {
-        $order->update_meta_data('_assigned_salesperson_id', $current_user_id);
-        $order->update_meta_data('_commission_status', 'pending');
-        $order->save();
-
-        // Log the auto-assignment for debugging
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log(sprintf(
-                '[Ah Ho Custom] Auto-assigned order #%d to salesperson %d (fallback assignment)',
-                $order_id,
-                $current_user_id
-            ));
-        }
-
-        return; // Allow access after assignment
-    }
-
-    // Order is assigned to someone else - deny access
+    // If order has no salesperson or is assigned to someone else - deny access
+    // NOTE: Auto-assignment only happens via woocommerce_new_order hook
+    // We do NOT auto-assign when viewing orders to prevent accidental assignment
     ah_ho_log_unauthorized_access($order_id, $current_user_id);
 
     wp_die(
@@ -484,11 +467,13 @@ function ah_ho_filter_dashboard_widget() {
 }
 
 /**
- * Grant salespersons permission to edit their own orders and unassigned orders (HPOS Compatible)
+ * Grant salespersons permission to edit their own assigned orders (HPOS Compatible)
  *
  * This filter intercepts capability checks to allow salespersons to:
  * 1. Edit orders assigned to them
- * 2. Edit newly created orders (no salesperson assigned yet)
+ *
+ * NOTE: Auto-assignment only happens via woocommerce_new_order hook in salesperson-attribution.php
+ * We do NOT auto-assign when viewing orders to prevent accidental assignment of existing orders.
  */
 add_filter('user_has_cap', 'ah_ho_grant_salesperson_order_caps', 10, 4);
 
@@ -530,21 +515,9 @@ function ah_ho_grant_salesperson_order_caps($allcaps, $caps, $args, $user) {
                 return $allcaps;
             }
 
-            // Allow if order has no salesperson assigned (new order)
-            // Also auto-assign the order to this salesperson
-            if (!$assigned_salesperson) {
-                $order->update_meta_data('_assigned_salesperson_id', $user->ID);
-                $order->update_meta_data('_commission_status', 'pending');
-                $order->save();
-
-                $allcaps['edit_shop_order'] = true;
-                $allcaps['edit_shop_orders'] = true;
-                $allcaps['edit_others_shop_orders'] = true;
-                $allcaps['read_shop_order'] = true;
-                return $allcaps;
-            }
-
-            // Order is assigned to someone else - deny (keep original caps)
+            // Order has no salesperson or is assigned to someone else
+            // Salespersons can only access their own orders
+            // (Auto-assignment happens in salesperson-attribution.php on order creation)
             return $allcaps;
         }
     }

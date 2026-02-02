@@ -92,6 +92,65 @@ function ah_ho_maybe_recalculate_commissions() {
 }
 
 /**
+ * Clean up incorrectly assigned orders (admin tool)
+ *
+ * Removes salesperson assignment from orders that are NOT in "Processing - B2B" status
+ * Trigger: Visit wp-admin with ?ah_ho_cleanup_assignments=1
+ */
+add_action('admin_init', 'ah_ho_maybe_cleanup_assignments');
+
+function ah_ho_maybe_cleanup_assignments() {
+    if (!isset($_GET['ah_ho_cleanup_assignments']) || $_GET['ah_ho_cleanup_assignments'] !== '1') {
+        return;
+    }
+
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+
+    if (isset($_GET['_wpnonce']) && !wp_verify_nonce($_GET['_wpnonce'], 'ah_ho_cleanup_assignments')) {
+        return;
+    }
+
+    global $wpdb;
+
+    // Find orders with salesperson assigned but NOT in processing-b2b status
+    $orders_table = $wpdb->prefix . 'wc_orders';
+    $meta_table = $wpdb->prefix . 'wc_orders_meta';
+
+    $order_ids = $wpdb->get_col("
+        SELECT DISTINCT o.id
+        FROM {$orders_table} o
+        INNER JOIN {$meta_table} sp ON o.id = sp.order_id AND sp.meta_key = '_assigned_salesperson_id'
+        WHERE o.type = 'shop_order'
+        AND o.status != 'wc-processing-b2b'
+    ");
+
+    $cleaned = 0;
+
+    foreach ($order_ids as $order_id) {
+        $order = wc_get_order($order_id);
+        if (!$order) continue;
+
+        // Remove salesperson assignment and commission data
+        $order->delete_meta_data('_assigned_salesperson_id');
+        $order->delete_meta_data('_commission_amount');
+        $order->delete_meta_data('_commission_rate');
+        $order->delete_meta_data('_commission_status');
+        $order->save();
+
+        $cleaned++;
+    }
+
+    add_action('admin_notices', function() use ($cleaned) {
+        printf(
+            '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+            sprintf(__('Removed salesperson assignment from %d non-B2B orders.', 'ah-ho-custom'), $cleaned)
+        );
+    });
+}
+
+/**
  * Add admin menu pages
  */
 add_action('admin_menu', 'ah_ho_add_commission_dashboard_pages');
@@ -147,6 +206,9 @@ function ah_ho_render_admin_commission_dashboard() {
         </a>
         <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=ah-ho-salesperson-commissions&ah_ho_recalc_commission=1'), 'ah_ho_recalc_commission'); ?>" class="page-title-action">
             <?php _e('Recalculate All', 'ah-ho-custom'); ?>
+        </a>
+        <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=ah-ho-salesperson-commissions&ah_ho_cleanup_assignments=1'), 'ah_ho_cleanup_assignments'); ?>" class="page-title-action" style="color: #b32d2e;">
+            <?php _e('Cleanup Non-B2B', 'ah-ho-custom'); ?>
         </a>
         <hr class="wp-header-end">
 
