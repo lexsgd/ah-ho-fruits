@@ -358,24 +358,95 @@ function ah_ho_filter_order_count($count, $status) {
         return $count;
     }
 
-    // Format status properly for wc_get_orders
-    $order_status = strpos($status, 'wc-') === 0 ? $status : 'wc-' . $status;
+    return ah_ho_count_salesperson_orders($status);
+}
 
-    // Count only assigned orders using wc_get_orders (HPOS compatible)
-    $orders = wc_get_orders(array(
-        'status'     => $order_status,
-        'limit'      => -1,
-        'return'     => 'ids',
-        'meta_query' => array(
-            array(
-                'key'     => '_assigned_salesperson_id',
-                'value'   => get_current_user_id(),
-                'compare' => '='
-            )
-        )
-    ));
+/**
+ * Helper: Count orders assigned to current salesperson
+ */
+function ah_ho_count_salesperson_orders($status = 'any') {
+    global $wpdb;
 
-    return count($orders);
+    $current_user_id = get_current_user_id();
+    $meta_table = $wpdb->prefix . 'wc_orders_meta';
+    $orders_table = $wpdb->prefix . 'wc_orders';
+
+    // Build status condition
+    $status_condition = '';
+    if ($status !== 'any' && $status !== 'all') {
+        $order_status = strpos($status, 'wc-') === 0 ? $status : 'wc-' . $status;
+        $status_condition = $wpdb->prepare(" AND o.status = %s", $order_status);
+    }
+
+    // Count orders assigned to this salesperson
+    $sql = $wpdb->prepare(
+        "SELECT COUNT(DISTINCT o.id) FROM {$orders_table} o
+         INNER JOIN {$meta_table} m ON o.id = m.order_id
+         WHERE m.meta_key = '_assigned_salesperson_id'
+         AND m.meta_value = %s
+         AND o.type = 'shop_order'
+         {$status_condition}",
+        $current_user_id
+    );
+
+    return (int) $wpdb->get_var($sql);
+}
+
+/**
+ * Filter status views/links counts for HPOS orders list
+ */
+add_filter('views_woocommerce_page_wc-orders', 'ah_ho_filter_order_status_views', 10, 1);
+
+function ah_ho_filter_order_status_views($views) {
+    // Only filter for salespersons
+    if (!ah_ho_is_current_user_salesperson()) {
+        return $views;
+    }
+
+    // Get all order statuses
+    $statuses = wc_get_order_statuses();
+
+    // Calculate total for "All"
+    $all_count = 0;
+
+    foreach ($views as $status_slug => $view) {
+        if ($status_slug === 'all') {
+            continue; // Handle "All" separately
+        }
+
+        // Get the proper status key
+        $status_key = 'wc-' . $status_slug;
+        if (strpos($status_slug, 'wc-') === 0) {
+            $status_key = $status_slug;
+        }
+
+        // Count orders for this status
+        $count = ah_ho_count_salesperson_orders($status_key);
+        $all_count += $count;
+
+        // Update the count in the view HTML
+        if ($count > 0) {
+            $views[$status_slug] = preg_replace(
+                '/\<span class="count"\>\(\d+\)\<\/span\>/',
+                '<span class="count">(' . $count . ')</span>',
+                $view
+            );
+        } else {
+            // Remove status link if count is 0
+            unset($views[$status_slug]);
+        }
+    }
+
+    // Update "All" count
+    if (isset($views['all'])) {
+        $views['all'] = preg_replace(
+            '/\<span class="count"\>\(\d+\)\<\/span\>/',
+            '<span class="count">(' . $all_count . ')</span>',
+            $views['all']
+        );
+    }
+
+    return $views;
 }
 
 /**
