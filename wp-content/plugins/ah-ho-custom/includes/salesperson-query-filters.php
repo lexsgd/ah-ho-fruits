@@ -18,9 +18,11 @@ if (!defined('ABSPATH')) {
 /**
  * Helper function to check if current user is a salesperson
  */
-function ah_ho_is_current_user_salesperson() {
-    $user = wp_get_current_user();
-    return in_array('ah_ho_salesperson', (array) $user->roles);
+if (!function_exists('ah_ho_is_current_user_salesperson')) {
+    function ah_ho_is_current_user_salesperson() {
+        $user = wp_get_current_user();
+        return in_array('ah_ho_salesperson', (array) $user->roles);
+    }
 }
 
 /**
@@ -29,17 +31,19 @@ function ah_ho_is_current_user_salesperson() {
  * @param int|WC_Order $order Order ID or order object
  * @return int|null Salesperson user ID or null
  */
-function ah_ho_get_order_salesperson($order) {
-    if (is_numeric($order)) {
-        $order = wc_get_order($order);
-    }
+if (!function_exists('ah_ho_get_order_salesperson')) {
+    function ah_ho_get_order_salesperson($order) {
+        if (is_numeric($order)) {
+            $order = wc_get_order($order);
+        }
 
-    if (!$order instanceof WC_Order) {
-        return null;
-    }
+        if (!$order instanceof WC_Order) {
+            return null;
+        }
 
-    $salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
-    return $salesperson_id ? (int) $salesperson_id : null;
+        $salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
+        return $salesperson_id ? (int) $salesperson_id : null;
+    }
 }
 
 /**
