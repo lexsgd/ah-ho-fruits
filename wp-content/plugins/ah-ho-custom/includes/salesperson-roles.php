@@ -140,6 +140,132 @@ add_action('plugins_loaded', 'ah_ho_update_salesperson_role', 5);
 add_action('ah_ho_custom_deactivate', 'ah_ho_remove_salesperson_role');
 
 /**
+ * ========================================
+ * CUSTOMER PAYMENT TERMS FIELD
+ * ========================================
+ * Track whether customer pays COD or has Credit Terms
+ * This is stored on the customer profile, not per-order
+ */
+
+/**
+ * Add payment terms field to customer profile
+ */
+add_action('show_user_profile', 'ah_ho_add_payment_terms_field');
+add_action('edit_user_profile', 'ah_ho_add_payment_terms_field');
+add_action('user_new_form', 'ah_ho_add_payment_terms_field_new_user');
+
+function ah_ho_add_payment_terms_field($user) {
+    // Only show for customers
+    if (!in_array('customer', (array) $user->roles)) {
+        return;
+    }
+
+    $payment_terms = get_user_meta($user->ID, '_payment_terms', true);
+    ?>
+    <h3><?php _e('B2B Payment Terms', 'ah-ho-custom'); ?></h3>
+    <table class="form-table">
+        <tr>
+            <th><label for="payment_terms"><?php _e('Payment Terms', 'ah-ho-custom'); ?></label></th>
+            <td>
+                <select name="payment_terms" id="payment_terms" style="min-width: 200px;">
+                    <option value=""><?php _e('-- Select Payment Terms --', 'ah-ho-custom'); ?></option>
+                    <option value="cod" <?php selected($payment_terms, 'cod'); ?>><?php _e('COD (Cash on Delivery)', 'ah-ho-custom'); ?></option>
+                    <option value="credit_7" <?php selected($payment_terms, 'credit_7'); ?>><?php _e('Credit - 7 Days', 'ah-ho-custom'); ?></option>
+                    <option value="credit_14" <?php selected($payment_terms, 'credit_14'); ?>><?php _e('Credit - 14 Days', 'ah-ho-custom'); ?></option>
+                    <option value="credit_30" <?php selected($payment_terms, 'credit_30'); ?>><?php _e('Credit - 30 Days', 'ah-ho-custom'); ?></option>
+                </select>
+                <p class="description">
+                    <?php _e('COD = Payment collected on delivery. Credit = Invoice sent, payment due within X days.', 'ah-ho-custom'); ?>
+                </p>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
+
+/**
+ * Add payment terms field to new user form
+ */
+function ah_ho_add_payment_terms_field_new_user($operation) {
+    // Only show when adding new user and current user is salesperson or admin
+    if ($operation !== 'add-new-user') {
+        return;
+    }
+    ?>
+    <h3><?php _e('B2B Payment Terms', 'ah-ho-custom'); ?></h3>
+    <table class="form-table">
+        <tr>
+            <th><label for="payment_terms"><?php _e('Payment Terms', 'ah-ho-custom'); ?></label></th>
+            <td>
+                <select name="payment_terms" id="payment_terms" style="min-width: 200px;">
+                    <option value=""><?php _e('-- Select Payment Terms --', 'ah-ho-custom'); ?></option>
+                    <option value="cod"><?php _e('COD (Cash on Delivery)', 'ah-ho-custom'); ?></option>
+                    <option value="credit_7"><?php _e('Credit - 7 Days', 'ah-ho-custom'); ?></option>
+                    <option value="credit_14"><?php _e('Credit - 14 Days', 'ah-ho-custom'); ?></option>
+                    <option value="credit_30"><?php _e('Credit - 30 Days', 'ah-ho-custom'); ?></option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
+
+/**
+ * Save payment terms field
+ */
+add_action('personal_options_update', 'ah_ho_save_payment_terms_field');
+add_action('edit_user_profile_update', 'ah_ho_save_payment_terms_field');
+add_action('user_register', 'ah_ho_save_payment_terms_field');
+
+function ah_ho_save_payment_terms_field($user_id) {
+    if (!current_user_can('edit_user', $user_id)) {
+        return;
+    }
+
+    if (isset($_POST['payment_terms'])) {
+        $terms = sanitize_text_field($_POST['payment_terms']);
+        $valid_terms = array('', 'cod', 'credit_7', 'credit_14', 'credit_30');
+
+        if (in_array($terms, $valid_terms)) {
+            update_user_meta($user_id, '_payment_terms', $terms);
+        }
+    }
+}
+
+/**
+ * Add payment terms column to users list
+ */
+add_filter('manage_users_columns', 'ah_ho_add_payment_terms_column');
+add_filter('manage_users_custom_column', 'ah_ho_display_payment_terms_column', 10, 3);
+
+function ah_ho_add_payment_terms_column($columns) {
+    $columns['payment_terms'] = __('Payment Terms', 'ah-ho-custom');
+    return $columns;
+}
+
+function ah_ho_display_payment_terms_column($value, $column_name, $user_id) {
+    if ($column_name === 'payment_terms') {
+        $user = get_userdata($user_id);
+
+        // Only show for customers
+        if (!in_array('customer', (array) $user->roles)) {
+            return '—';
+        }
+
+        $terms = get_user_meta($user_id, '_payment_terms', true);
+        $labels = array(
+            'cod' => '<span style="background:#2ea44f;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;">COD</span>',
+            'credit_7' => '<span style="background:#dba617;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;">Credit 7d</span>',
+            'credit_14' => '<span style="background:#f56e28;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;">Credit 14d</span>',
+            'credit_30' => '<span style="background:#b32d2e;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;">Credit 30d</span>',
+        );
+
+        return isset($labels[$terms]) ? $labels[$terms] : '<span style="color:#999;">Not set</span>';
+    }
+    return $value;
+}
+
+/**
  * Add commission rate field to user profile when creating/editing salesperson
  */
 add_action('show_user_profile', 'ah_ho_add_commission_rate_field');

@@ -468,6 +468,16 @@ function ah_ho_display_salesperson_in_order_details($order) {
 
     $salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
     $salesperson = $salesperson_id ? get_userdata($salesperson_id) : null;
+
+    // Get customer payment terms
+    $customer_id = $order->get_customer_id();
+    $payment_terms = $customer_id ? get_user_meta($customer_id, '_payment_terms', true) : '';
+    $terms_labels = array(
+        'cod' => array('label' => 'COD', 'color' => '#2ea44f'),
+        'credit_7' => array('label' => 'Credit 7 Days', 'color' => '#dba617'),
+        'credit_14' => array('label' => 'Credit 14 Days', 'color' => '#f56e28'),
+        'credit_30' => array('label' => 'Credit 30 Days', 'color' => '#b32d2e'),
+    );
     ?>
     <p class="form-field form-field-wide ah-ho-salesperson-field">
         <label for="ah_ho_salesperson_display">
@@ -486,6 +496,28 @@ function ah_ho_display_salesperson_in_order_details($order) {
             </span>
         <?php endif; ?>
     </p>
+
+    <?php if ($customer_id) : ?>
+    <p class="form-field form-field-wide ah-ho-payment-terms-field">
+        <label>
+            <strong><?php _e('Customer Payment Terms:', 'ah-ho-custom'); ?></strong>
+        </label>
+        <?php if ($payment_terms && isset($terms_labels[$payment_terms])) : ?>
+            <span style="display: inline-block; background: <?php echo esc_attr($terms_labels[$payment_terms]['color']); ?>; color: #fff; padding: 4px 12px; border-radius: 4px; font-weight: 500;">
+                <?php echo esc_html($terms_labels[$payment_terms]['label']); ?>
+            </span>
+        <?php else : ?>
+            <span style="color: #b32d2e; font-style: italic;">
+                <?php _e('Not set - Please update customer profile', 'ah-ho-custom'); ?>
+            </span>
+            <?php if ($customer_id) : ?>
+                <a href="<?php echo esc_url(get_edit_user_link($customer_id)); ?>" class="button button-small" style="margin-left: 8px;">
+                    <?php _e('Set Payment Terms', 'ah-ho-custom'); ?>
+                </a>
+            <?php endif; ?>
+        <?php endif; ?>
+    </p>
+    <?php endif; ?>
     <?php
 }
 
