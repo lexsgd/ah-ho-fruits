@@ -75,6 +75,9 @@ function ah_ho_custom_init() {
 
     // Include WhatsApp catalog generator
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/catalog-generator.php';
+
+    // Include delivery date field (checkout + admin)
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/delivery-date-field.php';
 }
 add_action('plugins_loaded', 'ah_ho_custom_init');
 
