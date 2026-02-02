@@ -223,8 +223,13 @@ function ah_ho_is_current_user_salesperson() {
 /**
  * Restrict salespersons to only see/assign 'customer' role
  * Security: Prevents salespersons from creating admin/shop_manager users
+ * Note: Uses init hook to ensure WordPress is fully loaded
  */
-add_filter('editable_roles', 'ah_ho_restrict_salesperson_editable_roles');
+add_action('init', 'ah_ho_setup_editable_roles_filter');
+
+function ah_ho_setup_editable_roles_filter() {
+    add_filter('editable_roles', 'ah_ho_restrict_salesperson_editable_roles');
+}
 
 function ah_ho_restrict_salesperson_editable_roles($roles) {
     if (ah_ho_is_current_user_salesperson()) {
@@ -240,8 +245,13 @@ function ah_ho_restrict_salesperson_editable_roles($roles) {
 /**
  * Force customer role when salesperson creates a user
  * Security: Double-check to ensure only customer role is assigned
+ * Note: Uses init hook to ensure WordPress is fully loaded
  */
-add_filter('pre_option_default_role', 'ah_ho_force_customer_default_role');
+add_action('init', 'ah_ho_setup_customer_default_role_filter');
+
+function ah_ho_setup_customer_default_role_filter() {
+    add_filter('pre_option_default_role', 'ah_ho_force_customer_default_role');
+}
 
 function ah_ho_force_customer_default_role($default) {
     if (ah_ho_is_current_user_salesperson()) {
@@ -273,8 +283,13 @@ function ah_ho_validate_salesperson_created_user($user_id) {
 /**
  * Restrict which users salespersons can edit
  * Security: Salespersons can only edit customers they potentially created
+ * Note: Uses init hook to ensure WordPress is fully loaded
  */
-add_filter('user_has_cap', 'ah_ho_restrict_salesperson_user_editing', 10, 4);
+add_action('init', 'ah_ho_setup_user_editing_filter');
+
+function ah_ho_setup_user_editing_filter() {
+    add_filter('user_has_cap', 'ah_ho_restrict_salesperson_user_editing', 10, 4);
+}
 
 function ah_ho_restrict_salesperson_user_editing($allcaps, $caps, $args, $user) {
     // Only filter for salespersons
