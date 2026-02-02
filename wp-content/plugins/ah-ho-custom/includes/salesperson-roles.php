@@ -264,14 +264,60 @@ function ah_ho_wp_salesperson_login_redirect($redirect_to, $requested_redirect_t
 }
 
 /**
- * Hide Dashboard menu for salespersons
+ * Hide unnecessary menu items for salespersons
+ * Keep only: WooCommerce > Orders, PDF Documents, My Commission, Users
  */
-add_action('admin_menu', 'ah_ho_hide_dashboard_for_salesperson', 999);
+add_action('admin_menu', 'ah_ho_hide_menus_for_salesperson', 999);
 
-function ah_ho_hide_dashboard_for_salesperson() {
-    if (current_user_can('view_salesperson_commission') && !current_user_can('manage_options')) {
-        remove_menu_page('index.php'); // Dashboard
+function ah_ho_hide_menus_for_salesperson() {
+    if (!current_user_can('view_salesperson_commission') || current_user_can('manage_options')) {
+        return;
     }
+
+    // Hide top-level menus
+    remove_menu_page('index.php');                    // Dashboard
+    remove_menu_page('upload.php');                   // Media
+    remove_menu_page('woocommerce-marketing');        // Marketing
+    remove_menu_page('admin.php?page=wc-settings&tab=checkout&from=PAYMENTS_MENU_ITEM'); // Payments
+
+    // Hide WooCommerce submenus (keep only Orders)
+    remove_submenu_page('woocommerce', 'wc-admin');                    // Home
+    remove_submenu_page('woocommerce', 'payment-gateway-fees');        // Gateway Fees
+    remove_submenu_page('woocommerce', 'wc-stripe-main');              // Stripe by Payment Plugins
+    remove_submenu_page('woocommerce', 'wc-settings');                 // Settings
+    remove_submenu_page('woocommerce', 'wc-status');                   // Status
+
+    // Also try alternative menu slugs for Payments
+    global $menu;
+    if (is_array($menu)) {
+        foreach ($menu as $key => $item) {
+            if (isset($item[2])) {
+                // Remove Payments menu (various possible slugs)
+                if (strpos($item[2], 'wc-settings') !== false && strpos($item[2], 'checkout') !== false) {
+                    unset($menu[$key]);
+                }
+                if ($item[2] === 'wc-admin&path=/payments/overview') {
+                    unset($menu[$key]);
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Remove WooCommerce admin bar menu items for salespersons
+ */
+add_action('admin_bar_menu', 'ah_ho_clean_admin_bar_for_salesperson', 999);
+
+function ah_ho_clean_admin_bar_for_salesperson($wp_admin_bar) {
+    if (!current_user_can('view_salesperson_commission') || current_user_can('manage_options')) {
+        return;
+    }
+
+    // Remove "New" menu items salespersons don't need
+    $wp_admin_bar->remove_node('new-media');
+    $wp_admin_bar->remove_node('new-post');
+    $wp_admin_bar->remove_node('new-page');
 }
 
 /**
