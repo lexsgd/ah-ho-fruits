@@ -196,6 +196,27 @@ function ah_ho_save_commission_rate_field($user_id) {
 }
 
 /**
+ * Allow salespersons to access WP Admin
+ * WooCommerce blocks non-admin users by default
+ */
+add_filter('woocommerce_prevent_admin_access', 'ah_ho_allow_salesperson_admin_access');
+add_filter('woocommerce_disable_admin_bar', 'ah_ho_show_salesperson_admin_bar');
+
+function ah_ho_allow_salesperson_admin_access($prevent_access) {
+    if (current_user_can('view_salesperson_commission')) {
+        return false; // Allow access
+    }
+    return $prevent_access;
+}
+
+function ah_ho_show_salesperson_admin_bar($disable) {
+    if (current_user_can('view_salesperson_commission')) {
+        return false; // Show admin bar
+    }
+    return $disable;
+}
+
+/**
  * Redirect salespersons to admin dashboard after login
  * Uses wp_login action which fires after successful authentication
  */
