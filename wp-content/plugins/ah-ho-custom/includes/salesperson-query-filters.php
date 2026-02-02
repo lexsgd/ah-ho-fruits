@@ -53,6 +53,13 @@ function ah_ho_grant_salesperson_edit_cap($allcaps, $caps, $args, $user) {
     // salespersons to only viewing their assigned orders.
     $allcaps['manage_woocommerce'] = true;
 
+    // Customer management capabilities
+    // Security is enforced via filters in salesperson-roles.php that restrict
+    // salespersons to only creating/editing customers (not admins/shop managers)
+    $allcaps['create_users'] = true;
+    $allcaps['edit_users'] = true;
+    $allcaps['list_users'] = true;
+
     return $allcaps;
 }
 
