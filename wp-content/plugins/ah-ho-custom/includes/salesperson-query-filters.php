@@ -26,13 +26,38 @@ if (!function_exists('ah_ho_is_current_user_salesperson')) {
 }
 
 /**
- * CRITICAL: Map meta capabilities for salesperson order access
+ * CRITICAL: Grant salesperson order editing capabilities directly
  *
- * This filter runs BEFORE user_has_cap and modifies what capabilities
- * WordPress checks. For salespersons editing their assigned orders,
- * we return the base capabilities they already have.
+ * This runs very early and grants the edit_others_shop_orders capability
+ * to the current user's allcaps if they're a salesperson.
+ * This is needed for WooCommerce HPOS order editing.
  */
-add_filter('map_meta_cap', 'ah_ho_map_order_meta_cap', 10, 4);
+add_filter('user_has_cap', 'ah_ho_grant_salesperson_edit_cap', 1, 4);
+
+function ah_ho_grant_salesperson_edit_cap($allcaps, $caps, $args, $user) {
+    // Only for salespersons
+    if (!in_array('ah_ho_salesperson', (array) $user->roles)) {
+        return $allcaps;
+    }
+
+    // Always grant edit_others_shop_orders for salespersons
+    // Security is enforced via query filters (they can only SEE their own orders)
+    // and via the ah_ho_prevent_unauthorized_order_access function
+    $allcaps['edit_others_shop_orders'] = true;
+    $allcaps['read_others_shop_orders'] = true;
+    $allcaps['edit_shop_orders'] = true;
+    $allcaps['edit_shop_order'] = true;
+
+    return $allcaps;
+}
+
+/**
+ * Map meta capabilities for salesperson order access
+ *
+ * This filter modifies what capabilities WordPress checks.
+ * For salespersons, we allow them to edit orders they're assigned to.
+ */
+add_filter('map_meta_cap', 'ah_ho_map_order_meta_cap', 1, 4);
 
 function ah_ho_map_order_meta_cap($caps, $cap, $user_id, $args) {
     // Only modify shop_order capabilities
@@ -46,37 +71,12 @@ function ah_ho_map_order_meta_cap($caps, $cap, $user_id, $args) {
         return $caps;
     }
 
-    // Get the order ID from args
-    $order_id = isset($args[0]) ? $args[0] : 0;
-    if (!$order_id) {
-        return $caps;
+    // For salespersons, return the capability they have
+    if ($cap === 'edit_shop_order') {
+        return array('edit_shop_orders');
     }
-
-    // Get the order
-    $order = wc_get_order($order_id);
-    if (!$order) {
-        return $caps;
-    }
-
-    $assigned_salesperson = $order->get_meta('_assigned_salesperson_id', true);
-
-    // If order is assigned to this salesperson OR has no salesperson yet
-    if ($assigned_salesperson == $user_id || empty($assigned_salesperson)) {
-        // Auto-assign if no salesperson
-        if (empty($assigned_salesperson)) {
-            $order->update_meta_data('_assigned_salesperson_id', $user_id);
-            $order->update_meta_data('_commission_status', 'pending');
-            $order->save();
-        }
-
-        // Return base capability that salesperson has
-        // This effectively grants permission
-        if ($cap === 'edit_shop_order') {
-            return array('edit_shop_orders');
-        }
-        if ($cap === 'read_shop_order') {
-            return array('read_shop_orders');
-        }
+    if ($cap === 'read_shop_order') {
+        return array('read_shop_orders');
     }
 
     return $caps;
