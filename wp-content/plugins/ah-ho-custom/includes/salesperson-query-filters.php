@@ -298,9 +298,78 @@ function ah_ho_filter_dashboard_widget() {
 }
 
 /**
+ * Grant salespersons permission to edit their own orders and unassigned orders (HPOS Compatible)
+ *
+ * This filter intercepts capability checks to allow salespersons to:
+ * 1. Edit orders assigned to them
+ * 2. Edit newly created orders (no salesperson assigned yet)
+ */
+add_filter('user_has_cap', 'ah_ho_grant_salesperson_order_caps', 10, 4);
+
+function ah_ho_grant_salesperson_order_caps($allcaps, $caps, $args, $user) {
+    // Check if user is a salesperson
+    if (!in_array('ah_ho_salesperson', (array) $user->roles)) {
+        return $allcaps;
+    }
+
+    // Check if this is an order-related capability check
+    $order_caps = array('edit_shop_order', 'read_shop_order', 'delete_shop_order', 'edit_others_shop_orders');
+    $is_order_cap = false;
+    foreach ($caps as $cap) {
+        if (in_array($cap, $order_caps)) {
+            $is_order_cap = true;
+            break;
+        }
+    }
+
+    if (!$is_order_cap) {
+        return $allcaps;
+    }
+
+    // Get the order ID from the args (if checking a specific order)
+    $order_id = isset($args[2]) ? $args[2] : 0;
+
+    if ($order_id) {
+        $order = wc_get_order($order_id);
+
+        if ($order) {
+            $assigned_salesperson = $order->get_meta('_assigned_salesperson_id', true);
+
+            // Allow if order is assigned to this salesperson
+            if ($assigned_salesperson && (int) $assigned_salesperson === $user->ID) {
+                $allcaps['edit_shop_order'] = true;
+                $allcaps['edit_shop_orders'] = true;
+                $allcaps['edit_others_shop_orders'] = true;
+                $allcaps['read_shop_order'] = true;
+                return $allcaps;
+            }
+
+            // Allow if order has no salesperson assigned (new order)
+            // Also auto-assign the order to this salesperson
+            if (!$assigned_salesperson) {
+                $order->update_meta_data('_assigned_salesperson_id', $user->ID);
+                $order->update_meta_data('_commission_status', 'pending');
+                $order->save();
+
+                $allcaps['edit_shop_order'] = true;
+                $allcaps['edit_shop_orders'] = true;
+                $allcaps['edit_others_shop_orders'] = true;
+                $allcaps['read_shop_order'] = true;
+                return $allcaps;
+            }
+
+            // Order is assigned to someone else - deny (keep original caps)
+            return $allcaps;
+        }
+    }
+
+    return $allcaps;
+}
+
+/**
  * Additional security: Prevent salespersons from viewing other salespersons' profiles
  */
-add_filter('user_has_cap', 'ah_ho_restrict_user_profile_access', 10, 4);
+add_filter('user_has_cap', 'ah_ho_restrict_user_profile_access', 20, 4);
 
 function ah_ho_restrict_user_profile_access($allcaps, $caps, $args, $user) {
     // Check if user is a salesperson
