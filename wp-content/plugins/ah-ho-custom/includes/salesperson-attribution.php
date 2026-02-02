@@ -497,7 +497,6 @@ function ah_ho_display_salesperson_in_order_details($order) {
         <?php endif; ?>
     </p>
 
-    <?php if ($customer_id) : ?>
     <p class="form-field form-field-wide ah-ho-payment-terms-field">
         <label>
             <strong><?php _e('Customer Payment Terms:', 'ah-ho-custom'); ?></strong>
@@ -506,18 +505,19 @@ function ah_ho_display_salesperson_in_order_details($order) {
             <span style="display: inline-block; background: <?php echo esc_attr($terms_labels[$payment_terms]['color']); ?>; color: #fff; padding: 4px 12px; border-radius: 4px; font-weight: 500;">
                 <?php echo esc_html($terms_labels[$payment_terms]['label']); ?>
             </span>
-        <?php else : ?>
+        <?php elseif ($customer_id) : ?>
             <span style="color: #b32d2e; font-style: italic;">
-                <?php _e('Not set - Please update customer profile', 'ah-ho-custom'); ?>
+                <?php _e('Not set', 'ah-ho-custom'); ?>
             </span>
-            <?php if ($customer_id) : ?>
-                <a href="<?php echo esc_url(get_edit_user_link($customer_id)); ?>" class="button button-small" style="margin-left: 8px;">
-                    <?php _e('Set Payment Terms', 'ah-ho-custom'); ?>
-                </a>
-            <?php endif; ?>
+            <a href="<?php echo esc_url(get_edit_user_link($customer_id)); ?>" class="button button-small" style="margin-left: 8px;">
+                <?php _e('Set Payment Terms', 'ah-ho-custom'); ?>
+            </a>
+        <?php else : ?>
+            <span style="color: #666; font-style: italic;">
+                <?php _e('No customer selected', 'ah-ho-custom'); ?>
+            </span>
         <?php endif; ?>
     </p>
-    <?php endif; ?>
     <?php
 }
 
