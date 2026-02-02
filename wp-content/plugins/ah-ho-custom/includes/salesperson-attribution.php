@@ -10,6 +10,131 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * ========================================
+ * AJAX: Get Customer Payment Terms
+ * ========================================
+ * Returns payment terms for a customer (used by order page JS)
+ */
+add_action('wp_ajax_ah_ho_get_customer_payment_terms', 'ah_ho_ajax_get_customer_payment_terms');
+
+function ah_ho_ajax_get_customer_payment_terms() {
+    // Check nonce
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'ah_ho_payment_terms_nonce')) {
+        wp_send_json_error('Invalid nonce');
+    }
+
+    // Check permissions
+    if (!current_user_can('edit_shop_orders')) {
+        wp_send_json_error('Permission denied');
+    }
+
+    $customer_id = isset($_POST['customer_id']) ? absint($_POST['customer_id']) : 0;
+
+    if (!$customer_id) {
+        wp_send_json_success(array(
+            'html' => '<span style="color: #666; font-style: italic;">No customer selected</span>',
+            'terms' => '',
+        ));
+    }
+
+    $payment_terms = get_user_meta($customer_id, '_payment_terms', true);
+    $terms_labels = array(
+        'cod' => array('label' => 'COD', 'color' => '#2ea44f'),
+        'credit_7' => array('label' => 'Credit 7 Days', 'color' => '#dba617'),
+        'credit_14' => array('label' => 'Credit 14 Days', 'color' => '#f56e28'),
+        'credit_30' => array('label' => 'Credit 30 Days', 'color' => '#b32d2e'),
+    );
+
+    if ($payment_terms && isset($terms_labels[$payment_terms])) {
+        $html = sprintf(
+            '<span style="display: inline-block; background: %s; color: #fff; padding: 4px 12px; border-radius: 4px; font-weight: 500;">%s</span>',
+            esc_attr($terms_labels[$payment_terms]['color']),
+            esc_html($terms_labels[$payment_terms]['label'])
+        );
+    } else {
+        $html = sprintf(
+            '<span style="color: #b32d2e; font-style: italic;">Not set</span> <a href="%s" class="button button-small" style="margin-left: 8px;">Set Payment Terms</a>',
+            esc_url(get_edit_user_link($customer_id))
+        );
+    }
+
+    wp_send_json_success(array(
+        'html' => $html,
+        'terms' => $payment_terms,
+    ));
+}
+
+/**
+ * Enqueue JavaScript for order page payment terms
+ */
+add_action('admin_footer', 'ah_ho_payment_terms_js');
+
+function ah_ho_payment_terms_js() {
+    global $pagenow;
+
+    // Only on order edit/create pages
+    if ($pagenow !== 'admin.php' || !isset($_GET['page']) || $_GET['page'] !== 'wc-orders') {
+        return;
+    }
+
+    $nonce = wp_create_nonce('ah_ho_payment_terms_nonce');
+    ?>
+    <script type="text/javascript">
+    jQuery(document).ready(function($) {
+        // Watch for customer selection changes
+        // WooCommerce uses Select2 for the customer dropdown
+        $(document).on('change', '#customer_user, select.wc-customer-search', function() {
+            var customerId = $(this).val();
+            updatePaymentTerms(customerId);
+        });
+
+        // Also watch for WooCommerce's customer selection via Select2
+        $(document).on('select2:select', '#customer_user, .wc-customer-search', function(e) {
+            var customerId = e.params.data.id;
+            updatePaymentTerms(customerId);
+        });
+
+        // Handle customer clear
+        $(document).on('select2:unselect select2:clear', '#customer_user, .wc-customer-search', function() {
+            updatePaymentTerms(0);
+        });
+
+        function updatePaymentTerms(customerId) {
+            var $display = $('#ah-ho-payment-terms-display');
+
+            if (!$display.length) {
+                return;
+            }
+
+            // Show loading
+            $display.html('<span style="color: #666;">Loading...</span>');
+
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'ah_ho_get_customer_payment_terms',
+                    customer_id: customerId,
+                    nonce: '<?php echo $nonce; ?>'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $display.html(response.data.html);
+                    } else {
+                        $display.html('<span style="color: #b32d2e;">Error loading payment terms</span>');
+                    }
+                },
+                error: function() {
+                    $display.html('<span style="color: #b32d2e;">Error loading payment terms</span>');
+                }
+            });
+        }
+    });
+    </script>
+    <?php
+}
+
+/**
  * Auto-assign salesperson when they create a new order (HPOS Compatible)
  */
 add_action('woocommerce_new_order', 'ah_ho_assign_salesperson_to_new_order', 10, 2);
@@ -501,6 +626,7 @@ function ah_ho_display_salesperson_in_order_details($order) {
         <label>
             <strong><?php _e('Customer Payment Terms:', 'ah-ho-custom'); ?></strong>
         </label>
+        <span id="ah-ho-payment-terms-display">
         <?php if ($payment_terms && isset($terms_labels[$payment_terms])) : ?>
             <span style="display: inline-block; background: <?php echo esc_attr($terms_labels[$payment_terms]['color']); ?>; color: #fff; padding: 4px 12px; border-radius: 4px; font-weight: 500;">
                 <?php echo esc_html($terms_labels[$payment_terms]['label']); ?>
@@ -517,6 +643,7 @@ function ah_ho_display_salesperson_in_order_details($order) {
                 <?php _e('No customer selected', 'ah-ho-custom'); ?>
             </span>
         <?php endif; ?>
+        </span>
     </p>
     <?php
 }
