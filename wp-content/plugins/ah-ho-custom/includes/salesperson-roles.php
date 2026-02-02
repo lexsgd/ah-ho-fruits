@@ -19,6 +19,8 @@ function ah_ho_register_salesperson_role() {
     }
 
     // Create salesperson role based on Shop Manager but with restrictions
+    // NOTE: edit_others_shop_orders is REQUIRED for HPOS order editing
+    // Security is enforced via query filters in salesperson-query-filters.php
     add_role(
         'ah_ho_salesperson',
         __('Salesperson', 'ah-ho-custom'),
@@ -34,9 +36,10 @@ function ah_ho_register_salesperson_role() {
             'publish_shop_orders'           => true,
             'create_shop_orders'            => true,
 
-            // 🔒 SECURITY BOUNDARY - Prevent cross-salesperson access
-            'edit_others_shop_orders'       => false,
-            'read_others_shop_orders'       => false,
+            // HPOS compatibility - required for order editing
+            // Security enforced via query filters (Layer 1-4)
+            'edit_others_shop_orders'       => true,
+            'read_others_shop_orders'       => true,
             'delete_shop_orders'            => false,
             'delete_others_shop_orders'     => false,
 
@@ -72,6 +75,8 @@ function ah_ho_update_salesperson_role() {
     }
 
     // Update capabilities to match current requirements
+    // NOTE: edit_others_shop_orders is REQUIRED for HPOS order editing
+    // Security is enforced via query filters in salesperson-query-filters.php
     $capabilities = array(
         'read'                          => true,
         'upload_files'                  => false, // No Media access
@@ -81,8 +86,8 @@ function ah_ho_update_salesperson_role() {
         'edit_shop_orders'              => true,
         'publish_shop_orders'           => true,
         'create_shop_orders'            => true,
-        'edit_others_shop_orders'       => false,
-        'read_others_shop_orders'       => false,
+        'edit_others_shop_orders'       => true,  // Required for HPOS - security via query filters
+        'read_others_shop_orders'       => true,  // Required for HPOS - security via query filters
         'delete_shop_orders'            => false,
         'delete_others_shop_orders'     => false,
         'read_product'                  => true,
