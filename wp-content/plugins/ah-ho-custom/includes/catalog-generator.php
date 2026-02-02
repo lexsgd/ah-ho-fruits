@@ -62,9 +62,10 @@ function ah_ho_render_catalog_page() {
         <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-left: 4px solid #856404; max-width: 800px;">
             <h4 style="margin-top: 0; color: #856404;"><?php _e('Tips for WhatsApp Sharing', 'ah-ho-custom'); ?></h4>
             <ul style="margin-bottom: 0;">
-                <li><?php _e('Prices shown are exclusive of GST', 'ah-ho-custom'); ?></li>
-                <li><?php _e('Only in-stock products are included', 'ah-ho-custom'); ?></li>
-                <li><?php _e('Catalog updates automatically when product availability changes', 'ah-ho-custom'); ?></li>
+                <li><?php _e('Prices shown are <strong>wholesale prices</strong> (exclusive of GST)', 'ah-ho-custom'); ?></li>
+                <li><?php _e('Only products with wholesale price set are included', 'ah-ho-custom'); ?></li>
+                <li><?php _e('Only in-stock products are shown', 'ah-ho-custom'); ?></li>
+                <li><?php _e('Catalog updates automatically when prices or availability change', 'ah-ho-custom'); ?></li>
                 <li><?php _e('Bold text (*text*) will appear bold in WhatsApp', 'ah-ho-custom'); ?></li>
             </ul>
         </div>
@@ -130,12 +131,13 @@ function ah_ho_generate_catalog_text() {
         'local'      => '🇸🇬',
     );
 
-    $output = "*AH HO FRUITS - PRICE LIST*\n";
+    $output = "*AH HO FRUITS - WHOLESALE PRICE LIST*\n";
     $output .= "_Prices exclusive of GST_\n";
+    $output .= "_B2B wholesale prices only_\n";
     $output .= "━━━━━━━━━━━━━━━━━━━━\n\n";
 
     foreach ($categories as $category) {
-        // Query in-stock products for this category
+        // Query in-stock products for this category that have wholesale price set
         $products = wc_get_products(array(
             'status'       => 'publish',
             'stock_status' => 'instock',
@@ -143,9 +145,20 @@ function ah_ho_generate_catalog_text() {
             'limit'        => -1,
             'orderby'      => 'title',
             'order'        => 'ASC',
+            'meta_query'   => array(
+                array(
+                    'key'     => '_wholesale_price',
+                    'value'   => '',
+                    'compare' => '!=',
+                ),
+                array(
+                    'key'     => '_wholesale_price',
+                    'compare' => 'EXISTS',
+                ),
+            ),
         ));
 
-        // Skip categories with no in-stock products
+        // Skip categories with no products with wholesale price
         if (empty($products)) {
             continue;
         }
@@ -163,12 +176,13 @@ function ah_ho_generate_catalog_text() {
         $output .= sprintf("*%s%s*\n", $emoji, strtoupper($category->name));
 
         foreach ($products as $product) {
-            $price = $product->get_price();
+            // Use wholesale price for B2B catalog
+            $wholesale_price = $product->get_meta('_wholesale_price');
             $name = $product->get_name();
 
-            // Format price
-            if ($price) {
-                $output .= sprintf("%s @ $%.2f\n", $name, floatval($price));
+            // Format price (wholesale price should always exist due to meta_query)
+            if ($wholesale_price) {
+                $output .= sprintf("%s @ $%.2f\n", $name, floatval($wholesale_price));
             } else {
                 $output .= sprintf("%s @ POA\n", $name); // Price on Application
             }
