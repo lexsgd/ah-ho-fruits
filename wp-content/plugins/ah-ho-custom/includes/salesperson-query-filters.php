@@ -403,15 +403,18 @@ function ah_ho_filter_order_status_views($views) {
         return $views;
     }
 
-    // Get all order statuses
-    $statuses = wc_get_order_statuses();
-
-    // Calculate total for "All"
-    $all_count = 0;
+    // Get total count for "All" directly (more reliable than summing)
+    $all_count = ah_ho_count_salesperson_orders('any');
 
     foreach ($views as $status_slug => $view) {
         if ($status_slug === 'all') {
             continue; // Handle "All" separately
+        }
+
+        // Skip non-status views like 'mine', 'trash'
+        if (in_array($status_slug, array('mine', 'trash'))) {
+            unset($views[$status_slug]);
+            continue;
         }
 
         // Get the proper status key
@@ -422,12 +425,11 @@ function ah_ho_filter_order_status_views($views) {
 
         // Count orders for this status
         $count = ah_ho_count_salesperson_orders($status_key);
-        $all_count += $count;
 
-        // Update the count in the view HTML
+        // Update the count in the view HTML using flexible regex
         if ($count > 0) {
             $views[$status_slug] = preg_replace(
-                '/\<span class="count"\>\(\d+\)\<\/span\>/',
+                '/<span class=["\']count["\']>\s*\(\d+\)\s*<\/span>/i',
                 '<span class="count">(' . $count . ')</span>',
                 $view
             );
@@ -437,16 +439,33 @@ function ah_ho_filter_order_status_views($views) {
         }
     }
 
-    // Update "All" count
+    // Update "All" count with flexible regex
     if (isset($views['all'])) {
         $views['all'] = preg_replace(
-            '/\<span class="count"\>\(\d+\)\<\/span\>/',
+            '/<span class=["\']count["\']>\s*\(\d+\)\s*<\/span>/i',
             '<span class="count">(' . $all_count . ')</span>',
             $views['all']
         );
     }
 
     return $views;
+}
+
+/**
+ * Filter admin menu order count badge for salespersons
+ *
+ * The sidebar shows "Orders 9" - we need to filter this for salespersons
+ */
+add_filter('woocommerce_menu_order_count', 'ah_ho_filter_menu_order_count', 10, 1);
+
+function ah_ho_filter_menu_order_count($count) {
+    // Only filter for salespersons
+    if (!ah_ho_is_current_user_salesperson()) {
+        return $count;
+    }
+
+    // Count only processing orders for this salesperson (menu badge shows processing count)
+    return ah_ho_count_salesperson_orders('wc-processing');
 }
 
 /**
