@@ -17,13 +17,24 @@ if (!defined('ABSPATH')) {
  * Safe to call at any point - returns false if user not available
  */
 function ah_ho_is_current_user_salesperson() {
-    if (!function_exists('wp_get_current_user') || !did_action('init')) {
+    // Safety checks for early calls
+    if (!function_exists('wp_get_current_user')) {
+        return false;
+    }
+
+    // Ensure we're past plugins_loaded
+    if (!did_action('plugins_loaded')) {
         return false;
     }
 
     $current_user = wp_get_current_user();
 
-    if (!$current_user || !$current_user->exists()) {
+    // Check if we got a valid user
+    if (!$current_user instanceof WP_User) {
+        return false;
+    }
+
+    if (!$current_user->exists()) {
         return false;
     }
 
