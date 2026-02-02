@@ -40,13 +40,18 @@ function ah_ho_grant_salesperson_edit_cap($allcaps, $caps, $args, $user) {
         return $allcaps;
     }
 
-    // Always grant edit_others_shop_orders for salespersons
+    // Grant order editing capabilities for salespersons
     // Security is enforced via query filters (they can only SEE their own orders)
     // and via the ah_ho_prevent_unauthorized_order_access function
     $allcaps['edit_others_shop_orders'] = true;
     $allcaps['read_others_shop_orders'] = true;
     $allcaps['edit_shop_orders'] = true;
     $allcaps['edit_shop_order'] = true;
+
+    // CRITICAL: WooCommerce HPOS verify_edit_permission() requires manage_woocommerce
+    // for order editing. Security is maintained via query filters that restrict
+    // salespersons to only viewing their assigned orders.
+    $allcaps['manage_woocommerce'] = true;
 
     return $allcaps;
 }
