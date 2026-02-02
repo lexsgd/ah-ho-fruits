@@ -195,4 +195,38 @@ function ah_ho_save_commission_rate_field($user_id) {
     }
 }
 
+/**
+ * Redirect salespersons to admin dashboard after login
+ * By default WooCommerce redirects to my-account page
+ */
+add_filter('woocommerce_login_redirect', 'ah_ho_salesperson_login_redirect', 10, 2);
+add_filter('login_redirect', 'ah_ho_salesperson_login_redirect', 10, 3);
+
+function ah_ho_salesperson_login_redirect($redirect, $user = null, $requested_redirect_to = null) {
+    // Handle both filter signatures
+    if (is_string($user)) {
+        // login_redirect filter: $redirect, $requested_redirect_to, $user
+        $user_obj = $requested_redirect_to;
+    } else {
+        $user_obj = $user;
+    }
+
+    // Get user object if we have an ID
+    if (is_numeric($user_obj)) {
+        $user_obj = get_userdata($user_obj);
+    }
+
+    // If no user object, try to get current user
+    if (!$user_obj || !is_object($user_obj)) {
+        $user_obj = wp_get_current_user();
+    }
+
+    // Check if user is a salesperson
+    if ($user_obj && isset($user_obj->roles) && in_array('ah_ho_salesperson', (array) $user_obj->roles)) {
+        return admin_url();
+    }
+
+    return $redirect;
+}
+
 
