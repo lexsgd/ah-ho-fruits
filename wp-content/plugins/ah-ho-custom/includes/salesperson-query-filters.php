@@ -176,6 +176,33 @@ function ah_ho_filter_orders_list_table($query_args) {
 }
 
 /**
+ * LAYER 2B: Filter HPOS Orders List via SQL WHERE clause
+ *
+ * For HPOS, we need to filter at the SQL level to ensure only
+ * assigned orders are shown to salespersons
+ */
+add_filter('woocommerce_orders_table_query_clauses', 'ah_ho_filter_hpos_orders_sql', 10, 3);
+
+function ah_ho_filter_hpos_orders_sql($clauses, $query, $args) {
+    global $wpdb;
+
+    // Only filter for salespersons
+    if (!ah_ho_is_current_user_salesperson()) {
+        return $clauses;
+    }
+
+    $current_user_id = get_current_user_id();
+    $meta_table = $wpdb->prefix . 'wc_orders_meta';
+    $orders_table = $wpdb->prefix . 'wc_orders';
+
+    // Add JOIN and WHERE to filter by assigned salesperson
+    $clauses['join'] .= " LEFT JOIN {$meta_table} AS sp_meta ON ({$orders_table}.id = sp_meta.order_id AND sp_meta.meta_key = '_assigned_salesperson_id')";
+    $clauses['where'] .= $wpdb->prepare(" AND sp_meta.meta_value = %s", $current_user_id);
+
+    return $clauses;
+}
+
+/**
  * LAYER 3: Direct Order Access Prevention (HPOS Compatible)
  *
  * Prevent accessing order edit page via direct URL
