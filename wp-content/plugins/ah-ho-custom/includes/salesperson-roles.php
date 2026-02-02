@@ -205,7 +205,18 @@ function ah_ho_save_commission_rate_field($user_id) {
  * Helper function to check if current user is a salesperson
  */
 function ah_ho_is_current_user_salesperson() {
+    // Safety check - ensure user functions are available
+    if (!function_exists('wp_get_current_user')) {
+        return false;
+    }
+
     $current_user = wp_get_current_user();
+
+    // Check if user is logged in and has roles
+    if (!$current_user || !$current_user->exists() || empty($current_user->roles)) {
+        return false;
+    }
+
     return in_array('ah_ho_salesperson', (array) $current_user->roles);
 }
 
