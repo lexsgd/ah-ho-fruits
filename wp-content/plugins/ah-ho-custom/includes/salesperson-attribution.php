@@ -367,6 +367,89 @@ function ah_ho_save_salesperson_assignment($post_id, $post) {
 }
 
 /**
+ * ========================================
+ * HPOS ORDER DETAILS - SALESPERSON DISPLAY
+ * ========================================
+ * Show assigned salesperson prominently in order details
+ */
+
+/**
+ * Display salesperson info in HPOS order details section
+ * Shows in the main order data area (not just sidebar)
+ */
+add_action('woocommerce_admin_order_data_after_order_details', 'ah_ho_display_salesperson_in_order_details');
+
+function ah_ho_display_salesperson_in_order_details($order) {
+    if (!$order) {
+        return;
+    }
+
+    $salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
+    $salesperson = $salesperson_id ? get_userdata($salesperson_id) : null;
+    ?>
+    <p class="form-field form-field-wide ah-ho-salesperson-field">
+        <label for="ah_ho_salesperson_display">
+            <strong><?php _e('Assigned Salesperson:', 'ah-ho-custom'); ?></strong>
+        </label>
+        <?php if ($salesperson) : ?>
+            <span class="ah-ho-salesperson-name" style="display: inline-block; background: #8b5cf6; color: #fff; padding: 4px 12px; border-radius: 4px; font-weight: 500;">
+                <?php echo esc_html($salesperson->display_name); ?>
+            </span>
+            <a href="<?php echo esc_url(get_edit_user_link($salesperson_id)); ?>" class="button button-small" style="margin-left: 8px;">
+                <?php _e('View Profile', 'ah-ho-custom'); ?>
+            </a>
+        <?php else : ?>
+            <span style="color: #666; font-style: italic;">
+                <?php _e('Not assigned (Web/E-commerce order)', 'ah-ho-custom'); ?>
+            </span>
+        <?php endif; ?>
+    </p>
+    <?php
+}
+
+/**
+ * Add salesperson column to HPOS orders list
+ */
+add_filter('woocommerce_shop_order_list_table_columns', 'ah_ho_add_salesperson_column_hpos', 20);
+
+function ah_ho_add_salesperson_column_hpos($columns) {
+    $new_columns = array();
+    foreach ($columns as $key => $column) {
+        $new_columns[$key] = $column;
+        // Add after order_status column
+        if ($key === 'order_status') {
+            $new_columns['salesperson'] = __('Salesperson', 'ah-ho-custom');
+        }
+    }
+    return $new_columns;
+}
+
+/**
+ * Display salesperson in HPOS orders list column
+ */
+add_action('woocommerce_shop_order_list_table_custom_column', 'ah_ho_display_salesperson_column_hpos', 10, 2);
+
+function ah_ho_display_salesperson_column_hpos($column, $order) {
+    if ($column === 'salesperson') {
+        $salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
+
+        if ($salesperson_id) {
+            $salesperson = get_userdata($salesperson_id);
+            if ($salesperson) {
+                printf(
+                    '<span style="background: #8b5cf6; color: #fff; padding: 2px 8px; border-radius: 3px; font-size: 12px;">%s</span>',
+                    esc_html($salesperson->display_name)
+                );
+            } else {
+                echo '<span style="color: #999;">—</span>';
+            }
+        } else {
+            echo '<span style="color: #999;">—</span>';
+        }
+    }
+}
+
+/**
  * Add commission column to orders list
  */
 add_filter('manage_edit-shop_order_columns', 'ah_ho_add_commission_column', 20);
