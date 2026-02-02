@@ -245,10 +245,19 @@ function ah_ho_get_wholesale_price($product_id) {
  * Filter product price in admin order creation for salespersons
  *
  * This hooks into the AJAX product search when adding items to manual orders
+ *
+ * @param int $item_id The order item ID
+ * @param WC_Order_Item $item The order item object
+ * @param int $order_id The order ID
  */
-function ah_ho_filter_admin_order_item_price($item, $item_id, $order) {
+function ah_ho_filter_admin_order_item_price($item_id, $item, $order_id) {
     // Only apply in admin context
     if (!is_admin()) {
+        return;
+    }
+
+    // Ensure $item is an order item object, not an ID
+    if (!$item instanceof WC_Order_Item_Product) {
         return;
     }
 
