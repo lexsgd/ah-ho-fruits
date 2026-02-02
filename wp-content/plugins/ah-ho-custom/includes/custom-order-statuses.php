@@ -282,3 +282,55 @@ function ah_ho_add_order_note_on_status_change($order_id, $old_status, $new_stat
     }
 }
 add_action('woocommerce_order_status_changed', 'ah_ho_add_order_note_on_status_change', 10, 4);
+
+/**
+ * Add "Complete" quick action for Processing - B2B orders
+ *
+ * WooCommerce by default only shows the "Complete" button for Processing orders.
+ * This adds the same button for Processing - B2B orders.
+ */
+add_filter('woocommerce_admin_order_actions', 'ah_ho_add_complete_action_for_b2b', 10, 2);
+
+function ah_ho_add_complete_action_for_b2b($actions, $order) {
+    // Add "complete" action for processing-b2b orders
+    if ($order->has_status('processing-b2b')) {
+        $actions['complete'] = array(
+            'url'    => wp_nonce_url(
+                admin_url('admin-ajax.php?action=woocommerce_mark_order_status&status=completed&order_id=' . $order->get_id()),
+                'woocommerce-mark-order-status'
+            ),
+            'name'   => __('Complete', 'woocommerce'),
+            'action' => 'complete',
+        );
+    }
+
+    return $actions;
+}
+
+/**
+ * Add "Complete" action to order preview popup for Processing - B2B
+ */
+add_filter('woocommerce_admin_order_preview_actions', 'ah_ho_add_complete_preview_action_for_b2b', 10, 2);
+
+function ah_ho_add_complete_preview_action_for_b2b($actions, $order) {
+    // For processing-b2b orders, add complete to the status actions
+    if ($order->has_status('processing-b2b') && !isset($actions['status']['actions']['complete'])) {
+        if (!isset($actions['status'])) {
+            $actions['status'] = array(
+                'group' => __('Change status: ', 'woocommerce'),
+                'actions' => array(),
+            );
+        }
+
+        $actions['status']['actions']['complete'] = array(
+            'url'    => wp_nonce_url(
+                admin_url('admin-ajax.php?action=woocommerce_mark_order_status&status=completed&order_id=' . $order->get_id()),
+                'woocommerce-mark-order-status'
+            ),
+            'name'   => __('Completed', 'woocommerce'),
+            'title'  => __('Change order status to completed', 'woocommerce'),
+        );
+    }
+
+    return $actions;
+}
