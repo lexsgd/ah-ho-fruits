@@ -266,33 +266,5 @@ function ah_ho_hide_dashboard_for_salesperson() {
     }
 }
 
-/**
- * Allow salespersons to search/add products to orders via AJAX
- * WooCommerce requires edit_products capability for product search
- */
-add_filter('user_has_cap', 'ah_ho_grant_salesperson_product_caps', 10, 4);
-
-function ah_ho_grant_salesperson_product_caps($allcaps, $caps, $args, $user) {
-    // Only for salespersons
-    if (!isset($user->roles) || !in_array('ah_ho_salesperson', (array) $user->roles)) {
-        return $allcaps;
-    }
-
-    // Check if this is an AJAX request for product search or order editing
-    $is_ajax = defined('DOING_AJAX') && DOING_AJAX;
-    $is_admin = is_admin();
-
-    if (!$is_ajax && !$is_admin) {
-        return $allcaps;
-    }
-
-    // Grant edit_products capability for product search AJAX
-    if (in_array('edit_products', $caps) || in_array('edit_product', $caps)) {
-        $allcaps['edit_products'] = true;
-        $allcaps['edit_product'] = true;
-    }
-
-    return $allcaps;
-}
 
 
