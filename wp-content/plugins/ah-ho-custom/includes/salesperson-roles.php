@@ -305,9 +305,9 @@ function ah_ho_restrict_salesperson_editable_roles($roles) {
 }
 
 /**
- * Prevent salespersons from editing non-customer users
- * Allow: own profile, customers
- * Deny: admins, shop_managers, other salespersons
+ * Prevent salespersons from editing privileged users
+ * Allow: own profile, customers, subscribers, any non-privileged role
+ * Deny: admins, shop_managers, other salespersons, editors, authors
  */
 add_filter('user_has_cap', 'ah_ho_restrict_salesperson_user_editing', 10, 4);
 
@@ -333,18 +333,32 @@ function ah_ho_restrict_salesperson_user_editing($allcaps, $caps, $args, $user) 
         return $allcaps;
     }
 
-    // Check if target user is a customer
+    // Check if target user has a privileged role
     $target_user = get_userdata($target_user_id);
     if (!$target_user) {
         $allcaps['edit_users'] = false;
         return $allcaps;
     }
 
-    // Only allow editing customers
-    if (!in_array('customer', (array) $target_user->roles)) {
-        $allcaps['edit_users'] = false;
+    // Privileged roles that salespersons cannot edit
+    $protected_roles = array(
+        'administrator',
+        'shop_manager',
+        'ah_ho_salesperson',
+        'editor',
+        'author',
+    );
+
+    // Check if target user has any protected role
+    $target_roles = (array) $target_user->roles;
+    foreach ($protected_roles as $protected_role) {
+        if (in_array($protected_role, $target_roles)) {
+            $allcaps['edit_users'] = false;
+            return $allcaps;
+        }
     }
 
+    // Allow editing - user has non-privileged role (customer, subscriber, etc.)
     return $allcaps;
 }
 
