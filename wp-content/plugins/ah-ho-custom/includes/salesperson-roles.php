@@ -199,34 +199,33 @@ function ah_ho_save_commission_rate_field($user_id) {
  * Redirect salespersons to admin dashboard after login
  * By default WooCommerce redirects to my-account page
  */
-add_filter('woocommerce_login_redirect', 'ah_ho_salesperson_login_redirect', 10, 2);
-add_filter('login_redirect', 'ah_ho_salesperson_login_redirect', 10, 3);
+add_filter('woocommerce_login_redirect', 'ah_ho_wc_salesperson_login_redirect', 10, 2);
 
-function ah_ho_salesperson_login_redirect($redirect, $user = null, $requested_redirect_to = null) {
-    // Handle both filter signatures
-    if (is_string($user)) {
-        // login_redirect filter: $redirect, $requested_redirect_to, $user
-        $user_obj = $requested_redirect_to;
-    } else {
-        $user_obj = $user;
+function ah_ho_wc_salesperson_login_redirect($redirect, $user) {
+    // Check if user is a salesperson
+    if ($user && isset($user->roles) && in_array('ah_ho_salesperson', (array) $user->roles)) {
+        return admin_url();
     }
+    return $redirect;
+}
 
-    // Get user object if we have an ID
-    if (is_numeric($user_obj)) {
-        $user_obj = get_userdata($user_obj);
-    }
+/**
+ * WordPress login redirect for salespersons
+ */
+add_filter('login_redirect', 'ah_ho_wp_salesperson_login_redirect', 10, 3);
 
-    // If no user object, try to get current user
-    if (!$user_obj || !is_object($user_obj)) {
-        $user_obj = wp_get_current_user();
+function ah_ho_wp_salesperson_login_redirect($redirect_to, $requested_redirect_to, $user) {
+    // Check if we have a valid user object
+    if (!isset($user->roles) || is_wp_error($user)) {
+        return $redirect_to;
     }
 
     // Check if user is a salesperson
-    if ($user_obj && isset($user_obj->roles) && in_array('ah_ho_salesperson', (array) $user_obj->roles)) {
+    if (in_array('ah_ho_salesperson', (array) $user->roles)) {
         return admin_url();
     }
 
-    return $redirect;
+    return $redirect_to;
 }
 
 
