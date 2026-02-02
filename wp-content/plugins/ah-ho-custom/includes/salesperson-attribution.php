@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Auto-assign salesperson when they create a new order
+ * Auto-assign salesperson when they create a new order (HPOS Compatible)
  */
 add_action('woocommerce_new_order', 'ah_ho_assign_salesperson_to_new_order', 10, 2);
 
@@ -22,20 +22,31 @@ function ah_ho_assign_salesperson_to_new_order($order_id, $order) {
         return;
     }
 
-    // Assign the current salesperson to this order
-    update_post_meta($order_id, '_assigned_salesperson_id', $current_user->ID);
-    update_post_meta($order_id, '_commission_status', 'pending');
+    // Ensure we have the order object (HPOS compatible)
+    if (!$order instanceof WC_Order) {
+        $order = wc_get_order($order_id);
+    }
+
+    if (!$order) {
+        return;
+    }
+
+    // Assign the current salesperson to this order (HPOS compatible - use order meta methods)
+    $order->update_meta_data('_assigned_salesperson_id', $current_user->ID);
+    $order->update_meta_data('_commission_status', 'pending');
 
     // Set status to Processing - B2B for salesperson-created orders
     $order->set_status('processing-b2b', sprintf(
         __('B2B order created by salesperson: %s', 'ah-ho-custom'),
         $current_user->display_name
     ));
+
+    // Save all changes including meta data
     $order->save();
 }
 
 /**
- * Calculate commission when order is completed
+ * Calculate commission when order is completed (HPOS Compatible)
  */
 add_action('woocommerce_order_status_completed', 'ah_ho_calculate_order_commission', 10, 1);
 
@@ -46,7 +57,8 @@ function ah_ho_calculate_order_commission($order_id) {
         return;
     }
 
-    $salesperson_id = get_post_meta($order_id, '_assigned_salesperson_id', true);
+    // HPOS compatible - use order meta methods
+    $salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
 
     // Not a salesperson order
     if (!$salesperson_id) {
@@ -54,7 +66,7 @@ function ah_ho_calculate_order_commission($order_id) {
     }
 
     // Commission already calculated
-    if (get_post_meta($order_id, '_commission_amount', true)) {
+    if ($order->get_meta('_commission_amount', true)) {
         return;
     }
 
@@ -63,7 +75,7 @@ function ah_ho_calculate_order_commission($order_id) {
     $rate = null;
 
     if ($enable_custom_rates) {
-        // Try to get salesperson-specific rate
+        // Try to get salesperson-specific rate (user meta is still post-based)
         $rate = get_user_meta($salesperson_id, '_commission_rate', true);
     }
 
@@ -76,15 +88,14 @@ function ah_ho_calculate_order_commission($order_id) {
     $order_total = $order->get_total();
     $commission = $order_total * ($rate / 100);
 
-    // Store commission data
-    update_post_meta($order_id, '_commission_rate', $rate);
-    update_post_meta($order_id, '_commission_amount', $commission);
-
     // Determine commission status based on approval mode
     $approval_mode = get_option('ah_ho_commission_approval_mode', 'auto');
     $status = ($approval_mode === 'auto') ? 'approved' : 'pending';
 
-    update_post_meta($order_id, '_commission_status', $status);
+    // Store commission data (HPOS compatible)
+    $order->update_meta_data('_commission_rate', $rate);
+    $order->update_meta_data('_commission_amount', $commission);
+    $order->update_meta_data('_commission_status', $status);
 
     // Add order note
     $order->add_order_note(
@@ -95,6 +106,9 @@ function ah_ho_calculate_order_commission($order_id) {
             $status
         )
     );
+
+    // Save all meta changes
+    $order->save();
 
     // Send notification if auto-approved and notifications enabled
     if ($status === 'approved' && get_option('ah_ho_notify_on_approval', true)) {
@@ -136,53 +150,64 @@ function ah_ho_send_commission_notification($order_id, $salesperson_id, $commiss
 }
 
 /**
- * Handle full refund - reset commission
+ * Handle full refund - reset commission (HPOS Compatible)
  */
 add_action('woocommerce_order_status_refunded', 'ah_ho_handle_commission_refund', 10, 1);
 
 function ah_ho_handle_commission_refund($order_id) {
-    $commission_amount = get_post_meta($order_id, '_commission_amount', true);
+    $order = wc_get_order($order_id);
+
+    if (!$order) {
+        return;
+    }
+
+    $commission_amount = $order->get_meta('_commission_amount', true);
 
     if (!$commission_amount) {
         return; // No commission to refund
     }
 
-    $order = wc_get_order($order_id);
-
-    // Set commission to 0 and mark as refunded
-    update_post_meta($order_id, '_commission_amount', 0);
-    update_post_meta($order_id, '_commission_status', 'refunded');
+    // Set commission to 0 and mark as refunded (HPOS compatible)
+    $order->update_meta_data('_commission_amount', 0);
+    $order->update_meta_data('_commission_status', 'refunded');
 
     // Add order note
     $order->add_order_note(
         sprintf(__('Commission refunded: $%s set to $0', 'ah-ho-custom'), number_format($commission_amount, 2))
     );
+
+    $order->save();
 }
 
 /**
- * Handle order cancellation
+ * Handle order cancellation (HPOS Compatible)
  */
 add_action('woocommerce_order_status_cancelled', 'ah_ho_handle_commission_cancellation', 10, 1);
 
 function ah_ho_handle_commission_cancellation($order_id) {
-    $commission_status = get_post_meta($order_id, '_commission_status', true);
+    $order = wc_get_order($order_id);
+
+    if (!$order) {
+        return;
+    }
+
+    $commission_status = $order->get_meta('_commission_status', true);
 
     // Only cancel if commission hasn't been paid yet
     if ($commission_status === 'paid') {
         // Flag for manual review - can't auto-clawback paid commission
-        $order = wc_get_order($order_id);
         $order->add_order_note(
             __('⚠️ Order cancelled but commission was already paid. Manual clawback required.', 'ah-ho-custom')
         );
-        update_post_meta($order_id, '_commission_needs_clawback', true);
+        $order->update_meta_data('_commission_needs_clawback', true);
+        $order->save();
         return;
     }
 
-    // Cancel commission
-    update_post_meta($order_id, '_commission_status', 'cancelled');
-
-    $order = wc_get_order($order_id);
+    // Cancel commission (HPOS compatible)
+    $order->update_meta_data('_commission_status', 'cancelled');
     $order->add_order_note(__('Commission cancelled due to order cancellation', 'ah-ho-custom'));
+    $order->save();
 }
 
 /**
@@ -202,14 +227,21 @@ function ah_ho_add_salesperson_meta_box() {
 }
 
 /**
- * Render salesperson assignment meta box
+ * Render salesperson assignment meta box (HPOS Compatible)
  */
 function ah_ho_render_salesperson_meta_box($post) {
     $order = wc_get_order($post->ID);
-    $assigned_salesperson_id = get_post_meta($post->ID, '_assigned_salesperson_id', true);
-    $commission_amount = get_post_meta($post->ID, '_commission_amount', true);
-    $commission_rate = get_post_meta($post->ID, '_commission_rate', true);
-    $commission_status = get_post_meta($post->ID, '_commission_status', true);
+
+    if (!$order) {
+        echo '<p>' . __('Unable to load order data.', 'ah-ho-custom') . '</p>';
+        return;
+    }
+
+    // HPOS compatible - use order meta methods
+    $assigned_salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
+    $commission_amount = $order->get_meta('_commission_amount', true);
+    $commission_rate = $order->get_meta('_commission_rate', true);
+    $commission_status = $order->get_meta('_commission_status', true);
 
     // Get all salespersons
     $salespersons = get_users(array('role' => 'ah_ho_salesperson'));
@@ -289,41 +321,44 @@ function ah_ho_save_salesperson_assignment($post_id, $post) {
         return;
     }
 
-    // Save assigned salesperson
+    // Save assigned salesperson (HPOS compatible)
     if (isset($_POST['assigned_salesperson'])) {
-        $old_salesperson = get_post_meta($post_id, '_assigned_salesperson_id', true);
+        $old_salesperson = $order->get_meta('_assigned_salesperson_id', true);
         $new_salesperson = absint($_POST['assigned_salesperson']);
 
         if ($old_salesperson != $new_salesperson) {
             if ($new_salesperson) {
-                update_post_meta($post_id, '_assigned_salesperson_id', $new_salesperson);
+                $order->update_meta_data('_assigned_salesperson_id', $new_salesperson);
                 $salesperson = get_userdata($new_salesperson);
                 $order->add_order_note(
                     sprintf(__('Order assigned to salesperson: %s', 'ah-ho-custom'), $salesperson->display_name)
                 );
             } else {
-                delete_post_meta($post_id, '_assigned_salesperson_id');
+                $order->delete_meta_data('_assigned_salesperson_id');
                 $order->add_order_note(__('Salesperson assignment removed', 'ah-ho-custom'));
             }
+            $order->save();
         }
     }
 
-    // Mark commission as paid
+    // Mark commission as paid (HPOS compatible)
     if (isset($_POST['mark_commission_paid']) && $_POST['mark_commission_paid'] === '1') {
-        update_post_meta($post_id, '_commission_status', 'paid');
-        update_post_meta($post_id, '_commission_paid_date', current_time('Y-m-d'));
+        $order->update_meta_data('_commission_status', 'paid');
+        $order->update_meta_data('_commission_paid_date', current_time('Y-m-d'));
         $order->add_order_note(__('Commission marked as paid', 'ah-ho-custom'));
+        $order->save();
     }
 
-    // Approve commission (manual approval mode)
+    // Approve commission (manual approval mode) - HPOS compatible
     if (isset($_POST['approve_commission']) && $_POST['approve_commission'] === '1') {
-        update_post_meta($post_id, '_commission_status', 'approved');
+        $order->update_meta_data('_commission_status', 'approved');
         $order->add_order_note(__('Commission manually approved', 'ah-ho-custom'));
+        $order->save();
 
-        // Send notification if enabled
+        // Send notification if enabled (HPOS compatible)
         if (get_option('ah_ho_notify_on_approval', true)) {
-            $salesperson_id = get_post_meta($post_id, '_assigned_salesperson_id', true);
-            $commission = get_post_meta($post_id, '_commission_amount', true);
+            $salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
+            $commission = $order->get_meta('_commission_amount', true);
             if ($salesperson_id && $commission) {
                 ah_ho_send_commission_notification($post_id, $salesperson_id, $commission);
             }
@@ -349,14 +384,22 @@ function ah_ho_add_commission_column($columns) {
 }
 
 /**
- * Display commission data in orders list
+ * Display commission data in orders list (HPOS Compatible)
  */
 add_action('manage_shop_order_posts_custom_column', 'ah_ho_display_commission_column', 10, 2);
 
 function ah_ho_display_commission_column($column, $post_id) {
     if ($column === 'salesperson_commission') {
-        $commission = get_post_meta($post_id, '_commission_amount', true);
-        $status = get_post_meta($post_id, '_commission_status', true);
+        $order = wc_get_order($post_id);
+
+        if (!$order) {
+            echo '—';
+            return;
+        }
+
+        // HPOS compatible - use order meta methods
+        $commission = $order->get_meta('_commission_amount', true);
+        $status = $order->get_meta('_commission_status', true);
 
         if ($commission) {
             printf(
