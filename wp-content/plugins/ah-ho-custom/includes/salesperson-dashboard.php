@@ -262,7 +262,7 @@ function ah_ho_render_salesperson_dashboard() {
 }
 
 /**
- * Get commission data for dashboard
+ * Get commission data for dashboard (HPOS Compatible)
  */
 function ah_ho_get_commission_data($salesperson_id = 0, $status = '', $month = '') {
     global $wpdb;
@@ -275,39 +275,47 @@ function ah_ho_get_commission_data($salesperson_id = 0, $status = '', $month = '
         'order_count' => 0,
     );
 
-    // Build query
-    $where = "WHERE p.post_type = 'shop_order'";
+    // Use HPOS tables
+    $orders_table = $wpdb->prefix . 'wc_orders';
+    $meta_table = $wpdb->prefix . 'wc_orders_meta';
+
+    // Build WHERE conditions
+    $where_conditions = array("o.type = 'shop_order'");
 
     if ($salesperson_id) {
-        $where .= $wpdb->prepare(" AND pm1.meta_value = %d", $salesperson_id);
+        $where_conditions[] = $wpdb->prepare("sp.meta_value = %d", $salesperson_id);
     }
 
     if ($status) {
-        $where .= $wpdb->prepare(" AND pm3.meta_value = %s", $status);
+        $where_conditions[] = $wpdb->prepare("cs.meta_value = %s", $status);
     }
 
     if ($month) {
-        $where .= $wpdb->prepare(" AND DATE_FORMAT(p.post_date, '%%Y-%%m') = %s", $month);
+        $where_conditions[] = $wpdb->prepare("DATE_FORMAT(o.date_created_gmt, '%%Y-%%m') = %s", $month);
     }
 
-    // Get totals by status
+    $where = implode(' AND ', $where_conditions);
+
+    // Get totals by status using HPOS tables
     $query = "
         SELECT
-            pm3.meta_value as status,
-            SUM(CAST(pm2.meta_value AS DECIMAL(10,2))) as total,
-            COUNT(*) as count
-        FROM {$wpdb->posts} p
-        INNER JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_assigned_salesperson_id'
-        INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_commission_amount'
-        INNER JOIN {$wpdb->postmeta} pm3 ON p.ID = pm3.post_id AND pm3.meta_key = '_commission_status'
-        $where
-        GROUP BY pm3.meta_value
+            cs.meta_value as status,
+            SUM(CAST(ca.meta_value AS DECIMAL(10,2))) as total,
+            COUNT(DISTINCT o.id) as count
+        FROM {$orders_table} o
+        INNER JOIN {$meta_table} sp ON o.id = sp.order_id AND sp.meta_key = '_assigned_salesperson_id'
+        INNER JOIN {$meta_table} ca ON o.id = ca.order_id AND ca.meta_key = '_commission_amount'
+        INNER JOIN {$meta_table} cs ON o.id = cs.order_id AND cs.meta_key = '_commission_status'
+        WHERE {$where}
+        GROUP BY cs.meta_value
     ";
 
     $results = $wpdb->get_results($query);
 
     foreach ($results as $row) {
-        $data[$row->status] = floatval($row->total);
+        if (isset($data[$row->status])) {
+            $data[$row->status] = floatval($row->total);
+        }
         $data['total'] += floatval($row->total);
         $data['order_count'] += intval($row->count);
     }
@@ -316,41 +324,47 @@ function ah_ho_get_commission_data($salesperson_id = 0, $status = '', $month = '
 }
 
 /**
- * Render commission table
+ * Render commission table (HPOS Compatible)
  */
 function ah_ho_render_commission_table($salesperson_id = 0, $status = '', $month = '') {
     global $wpdb;
 
-    // Build query
-    $where = "WHERE p.post_type = 'shop_order'";
+    // Use HPOS tables
+    $orders_table = $wpdb->prefix . 'wc_orders';
+    $meta_table = $wpdb->prefix . 'wc_orders_meta';
+
+    // Build WHERE conditions
+    $where_conditions = array("o.type = 'shop_order'");
 
     if ($salesperson_id) {
-        $where .= $wpdb->prepare(" AND pm1.meta_value = %d", $salesperson_id);
+        $where_conditions[] = $wpdb->prepare("sp.meta_value = %d", $salesperson_id);
     }
 
     if ($status) {
-        $where .= $wpdb->prepare(" AND pm3.meta_value = %s", $status);
+        $where_conditions[] = $wpdb->prepare("cs.meta_value = %s", $status);
     }
 
     if ($month) {
-        $where .= $wpdb->prepare(" AND DATE_FORMAT(p.post_date, '%%Y-%%m') = %s", $month);
+        $where_conditions[] = $wpdb->prepare("DATE_FORMAT(o.date_created_gmt, '%%Y-%%m') = %s", $month);
     }
+
+    $where = implode(' AND ', $where_conditions);
 
     $query = "
         SELECT
-            p.ID,
-            p.post_date,
-            pm1.meta_value as salesperson_id,
-            pm2.meta_value as commission_amount,
-            pm3.meta_value as commission_status,
-            pm4.meta_value as commission_rate
-        FROM {$wpdb->posts} p
-        INNER JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_assigned_salesperson_id'
-        INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_commission_amount'
-        INNER JOIN {$wpdb->postmeta} pm3 ON p.ID = pm3.post_id AND pm3.meta_key = '_commission_status'
-        LEFT JOIN {$wpdb->postmeta} pm4 ON p.ID = pm4.post_id AND pm4.meta_key = '_commission_rate'
-        $where
-        ORDER BY p.post_date DESC
+            o.id as ID,
+            o.date_created_gmt as post_date,
+            sp.meta_value as salesperson_id,
+            ca.meta_value as commission_amount,
+            cs.meta_value as commission_status,
+            cr.meta_value as commission_rate
+        FROM {$orders_table} o
+        INNER JOIN {$meta_table} sp ON o.id = sp.order_id AND sp.meta_key = '_assigned_salesperson_id'
+        INNER JOIN {$meta_table} ca ON o.id = ca.order_id AND ca.meta_key = '_commission_amount'
+        INNER JOIN {$meta_table} cs ON o.id = cs.order_id AND cs.meta_key = '_commission_status'
+        LEFT JOIN {$meta_table} cr ON o.id = cr.order_id AND cr.meta_key = '_commission_rate'
+        WHERE {$where}
+        ORDER BY o.date_created_gmt DESC
         LIMIT 50
     ";
 
@@ -382,7 +396,7 @@ function ah_ho_render_commission_table($salesperson_id = 0, $status = '', $month
             ?>
             <tr>
                 <td>
-                    <a href="<?php echo admin_url('post.php?post=' . $row->ID . '&action=edit'); ?>">
+                    <a href="<?php echo esc_url($order->get_edit_order_url()); ?>">
                         #<?php echo $order->get_order_number(); ?>
                     </a>
                 </td>
@@ -457,33 +471,38 @@ function ah_ho_handle_commission_export() {
         __('Status', 'ah-ho-custom'),
     ));
 
-    // Get data
+    // Get data using HPOS tables
     global $wpdb;
-    $where = "WHERE p.post_type = 'shop_order'";
+    $orders_table = $wpdb->prefix . 'wc_orders';
+    $meta_table = $wpdb->prefix . 'wc_orders_meta';
+
+    $where_conditions = array("o.type = 'shop_order'");
 
     if ($salesperson_id) {
-        $where .= $wpdb->prepare(" AND pm1.meta_value = %d", $salesperson_id);
+        $where_conditions[] = $wpdb->prepare("sp.meta_value = %d", $salesperson_id);
     }
 
     if ($month) {
-        $where .= $wpdb->prepare(" AND DATE_FORMAT(p.post_date, '%%Y-%%m') = %s", $month);
+        $where_conditions[] = $wpdb->prepare("DATE_FORMAT(o.date_created_gmt, '%%Y-%%m') = %s", $month);
     }
+
+    $where = implode(' AND ', $where_conditions);
 
     $query = "
         SELECT
-            p.ID,
-            p.post_date,
-            pm1.meta_value as salesperson_id,
-            pm2.meta_value as commission_amount,
-            pm3.meta_value as commission_status,
-            pm4.meta_value as commission_rate
-        FROM {$wpdb->posts} p
-        INNER JOIN {$wpdb->postmeta} pm1 ON p.ID = pm1.post_id AND pm1.meta_key = '_assigned_salesperson_id'
-        INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = '_commission_amount'
-        INNER JOIN {$wpdb->postmeta} pm3 ON p.ID = pm3.post_id AND pm3.meta_key = '_commission_status'
-        LEFT JOIN {$wpdb->postmeta} pm4 ON p.ID = pm4.post_id AND pm4.meta_key = '_commission_rate'
-        $where
-        ORDER BY p.post_date DESC
+            o.id as ID,
+            o.date_created_gmt as post_date,
+            sp.meta_value as salesperson_id,
+            ca.meta_value as commission_amount,
+            cs.meta_value as commission_status,
+            cr.meta_value as commission_rate
+        FROM {$orders_table} o
+        INNER JOIN {$meta_table} sp ON o.id = sp.order_id AND sp.meta_key = '_assigned_salesperson_id'
+        INNER JOIN {$meta_table} ca ON o.id = ca.order_id AND ca.meta_key = '_commission_amount'
+        INNER JOIN {$meta_table} cs ON o.id = cs.order_id AND cs.meta_key = '_commission_status'
+        LEFT JOIN {$meta_table} cr ON o.id = cr.order_id AND cr.meta_key = '_commission_rate'
+        WHERE {$where}
+        ORDER BY o.date_created_gmt DESC
     ";
 
     $results = $wpdb->get_results($query);

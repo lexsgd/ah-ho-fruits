@@ -43,6 +43,88 @@ function ah_ho_assign_salesperson_to_new_order($order_id, $order) {
 
     // Save all changes including meta data
     $order->save();
+
+    // Calculate commission immediately (as pending) so it shows in dashboard
+    ah_ho_calculate_pending_commission($order_id);
+}
+
+/**
+ * Calculate pending commission when order is created
+ * This allows salespersons to see projected earnings before order completion
+ */
+function ah_ho_calculate_pending_commission($order_id) {
+    $order = wc_get_order($order_id);
+
+    if (!$order) {
+        return;
+    }
+
+    $salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
+
+    if (!$salesperson_id) {
+        return;
+    }
+
+    // Don't recalculate if already calculated
+    if ($order->get_meta('_commission_amount', true)) {
+        return;
+    }
+
+    // Get commission rate
+    $enable_custom_rates = get_option('ah_ho_enable_custom_rates', true);
+    $rate = null;
+
+    if ($enable_custom_rates) {
+        $rate = get_user_meta($salesperson_id, '_commission_rate', true);
+    }
+
+    if (empty($rate)) {
+        $rate = get_option('ah_ho_default_commission_rate', 10);
+    }
+
+    // Calculate commission based on order total
+    $order_total = $order->get_total();
+    $commission = $order_total * ($rate / 100);
+
+    // Store commission data with 'pending' status
+    $order->update_meta_data('_commission_rate', $rate);
+    $order->update_meta_data('_commission_amount', $commission);
+    $order->update_meta_data('_commission_status', 'pending');
+
+    $order->save();
+}
+
+/**
+ * Recalculate commission when order total changes (items added/removed)
+ */
+add_action('woocommerce_order_status_changed', 'ah_ho_recalculate_commission_on_change', 5, 4);
+
+function ah_ho_recalculate_commission_on_change($order_id, $old_status, $new_status, $order) {
+    $salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
+
+    if (!$salesperson_id) {
+        return;
+    }
+
+    $commission_status = $order->get_meta('_commission_status', true);
+
+    // Only recalculate if commission is still pending
+    if ($commission_status !== 'pending') {
+        return;
+    }
+
+    // Get rate
+    $rate = $order->get_meta('_commission_rate', true);
+    if (!$rate) {
+        $rate = get_option('ah_ho_default_commission_rate', 10);
+    }
+
+    // Recalculate commission
+    $order_total = $order->get_total();
+    $commission = $order_total * ($rate / 100);
+
+    $order->update_meta_data('_commission_amount', $commission);
+    $order->save();
 }
 
 /**
