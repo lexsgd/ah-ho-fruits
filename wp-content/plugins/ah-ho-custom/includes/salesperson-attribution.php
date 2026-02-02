@@ -26,12 +26,10 @@ function ah_ho_assign_salesperson_to_new_order($order_id, $order) {
     update_post_meta($order_id, '_assigned_salesperson_id', $current_user->ID);
     update_post_meta($order_id, '_commission_status', 'pending');
 
-    // Set status to Processing - B2B for salesperson-created orders
-    $order->set_status('processing-b2b', sprintf(
-        __('B2B order created by salesperson: %s', 'ah-ho-custom'),
-        $current_user->display_name
-    ));
-    $order->save();
+    // Add order note
+    $order->add_order_note(
+        sprintf(__('Order assigned to salesperson: %s', 'ah-ho-custom'), $current_user->display_name)
+    );
 }
 
 /**

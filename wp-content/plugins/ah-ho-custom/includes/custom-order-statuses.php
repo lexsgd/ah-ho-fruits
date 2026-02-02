@@ -13,16 +13,6 @@ if (!defined('ABSPATH')) {
  * Register custom order statuses
  */
 function ah_ho_register_custom_order_statuses() {
-    // Processing - B2B (Salesperson created order)
-    register_post_status('wc-processing-b2b', array(
-        'label'                     => _x('Processing - B2B', 'Order status', 'ah-ho-custom'),
-        'public'                    => true,
-        'exclude_from_search'       => false,
-        'show_in_admin_all_list'    => true,
-        'show_in_admin_status_list' => true,
-        'label_count'               => _n_noop('Processing - B2B <span class="count">(%s)</span>', 'Processing - B2B <span class="count">(%s)</span>', 'ah-ho-custom')
-    ));
-
     // Ready for Delivery - Packed, awaiting driver
     register_post_status('wc-ready-delivery', array(
         'label'                     => _x('Ready for Delivery', 'Order status', 'ah-ho-custom'),
@@ -87,7 +77,6 @@ function ah_ho_add_custom_order_statuses($order_statuses) {
 
         // Add custom statuses after 'processing'
         if ('wc-processing' === $key) {
-            $new_order_statuses['wc-processing-b2b']      = _x('Processing - B2B', 'Order status', 'ah-ho-custom');
             $new_order_statuses['wc-ready-delivery']      = _x('Ready for Delivery', 'Order status', 'ah-ho-custom');
             $new_order_statuses['wc-out-delivery']        = _x('Out for Delivery', 'Order status', 'ah-ho-custom');
             $new_order_statuses['wc-delivered-paid']      = _x('Delivered - Paid', 'Order status', 'ah-ho-custom');
@@ -104,7 +93,6 @@ add_filter('wc_order_statuses', 'ah_ho_add_custom_order_statuses');
  * Add custom statuses to bulk actions dropdown
  */
 function ah_ho_add_bulk_actions($bulk_actions) {
-    $bulk_actions['mark_processing-b2b']      = __('Change status to Processing - B2B', 'ah-ho-custom');
     $bulk_actions['mark_ready-delivery']      = __('Change status to Ready for Delivery', 'ah-ho-custom');
     $bulk_actions['mark_out-delivery']        = __('Change status to Out for Delivery', 'ah-ho-custom');
     $bulk_actions['mark_delivered-paid']      = __('Change status to Delivered - Paid', 'ah-ho-custom');
@@ -119,7 +107,6 @@ add_filter('bulk_actions-edit-shop_order', 'ah_ho_add_bulk_actions');
  * Add custom statuses to reports
  */
 function ah_ho_include_custom_order_status_to_reports($statuses) {
-    $statuses[] = 'processing-b2b';
     $statuses[] = 'ready-delivery';
     $statuses[] = 'out-delivery';
     $statuses[] = 'delivered-paid';
@@ -147,16 +134,6 @@ add_filter('woocommerce_order_is_paid_statuses', 'ah_ho_custom_paid_statuses');
 function ah_ho_custom_order_status_styles() {
     ?>
     <style>
-        /* Processing - B2B - Purple (Salesperson created) */
-        .order-status.status-processing-b2b {
-            background: #8b5cf6;
-            color: #fff;
-        }
-        mark.order-status.status-processing-b2b {
-            background: #8b5cf6;
-            color: #fff;
-        }
-
         /* Ready for Delivery - Blue */
         .order-status.status-ready-delivery {
             background: #2271b1;
@@ -227,7 +204,6 @@ function ah_ho_add_custom_status_help_text() {
             // Add tooltips to order status dropdown
             var statusDescriptions = {
                 'wc-processing': 'Order received, not packed',
-                'wc-processing-b2b': 'B2B order created by salesperson',
                 'wc-ready-delivery': 'Packed, awaiting driver assignment',
                 'wc-out-delivery': 'With delivery driver',
                 'wc-delivered-paid': 'Complete (B2C / Cash payment)',
@@ -269,7 +245,6 @@ add_action('woocommerce_order_status_changed', 'ah_ho_reduce_stock_on_out_for_de
  */
 function ah_ho_add_order_note_on_status_change($order_id, $old_status, $new_status, $order) {
     $custom_statuses = array(
-        'processing-b2b'      => 'B2B order created by salesperson. Next: Review and prepare',
         'ready-delivery'      => 'Order is ready for delivery. Next: Assign to driver',
         'out-delivery'        => 'Order is out for delivery with driver',
         'delivered-paid'      => 'Order delivered and paid (B2C/Cash)',
