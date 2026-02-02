@@ -244,6 +244,9 @@ function ah_ho_blocks_checkout_inline_script() {
                                min="${initialMinDate}"
                                max="<?php echo esc_attr($max_date); ?>"
                                style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                        <p id="ah_ho_date_error" style="margin: 8px 0 0; font-size: 12px; color: #d63638; display: none;">
+                            Weekend delivery is not available. Please select a weekday (Mon-Fri).
+                        </p>
                         <p id="ah_ho_date_note" style="margin: 8px 0 0; font-size: 12px; color: #666;">
                             Earliest available: <span id="ah_ho_earliest_date">${formatDate(initialMinDate)}</span>. Weekends not available.
                         </p>
@@ -261,12 +264,23 @@ function ah_ho_blocks_checkout_inline_script() {
 
             const dateInput = document.getElementById('ah_ho_delivery_date');
             const earliestDateSpan = document.getElementById('ah_ho_earliest_date');
+            const dateError = document.getElementById('ah_ho_date_error');
 
-            // Validate date selection (no weekends)
+            // Validate date selection (no weekends) - show inline error
             dateInput.addEventListener('change', function() {
                 if (this.value && isWeekend(this.value)) {
-                    alert('Weekend delivery is not available. Please select a weekday (Monday - Friday).');
+                    // Show inline error, clear the value, highlight input
+                    dateError.style.display = 'block';
+                    this.style.borderColor = '#d63638';
                     this.value = '';
+                    // Auto-hide error after 3 seconds
+                    setTimeout(() => {
+                        dateError.style.display = 'none';
+                        dateInput.style.borderColor = '#ddd';
+                    }, 3000);
+                } else {
+                    dateError.style.display = 'none';
+                    this.style.borderColor = '#ddd';
                 }
                 updateHiddenFields();
             });
