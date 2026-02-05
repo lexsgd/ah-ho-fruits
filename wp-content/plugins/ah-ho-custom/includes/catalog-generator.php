@@ -69,6 +69,22 @@ function ah_ho_render_catalog_page() {
                 <li><?php _e('Bold text (*text*) will appear bold in WhatsApp', 'ah-ho-custom'); ?></li>
             </ul>
         </div>
+
+        <?php $stock_text = ah_ho_generate_stock_catalog_text(); ?>
+
+        <h2 style="margin-top: 40px;"><?php _e('B2B Stock List', 'ah-ho-custom'); ?></h2>
+
+        <div style="margin-bottom: 15px; padding: 12px; background: #d1ecf1; border-left: 4px solid #0c5460; max-width: 800px;">
+            <span class="dashicons dashicons-info" style="color: #0c5460; vertical-align: middle; margin-right: 5px;"></span>
+            <?php _e('This section is for internal reference only. Stock quantities are not shareable.', 'ah-ho-custom'); ?>
+        </div>
+
+        <pre
+            id="ah-ho-stock-list"
+            style="width: 100%; max-width: 800px; font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.5; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; white-space: pre-wrap; word-wrap: break-word; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; overflow-x: auto;"
+            oncopy="return false;"
+            oncontextmenu="return false;"
+        ><?php echo esc_html($stock_text); ?></pre>
     </div>
 
     <script type="text/javascript">
@@ -93,6 +109,14 @@ function ah_ho_render_catalog_page() {
             // Refresh catalog (reload page)
             $('#ah-ho-refresh-catalog').on('click', function() {
                 location.reload();
+            });
+
+            // Prevent keyboard copy on stock list
+            $('#ah-ho-stock-list').on('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'a' || e.key === 'c')) {
+                    e.preventDefault();
+                    return false;
+                }
             });
         });
     </script>
@@ -195,6 +219,97 @@ function ah_ho_generate_catalog_text() {
     $output .= "━━━━━━━━━━━━━━━━━━━━\n";
     $output .= "_Last updated: " . current_time('d M Y, g:i A') . "_\n";
     $output .= "_Contact us to place your order!_";
+
+    return $output;
+}
+
+/**
+ * Generate B2B stock catalog text with stock quantities
+ */
+function ah_ho_generate_stock_catalog_text() {
+    $categories = get_terms(array(
+        'taxonomy'   => 'product_cat',
+        'hide_empty' => true,
+        'orderby'    => 'name',
+        'order'      => 'ASC',
+    ));
+
+    if (is_wp_error($categories) || empty($categories)) {
+        return __('No products available.', 'ah-ho-custom');
+    }
+
+    $category_emojis = array(
+        'fruits'     => '🍎',
+        'vegetables' => '🥬',
+        'citrus'     => '🍊',
+        'berries'    => '🍓',
+        'tropical'   => '🥭',
+        'apples'     => '🍏',
+        'bananas'    => '🍌',
+        'grapes'     => '🍇',
+        'melons'     => '🍈',
+        'stone'      => '🍑',
+        'imported'   => '✈️',
+        'local'      => '🇸🇬',
+    );
+
+    $output = "*AH HO FRUITS - B2B STOCK LIST*\n";
+    $output .= "_Internal use only - Do not share_\n";
+    $output .= "━━━━━━━━━━━━━━━━━━━━\n\n";
+
+    foreach ($categories as $category) {
+        $products = wc_get_products(array(
+            'status'       => 'publish',
+            'stock_status' => 'instock',
+            'category'     => array($category->slug),
+            'limit'        => -1,
+            'orderby'      => 'title',
+            'order'        => 'ASC',
+            'meta_query'   => array(
+                array(
+                    'key'     => '_wholesale_price',
+                    'value'   => '',
+                    'compare' => '!=',
+                ),
+                array(
+                    'key'     => '_wholesale_price',
+                    'compare' => 'EXISTS',
+                ),
+            ),
+        ));
+
+        if (empty($products)) {
+            continue;
+        }
+
+        $emoji = '';
+        foreach ($category_emojis as $key => $icon) {
+            if (stripos($category->slug, $key) !== false || stripos($category->name, $key) !== false) {
+                $emoji = $icon . ' ';
+                break;
+            }
+        }
+
+        $output .= sprintf("*%s%s*\n", $emoji, strtoupper($category->name));
+
+        foreach ($products as $product) {
+            $wholesale_price = $product->get_meta('_wholesale_price');
+            $name = $product->get_name();
+            $stock_qty = $product->get_stock_quantity();
+            $stock_display = ($stock_qty !== null && $stock_qty !== '') ? $stock_qty : 'N/A';
+
+            if ($wholesale_price) {
+                $output .= sprintf("%s @ \$%.2f x %s\n", $name, floatval($wholesale_price), $stock_display);
+            } else {
+                $output .= sprintf("%s @ POA x %s\n", $name, $stock_display);
+            }
+        }
+
+        $output .= "\n";
+    }
+
+    $output .= "━━━━━━━━━━━━━━━━━━━━\n";
+    $output .= "_Last updated: " . current_time('d M Y, g:i A') . "_";
 
     return $output;
 }
