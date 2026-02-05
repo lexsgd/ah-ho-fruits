@@ -261,25 +261,22 @@ function ah_ho_generate_stock_catalog_text() {
         $products = wc_get_products(array(
             'status'       => 'publish',
             'stock_status' => 'instock',
-            'visibility'   => 'hidden',
             'category'     => array($category->slug),
             'limit'        => -1,
             'orderby'      => 'title',
             'order'        => 'ASC',
-            'meta_query'   => array(
-                array(
-                    'key'     => '_wholesale_price',
-                    'value'   => '',
-                    'compare' => '!=',
-                ),
-                array(
-                    'key'     => '_wholesale_price',
-                    'compare' => 'EXISTS',
-                ),
-            ),
         ));
 
         if (empty($products)) {
+            continue;
+        }
+
+        // Filter to only hidden products (B2B only, not visible in shop)
+        $hidden_products = array_filter($products, function($product) {
+            return $product->get_catalog_visibility() === 'hidden';
+        });
+
+        if (empty($hidden_products)) {
             continue;
         }
 
@@ -293,7 +290,7 @@ function ah_ho_generate_stock_catalog_text() {
 
         $output .= sprintf("*%s%s*\n", $emoji, strtoupper($category->name));
 
-        foreach ($products as $product) {
+        foreach ($hidden_products as $product) {
             $wholesale_price = $product->get_meta('_wholesale_price');
             $name = $product->get_name();
             $stock_qty = $product->get_stock_quantity();
