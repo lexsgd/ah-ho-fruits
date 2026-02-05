@@ -19,7 +19,7 @@ function ah_ho_register_catalog_menu() {
     add_menu_page(
         __('Catalog Generator', 'ah-ho-custom'),
         __('Catalog', 'ah-ho-custom'),
-        'edit_products', // Both admin and salesperson have this capability
+        'manage_woocommerce', // Admin access only
         'ah-ho-catalog',
         'ah_ho_render_catalog_page',
         'dashicons-share',
@@ -322,7 +322,7 @@ add_action('wp_ajax_ah_ho_refresh_catalog', 'ah_ho_ajax_refresh_catalog');
 
 function ah_ho_ajax_refresh_catalog() {
     // Check capabilities
-    if (!current_user_can('read_products')) {
+    if (!current_user_can('manage_woocommerce')) {
         wp_send_json_error(__('Permission denied', 'ah-ho-custom'));
     }
 
