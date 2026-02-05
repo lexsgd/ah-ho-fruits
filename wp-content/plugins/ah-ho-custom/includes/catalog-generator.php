@@ -19,7 +19,7 @@ function ah_ho_register_catalog_menu() {
     add_menu_page(
         __('Catalog Generator', 'ah-ho-custom'),
         __('Catalog', 'ah-ho-custom'),
-        'read_products', // Salespersons have this capability
+        'edit_products', // Both admin and salesperson have this capability
         'ah-ho-catalog',
         'ah_ho_render_catalog_page',
         'dashicons-share',

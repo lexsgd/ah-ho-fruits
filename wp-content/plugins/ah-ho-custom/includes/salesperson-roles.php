@@ -135,18 +135,6 @@ add_action('ah_ho_custom_activate', 'ah_ho_register_salesperson_role');
 add_action('plugins_loaded', 'ah_ho_update_salesperson_role', 5);
 
 /**
- * Ensure administrator has read_products capability for catalog access
- */
-add_action('plugins_loaded', 'ah_ho_ensure_admin_catalog_access', 6);
-
-function ah_ho_ensure_admin_catalog_access() {
-    $admin = get_role('administrator');
-    if ($admin && !$admin->has_cap('read_products')) {
-        $admin->add_cap('read_products');
-    }
-}
-
-/**
  * Clean up role on deactivation (only if no users)
  */
 add_action('ah_ho_custom_deactivate', 'ah_ho_remove_salesperson_role');
