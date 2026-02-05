@@ -261,6 +261,7 @@ function ah_ho_generate_stock_catalog_text() {
         $products = wc_get_products(array(
             'status'       => 'publish',
             'stock_status' => 'instock',
+            'visibility'   => 'hidden',
             'category'     => array($category->slug),
             'limit'        => -1,
             'orderby'      => 'title',
