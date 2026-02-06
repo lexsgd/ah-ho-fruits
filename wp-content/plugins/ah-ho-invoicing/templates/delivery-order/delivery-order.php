@@ -92,7 +92,24 @@ if (!empty($customer_note) && empty($remarks)) {
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <style><?php include AH_HO_INVOICING_PLUGIN_DIR . 'templates/delivery-order/style.css'; ?></style>
+    <style>
+        @page {
+            margin: 20mm 18mm 18mm 18mm;
+            size: A4;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #000;
+        }
+        h1, h2, h3, h4 { margin: 0 0 5px 0; }
+        table { border-collapse: collapse; width: 100%; }
+        strong { font-weight: bold; }
+        .page-break { page-break-after: always; }
+        .no-break { page-break-inside: avoid; }
+    </style>
 </head>
 <body>
 
