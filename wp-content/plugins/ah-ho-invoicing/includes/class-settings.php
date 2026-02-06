@@ -51,7 +51,16 @@ class AH_HO_Settings {
 
         wp_enqueue_media();
 
-        wp_add_inline_script('media-upload', "
+        // Register and enqueue inline script on footer
+        add_action('admin_footer', array(__CLASS__, 'render_media_uploader_script'));
+    }
+
+    /**
+     * Output media uploader JavaScript in admin footer
+     */
+    public static function render_media_uploader_script() {
+        ?>
+        <script type="text/javascript">
             jQuery(document).ready(function($) {
                 // Upload button
                 $(document).on('click', '.ah-ho-upload-logo-btn', function(e) {
@@ -71,7 +80,7 @@ class AH_HO_Settings {
                         var attachment = frame.state().get('selection').first().toJSON();
                         inputField.val(attachment.url);
                         if (preview.length) {
-                            preview.html('<img src=\"' + attachment.url + '\" style=\"max-width:150px;max-height:80px;margin-top:8px;border:1px solid #ddd;padding:4px;background:#fff;\" />');
+                            preview.html('<img src="' + attachment.url + '" style="max-width:150px;max-height:80px;margin-top:8px;border:1px solid #ddd;padding:4px;background:#fff;" />');
                         }
                     });
 
@@ -86,7 +95,8 @@ class AH_HO_Settings {
                     button.closest('td').find('.ah-ho-logo-preview').html('');
                 });
             });
-        ");
+        </script>
+        <?php
     }
 
     /**
