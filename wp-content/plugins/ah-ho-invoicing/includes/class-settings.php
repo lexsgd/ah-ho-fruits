@@ -29,6 +29,100 @@ class AH_HO_Settings {
 
         // Save settings
         add_action('woocommerce_update_options_ah_ho_invoicing', array(__CLASS__, 'update_settings'));
+
+        // Register custom field type for logo upload
+        add_action('woocommerce_admin_field_ah_ho_logo_upload', array(__CLASS__, 'render_logo_upload_field'));
+
+        // Enqueue media uploader scripts on WooCommerce settings page
+        add_action('admin_enqueue_scripts', array(__CLASS__, 'enqueue_media_uploader'));
+    }
+
+    /**
+     * Enqueue WordPress media uploader on WooCommerce settings pages
+     */
+    public static function enqueue_media_uploader($hook) {
+        // Only load on WooCommerce settings page with our tab
+        if ($hook !== 'woocommerce_page_wc-settings') {
+            return;
+        }
+        if (!isset($_GET['tab']) || $_GET['tab'] !== 'ah_ho_invoicing') {
+            return;
+        }
+
+        wp_enqueue_media();
+
+        wp_add_inline_script('media-upload', "
+            jQuery(document).ready(function($) {
+                // Upload button
+                $(document).on('click', '.ah-ho-upload-logo-btn', function(e) {
+                    e.preventDefault();
+                    var button = $(this);
+                    var inputField = button.siblings('.ah-ho-logo-url-input');
+                    var preview = button.closest('td').find('.ah-ho-logo-preview');
+
+                    var frame = wp.media({
+                        title: 'Select Company Logo',
+                        button: { text: 'Use this image' },
+                        multiple: false,
+                        library: { type: 'image' }
+                    });
+
+                    frame.on('select', function() {
+                        var attachment = frame.state().get('selection').first().toJSON();
+                        inputField.val(attachment.url);
+                        if (preview.length) {
+                            preview.html('<img src=\"' + attachment.url + '\" style=\"max-width:150px;max-height:80px;margin-top:8px;border:1px solid #ddd;padding:4px;background:#fff;\" />');
+                        }
+                    });
+
+                    frame.open();
+                });
+
+                // Remove button
+                $(document).on('click', '.ah-ho-remove-logo-btn', function(e) {
+                    e.preventDefault();
+                    var button = $(this);
+                    button.closest('td').find('.ah-ho-logo-url-input').val('');
+                    button.closest('td').find('.ah-ho-logo-preview').html('');
+                });
+            });
+        ");
+    }
+
+    /**
+     * Render custom logo upload field with media library button
+     */
+    public static function render_logo_upload_field($value) {
+        $option_value = get_option($value['id'], $value['default']);
+        $description = isset($value['desc']) ? $value['desc'] : '';
+        ?>
+        <tr valign="top">
+            <th scope="row" class="titledesc">
+                <label for="<?php echo esc_attr($value['id']); ?>"><?php echo esc_html($value['title']); ?></label>
+            </th>
+            <td class="forminp forminp-text">
+                <input
+                    name="<?php echo esc_attr($value['id']); ?>"
+                    id="<?php echo esc_attr($value['id']); ?>"
+                    type="text"
+                    style="width: 400px;"
+                    value="<?php echo esc_attr($option_value); ?>"
+                    class="ah-ho-logo-url-input"
+                    placeholder="https://yoursite.com/wp-content/uploads/logo.png"
+                />
+                <button type="button" class="button ah-ho-upload-logo-btn" style="margin-left: 8px;">Upload / Select Image</button>
+                <button type="button" class="button ah-ho-remove-logo-btn" style="margin-left: 4px;">Remove</button>
+                <?php if ($description): ?>
+                    <p class="description"><?php echo wp_kses_post($description); ?></p>
+                <?php endif; ?>
+                <div class="ah-ho-logo-preview">
+                    <?php if (!empty($option_value)): ?>
+                        <img src="<?php echo esc_url($option_value); ?>" style="max-width: 150px; max-height: 80px; margin-top: 8px; border: 1px solid #ddd; padding: 4px; background: #fff;" />
+                    <?php endif; ?>
+                </div>
+            </td>
+        </tr>
+        <?php
     }
 
     /**
@@ -69,6 +163,13 @@ class AH_HO_Settings {
                 'type'  => 'title',
                 'desc'  => __('These details appear on all PDF documents (invoices, packing slips, delivery orders).', 'ah-ho-invoicing'),
                 'id'    => 'ah_ho_company_branding',
+            ),
+            array(
+                'title'   => __('Company Logo', 'ah-ho-invoicing'),
+                'desc'    => __('Upload or select a logo from the Media Library. Displayed on PDF delivery orders.', 'ah-ho-invoicing'),
+                'id'      => 'ah_ho_company_logo_url',
+                'type'    => 'ah_ho_logo_upload',
+                'default' => '',
             ),
             array(
                 'title'   => __('Company Name', 'ah-ho-invoicing'),

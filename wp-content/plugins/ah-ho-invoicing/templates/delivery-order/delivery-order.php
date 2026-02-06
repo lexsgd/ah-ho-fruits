@@ -2,11 +2,11 @@
 /**
  * Delivery Order Template
  *
- * Large text, easy to read while driving
- * Focus: Address, contact, delivery instructions, signature
+ * Matches traditional commercial delivery order format
+ * Layout: Logo + Company header, Bill/Deliver To, Invoice details, Items table, Signature
  *
  * @package AhHoInvoicing
- * @since 1.1.0
+ * @since 1.5.0
  */
 
 if (!defined('ABSPATH')) {
@@ -14,23 +14,78 @@ if (!defined('ABSPATH')) {
 }
 
 // Load company settings
-$company_name = get_option('ah_ho_company_name', 'Ah Ho Fruits Pte Ltd');
+$company_name    = get_option('ah_ho_company_name', 'Ah Ho Fruits Pte Ltd');
 $company_address = get_option('ah_ho_company_address', '123 Fruit Lane, Singapore 123456');
-$company_phone = get_option('ah_ho_company_phone', '+65 1234 5678');
-$company_email = get_option('ah_ho_company_email', 'hello@ahhofruits.com');
-$company_logo = AH_HO_INVOICING_PLUGIN_DIR . 'assets/images/ah-ho-logo.png';
+$company_phone   = get_option('ah_ho_company_phone', '+65 1234 5678');
+$company_email   = get_option('ah_ho_company_email', 'hello@ahhofruits.com');
+$company_uen     = get_option('ah_ho_company_uen', '201234567A');
+$company_gst     = get_option('ah_ho_company_gst', 'M12345678X');
+$bank_name       = get_option('ah_ho_bank_name', 'DBS Bank');
+$bank_account    = get_option('ah_ho_bank_account', '123-456-789-0');
 
-// Document title for header
-$document_title = 'DELIVERY ORDER';
+// Logo: prefer settings URL, fallback to local file
+$logo_url  = get_option('ah_ho_company_logo_url', '');
+$logo_file = AH_HO_INVOICING_PLUGIN_DIR . 'assets/images/ah-ho-logo.png';
+if (empty($logo_url) && file_exists($logo_file) && filesize($logo_file) > 200) {
+    $logo_url = $logo_file;
+}
 
 // Get delivery summary
-$summary = AH_HO_Delivery_Order::get_delivery_summary($order);
+$summary      = AH_HO_Delivery_Order::get_delivery_summary($order);
 $instructions = AH_HO_Delivery_Order::get_delivery_instructions($order);
 
-// Delivery date (auto-detect meta key)
-$delivery_date = AH_HO_Delivery_Date_Helper::get_delivery_date($order, 'Y-m-d');
+// Delivery date
+$delivery_date = AH_HO_Delivery_Date_Helper::get_delivery_date($order, 'j/n/Y');
 if (empty($delivery_date)) {
-    $delivery_date = $order->get_date_created()->format('Y-m-d');
+    $delivery_date = $order->get_date_created()->format('j/n/Y');
+}
+
+// Payment terms
+$payment_method = $order->get_payment_method();
+$terms = ($payment_method === 'cod') ? 'C.O.D.' : $order->get_payment_method_title();
+
+// Billing info
+$bill_name    = trim($order->get_billing_first_name() . ' ' . $order->get_billing_last_name());
+$bill_company = $order->get_billing_company();
+$bill_addr1   = $order->get_billing_address_1();
+$bill_addr2   = $order->get_billing_address_2();
+$bill_city    = $order->get_billing_city();
+$bill_postal  = $order->get_billing_postcode();
+
+// Shipping/Deliver To info
+$ship_name    = trim($order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name());
+$ship_company = $order->get_shipping_company();
+$ship_addr1   = $order->get_shipping_address_1();
+$ship_addr2   = $order->get_shipping_address_2();
+$ship_city    = $order->get_shipping_city();
+$ship_postal  = $order->get_shipping_postcode();
+
+// If no shipping, use billing
+if (empty($ship_name) || $ship_name === ' ') {
+    $ship_name    = $bill_name;
+    $ship_company = $bill_company;
+    $ship_addr1   = $bill_addr1;
+    $ship_addr2   = $bill_addr2;
+    $ship_city    = $bill_city;
+    $ship_postal  = $bill_postal;
+}
+
+// Remarks: combine delivery instructions
+$remarks = '';
+if (!empty($instructions)) {
+    $remarks_parts = array();
+    foreach ($instructions as $inst) {
+        $remarks_parts[] = $inst['label'] . ': ' . $inst['value'];
+    }
+    $remarks = implode("\n", $remarks_parts);
+}
+
+// Customer note
+$customer_note = $order->get_customer_note();
+if (!empty($customer_note) && empty($remarks)) {
+    $remarks = $customer_note;
+} elseif (!empty($customer_note) && !empty($remarks)) {
+    $remarks = $customer_note . "\n" . $remarks;
 }
 ?>
 <!DOCTYPE html>
@@ -41,235 +96,225 @@ if (empty($delivery_date)) {
 </head>
 <body>
 
-<?php include AH_HO_INVOICING_PLUGIN_DIR . 'templates/shared/header.php'; ?>
+<!-- ===== HEADER: Logo + Company Name + Registration ===== -->
+<table class="header-table" style="width: 100%; border-bottom: 2px solid #000; margin-bottom: 10px; padding-bottom: 8px;">
+    <tr>
+        <td style="width: 15%; vertical-align: middle;">
+            <?php if (!empty($logo_url)): ?>
+                <img src="<?php echo esc_attr($logo_url); ?>" alt="<?php echo esc_attr($company_name); ?>" style="max-width: 80px; max-height: 80px;" />
+            <?php endif; ?>
+        </td>
+        <td style="width: 55%; vertical-align: middle; text-align: left; padding-left: 5px;">
+            <div style="font-size: 22px; font-weight: bold; letter-spacing: 0.5px; line-height: 1.2;">
+                <?php echo esc_html(strtoupper($company_name)); ?>
+            </div>
+            <div style="font-size: 9px; color: #333; margin-top: 3px; line-height: 1.4;">
+                <?php echo nl2br(esc_html($company_address)); ?>
+                &nbsp;&nbsp;&nbsp;&nbsp;Phone: <?php echo esc_html($company_phone); ?>
+            </div>
+        </td>
+        <td style="width: 30%; vertical-align: middle; text-align: right; font-size: 9px; line-height: 1.6;">
+            <strong>UEN No.</strong> &nbsp; <?php echo esc_html($company_uen); ?><br>
+            <strong>GST Reg No:</strong> &nbsp; <?php echo esc_html($company_gst); ?>
+        </td>
+    </tr>
+</table>
 
-<!-- Order Number & Delivery Date (Large) -->
-<div style="background-color: #3498db; color: white; padding: 20px; margin-bottom: 20px; text-align: center;">
-    <h1 style="margin: 0; font-size: 48px; font-weight: bold;">
-        Order #<?php echo esc_html($order->get_order_number()); ?>
-    </h1>
-    <div style="font-size: 24px; margin-top: 10px;">
-        Delivery Date: <strong><?php echo esc_html(date('l, d M Y', strtotime($delivery_date))); ?></strong>
-    </div>
-</div>
+<!-- ===== BILL TO / DELIVER TO / DELIVERY ORDER INFO ===== -->
+<table style="width: 100%; margin-bottom: 8px;" cellspacing="0" cellpadding="0">
+    <tr>
+        <!-- Bill To -->
+        <td style="width: 30%; vertical-align: top; padding-right: 10px;">
+            <div style="font-size: 10px; font-weight: bold; margin-bottom: 4px;">Bill To:</div>
+            <div style="font-size: 10px; line-height: 1.5;">
+                <?php echo esc_html($bill_name); ?><br>
+                <?php if ($bill_company): ?>
+                    <?php echo esc_html($bill_company); ?><br>
+                <?php endif; ?>
+                <?php if ($bill_addr1): ?>
+                    <?php echo esc_html($bill_addr1); ?><br>
+                <?php endif; ?>
+                <?php if ($bill_addr2): ?>
+                    <?php echo esc_html($bill_addr2); ?><br>
+                <?php endif; ?>
+                <?php if ($bill_city || $bill_postal): ?>
+                    <?php echo esc_html(trim($bill_city . ' ' . $bill_postal)); ?>
+                <?php endif; ?>
+            </div>
+        </td>
 
-<!-- DELIVERY ADDRESS (EXTRA LARGE) -->
-<div style="background-color: #fff3cd; border: 4px solid #ffc107; padding: 30px; margin-bottom: 20px;">
-    <h2 style="margin: 0 0 15px 0; font-size: 24px; color: #856404;">DELIVER TO:</h2>
-    <div style="font-size: 28px; line-height: 1.8; color: #000;">
-        <strong><?php echo esc_html($order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name()); ?></strong><br>
-        <?php if ($order->get_shipping_company()): ?>
-            <strong style="color: #e74c3c;"><?php echo esc_html($order->get_shipping_company()); ?></strong><br>
-        <?php endif; ?>
-        <?php echo esc_html($order->get_shipping_address_1()); ?><br>
-        <?php if ($order->get_shipping_address_2()): ?>
-            <strong style="color: #e74c3c;"><?php echo esc_html($order->get_shipping_address_2()); ?></strong> (Unit/Floor)<br>
-        <?php endif; ?>
-        <?php echo esc_html($order->get_shipping_city()); ?><br>
-        <strong style="font-size: 36px; color: #e74c3c;">Singapore <?php echo esc_html($order->get_shipping_postcode()); ?></strong>
-    </div>
-</div>
+        <!-- Deliver To -->
+        <td style="width: 30%; vertical-align: top; padding-right: 10px;">
+            <div style="font-size: 10px; font-weight: bold; margin-bottom: 4px;">Deliver To:</div>
+            <div style="font-size: 10px; line-height: 1.5;">
+                <?php echo esc_html($ship_name); ?><br>
+                <?php if ($ship_company): ?>
+                    <?php echo esc_html($ship_company); ?><br>
+                <?php endif; ?>
+                <?php if ($ship_addr1): ?>
+                    <?php echo esc_html($ship_addr1); ?><br>
+                <?php endif; ?>
+                <?php if ($ship_addr2): ?>
+                    <?php echo esc_html($ship_addr2); ?><br>
+                <?php endif; ?>
+                <?php if ($ship_city || $ship_postal): ?>
+                    <?php echo esc_html(trim($ship_city . ' ' . $ship_postal)); ?>
+                <?php endif; ?>
+            </div>
+        </td>
 
-<!-- CONTACT INFORMATION (LARGE) -->
-<div style="background-color: #d1ecf1; border: 3px solid #17a2b8; padding: 20px; margin-bottom: 20px;">
-    <h2 style="margin: 0 0 10px 0; font-size: 20px; color: #0c5460;">CUSTOMER CONTACT:</h2>
-    <div style="font-size: 32px; font-weight: bold; color: #000;">
-        <?php echo esc_html($order->get_billing_phone()); ?>
-    </div>
-    <?php if ($order->get_billing_email()): ?>
-        <div style="font-size: 14px; margin-top: 5px; color: #0c5460;">
-            Email: <?php echo esc_html($order->get_billing_email()); ?>
-        </div>
+        <!-- Delivery Order title + Invoice details -->
+        <td style="width: 40%; vertical-align: top;">
+            <div style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">Delivery Order</div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
+                <tr>
+                    <td style="border: 1px solid #000; padding: 4px 6px; font-weight: bold; width: 40%;">Invoice No</td>
+                    <td style="border: 1px solid #000; padding: 4px 6px;"><?php echo esc_html($order->get_order_number()); ?></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 4px 6px; font-weight: bold;">Date</td>
+                    <td style="border: 1px solid #000; padding: 4px 6px;"><?php echo esc_html($delivery_date); ?></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 4px 6px; font-weight: bold;">PO No</td>
+                    <td style="border: 1px solid #000; padding: 4px 6px;">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 4px 6px; font-weight: bold;">Terms</td>
+                    <td style="border: 1px solid #000; padding: 4px 6px;"><?php echo esc_html($terms); ?></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<!-- ===== REMARKS ===== -->
+<table style="width: 100%; margin-bottom: 8px;" cellspacing="0" cellpadding="0">
+    <tr>
+        <td style="font-size: 10px; font-weight: bold; padding-bottom: 2px;">Remarks:</td>
+    </tr>
+    <?php if (!empty($remarks)): ?>
+    <tr>
+        <td style="font-size: 10px; line-height: 1.5; padding-bottom: 6px;">
+            <?php echo nl2br(esc_html($remarks)); ?>
+        </td>
+    </tr>
     <?php endif; ?>
-</div>
+</table>
 
-<?php if (!empty($instructions)): ?>
-<!-- DELIVERY INSTRUCTIONS (HIGHLIGHTED) -->
-<div style="background-color: #f8d7da; border: 3px solid #dc3545; padding: 20px; margin-bottom: 20px;">
-    <h2 style="margin: 0 0 10px 0; font-size: 20px; color: #721c24;">DELIVERY INSTRUCTIONS:</h2>
-    <?php foreach ($instructions as $instruction): ?>
-        <div style="margin-bottom: 10px;">
-            <strong style="color: #721c24; font-size: 16px;"><?php echo esc_html($instruction['label']); ?>:</strong><br>
-            <span style="font-size: 18px; color: #000; font-weight: bold;">
-                <?php echo nl2br(esc_html($instruction['value'])); ?>
-            </span>
-        </div>
-    <?php endforeach; ?>
-</div>
-<?php endif; ?>
-
-<!-- ORDER SUMMARY -->
-<div style="background-color: #e8f4f8; border: 2px solid #3498db; padding: 20px; margin-bottom: 20px;">
-    <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #2c3e50;">Order Summary:</h3>
-    <table style="width: 100%; font-size: 16px;">
-        <tr>
-            <td style="padding: 5px;"><strong>Total Items:</strong></td>
-            <td style="padding: 5px; text-align: right; font-size: 20px; font-weight: bold;">
-                <?php echo esc_html($summary['item_count']); ?> items
-            </td>
-        </tr>
-        <tr>
-            <td style="padding: 5px;"><strong>Total Weight:</strong></td>
-            <td style="padding: 5px; text-align: right; font-size: 20px; font-weight: bold;">
-                <?php echo esc_html(number_format($summary['total_weight'], 2)); ?> kg
-            </td>
-        </tr>
-        <tr>
-            <td style="padding: 5px;"><strong>Payment Method:</strong></td>
-            <td style="padding: 5px; text-align: right; font-size: 18px; font-weight: bold;">
-                <?php echo esc_html($summary['payment_method']); ?>
-            </td>
-        </tr>
-        <?php if ($summary['amount_to_collect'] > 0): ?>
-        <tr style="background-color: #fff3cd;">
-            <td style="padding: 10px;"><strong style="color: #856404; font-size: 18px;">$$$ COLLECT PAYMENT:</strong></td>
-            <td style="padding: 10px; text-align: right; font-size: 28px; font-weight: bold; color: #e74c3c;">
-                $<?php echo esc_html(number_format($summary['amount_to_collect'], 2)); ?>
-            </td>
-        </tr>
-        <?php endif; ?>
-    </table>
-</div>
-
-<!-- ITEMS LIST (Compact for driver reference) -->
-<h3 style="margin-top: 20px; margin-bottom: 10px; font-size: 16px; background-color: #2c3e50; color: white; padding: 10px;">
-    ITEMS IN THIS DELIVERY
-</h3>
-<table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+<!-- ===== ITEMS TABLE ===== -->
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;" cellspacing="0" cellpadding="0">
     <thead>
-        <tr style="background-color: #34495e; color: white; font-size: 12px;">
-            <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Item</th>
-            <th style="padding: 8px; text-align: center; width: 60px; border: 1px solid #ddd;">Qty</th>
+        <tr>
+            <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 60px; font-size: 11px; font-weight: bold;">Qty</th>
+            <th style="border: 1px solid #000; padding: 6px 8px; text-align: left; font-size: 11px; font-weight: bold;">Description</th>
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($order->get_items() as $item_id => $item): ?>
-            <tr style="font-size: 14px;">
-                <td style="padding: 8px; border: 1px solid #ddd;">
-                    <strong><?php echo esc_html($item->get_name()); ?></strong>
-                    <?php
-                    // Extract product notes and gift data for special highlighting
-                    $product_notes = wc_get_order_item_meta($item_id, __('Special Requests', 'ah-ho-fruits'), true);
-                    $is_gift = wc_get_order_item_meta($item_id, __('Gift', 'ah-ho-fruits'), true);
-                    $gift_message = wc_get_order_item_meta($item_id, __('Gift Message', 'ah-ho-fruits'), true);
+        <?php
+        $row_count = 0;
+        foreach ($order->get_items() as $item_id => $item):
+            $row_count++;
 
-                    // Display item meta (variations - excluding our custom addons)
-                    $item_data = $item->get_formatted_meta_data();
-                    if (!empty($item_data)):
-                    ?>
-                        <br><small style="color: #666;">
-                            <?php foreach ($item_data as $meta):
-                                // Skip our custom addon fields (they're shown below)
-                                if (in_array($meta->display_key, [__('Special Requests', 'ah-ho-fruits'), __('Gift', 'ah-ho-fruits'), __('Gift Message', 'ah-ho-fruits')])) {
-                                    continue;
-                                }
-                            ?>
-                                <?php echo esc_html($meta->display_key); ?>: <?php echo wp_kses_post($meta->display_value); ?>
-                            <?php endforeach; ?>
-                        </small>
-                    <?php endif; ?>
+            // Build description with meta/variations
+            $description = $item->get_name();
 
-                    <?php
-                    // Display Product Notes (B&W compatible: single border, dotted pattern)
-                    if (!empty($product_notes)):
-                    ?>
-                        <div style="margin-top: 6px; padding: 8px; background-color: #e8f5e9; background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(46,125,50,0.05) 10px, rgba(46,125,50,0.05) 20px); border: 2px solid #2E7D32; border-radius: 3px; font-size: 12px;">
-                            <strong style="color: #2E7D32; font-size: 13px;">** Customer Requests (Preferences/Allergies):</strong><br>
-                            <span style="font-weight: bold; color: #000; font-size: 14px;"><?php echo nl2br(esc_html($product_notes)); ?></span>
-                        </div>
-                    <?php endif; ?>
+            // Add item meta (variations) inline
+            $item_data = $item->get_formatted_meta_data();
+            $meta_parts = array();
+            if (!empty($item_data)) {
+                foreach ($item_data as $meta) {
+                    if (in_array($meta->display_key, [
+                        __('Special Requests', 'ah-ho-fruits'),
+                        __('Gift', 'ah-ho-fruits'),
+                        __('Gift Message', 'ah-ho-fruits')
+                    ])) {
+                        continue;
+                    }
+                    $meta_parts[] = $meta->display_key . ': ' . strip_tags($meta->display_value);
+                }
+            }
+            if (!empty($meta_parts)) {
+                $description .= ' (' . implode(', ', $meta_parts) . ')';
+            }
 
-                    <?php
-                    // Display Gift Message (B&W compatible: double border, checkered pattern)
-                    if ($is_gift === __('Yes', 'ah-ho-fruits')):
-                    ?>
-                        <div style="margin-top: 6px; padding: 10px; background-color: #fff3cd; background-image: repeating-linear-gradient(0deg, transparent, transparent 5px, rgba(255,111,0,0.08) 5px, rgba(255,111,0,0.08) 10px), repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(255,111,0,0.08) 5px, rgba(255,111,0,0.08) 10px); border: 3px double #ff6f00; border-radius: 3px; font-size: 12px;">
-                            <strong style="color: #ff6f00; font-size: 15px;">*** GIFT - Include Gift Card! ***</strong>
-                            <?php if (!empty($gift_message)): ?>
-                                <br><span style="font-style: italic; color: #000; font-weight: bold; font-size: 13px;">
-                                    "<?php echo nl2br(esc_html($gift_message)); ?>"
-                                </span>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
+            // Special requests
+            $product_notes = wc_get_order_item_meta($item_id, __('Special Requests', 'ah-ho-fruits'), true);
+            $is_gift       = wc_get_order_item_meta($item_id, __('Gift', 'ah-ho-fruits'), true);
+            $gift_message  = wc_get_order_item_meta($item_id, __('Gift Message', 'ah-ho-fruits'), true);
+        ?>
+            <tr>
+                <td style="border: 1px solid #000; padding: 5px 8px; text-align: center; font-size: 11px; font-weight: bold;">
+                    <?php echo esc_html($item->get_quantity()); ?>
                 </td>
-                <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">
-                    <strong style="font-size: 18px;"><?php echo esc_html($item->get_quantity()); ?></strong>
+                <td style="border: 1px solid #000; padding: 5px 8px; font-size: 11px;">
+                    <?php echo esc_html($description); ?>
+                    <?php if (!empty($product_notes)): ?>
+                        <br><span style="font-size: 10px; color: #333;">** <?php echo esc_html($product_notes); ?></span>
+                    <?php endif; ?>
+                    <?php if ($is_gift === __('Yes', 'ah-ho-fruits')): ?>
+                        <br><span style="font-size: 10px; color: #333;">*** GIFT<?php if (!empty($gift_message)): ?> - "<?php echo esc_html($gift_message); ?>"<?php endif; ?></span>
+                    <?php endif; ?>
                 </td>
             </tr>
         <?php endforeach; ?>
+
+        <?php
+        // Add empty rows to fill out the table (minimum ~15 rows like the physical form)
+        $min_rows = 15;
+        for ($i = $row_count; $i < $min_rows; $i++):
+        ?>
+            <tr>
+                <td style="border: 1px solid #000; padding: 5px 8px; height: 20px;">&nbsp;</td>
+                <td style="border: 1px solid #000; padding: 5px 8px; height: 20px;">&nbsp;</td>
+            </tr>
+        <?php endfor; ?>
     </tbody>
 </table>
 
-<!-- DRIVER CHECKLIST -->
-<div style="background-color: #d4edda; border: 2px solid #28a745; padding: 20px; margin-top: 30px; margin-bottom: 30px;">
-    <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #155724;">Driver Checklist:</h3>
-    <div style="font-size: 14px; line-height: 2.0;">
-        <div>☐ Verify delivery address before leaving warehouse</div>
-        <div>☐ Check all items against packing slip</div>
-        <div>☐ Read customer delivery instructions above</div>
-        <?php if ($summary['amount_to_collect'] > 0): ?>
-            <div><strong style="color: #e74c3c;">☐ COLLECT PAYMENT: $<?php echo esc_html(number_format($summary['amount_to_collect'], 2)); ?></strong></div>
-        <?php endif; ?>
-        <div>☐ Call customer if cannot locate address</div>
-        <div>☐ Get customer signature below</div>
-        <div>☐ Leave copy of delivery order with customer</div>
+<!-- ===== THANK YOU + EMAIL ===== -->
+<div style="margin-top: 15px; margin-bottom: 15px;">
+    <div style="font-size: 11px; font-weight: bold; color: #c00;">Thank you for your support!</div>
+    <div style="font-size: 11px; font-weight: bold; margin-top: 3px;">
+        Email: <?php echo esc_html($company_email); ?>
     </div>
 </div>
 
-<!-- SIGNATURE SECTION (LARGE) -->
-<div style="border: 3px solid #000; padding: 30px; margin-top: 30px; page-break-inside: avoid;">
-    <h2 style="margin: 0 0 20px 0; font-size: 20px;">DELIVERY CONFIRMATION</h2>
+<!-- ===== SIGNATURE SECTION ===== -->
+<table style="width: 100%; margin-top: 20px; margin-bottom: 15px;" cellspacing="0" cellpadding="0">
+    <tr>
+        <td style="width: 50%; vertical-align: bottom; padding-right: 20px;">
+            <!-- Signature space -->
+            <div style="height: 60px;"></div>
+            <div style="border-top: 1px solid #000; padding-top: 5px; font-size: 10px; line-height: 1.5;">
+                <!-- Company authorized signatory name can go here -->
+                &nbsp;
+            </div>
+        </td>
+        <td style="width: 50%; vertical-align: bottom; padding-left: 20px;">
+            <div style="height: 60px;"></div>
+            <div style="border-top: 1px solid #000; padding-top: 5px; font-size: 10px; text-align: center;">
+                Customer's Stamp and Signature
+            </div>
+        </td>
+    </tr>
+</table>
 
-    <table style="width: 100%;">
-        <tr>
-            <td style="width: 50%; vertical-align: top; padding-right: 10px;">
-                <strong style="font-size: 16px;">Driver Name:</strong><br>
-                <div style="border-bottom: 2px solid #000; width: 100%; margin-top: 20px; height: 40px;"></div>
-                <small>(Print Name)</small>
-            </td>
-            <td style="width: 50%; vertical-align: top; padding-left: 10px;">
-                <strong style="font-size: 16px;">Time Delivered:</strong><br>
-                <div style="border-bottom: 2px solid #000; width: 100%; margin-top: 20px; height: 40px;"></div>
-                <small>(Date & Time)</small>
-            </td>
-        </tr>
-    </table>
-
-    <div style="margin-top: 30px;">
-        <strong style="font-size: 16px;">Customer Signature:</strong><br>
-        <div style="border: 2px solid #000; width: 100%; height: 120px; margin-top: 10px; background-color: #f8f9fa;"></div>
-        <small>I acknowledge receipt of the items listed above in good condition.</small>
-    </div>
-
-    <div style="margin-top: 20px;">
-        <strong style="font-size: 16px;">Customer Name (Print):</strong><br>
-        <div style="border-bottom: 2px solid #000; width: 60%; margin-top: 10px; height: 40px;"></div>
-    </div>
-
-    <?php if ($summary['amount_to_collect'] > 0): ?>
-    <div style="margin-top: 20px; background-color: #fff3cd; padding: 15px; border: 2px solid #ffc107;">
-        <strong style="font-size: 18px; color: #856404;">$$$ PAYMENT RECEIVED:</strong><br>
-        <div style="margin-top: 10px;">
-            <span style="font-size: 24px; font-weight: bold;">
-                $ <span style="border-bottom: 2px solid #000; display: inline-block; width: 200px; text-align: center;"></span>
-            </span>
-        </div>
-        <small style="color: #856404;">(Amount collected)</small>
-    </div>
-    <?php endif; ?>
+<?php if ($summary['amount_to_collect'] > 0): ?>
+<!-- ===== COD PAYMENT COLLECTION ===== -->
+<div style="margin-top: 10px; padding: 8px; border: 2px solid #000; font-size: 11px;">
+    <strong>COLLECT PAYMENT: $<?php echo esc_html(number_format($summary['amount_to_collect'], 2)); ?></strong>
 </div>
+<?php endif; ?>
 
-<!-- EMERGENCY CONTACTS -->
-<div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border: 1px solid #dee2e6;">
-    <strong style="font-size: 14px;">Emergency Contacts:</strong><br>
-    <div style="font-size: 12px; margin-top: 5px;">
-        Warehouse: <?php echo esc_html($company_phone); ?><br>
-        Office: <?php echo esc_html($company_email); ?>
-    </div>
+<!-- ===== FOOTER NOTICES ===== -->
+<div style="margin-top: 15px; font-size: 9px; line-height: 1.6; border-top: 1px solid #999; padding-top: 8px;">
+    Please ensure that goods are in good order and condition.<br>
+    Goods sold cannot be <strong>EXCHANGED</strong> or <strong>RETURNED</strong>.<br>
+    <br>
+    Cheques should be crossed and made payable to: <strong><?php echo esc_html(strtoupper($company_name)); ?></strong><br>
+    Bank Transfer to <?php echo esc_html(strtoupper($bank_name)); ?> CURRENT ACCOUNT <?php echo esc_html($bank_account); ?>
 </div>
-
-<?php include AH_HO_INVOICING_PLUGIN_DIR . 'templates/shared/footer.php'; ?>
 
 </body>
 </html>

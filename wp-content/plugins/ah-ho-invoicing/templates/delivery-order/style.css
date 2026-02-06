@@ -1,12 +1,17 @@
 /**
  * Delivery Order PDF Styles
  *
- * Optimized for driver readability
- * Large text, clear sections, easy to read in vehicle
+ * Traditional commercial delivery order format
+ * Clean, professional, black & white optimized
  *
  * @package AhHoInvoicing
- * @since 1.1.0
+ * @since 1.5.0
  */
+
+@page {
+    margin: 15mm 12mm 12mm 12mm;
+    size: A4;
+}
 
 * {
     margin: 0;
@@ -16,18 +21,22 @@
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-    color: #333;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #000;
 }
 
 h1, h2, h3, h4 {
-    margin: 0 0 10px 0;
+    margin: 0 0 5px 0;
 }
 
 table {
     border-collapse: collapse;
     width: 100%;
+}
+
+strong {
+    font-weight: bold;
 }
 
 /* Page break control */
@@ -37,9 +46,4 @@ table {
 
 .no-break {
     page-break-inside: avoid;
-}
-
-/* Strong emphasis */
-strong {
-    font-weight: bold;
 }
