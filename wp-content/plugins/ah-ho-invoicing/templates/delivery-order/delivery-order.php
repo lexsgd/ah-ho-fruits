@@ -6,7 +6,8 @@
  * Layout: Logo + Company header, Bill/Deliver To, Invoice details, Items table, Signature
  *
  * @package AhHoInvoicing
- * @since 1.5.0
+ * @since 1.5.1
+ * @modified 2026-02-06 - margins updated to 20mm/18mm
  */
 
 if (!defined('ABSPATH')) {
@@ -114,14 +115,14 @@ if (!empty($customer_note) && empty($remarks)) {
 <body>
 
 <!-- ===== HEADER: Logo + Company Name + Registration ===== -->
-<table class="header-table" style="width: 100%; border-bottom: 2px solid #000; margin-bottom: 10px; padding-bottom: 8px;">
+<table class="header-table" style="width: 98%; border-bottom: 2px solid #000; margin-bottom: 10px; padding-bottom: 8px;">
     <tr>
         <td style="width: 15%; vertical-align: middle;">
             <?php if (!empty($logo_url)): ?>
                 <img src="<?php echo esc_attr($logo_url); ?>" alt="<?php echo esc_attr($company_name); ?>" style="max-width: 80px; max-height: 80px;" />
             <?php endif; ?>
         </td>
-        <td style="width: 55%; vertical-align: middle; text-align: left; padding-left: 5px;">
+        <td style="width: 52%; vertical-align: middle; text-align: left; padding-left: 5px;">
             <div style="font-size: 22px; font-weight: bold; letter-spacing: 0.5px; line-height: 1.2;">
                 <?php echo esc_html(strtoupper($company_name)); ?>
             </div>
@@ -130,7 +131,7 @@ if (!empty($customer_note) && empty($remarks)) {
                 &nbsp;&nbsp;&nbsp;&nbsp;Phone: <?php echo esc_html($company_phone); ?>
             </div>
         </td>
-        <td style="width: 30%; vertical-align: middle; text-align: right; font-size: 9px; line-height: 1.6;">
+        <td style="width: 33%; vertical-align: middle; text-align: right; font-size: 9px; line-height: 1.6; padding-right: 2px;">
             <strong>UEN No.</strong> &nbsp; <?php echo esc_html($company_uen); ?><br>
             <strong>GST Reg No:</strong> &nbsp; <?php echo esc_html($company_gst); ?>
         </td>
