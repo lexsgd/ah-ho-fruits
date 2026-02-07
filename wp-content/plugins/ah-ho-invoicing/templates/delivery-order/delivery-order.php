@@ -61,6 +61,12 @@ $ship_addr2   = $order->get_shipping_address_2();
 $ship_city    = $order->get_shipping_city();
 $ship_postal  = $order->get_shipping_postcode();
 
+// Shipping phone (WooCommerce 5.6+), fallback to billing phone
+$ship_phone = $order->get_shipping_phone();
+if (empty($ship_phone)) {
+    $ship_phone = $order->get_billing_phone();
+}
+
 // If no shipping, use billing
 if (empty($ship_name) || $ship_name === ' ') {
     $ship_name    = $bill_name;
@@ -138,31 +144,11 @@ if (!empty($customer_note) && empty($remarks)) {
     </tr>
 </table>
 
-<!-- ===== BILL TO / DELIVER TO / DELIVERY ORDER INFO ===== -->
+<!-- ===== DELIVER TO / DELIVERY ORDER INFO ===== -->
 <table style="width: 100%; margin-bottom: 2px;" cellspacing="0" cellpadding="0">
     <tr>
-        <!-- Bill To -->
-        <td style="width: 30%; vertical-align: top; padding-right: 10px;">
-            <div style="font-size: 10px; font-weight: bold; margin-bottom: 1px;">Bill To:</div>
-            <div style="font-size: 10px; line-height: 1.5;">
-                <?php echo esc_html($bill_name); ?><br>
-                <?php if ($bill_company): ?>
-                    <?php echo esc_html($bill_company); ?><br>
-                <?php endif; ?>
-                <?php if ($bill_addr1): ?>
-                    <?php echo esc_html($bill_addr1); ?><br>
-                <?php endif; ?>
-                <?php if ($bill_addr2): ?>
-                    <?php echo esc_html($bill_addr2); ?><br>
-                <?php endif; ?>
-                <?php if ($bill_city || $bill_postal): ?>
-                    <?php echo esc_html(trim($bill_city . ' ' . $bill_postal)); ?>
-                <?php endif; ?>
-            </div>
-        </td>
-
         <!-- Deliver To -->
-        <td style="width: 30%; vertical-align: top; padding-right: 10px;">
+        <td style="width: 55%; vertical-align: top; padding-right: 10px;">
             <div style="font-size: 10px; font-weight: bold; margin-bottom: 1px;">Deliver To:</div>
             <div style="font-size: 10px; line-height: 1.5;">
                 <?php echo esc_html($ship_name); ?><br>
@@ -176,13 +162,16 @@ if (!empty($customer_note) && empty($remarks)) {
                     <?php echo esc_html($ship_addr2); ?><br>
                 <?php endif; ?>
                 <?php if ($ship_city || $ship_postal): ?>
-                    <?php echo esc_html(trim($ship_city . ' ' . $ship_postal)); ?>
+                    <?php echo esc_html(trim($ship_city . ' ' . $ship_postal)); ?><br>
+                <?php endif; ?>
+                <?php if (!empty($ship_phone)): ?>
+                    Tel: <?php echo esc_html($ship_phone); ?>
                 <?php endif; ?>
             </div>
         </td>
 
         <!-- Delivery Order title + Invoice details -->
-        <td style="width: 40%; vertical-align: top;">
+        <td style="width: 45%; vertical-align: top;">
             <div style="font-size: 16px; font-weight: bold; margin-bottom: 2px;">Delivery Order</div>
             <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
                 <tr>
