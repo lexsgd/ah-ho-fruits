@@ -134,7 +134,7 @@ if (!empty($customer_note) && empty($remarks)) {
             </div>
             <div style="font-size: 9px; color: #333; margin-top: 3px; line-height: 1.4;">
                 <?php echo nl2br(esc_html($company_address)); ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;Phone: <?php echo esc_html($company_phone); ?>
+                &nbsp;&nbsp;&nbsp;&nbsp;Phone: <?php echo esc_html($company_phone); ?>&nbsp;&nbsp;&nbsp;&nbsp;WhatsApp: 80138128
             </div>
         </td>
         <td style="width: 33%; vertical-align: middle; text-align: right; font-size: 9px; line-height: 1.6; padding-right: 2px;">
@@ -283,7 +283,7 @@ if (!empty($customer_note) && empty($remarks)) {
 <div style="margin-top: 3px; margin-bottom: 3px;">
     <div style="font-size: 10px; font-weight: bold; color: #c00;">Thank you for your support!</div>
     <div style="font-size: 10px; font-weight: bold; margin-top: 1px;">
-        Email: <?php echo esc_html($company_email); ?>
+        Email: ahhofruitweb@gmail.com
     </div>
 </div>
 
