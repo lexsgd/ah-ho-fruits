@@ -17,10 +17,16 @@ This document explains how commissions are calculated, tracked, and paid in the 
 - Commission status set to `pending`
 - Order note added: "Order assigned to salesperson: [Name]"
 
-**Post Meta Created**:
+**Order Meta Created**:
 ```
 _assigned_salesperson_id = [User ID]
 _commission_status = 'pending'
+_commission_rate = [percentage rate]
+_commission_per_carton_rate = [per-carton dollar rate]
+_commission_percentage_amount = [percentage commission]
+_commission_carton_amount = [per-carton commission]
+_commission_amount = [total commission]
+_commission_total_quantity = [total cartons in order]
 ```
 
 ---
@@ -35,9 +41,11 @@ _commission_status = 'pending'
    - Get salesperson's custom rate (if set)
    - Fallback to default rate if not set
 
-2. **Calculate Commission Amount**:
+2. **Calculate Commission Amount** (dual model):
    ```
-   Commission = Order Total × (Rate / 100)
+   Percentage Commission = Order Total × (Percentage Rate / 100)
+   Carton Commission = Per-Carton Rate × Total Quantity (sum of all line item quantities)
+   Total Commission = Percentage Commission + Carton Commission
    ```
 
 3. **Determine Status**:
@@ -46,14 +54,18 @@ _commission_status = 'pending'
 
 4. **Store Commission Data**:
    ```
-   _commission_rate = [percentage]
-   _commission_amount = [calculated amount]
+   _commission_rate = [percentage rate]
+   _commission_per_carton_rate = [per-carton dollar rate]
+   _commission_percentage_amount = [percentage commission]
+   _commission_carton_amount = [carton commission]
+   _commission_amount = [total commission]
+   _commission_total_quantity = [total cartons]
    _commission_status = 'approved' or 'pending'
    ```
 
 5. **Add Order Note**:
    ```
-   "Commission calculated: $X.XX (Y%) - Status: approved/pending"
+   "Commission calculated: $X.XX [$Y.YY (Z% of order) + $A.AA ($B.BB x N cartons)] - Status: approved/pending"
    ```
 
 6. **Send Email** (if auto-approved and notifications enabled)
@@ -102,20 +114,23 @@ _commission_paid_date = [current date]
 
 ## Commission Calculation Examples
 
-### Example 1: Default Rate (10%)
+### Example 1: Percentage Only (Default)
 
 **Settings**:
-- Default rate: 10%
+- Default percentage rate: 10%
+- Default per-carton rate: $0
 - Custom rates: Disabled
 - Approval: Auto
 
 **Order**:
-- Total: $500.00
+- Total: $500.00, 10 cartons
 - Salesperson: John
 
 **Calculation**:
 ```
-Commission = $500.00 × (10 / 100) = $50.00
+Percentage: $500.00 × (10 / 100) = $50.00
+Per-Carton: $0 × 10 = $0.00
+Total Commission = $50.00
 Status = 'approved' (auto-approve mode)
 ```
 
@@ -123,41 +138,70 @@ Status = 'approved' (auto-approve mode)
 
 ---
 
-### Example 2: Custom Rate (15%)
+### Example 2: Per-Carton Only
 
 **Settings**:
-- Default rate: 10%
 - Custom rates: Enabled
-- John's custom rate: 15%
+- John's percentage rate: 0%
+- John's per-carton rate: $2.00
 - Approval: Auto
 
 **Order**:
-- Total: $1,000.00
+- Total: $500.00, 15 cartons
 - Salesperson: John
 
 **Calculation**:
 ```
-Commission = $1,000.00 × (15 / 100) = $150.00
+Percentage: $500.00 × (0 / 100) = $0.00
+Per-Carton: $2.00 × 15 = $30.00
+Total Commission = $30.00
 Status = 'approved' (auto-approve mode)
 ```
 
-**Result**: John earns $150.00 commission (custom rate applied)
+**Result**: John earns $30.00 commission ($2 per carton)
 
 ---
 
-### Example 3: Manual Approval
+### Example 3: Dual Commission (Percentage + Per-Carton)
 
 **Settings**:
-- Default rate: 10%
+- Custom rates: Enabled
+- Sarah's percentage rate: 5%
+- Sarah's per-carton rate: $1.50
+- Approval: Auto
+
+**Order**:
+- Total: $1,000.00, 20 cartons
+- Salesperson: Sarah
+
+**Calculation**:
+```
+Percentage: $1,000.00 × (5 / 100) = $50.00
+Per-Carton: $1.50 × 20 = $30.00
+Total Commission = $50.00 + $30.00 = $80.00
+Status = 'approved' (auto-approve mode)
+```
+
+**Result**: Sarah earns $80.00 commission ($50 from percentage + $30 from cartons)
+
+---
+
+### Example 4: Manual Approval
+
+**Settings**:
+- Default percentage rate: 10%
+- Default per-carton rate: $1.00
 - Approval: Manual
 
 **Order**:
-- Total: $750.00
+- Total: $750.00, 25 cartons
 - Salesperson: Sarah
 
 **Step 1 - Order Completed**:
 ```
-Commission = $750.00 × (10 / 100) = $75.00
+Percentage: $750.00 × (10 / 100) = $75.00
+Per-Carton: $1.00 × 25 = $25.00
+Total Commission = $100.00
 Status = 'pending' (awaiting admin approval)
 ```
 
@@ -327,7 +371,9 @@ Date = 2026-02-01
 - Order #, Date
 - Salesperson
 - Order Total
-- Rate, Commission
+- Qty (Cartons)
+- Commission Breakdown (percentage + per-carton)
+- Total Commission
 - Status
 
 **Filters**:
@@ -427,8 +473,10 @@ Commission has been approved:
 
 Salesperson: John Doe
 Order: #123
-Commission Amount: $50.00
-Order Total: $500.00
+Total Commission: $80.00
+Percentage: $50.00 (5% of order)
+Per-Carton: $30.00 ($1.50 x 20 cartons)
+Order Total: $1,000.00
 
 View Order: [Link]
 ```
@@ -474,14 +522,15 @@ View Order: [Link]
 ### Wrong Commission Amount
 
 **Possible Causes**:
-1. Wrong rate applied
+1. Wrong rate applied (percentage or per-carton)
 2. Custom rate changed after order
 3. Manual calculation error
 
 **Fix**:
-1. Check `_commission_rate` in order meta
-2. Recalculate: Order Total × (Rate / 100)
-3. Contact admin to adjust
+1. Check `_commission_rate` and `_commission_per_carton_rate` in order meta
+2. Recalculate: (Order Total × Rate/100) + (Per-Carton Rate × Total Quantity)
+3. Use "Recalculate All" tool to refresh all commission data
+4. Contact admin to adjust
 
 ---
 
@@ -511,5 +560,5 @@ Planned features:
 
 ---
 
-**Plugin Version**: 1.2.0
-**Last Updated**: January 2026
+**Plugin Version**: 1.6.0
+**Last Updated**: February 2026

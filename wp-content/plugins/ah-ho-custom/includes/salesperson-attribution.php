@@ -11,6 +11,86 @@ if (!defined('ABSPATH')) {
 
 /**
  * ========================================
+ * COMMISSION CALCULATION HELPERS
+ * ========================================
+ */
+
+/**
+ * Calculate dual-model commission for an order
+ *
+ * Returns array with percentage_amount, carton_amount, total,
+ * percentage_rate, per_carton_rate, total_quantity
+ *
+ * @param WC_Order $order
+ * @param int      $salesperson_id
+ * @return array
+ */
+function ah_ho_calculate_commission_components($order, $salesperson_id) {
+    $enable_custom_rates = get_option('ah_ho_enable_custom_rates', true);
+
+    // Get percentage rate
+    $percentage_rate = null;
+    if ($enable_custom_rates) {
+        $percentage_rate = get_user_meta($salesperson_id, '_commission_rate', true);
+    }
+    if (empty($percentage_rate) && $percentage_rate !== '0' && $percentage_rate !== 0) {
+        $percentage_rate = get_option('ah_ho_default_commission_rate', 10);
+    }
+    $percentage_rate = floatval($percentage_rate);
+
+    // Get per-carton rate
+    $per_carton_rate = null;
+    if ($enable_custom_rates) {
+        $per_carton_rate = get_user_meta($salesperson_id, '_commission_per_carton_rate', true);
+    }
+    if (empty($per_carton_rate) && $per_carton_rate !== '0' && $per_carton_rate !== 0) {
+        $per_carton_rate = get_option('ah_ho_default_per_carton_rate', 0);
+    }
+    $per_carton_rate = floatval($per_carton_rate);
+
+    // Calculate percentage commission
+    $order_total = $order->get_total();
+    $percentage_amount = $order_total * ($percentage_rate / 100);
+
+    // Calculate per-carton commission (sum all line item quantities)
+    $total_quantity = 0;
+    foreach ($order->get_items() as $item) {
+        $total_quantity += $item->get_quantity();
+    }
+    $carton_amount = $per_carton_rate * $total_quantity;
+
+    // Total commission
+    $total = $percentage_amount + $carton_amount;
+
+    return array(
+        'percentage_rate'    => $percentage_rate,
+        'per_carton_rate'    => $per_carton_rate,
+        'percentage_amount'  => round($percentage_amount, 2),
+        'carton_amount'      => round($carton_amount, 2),
+        'total'              => round($total, 2),
+        'total_quantity'     => $total_quantity,
+    );
+}
+
+/**
+ * Store commission component data on an order
+ *
+ * @param WC_Order $order
+ * @param array    $components  Output of ah_ho_calculate_commission_components()
+ * @param string   $status      Commission status to set
+ */
+function ah_ho_store_commission_meta($order, $components, $status = 'pending') {
+    $order->update_meta_data('_commission_rate', $components['percentage_rate']);
+    $order->update_meta_data('_commission_per_carton_rate', $components['per_carton_rate']);
+    $order->update_meta_data('_commission_percentage_amount', $components['percentage_amount']);
+    $order->update_meta_data('_commission_carton_amount', $components['carton_amount']);
+    $order->update_meta_data('_commission_amount', $components['total']);
+    $order->update_meta_data('_commission_total_quantity', $components['total_quantity']);
+    $order->update_meta_data('_commission_status', $status);
+}
+
+/**
+ * ========================================
  * AJAX: Get Customer Payment Terms
  * ========================================
  * Returns payment terms for a customer (used by order page JS)
@@ -195,27 +275,8 @@ function ah_ho_calculate_pending_commission($order_id) {
         return;
     }
 
-    // Get commission rate
-    $enable_custom_rates = get_option('ah_ho_enable_custom_rates', true);
-    $rate = null;
-
-    if ($enable_custom_rates) {
-        $rate = get_user_meta($salesperson_id, '_commission_rate', true);
-    }
-
-    if (empty($rate)) {
-        $rate = get_option('ah_ho_default_commission_rate', 10);
-    }
-
-    // Calculate commission based on order total
-    $order_total = $order->get_total();
-    $commission = $order_total * ($rate / 100);
-
-    // Store commission data with 'pending' status
-    $order->update_meta_data('_commission_rate', $rate);
-    $order->update_meta_data('_commission_amount', $commission);
-    $order->update_meta_data('_commission_status', 'pending');
-
+    $components = ah_ho_calculate_commission_components($order, $salesperson_id);
+    ah_ho_store_commission_meta($order, $components, 'pending');
     $order->save();
 }
 
@@ -238,17 +299,8 @@ function ah_ho_recalculate_commission_on_change($order_id, $old_status, $new_sta
         return;
     }
 
-    // Get rate
-    $rate = $order->get_meta('_commission_rate', true);
-    if (!$rate) {
-        $rate = get_option('ah_ho_default_commission_rate', 10);
-    }
-
-    // Recalculate commission
-    $order_total = $order->get_total();
-    $commission = $order_total * ($rate / 100);
-
-    $order->update_meta_data('_commission_amount', $commission);
+    $components = ah_ho_calculate_commission_components($order, $salesperson_id);
+    ah_ho_store_commission_meta($order, $components, 'pending');
     $order->save();
 }
 
@@ -277,39 +329,33 @@ function ah_ho_calculate_order_commission($order_id) {
         return;
     }
 
-    // Get commission rate
-    $enable_custom_rates = get_option('ah_ho_enable_custom_rates', true);
-    $rate = null;
-
-    if ($enable_custom_rates) {
-        // Try to get salesperson-specific rate (user meta is still post-based)
-        $rate = get_user_meta($salesperson_id, '_commission_rate', true);
-    }
-
-    // Fallback to default rate
-    if (empty($rate)) {
-        $rate = get_option('ah_ho_default_commission_rate', 10);
-    }
-
-    // Calculate commission
-    $order_total = $order->get_total();
-    $commission = $order_total * ($rate / 100);
+    $components = ah_ho_calculate_commission_components($order, $salesperson_id);
 
     // Determine commission status based on approval mode
     $approval_mode = get_option('ah_ho_commission_approval_mode', 'auto');
     $status = ($approval_mode === 'auto') ? 'approved' : 'pending';
 
-    // Store commission data (HPOS compatible)
-    $order->update_meta_data('_commission_rate', $rate);
-    $order->update_meta_data('_commission_amount', $commission);
-    $order->update_meta_data('_commission_status', $status);
+    ah_ho_store_commission_meta($order, $components, $status);
 
-    // Add order note
+    // Build order note with breakdown
+    $note_parts = array();
+    if ($components['percentage_rate'] > 0) {
+        $note_parts[] = sprintf('$%s (%s%% of order)',
+            number_format($components['percentage_amount'], 2),
+            $components['percentage_rate']);
+    }
+    if ($components['per_carton_rate'] > 0) {
+        $note_parts[] = sprintf('$%s ($%s x %d cartons)',
+            number_format($components['carton_amount'], 2),
+            number_format($components['per_carton_rate'], 2),
+            $components['total_quantity']);
+    }
+
     $order->add_order_note(
         sprintf(
-            __('Commission calculated: $%s (%s%%) - Status: %s', 'ah-ho-custom'),
-            number_format($commission, 2),
-            $rate,
+            __('Commission calculated: $%s [%s] - Status: %s', 'ah-ho-custom'),
+            number_format($components['total'], 2),
+            implode(' + ', $note_parts),
             $status
         )
     );
@@ -319,7 +365,7 @@ function ah_ho_calculate_order_commission($order_id) {
 
     // Send notification if auto-approved and notifications enabled
     if ($status === 'approved' && get_option('ah_ho_notify_on_approval', true)) {
-        ah_ho_send_commission_notification($order_id, $salesperson_id, $commission);
+        ah_ho_send_commission_notification($order_id, $salesperson_id, $components['total']);
     }
 }
 
@@ -337,6 +383,21 @@ function ah_ho_send_commission_notification($order_id, $salesperson_id, $commiss
     // Get notification recipients from settings
     $recipients = get_option('ah_ho_commission_notification_emails', get_option('admin_email'));
 
+    // Get commission breakdown from order meta
+    $percentage_amount = $order->get_meta('_commission_percentage_amount', true);
+    $carton_amount_meta = $order->get_meta('_commission_carton_amount', true);
+    $per_carton_rate = $order->get_meta('_commission_per_carton_rate', true);
+    $percentage_rate = $order->get_meta('_commission_rate', true);
+    $total_quantity = $order->get_meta('_commission_total_quantity', true);
+
+    $breakdown = '';
+    if ($percentage_amount && floatval($percentage_amount) > 0) {
+        $breakdown .= sprintf("\nPercentage: $%s (%s%% of order)", number_format(floatval($percentage_amount), 2), $percentage_rate);
+    }
+    if ($carton_amount_meta && floatval($carton_amount_meta) > 0) {
+        $breakdown .= sprintf("\nPer-Carton: $%s ($%s x %d cartons)", number_format(floatval($carton_amount_meta), 2), number_format(floatval($per_carton_rate), 2), intval($total_quantity));
+    }
+
     // Prepare email
     $subject = sprintf(
         __('[Ah Ho Fruits] Commission Approved - Order #%s', 'ah-ho-custom'),
@@ -344,10 +405,11 @@ function ah_ho_send_commission_notification($order_id, $salesperson_id, $commiss
     );
 
     $message = sprintf(
-        __("Commission has been approved:\n\nSalesperson: %s\nOrder: #%s\nCommission Amount: $%s\nOrder Total: $%s\n\nView Order: %s", 'ah-ho-custom'),
+        __("Commission has been approved:\n\nSalesperson: %s\nOrder: #%s\nTotal Commission: $%s%s\nOrder Total: $%s\n\nView Order: %s", 'ah-ho-custom'),
         $salesperson->display_name,
         $order->get_order_number(),
         number_format($commission, 2),
+        $breakdown,
         $order->get_total(),
         admin_url('post.php?post=' . $order_id . '&action=edit')
     );
@@ -468,12 +530,45 @@ function ah_ho_render_salesperson_meta_box($post) {
             </select>
         </p>
 
-        <?php if ($commission_amount) : ?>
+        <?php if ($commission_amount) :
+            $per_carton_rate = $order->get_meta('_commission_per_carton_rate', true);
+            $percentage_amount = $order->get_meta('_commission_percentage_amount', true);
+            $carton_amount = $order->get_meta('_commission_carton_amount', true);
+            $total_quantity = $order->get_meta('_commission_total_quantity', true);
+            $has_breakdown = ($percentage_amount || $carton_amount);
+        ?>
             <hr>
             <h4><?php _e('Commission Details', 'ah-ho-custom'); ?></h4>
+
+            <?php if ($has_breakdown) : ?>
+                <?php if ($percentage_amount && floatval($percentage_amount) > 0) : ?>
+                <p>
+                    <strong><?php _e('Percentage:', 'ah-ho-custom'); ?></strong>
+                    $<?php echo number_format($percentage_amount, 2); ?>
+                    (<?php echo esc_html($commission_rate); ?>% of order)
+                </p>
+                <?php endif; ?>
+
+                <?php if ($carton_amount && floatval($carton_amount) > 0) : ?>
+                <p>
+                    <strong><?php _e('Per-Carton:', 'ah-ho-custom'); ?></strong>
+                    $<?php echo number_format($carton_amount, 2); ?>
+                    ($<?php echo number_format($per_carton_rate, 2); ?> x <?php echo intval($total_quantity); ?> cartons)
+                </p>
+                <?php endif; ?>
+
+                <p>
+                    <strong><?php _e('Total Commission:', 'ah-ho-custom'); ?></strong>
+                    $<?php echo number_format($commission_amount, 2); ?>
+                </p>
+            <?php else : ?>
+                <p>
+                    <strong><?php _e('Rate:', 'ah-ho-custom'); ?></strong> <?php echo esc_html($commission_rate); ?>%<br>
+                    <strong><?php _e('Amount:', 'ah-ho-custom'); ?></strong> $<?php echo number_format($commission_amount, 2); ?>
+                </p>
+            <?php endif; ?>
+
             <p>
-                <strong><?php _e('Rate:', 'ah-ho-custom'); ?></strong> <?php echo esc_html($commission_rate); ?>%<br>
-                <strong><?php _e('Amount:', 'ah-ho-custom'); ?></strong> $<?php echo number_format($commission_amount, 2); ?><br>
                 <strong><?php _e('Status:', 'ah-ho-custom'); ?></strong>
                 <span class="commission-status-<?php echo esc_attr($commission_status); ?>">
                     <?php echo esc_html(ucfirst($commission_status)); ?>

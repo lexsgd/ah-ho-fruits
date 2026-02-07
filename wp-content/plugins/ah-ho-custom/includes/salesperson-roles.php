@@ -284,11 +284,13 @@ function ah_ho_add_commission_rate_field($user) {
 
     $commission_rate = get_user_meta($user->ID, '_commission_rate', true);
     $default_rate = get_option('ah_ho_default_commission_rate', 10);
+    $per_carton_rate = get_user_meta($user->ID, '_commission_per_carton_rate', true);
+    $default_per_carton_rate = get_option('ah_ho_default_per_carton_rate', 0);
     ?>
     <h3><?php _e('Commission Settings', 'ah-ho-custom'); ?></h3>
     <table class="form-table">
         <tr>
-            <th><label for="commission_rate"><?php _e('Custom Commission Rate (%)', 'ah-ho-custom'); ?></label></th>
+            <th><label for="commission_rate"><?php _e('Percentage Commission Rate (%)', 'ah-ho-custom'); ?></label></th>
             <td>
                 <input type="number"
                        name="commission_rate"
@@ -299,7 +301,22 @@ function ah_ho_add_commission_rate_field($user) {
                        max="100"
                        class="regular-text" />
                 <p class="description">
-                    <?php printf(__('Leave blank to use default rate (%s%%)', 'ah-ho-custom'), $default_rate); ?>
+                    <?php printf(__('Percentage of order total. Leave blank to use default rate (%s%%)', 'ah-ho-custom'), $default_rate); ?>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="commission_per_carton_rate"><?php _e('Per-Carton Commission ($)', 'ah-ho-custom'); ?></label></th>
+            <td>
+                <input type="number"
+                       name="commission_per_carton_rate"
+                       id="commission_per_carton_rate"
+                       value="<?php echo esc_attr($per_carton_rate); ?>"
+                       step="0.01"
+                       min="0"
+                       class="regular-text" />
+                <p class="description">
+                    <?php printf(__('Fixed dollar amount per carton. Leave blank to use default rate ($%s)', 'ah-ho-custom'), number_format($default_per_carton_rate, 2)); ?>
                 </p>
             </td>
         </tr>
@@ -327,6 +344,16 @@ function ah_ho_save_commission_rate_field($user_id) {
         }
 
         update_user_meta($user_id, '_commission_rate', $rate);
+    }
+
+    if (isset($_POST['commission_per_carton_rate'])) {
+        $per_carton_rate = floatval($_POST['commission_per_carton_rate']);
+
+        if ($per_carton_rate < 0) {
+            $per_carton_rate = 0;
+        }
+
+        update_user_meta($user_id, '_commission_per_carton_rate', $per_carton_rate);
     }
 }
 

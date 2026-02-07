@@ -54,29 +54,9 @@ function ah_ho_maybe_recalculate_commissions() {
         $salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
         if (!$salesperson_id) continue;
 
-        // Get commission rate
-        $enable_custom_rates = get_option('ah_ho_enable_custom_rates', true);
-        $rate = null;
-
-        if ($enable_custom_rates) {
-            $rate = get_user_meta($salesperson_id, '_commission_rate', true);
-        }
-
-        if (empty($rate)) {
-            $rate = get_option('ah_ho_default_commission_rate', 10);
-        }
-
-        // Calculate commission
-        $order_total = $order->get_total();
-        $commission = $order_total * ($rate / 100);
-
-        // Update order meta
-        $order->update_meta_data('_commission_rate', $rate);
-        $order->update_meta_data('_commission_amount', $commission);
-
-        if (!$order->get_meta('_commission_status', true)) {
-            $order->update_meta_data('_commission_status', 'pending');
-        }
+        $components = ah_ho_calculate_commission_components($order, $salesperson_id);
+        $status = $order->get_meta('_commission_status', true) ?: 'pending';
+        ah_ho_store_commission_meta($order, $components, $status);
 
         $order->save();
         $recalculated++;
@@ -504,12 +484,20 @@ function ah_ho_render_commission_table($salesperson_id = 0, $status = '', $month
             sp.meta_value as salesperson_id,
             ca.meta_value as commission_amount,
             cs.meta_value as commission_status,
-            cr.meta_value as commission_rate
+            cr.meta_value as commission_rate,
+            cpc.meta_value as per_carton_rate,
+            cpa.meta_value as percentage_amount,
+            cca.meta_value as carton_amount,
+            ctq.meta_value as total_quantity
         FROM {$orders_table} o
         INNER JOIN {$meta_table} sp ON o.id = sp.order_id AND sp.meta_key = '_assigned_salesperson_id'
         INNER JOIN {$meta_table} ca ON o.id = ca.order_id AND ca.meta_key = '_commission_amount'
         INNER JOIN {$meta_table} cs ON o.id = cs.order_id AND cs.meta_key = '_commission_status'
         LEFT JOIN {$meta_table} cr ON o.id = cr.order_id AND cr.meta_key = '_commission_rate'
+        LEFT JOIN {$meta_table} cpc ON o.id = cpc.order_id AND cpc.meta_key = '_commission_per_carton_rate'
+        LEFT JOIN {$meta_table} cpa ON o.id = cpa.order_id AND cpa.meta_key = '_commission_percentage_amount'
+        LEFT JOIN {$meta_table} cca ON o.id = cca.order_id AND cca.meta_key = '_commission_carton_amount'
+        LEFT JOIN {$meta_table} ctq ON o.id = ctq.order_id AND ctq.meta_key = '_commission_total_quantity'
         WHERE {$where}
         ORDER BY o.date_created_gmt DESC
         LIMIT 50
@@ -530,8 +518,9 @@ function ah_ho_render_commission_table($salesperson_id = 0, $status = '', $month
                 <th><?php _e('Date', 'ah-ho-custom'); ?></th>
                 <th><?php _e('Salesperson', 'ah-ho-custom'); ?></th>
                 <th><?php _e('Order Total', 'ah-ho-custom'); ?></th>
-                <th><?php _e('Rate', 'ah-ho-custom'); ?></th>
-                <th><?php _e('Commission', 'ah-ho-custom'); ?></th>
+                <th><?php _e('Qty (Cartons)', 'ah-ho-custom'); ?></th>
+                <th><?php _e('Commission Breakdown', 'ah-ho-custom'); ?></th>
+                <th><?php _e('Total Commission', 'ah-ho-custom'); ?></th>
                 <th><?php _e('Status', 'ah-ho-custom'); ?></th>
             </tr>
         </thead>
@@ -550,7 +539,23 @@ function ah_ho_render_commission_table($salesperson_id = 0, $status = '', $month
                 <td><?php echo date_i18n(get_option('date_format'), strtotime($row->post_date)); ?></td>
                 <td><?php echo $salesperson ? esc_html($salesperson->display_name) : '—'; ?></td>
                 <td>$<?php echo number_format($order->get_total(), 2); ?></td>
-                <td><?php echo esc_html($row->commission_rate); ?>%</td>
+                <td><?php echo intval($row->total_quantity ?: 0); ?></td>
+                <td>
+                    <?php
+                    $parts = array();
+                    if ($row->percentage_amount && floatval($row->percentage_amount) > 0) {
+                        $parts[] = sprintf('$%s (%s%%)', number_format(floatval($row->percentage_amount), 2), esc_html($row->commission_rate));
+                    }
+                    if ($row->carton_amount && floatval($row->carton_amount) > 0) {
+                        $parts[] = sprintf('$%s ($%s/ctn)', number_format(floatval($row->carton_amount), 2), number_format(floatval($row->per_carton_rate), 2));
+                    }
+                    // Backward compat: if no breakdown data, show old-style rate
+                    if (empty($parts) && $row->commission_rate) {
+                        $parts[] = esc_html($row->commission_rate) . '%';
+                    }
+                    echo implode('<br>', $parts);
+                    ?>
+                </td>
                 <td><strong>$<?php echo number_format($row->commission_amount, 2); ?></strong></td>
                 <td>
                     <span class="commission-status <?php echo esc_attr($row->commission_status); ?>">
@@ -613,8 +618,12 @@ function ah_ho_handle_commission_export() {
         __('Date', 'ah-ho-custom'),
         __('Salesperson', 'ah-ho-custom'),
         __('Order Total', 'ah-ho-custom'),
-        __('Commission Rate', 'ah-ho-custom'),
-        __('Commission Amount', 'ah-ho-custom'),
+        __('Total Cartons', 'ah-ho-custom'),
+        __('Percentage Rate', 'ah-ho-custom'),
+        __('Percentage Commission', 'ah-ho-custom'),
+        __('Per-Carton Rate', 'ah-ho-custom'),
+        __('Carton Commission', 'ah-ho-custom'),
+        __('Total Commission', 'ah-ho-custom'),
         __('Status', 'ah-ho-custom'),
     ));
 
@@ -642,12 +651,20 @@ function ah_ho_handle_commission_export() {
             sp.meta_value as salesperson_id,
             ca.meta_value as commission_amount,
             cs.meta_value as commission_status,
-            cr.meta_value as commission_rate
+            cr.meta_value as commission_rate,
+            cpc.meta_value as per_carton_rate,
+            cpa.meta_value as percentage_amount,
+            cca.meta_value as carton_amount,
+            ctq.meta_value as total_quantity
         FROM {$orders_table} o
         INNER JOIN {$meta_table} sp ON o.id = sp.order_id AND sp.meta_key = '_assigned_salesperson_id'
         INNER JOIN {$meta_table} ca ON o.id = ca.order_id AND ca.meta_key = '_commission_amount'
         INNER JOIN {$meta_table} cs ON o.id = cs.order_id AND cs.meta_key = '_commission_status'
         LEFT JOIN {$meta_table} cr ON o.id = cr.order_id AND cr.meta_key = '_commission_rate'
+        LEFT JOIN {$meta_table} cpc ON o.id = cpc.order_id AND cpc.meta_key = '_commission_per_carton_rate'
+        LEFT JOIN {$meta_table} cpa ON o.id = cpa.order_id AND cpa.meta_key = '_commission_percentage_amount'
+        LEFT JOIN {$meta_table} cca ON o.id = cca.order_id AND cca.meta_key = '_commission_carton_amount'
+        LEFT JOIN {$meta_table} ctq ON o.id = ctq.order_id AND ctq.meta_key = '_commission_total_quantity'
         WHERE {$where}
         ORDER BY o.date_created_gmt DESC
     ";
@@ -666,7 +683,11 @@ function ah_ho_handle_commission_export() {
             date_i18n(get_option('date_format'), strtotime($row->post_date)),
             $salesperson ? $salesperson->display_name : '',
             $order->get_total(),
-            $row->commission_rate . '%',
+            $row->total_quantity ?: '',
+            $row->commission_rate ? $row->commission_rate . '%' : '',
+            $row->percentage_amount ?: '',
+            $row->per_carton_rate ? '$' . number_format(floatval($row->per_carton_rate), 2) : '',
+            $row->carton_amount ?: '',
             $row->commission_amount,
             ucfirst($row->commission_status),
         ));

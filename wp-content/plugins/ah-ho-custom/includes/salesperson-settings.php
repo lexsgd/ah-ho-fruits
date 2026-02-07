@@ -38,6 +38,12 @@ function ah_ho_register_settings() {
         'sanitize_callback' => 'floatval'
     ));
 
+    register_setting('ah_ho_salesperson_settings', 'ah_ho_default_per_carton_rate', array(
+        'type'              => 'number',
+        'default'           => 0,
+        'sanitize_callback' => 'floatval'
+    ));
+
     register_setting('ah_ho_salesperson_settings', 'ah_ho_enable_custom_rates', array(
         'type'              => 'boolean',
         'default'           => true,
@@ -142,6 +148,18 @@ function ah_ho_render_settings_page() {
                     </td>
                 </tr>
                 <tr>
+                    <th scope="row"><?php _e('Default Per-Carton Rate ($)', 'ah-ho-custom'); ?></th>
+                    <td>
+                        <input type="number"
+                               name="ah_ho_default_per_carton_rate"
+                               value="<?php echo esc_attr(get_option('ah_ho_default_per_carton_rate', 0)); ?>"
+                               step="0.01"
+                               min="0"
+                               class="regular-text" />
+                        <p class="description"><?php _e('Default fixed dollar amount per carton for all salespersons. Set to 0 to disable per-carton commission by default.', 'ah-ho-custom'); ?></p>
+                    </td>
+                </tr>
+                <tr>
                     <th scope="row"><?php _e('Custom Rates', 'ah-ho-custom'); ?></th>
                     <td>
                         <label>
@@ -151,7 +169,7 @@ function ah_ho_render_settings_page() {
                                    <?php checked(get_option('ah_ho_enable_custom_rates', true)); ?> />
                             <?php _e('Enable Custom Rates Per Salesperson', 'ah-ho-custom'); ?>
                         </label>
-                        <p class="description"><?php _e('When enabled, admins can set individual commission rates in each salesperson\'s user profile.', 'ah-ho-custom'); ?></p>
+                        <p class="description"><?php _e('When enabled, admins can set individual percentage and per-carton commission rates in each salesperson\'s user profile.', 'ah-ho-custom'); ?></p>
                     </td>
                 </tr>
             </table>
