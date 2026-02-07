@@ -4,6 +4,8 @@
  *
  * Generates a WhatsApp-compatible product catalog text that can be
  * easily shared with B2B customers.
+ *
+ * @modified 2026-02-08 - re-deploy to fix UTF-8 encoding (emojis, separators)
  */
 
 if (!defined('ABSPATH')) {
