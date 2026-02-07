@@ -103,7 +103,7 @@ if (!empty($customer_note) && empty($remarks)) {
             font-size: 11px;
             line-height: 1.4;
             color: #000;
-            margin: 5mm 8mm 5mm 8mm;
+            margin: 2mm 3mm 2mm 3mm;
         }
         h1, h2, h3, h4 { margin: 0 0 1px 0; }
         table { border-collapse: collapse; width: 100%; }
@@ -279,7 +279,7 @@ if (!empty($customer_note) && empty($remarks)) {
 
         <?php
         // Add empty rows to fill out the table
-        $min_rows = 8;
+        $min_rows = 14;
         for ($i = $row_count; $i < $min_rows; $i++):
         ?>
             <tr>

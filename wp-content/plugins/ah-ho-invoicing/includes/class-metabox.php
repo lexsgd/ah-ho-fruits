@@ -17,6 +17,7 @@ class AH_HO_Metabox {
     public static function init() {
         add_action('add_meta_boxes', array(__CLASS__, 'add_meta_boxes'));
         add_action('wp_ajax_ah_ho_download_pdf', array(__CLASS__, 'ajax_download_pdf'));
+        add_action('wp_ajax_ah_ho_print_pdf', array(__CLASS__, 'ajax_print_pdf'));
     }
 
     /**
@@ -76,32 +77,44 @@ class AH_HO_Metabox {
                 </p>
             <?php endif; ?>
 
-            <p>
+            <div class="ah-ho-btn-row">
                 <a href="<?php echo esc_url(admin_url("admin-ajax.php?action=ah_ho_download_pdf&type=invoice&order_id={$order_id}&_wpnonce=" . wp_create_nonce('ah_ho_download_pdf'))); ?>"
-                   class="button button-primary"
-                   target="_blank"
-                   style="width: 100%; text-align: center; margin-bottom: 5px;">
-                    📄 <?php echo $has_invoice ? __('Download Invoice', 'ah-ho-invoicing') : __('Generate Invoice', 'ah-ho-invoicing'); ?>
+                   class="button button-primary ah-ho-btn-download"
+                   target="_blank">
+                    📄 <?php echo $has_invoice ? __('Download', 'ah-ho-invoicing') : __('Generate', 'ah-ho-invoicing'); ?>
                 </a>
-            </p>
+                <a href="<?php echo esc_url(admin_url("admin-ajax.php?action=ah_ho_print_pdf&type=invoice&order_id={$order_id}&_wpnonce=" . wp_create_nonce('ah_ho_print_pdf'))); ?>"
+                   class="button ah-ho-btn-print"
+                   target="_blank">
+                    🖨️ <?php _e('Print', 'ah-ho-invoicing'); ?>
+                </a>
+            </div>
 
-            <p>
+            <div class="ah-ho-btn-row">
                 <a href="<?php echo esc_url(admin_url("admin-ajax.php?action=ah_ho_download_pdf&type=packing-slip&order_id={$order_id}&_wpnonce=" . wp_create_nonce('ah_ho_download_pdf'))); ?>"
-                   class="button"
-                   target="_blank"
-                   style="width: 100%; text-align: center; margin-bottom: 5px;">
-                    📦 <?php _e('Download Packing Slip', 'ah-ho-invoicing'); ?>
+                   class="button ah-ho-btn-download"
+                   target="_blank">
+                    📦 <?php _e('Download', 'ah-ho-invoicing'); ?>
                 </a>
-            </p>
+                <a href="<?php echo esc_url(admin_url("admin-ajax.php?action=ah_ho_print_pdf&type=packing-slip&order_id={$order_id}&_wpnonce=" . wp_create_nonce('ah_ho_print_pdf'))); ?>"
+                   class="button ah-ho-btn-print"
+                   target="_blank">
+                    🖨️ <?php _e('Print', 'ah-ho-invoicing'); ?>
+                </a>
+            </div>
 
-            <p>
+            <div class="ah-ho-btn-row">
                 <a href="<?php echo esc_url(admin_url("admin-ajax.php?action=ah_ho_download_pdf&type=delivery-order&order_id={$order_id}&_wpnonce=" . wp_create_nonce('ah_ho_download_pdf'))); ?>"
-                   class="button"
-                   target="_blank"
-                   style="width: 100%; text-align: center;">
-                    🚚 <?php _e('Download Delivery Order', 'ah-ho-invoicing'); ?>
+                   class="button ah-ho-btn-download"
+                   target="_blank">
+                    🚚 <?php _e('Download', 'ah-ho-invoicing'); ?>
                 </a>
-            </p>
+                <a href="<?php echo esc_url(admin_url("admin-ajax.php?action=ah_ho_print_pdf&type=delivery-order&order_id={$order_id}&_wpnonce=" . wp_create_nonce('ah_ho_print_pdf'))); ?>"
+                   class="button ah-ho-btn-print"
+                   target="_blank">
+                    🖨️ <?php _e('Print', 'ah-ho-invoicing'); ?>
+                </a>
+            </div>
 
             <?php if ($has_invoice): ?>
             <p style="text-align: center; margin-top: 10px;">
@@ -124,6 +137,20 @@ class AH_HO_Metabox {
                 padding: 10px;
                 border-left: 3px solid #2271b1;
                 margin-bottom: 15px;
+            }
+            .ah-ho-btn-row {
+                display: flex;
+                gap: 4px;
+                margin-bottom: 8px;
+            }
+            .ah-ho-btn-row .ah-ho-btn-download {
+                flex: 1;
+                text-align: center;
+            }
+            .ah-ho-btn-row .ah-ho-btn-print {
+                flex: 0 0 auto;
+                text-align: center;
+                min-width: 70px;
             }
         </style>
 
@@ -201,6 +228,53 @@ class AH_HO_Metabox {
 
         // Download PDF
         AH_HO_PDF_Generator::download_pdf($pdf_path, $filename);
+    }
+
+    /**
+     * AJAX handler for PDF print (opens inline in browser for printing)
+     */
+    public static function ajax_print_pdf() {
+        if (!current_user_can('edit_shop_orders')) {
+            wp_die(__('Unauthorized', 'ah-ho-invoicing'));
+        }
+
+        if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'ah_ho_print_pdf')) {
+            wp_die(__('Security check failed', 'ah-ho-invoicing'));
+        }
+
+        $type = sanitize_text_field($_GET['type']);
+        $order_id = absint($_GET['order_id']);
+
+        if (!$order_id) {
+            wp_die(__('Invalid order ID', 'ah-ho-invoicing'));
+        }
+
+        switch ($type) {
+            case 'invoice':
+                $pdf_path = AH_HO_Invoice::generate($order_id);
+                $filename = "invoice-{$order_id}.pdf";
+                break;
+
+            case 'packing-slip':
+                $pdf_path = AH_HO_Packing_Slip::generate($order_id);
+                $filename = "packing-slip-{$order_id}.pdf";
+                break;
+
+            case 'delivery-order':
+                $pdf_path = AH_HO_Delivery_Order::generate($order_id);
+                $filename = "delivery-order-{$order_id}.pdf";
+                break;
+
+            default:
+                wp_die(__('Invalid document type', 'ah-ho-invoicing'));
+        }
+
+        if (!$pdf_path) {
+            wp_die(__('Error generating PDF', 'ah-ho-invoicing'));
+        }
+
+        // Stream PDF inline for printing
+        AH_HO_PDF_Generator::stream_pdf($pdf_path, $filename);
     }
 }
 

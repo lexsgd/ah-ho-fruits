@@ -174,11 +174,19 @@ class AH_HO_PDF_Generator {
             while (ob_get_level()) {
                 ob_end_clean();
             }
+
+            if (function_exists('apache_setenv')) {
+                apache_setenv('no-gzip', '1');
+            }
+            ini_set('zlib.output_compression', 'Off');
+
             header('Content-Type: application/pdf');
             header('Content-Disposition: inline; filename="' . $filename . '"');
+            header('Content-Transfer-Encoding: binary');
             header('Content-Length: ' . filesize($pdf_path));
-            header('Cache-Control: private, max-age=0, must-revalidate');
-            header('Pragma: public');
+            header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+            header('Pragma: no-cache');
+            header('Expires: 0');
             readfile($pdf_path);
             exit;
         }
