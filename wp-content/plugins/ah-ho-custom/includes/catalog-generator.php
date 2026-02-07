@@ -172,12 +172,9 @@ function ah_ho_generate_catalog_text() {
             'meta_query'   => array(
                 array(
                     'key'     => '_wholesale_price',
-                    'value'   => '',
-                    'compare' => '!=',
-                ),
-                array(
-                    'key'     => '_wholesale_price',
-                    'compare' => 'EXISTS',
+                    'value'   => 0,
+                    'compare' => '>',
+                    'type'    => 'NUMERIC',
                 ),
             ),
         ));
@@ -204,12 +201,12 @@ function ah_ho_generate_catalog_text() {
             $wholesale_price = $product->get_meta('_wholesale_price');
             $name = $product->get_name();
 
-            // Format price (wholesale price should always exist due to meta_query)
-            if ($wholesale_price) {
-                $output .= sprintf("%s @ $%.2f\n", $name, floatval($wholesale_price));
-            } else {
-                $output .= sprintf("%s @ POA\n", $name); // Price on Application
+            // Skip products without a valid wholesale price (B2C products)
+            if (empty($wholesale_price) || floatval($wholesale_price) <= 0) {
+                continue;
             }
+
+            $output .= sprintf("%s @ $%.2f\n", $name, floatval($wholesale_price));
         }
 
         $output .= "\n";
