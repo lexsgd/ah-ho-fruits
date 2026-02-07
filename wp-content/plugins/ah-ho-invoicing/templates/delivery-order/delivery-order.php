@@ -45,6 +45,12 @@ if (empty($delivery_date)) {
 $payment_method = $order->get_payment_method();
 $terms = ($payment_method === 'cod') ? 'C.O.D.' : $order->get_payment_method_title();
 
+// PO Number from order meta
+$po_number = $order->get_meta('_po_number', true);
+if (empty($po_number)) {
+    $po_number = $order->get_meta('po_number', true);
+}
+
 // Billing info
 $bill_name    = trim($order->get_billing_first_name() . ' ' . $order->get_billing_last_name());
 $bill_company = $order->get_billing_company();
@@ -184,7 +190,7 @@ if (!empty($customer_note) && empty($remarks)) {
                 </tr>
                 <tr>
                     <td style="border: 1px solid #000; padding: 2px 4px; font-weight: bold;">PO No</td>
-                    <td style="border: 1px solid #000; padding: 2px 4px;">&nbsp;</td>
+                    <td style="border: 1px solid #000; padding: 2px 4px;"><?php echo !empty($po_number) ? esc_html($po_number) : '&nbsp;'; ?></td>
                 </tr>
                 <tr>
                     <td style="border: 1px solid #000; padding: 2px 4px; font-weight: bold;">Terms</td>
@@ -293,7 +299,7 @@ if (!empty($customer_note) && empty($remarks)) {
         <td style="width: 50%; vertical-align: bottom; padding-right: 15px;">
             <div style="height: 25px;"></div>
             <div style="border-top: 1px solid #000; padding-top: 2px; font-size: 9px; line-height: 1.3;">
-                &nbsp;
+                Delivered by:
             </div>
         </td>
         <td style="width: 50%; vertical-align: bottom; padding-left: 15px;">
