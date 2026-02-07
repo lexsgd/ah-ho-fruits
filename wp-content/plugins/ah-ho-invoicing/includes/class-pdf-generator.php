@@ -127,18 +127,27 @@ class AH_HO_PDF_Generator {
      * @param string $filename Filename to send to browser
      */
     public static function download_pdf($pdf_path, $filename) {
+        // Clear all output buffers to prevent header interference
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+
         // Check if it's a file path or raw data
         if (file_exists($pdf_path)) {
             // It's a file path
             header('Content-Type: application/pdf');
             header('Content-Disposition: attachment; filename="' . $filename . '"');
             header('Content-Length: ' . filesize($pdf_path));
+            header('Cache-Control: private, max-age=0, must-revalidate');
+            header('Pragma: public');
             readfile($pdf_path);
         } else {
             // It's raw PDF data
             header('Content-Type: application/pdf');
             header('Content-Disposition: attachment; filename="' . $filename . '"');
             header('Content-Length: ' . strlen($pdf_path));
+            header('Cache-Control: private, max-age=0, must-revalidate');
+            header('Pragma: public');
             echo $pdf_path;
         }
         exit;
@@ -152,9 +161,14 @@ class AH_HO_PDF_Generator {
      */
     public static function stream_pdf($pdf_path, $filename) {
         if (file_exists($pdf_path)) {
+            while (ob_get_level()) {
+                ob_end_clean();
+            }
             header('Content-Type: application/pdf');
             header('Content-Disposition: inline; filename="' . $filename . '"');
             header('Content-Length: ' . filesize($pdf_path));
+            header('Cache-Control: private, max-age=0, must-revalidate');
+            header('Pragma: public');
             readfile($pdf_path);
             exit;
         }
