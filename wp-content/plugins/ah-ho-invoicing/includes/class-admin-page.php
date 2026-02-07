@@ -123,10 +123,15 @@ class AH_HO_Admin_Page {
                     <div class="notice notice-success">
                         <p>
                             <strong><?php _e('Consolidated packing slip generated successfully!', 'ah-ho-invoicing'); ?></strong><br>
-                            <a href="#" id="ah-ho-download-link" class="button button-primary" target="_blank">
-                                📥 <?php _e('Download PDF', 'ah-ho-invoicing'); ?>
-                            </a>
-                            <span id="ah-ho-order-count"></span>
+                            <span style="display: inline-flex; gap: 8px; margin-top: 8px; align-items: center;">
+                                <a href="#" id="ah-ho-download-link" class="button button-primary" target="_blank">
+                                    📥 <?php _e('Download PDF', 'ah-ho-invoicing'); ?>
+                                </a>
+                                <a href="#" id="ah-ho-print-link" class="button" target="_blank" title="<?php _e('Open PDF for printing', 'ah-ho-invoicing'); ?>">
+                                    🖨️ <?php _e('Print', 'ah-ho-invoicing'); ?>
+                                </a>
+                                <span id="ah-ho-order-count"></span>
+                            </span>
                         </p>
                     </div>
                 </div>
@@ -266,6 +271,7 @@ class AH_HO_Admin_Page {
 
                     if (response.success) {
                         $('#ah-ho-download-link').attr('href', response.data.download_url);
+                        $('#ah-ho-print-link').attr('href', response.data.print_url);
                         $('#ah-ho-order-count').text('(' + response.data.order_count + ' orders included)');
                         $result.show();
                     } else {
@@ -454,9 +460,11 @@ class AH_HO_Admin_Page {
 
         // Create download URL with nonce
         $download_url = admin_url('admin-ajax.php?action=ah_ho_download_consolidated_pdf&path=' . urlencode(basename($pdf_path)) . '&_wpnonce=' . wp_create_nonce('ah_ho_download_consolidated'));
+        $print_url = admin_url('admin-ajax.php?action=ah_ho_print_consolidated_pdf&path=' . urlencode(basename($pdf_path)) . '&_wpnonce=' . wp_create_nonce('ah_ho_print_consolidated'));
 
         wp_send_json_success(array(
             'download_url' => $download_url,
+            'print_url'    => $print_url,
             'order_count'  => count($order_ids),
         ));
     }
@@ -641,4 +649,27 @@ add_action('wp_ajax_ah_ho_download_consolidated_pdf', function() {
 
     // Download PDF
     AH_HO_PDF_Generator::download_pdf($pdf_path, $filename);
+});
+
+/**
+ * AJAX handler for printing (inline view) consolidated PDF
+ */
+add_action('wp_ajax_ah_ho_print_consolidated_pdf', function() {
+    if (!current_user_can('manage_woocommerce')) {
+        wp_die('Unauthorized');
+    }
+
+    if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'ah_ho_print_consolidated')) {
+        wp_die('Security check failed');
+    }
+
+    $filename = sanitize_file_name($_GET['path']);
+    $pdf_path = AH_HO_INVOICING_CACHE_DIR . $filename;
+
+    if (!file_exists($pdf_path)) {
+        wp_die('PDF file not found.');
+    }
+
+    // Stream PDF inline for printing
+    AH_HO_PDF_Generator::stream_pdf($pdf_path, $filename);
 });
