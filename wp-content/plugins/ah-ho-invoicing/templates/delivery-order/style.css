@@ -9,12 +9,10 @@
  */
 
 @page {
-    margin: 20mm 18mm 18mm 18mm;
     size: A4;
 }
 
 * {
-    margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
@@ -24,6 +22,7 @@ body {
     font-size: 11px;
     line-height: 1.4;
     color: #000;
+    margin: 15mm 15mm 15mm 15mm;
 }
 
 h1, h2, h3, h4 {

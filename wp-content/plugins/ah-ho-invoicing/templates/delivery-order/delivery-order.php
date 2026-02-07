@@ -7,7 +7,7 @@
  *
  * @package AhHoInvoicing
  * @since 1.5.1
- * @modified 2026-02-06 - margins updated to 20mm/18mm
+ * @modified 2026-02-07 - use body margin for Dompdf compatibility
  */
 
 if (!defined('ABSPATH')) {
@@ -95,15 +95,15 @@ if (!empty($customer_note) && empty($remarks)) {
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style>
         @page {
-            margin: 20mm 18mm 18mm 18mm;
             size: A4;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { padding: 0; box-sizing: border-box; }
         body {
             font-family: Arial, Helvetica, sans-serif;
             font-size: 11px;
             line-height: 1.4;
             color: #000;
+            margin: 15mm 15mm 15mm 15mm;
         }
         h1, h2, h3, h4 { margin: 0 0 5px 0; }
         table { border-collapse: collapse; width: 100%; }
