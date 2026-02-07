@@ -103,9 +103,9 @@ if (!empty($customer_note) && empty($remarks)) {
             font-size: 11px;
             line-height: 1.4;
             color: #000;
-            margin: 15mm 15mm 15mm 15mm;
+            margin: 5mm 8mm 5mm 8mm;
         }
-        h1, h2, h3, h4 { margin: 0 0 5px 0; }
+        h1, h2, h3, h4 { margin: 0 0 1px 0; }
         table { border-collapse: collapse; width: 100%; }
         strong { font-weight: bold; }
         .page-break { page-break-after: always; }
@@ -115,15 +115,15 @@ if (!empty($customer_note) && empty($remarks)) {
 <body>
 
 <!-- ===== HEADER: Logo + Company Name + Registration ===== -->
-<table class="header-table" style="width: 98%; border-bottom: 2px solid #000; margin-bottom: 10px; padding-bottom: 8px;">
+<table class="header-table" style="width: 98%; border-bottom: 2px solid #000; margin-bottom: 3px; padding-bottom: 2px;">
     <tr>
         <td style="width: 15%; vertical-align: middle;">
             <?php if (!empty($logo_url)): ?>
-                <img src="<?php echo esc_attr($logo_url); ?>" alt="<?php echo esc_attr($company_name); ?>" style="max-width: 80px; max-height: 80px;" />
+                <img src="<?php echo esc_attr($logo_url); ?>" alt="<?php echo esc_attr($company_name); ?>" style="max-width: 60px; max-height: 60px;" />
             <?php endif; ?>
         </td>
         <td style="width: 52%; vertical-align: middle; text-align: left; padding-left: 5px;">
-            <div style="font-size: 22px; font-weight: bold; letter-spacing: 0.5px; line-height: 1.2;">
+            <div style="font-size: 18px; font-weight: bold; letter-spacing: 0.5px; line-height: 1.1;">
                 <?php echo esc_html(strtoupper($company_name)); ?>
             </div>
             <div style="font-size: 9px; color: #333; margin-top: 3px; line-height: 1.4;">
@@ -139,11 +139,11 @@ if (!empty($customer_note) && empty($remarks)) {
 </table>
 
 <!-- ===== BILL TO / DELIVER TO / DELIVERY ORDER INFO ===== -->
-<table style="width: 100%; margin-bottom: 8px;" cellspacing="0" cellpadding="0">
+<table style="width: 100%; margin-bottom: 2px;" cellspacing="0" cellpadding="0">
     <tr>
         <!-- Bill To -->
         <td style="width: 30%; vertical-align: top; padding-right: 10px;">
-            <div style="font-size: 10px; font-weight: bold; margin-bottom: 4px;">Bill To:</div>
+            <div style="font-size: 10px; font-weight: bold; margin-bottom: 1px;">Bill To:</div>
             <div style="font-size: 10px; line-height: 1.5;">
                 <?php echo esc_html($bill_name); ?><br>
                 <?php if ($bill_company): ?>
@@ -163,7 +163,7 @@ if (!empty($customer_note) && empty($remarks)) {
 
         <!-- Deliver To -->
         <td style="width: 30%; vertical-align: top; padding-right: 10px;">
-            <div style="font-size: 10px; font-weight: bold; margin-bottom: 4px;">Deliver To:</div>
+            <div style="font-size: 10px; font-weight: bold; margin-bottom: 1px;">Deliver To:</div>
             <div style="font-size: 10px; line-height: 1.5;">
                 <?php echo esc_html($ship_name); ?><br>
                 <?php if ($ship_company): ?>
@@ -183,23 +183,23 @@ if (!empty($customer_note) && empty($remarks)) {
 
         <!-- Delivery Order title + Invoice details -->
         <td style="width: 40%; vertical-align: top;">
-            <div style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">Delivery Order</div>
+            <div style="font-size: 16px; font-weight: bold; margin-bottom: 2px;">Delivery Order</div>
             <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
                 <tr>
-                    <td style="border: 1px solid #000; padding: 4px 6px; font-weight: bold; width: 40%;">Invoice No</td>
-                    <td style="border: 1px solid #000; padding: 4px 6px;"><?php echo esc_html($order->get_order_number()); ?></td>
+                    <td style="border: 1px solid #000; padding: 2px 4px; font-weight: bold; width: 40%;">Invoice No</td>
+                    <td style="border: 1px solid #000; padding: 2px 4px;"><?php echo esc_html($order->get_order_number()); ?></td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid #000; padding: 4px 6px; font-weight: bold;">Date</td>
-                    <td style="border: 1px solid #000; padding: 4px 6px;"><?php echo esc_html($delivery_date); ?></td>
+                    <td style="border: 1px solid #000; padding: 2px 4px; font-weight: bold;">Date</td>
+                    <td style="border: 1px solid #000; padding: 2px 4px;"><?php echo esc_html($delivery_date); ?></td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid #000; padding: 4px 6px; font-weight: bold;">PO No</td>
-                    <td style="border: 1px solid #000; padding: 4px 6px;">&nbsp;</td>
+                    <td style="border: 1px solid #000; padding: 2px 4px; font-weight: bold;">PO No</td>
+                    <td style="border: 1px solid #000; padding: 2px 4px;">&nbsp;</td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid #000; padding: 4px 6px; font-weight: bold;">Terms</td>
-                    <td style="border: 1px solid #000; padding: 4px 6px;"><?php echo esc_html($terms); ?></td>
+                    <td style="border: 1px solid #000; padding: 2px 4px; font-weight: bold;">Terms</td>
+                    <td style="border: 1px solid #000; padding: 2px 4px;"><?php echo esc_html($terms); ?></td>
                 </tr>
             </table>
         </td>
@@ -207,13 +207,13 @@ if (!empty($customer_note) && empty($remarks)) {
 </table>
 
 <!-- ===== REMARKS ===== -->
-<table style="width: 100%; margin-bottom: 8px;" cellspacing="0" cellpadding="0">
+<table style="width: 100%; margin-bottom: 2px;" cellspacing="0" cellpadding="0">
     <tr>
-        <td style="font-size: 10px; font-weight: bold; padding-bottom: 2px;">Remarks:</td>
+        <td style="font-size: 10px; font-weight: bold; padding-bottom: 1px;">Remarks:</td>
     </tr>
     <?php if (!empty($remarks)): ?>
     <tr>
-        <td style="font-size: 10px; line-height: 1.5; padding-bottom: 6px;">
+        <td style="font-size: 10px; line-height: 1.3; padding-bottom: 1px;">
             <?php echo nl2br(esc_html($remarks)); ?>
         </td>
     </tr>
@@ -221,11 +221,11 @@ if (!empty($customer_note) && empty($remarks)) {
 </table>
 
 <!-- ===== ITEMS TABLE ===== -->
-<table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;" cellspacing="0" cellpadding="0">
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 2px;" cellspacing="0" cellpadding="0">
     <thead>
         <tr>
-            <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 60px; font-size: 11px; font-weight: bold;">Qty</th>
-            <th style="border: 1px solid #000; padding: 6px 8px; text-align: left; font-size: 11px; font-weight: bold;">Description</th>
+            <th style="border: 1px solid #000; padding: 2px 4px; text-align: center; width: 50px; font-size: 10px; font-weight: bold;">Qty</th>
+            <th style="border: 1px solid #000; padding: 2px 4px; text-align: left; font-size: 10px; font-weight: bold;">Description</th>
         </tr>
     </thead>
     <tbody>
@@ -262,10 +262,10 @@ if (!empty($customer_note) && empty($remarks)) {
             $gift_message  = wc_get_order_item_meta($item_id, __('Gift Message', 'ah-ho-fruits'), true);
         ?>
             <tr>
-                <td style="border: 1px solid #000; padding: 5px 8px; text-align: center; font-size: 11px; font-weight: bold;">
+                <td style="border: 1px solid #000; padding: 2px 4px; text-align: center; font-size: 10px; font-weight: bold;">
                     <?php echo esc_html($item->get_quantity()); ?>
                 </td>
-                <td style="border: 1px solid #000; padding: 5px 8px; font-size: 11px;">
+                <td style="border: 1px solid #000; padding: 2px 4px; font-size: 10px;">
                     <?php echo esc_html($description); ?>
                     <?php if (!empty($product_notes)): ?>
                         <br><span style="font-size: 10px; color: #333;">** <?php echo esc_html($product_notes); ?></span>
@@ -278,40 +278,38 @@ if (!empty($customer_note) && empty($remarks)) {
         <?php endforeach; ?>
 
         <?php
-        // Add empty rows to fill out the table (minimum ~15 rows like the physical form)
-        $min_rows = 15;
+        // Add empty rows to fill out the table
+        $min_rows = 8;
         for ($i = $row_count; $i < $min_rows; $i++):
         ?>
             <tr>
-                <td style="border: 1px solid #000; padding: 5px 8px; height: 20px;">&nbsp;</td>
-                <td style="border: 1px solid #000; padding: 5px 8px; height: 20px;">&nbsp;</td>
+                <td style="border: 1px solid #000; padding: 1px 4px; height: 14px;">&nbsp;</td>
+                <td style="border: 1px solid #000; padding: 1px 4px; height: 14px;">&nbsp;</td>
             </tr>
         <?php endfor; ?>
     </tbody>
 </table>
 
 <!-- ===== THANK YOU + EMAIL ===== -->
-<div style="margin-top: 15px; margin-bottom: 15px;">
-    <div style="font-size: 11px; font-weight: bold; color: #c00;">Thank you for your support!</div>
-    <div style="font-size: 11px; font-weight: bold; margin-top: 3px;">
+<div style="margin-top: 3px; margin-bottom: 3px;">
+    <div style="font-size: 10px; font-weight: bold; color: #c00;">Thank you for your support!</div>
+    <div style="font-size: 10px; font-weight: bold; margin-top: 1px;">
         Email: <?php echo esc_html($company_email); ?>
     </div>
 </div>
 
 <!-- ===== SIGNATURE SECTION ===== -->
-<table style="width: 100%; margin-top: 20px; margin-bottom: 15px;" cellspacing="0" cellpadding="0">
+<table style="width: 100%; margin-top: 5px; margin-bottom: 3px;" cellspacing="0" cellpadding="0">
     <tr>
-        <td style="width: 50%; vertical-align: bottom; padding-right: 20px;">
-            <!-- Signature space -->
-            <div style="height: 60px;"></div>
-            <div style="border-top: 1px solid #000; padding-top: 5px; font-size: 10px; line-height: 1.5;">
-                <!-- Company authorized signatory name can go here -->
+        <td style="width: 50%; vertical-align: bottom; padding-right: 15px;">
+            <div style="height: 25px;"></div>
+            <div style="border-top: 1px solid #000; padding-top: 2px; font-size: 9px; line-height: 1.3;">
                 &nbsp;
             </div>
         </td>
-        <td style="width: 50%; vertical-align: bottom; padding-left: 20px;">
-            <div style="height: 60px;"></div>
-            <div style="border-top: 1px solid #000; padding-top: 5px; font-size: 10px; text-align: center;">
+        <td style="width: 50%; vertical-align: bottom; padding-left: 15px;">
+            <div style="height: 25px;"></div>
+            <div style="border-top: 1px solid #000; padding-top: 2px; font-size: 9px; text-align: center;">
                 Customer's Stamp and Signature
             </div>
         </td>
@@ -320,13 +318,13 @@ if (!empty($customer_note) && empty($remarks)) {
 
 <?php if ($summary['amount_to_collect'] > 0): ?>
 <!-- ===== COD PAYMENT COLLECTION ===== -->
-<div style="margin-top: 10px; padding: 8px; border: 2px solid #000; font-size: 11px;">
+<div style="margin-top: 3px; padding: 3px 6px; border: 2px solid #000; font-size: 10px;">
     <strong>COLLECT PAYMENT: $<?php echo esc_html(number_format($summary['amount_to_collect'], 2)); ?></strong>
 </div>
 <?php endif; ?>
 
 <!-- ===== FOOTER NOTICES ===== -->
-<div style="margin-top: 15px; font-size: 9px; line-height: 1.6; border-top: 1px solid #999; padding-top: 8px;">
+<div style="margin-top: 3px; font-size: 8px; line-height: 1.4; border-top: 1px solid #999; padding-top: 2px;">
     Please ensure that goods are in good order and condition.<br>
     Goods sold cannot be <strong>EXCHANGED</strong> or <strong>RETURNED</strong>.<br>
     <br>

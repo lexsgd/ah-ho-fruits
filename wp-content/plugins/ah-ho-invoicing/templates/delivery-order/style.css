@@ -22,11 +22,11 @@ body {
     font-size: 11px;
     line-height: 1.4;
     color: #000;
-    margin: 15mm 15mm 15mm 15mm;
+    margin: 5mm 8mm 5mm 8mm;
 }
 
 h1, h2, h3, h4 {
-    margin: 0 0 5px 0;
+    margin: 0 0 1px 0;
 }
 
 table {
