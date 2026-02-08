@@ -2,72 +2,62 @@
 /**
  * Consolidated Packing Slip Template (Multiple Orders)
  *
- * CRITICAL FEATURE: Multiple orders sorted by delivery date FIRST, then postal code
- * Used by storeman to prepare deliveries grouped by route/delivery schedule
+ * Internal document for storeman/warehouse staff.
+ * Optimized for paper efficiency and readability.
+ * Sorted by delivery date FIRST, then postal code.
  *
  * @package AhHoInvoicing
  * @since 1.1.0
+ * @modified 2026-02-08 - compact layout, removed unnecessary fields
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// Load company settings
-$company_name = get_option('ah_ho_company_name', 'Ah Ho Fruits Pte Ltd');
-$company_address = get_option('ah_ho_company_address', '123 Fruit Lane, Singapore 123456');
-$company_phone = get_option('ah_ho_company_phone', '+65 1234 5678');
-$company_email = get_option('ah_ho_company_email', 'hello@ahhofruits.com');
-$company_logo = AH_HO_INVOICING_PLUGIN_DIR . 'assets/images/ah-ho-logo.png';
-
-// Document title for header
-$document_title = 'CONSOLIDATED PACKING SLIP';
-
 // Calculate totals
 $total_orders = count($orders_data);
-$total_items = 0;
-$total_weight = 0;
-foreach ($orders_data as $data) {
-    $order = $data['order'];
-    foreach ($order->get_items() as $item) {
-        $total_items += $item->get_quantity();
-    }
-    $total_weight += AH_HO_Packing_Slip::get_order_weight($order);
-}
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <style><?php include AH_HO_INVOICING_PLUGIN_DIR . 'templates/packing-slip/style.css'; ?></style>
+    <style>
+        @page { size: A4; margin: 5mm 5mm 5mm 5mm; }
+        * { padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 10px;
+            line-height: 1.3;
+            color: #000;
+            margin: 0;
+        }
+        h1, h2, h3, h4 { margin: 0; }
+        table { border-collapse: collapse; width: 100%; }
+        strong { font-weight: bold; }
+        .page-break { page-break-after: always; }
+        .no-break { page-break-inside: avoid; }
+    </style>
 </head>
 <body>
 
-<?php include AH_HO_INVOICING_PLUGIN_DIR . 'templates/shared/header.php'; ?>
+<!-- ===== HEADER ===== -->
+<table style="width: 100%; border-bottom: 2px solid #000; margin-bottom: 6px; padding-bottom: 4px;">
+    <tr>
+        <td style="vertical-align: bottom;">
+            <div style="font-size: 14px; font-weight: bold; letter-spacing: 0.5px; line-height: 1.1;">AH HO FRUIT TRADING CO</div>
+            <div style="font-size: 12px; font-weight: bold; margin-top: 2px;">CONSOLIDATED PACKING SLIP</div>
+        </td>
+        <td style="text-align: right; vertical-align: bottom;">
+            <div style="font-size: 11px;"><strong>Date:</strong> <?php echo esc_html(date('d/m/Y')); ?></div>
+            <div style="font-size: 10px; color: #333;">Sorted by Date, then Postal Code</div>
+        </td>
+    </tr>
+</table>
 
-<!-- Summary -->
-<div style="background-color: #3498db; color: white; padding: 15px; margin-bottom: 20px;">
-    <table style="width: 100%; color: white;">
-        <tr>
-            <td style="width: 33%; text-align: center;">
-                <h2 style="margin: 0; font-size: 32px;"><?php echo esc_html($total_orders); ?></h2>
-                <div>Total Orders</div>
-            </td>
-            <td style="width: 33%; text-align: center;">
-                <h2 style="margin: 0; font-size: 32px;"><?php echo esc_html($total_items); ?></h2>
-                <div>Total Items</div>
-            </td>
-            <td style="width: 33%; text-align: center;">
-                <h2 style="margin: 0; font-size: 32px;"><?php echo esc_html(number_format($total_weight, 1)); ?> kg</h2>
-                <div>Total Weight</div>
-            </td>
-        </tr>
-    </table>
-</div>
-
-<!-- Sorting Information -->
-<div style="background-color: #f39c12; color: white; padding: 10px; margin-bottom: 20px; font-weight: bold;">
-    Orders sorted by: <strong>Date</strong> (primary) then <strong>Postal Code</strong> (secondary)
+<!-- ===== SUMMARY ===== -->
+<div style="background-color: #2c3e50; color: white; padding: 6px 10px; margin-bottom: 8px; font-size: 13px; font-weight: bold;">
+    <?php echo esc_html($total_orders); ?> Orders
 </div>
 
 <?php
@@ -83,84 +73,77 @@ foreach ($orders_data as $index => $data):
     // Show date header when date changes
     if ($delivery_date !== $current_date):
         if ($current_date !== null):
-            // Close previous date group
             echo '</div>';
         endif;
         $current_date = $delivery_date;
         ?>
         <div style="page-break-before: <?php echo $date_counter > 1 ? 'always' : 'avoid'; ?>;">
-            <h2 style="background-color: #2c3e50; color: white; padding: 15px; margin-top: 0; margin-bottom: 20px;">
-                Order Date: <?php echo esc_html(date('l, d F Y', strtotime($delivery_date))); ?>
-            </h2>
+            <div style="background-color: #2c3e50; color: white; padding: 5px 8px; margin-bottom: 6px; font-size: 11px; font-weight: bold;">
+                <?php echo esc_html(date('l, d M Y', strtotime($delivery_date))); ?>
+            </div>
         <?php
         $date_counter++;
     endif;
     ?>
 
     <!-- Order Card -->
-    <div style="border: 2px solid #2c3e50; margin-bottom: 20px; padding: 15px; page-break-inside: avoid;">
+    <div style="border: 1.5px solid #000; margin-bottom: 6px; padding: 6px; page-break-inside: avoid;">
         <!-- Order Header -->
-        <table style="width: 100%; background-color: #ecf0f1; padding: 10px; margin-bottom: 10px;">
+        <table style="width: 100%; margin-bottom: 4px;">
             <tr>
-                <td style="width: 50%; vertical-align: top;">
-                    <h3 style="margin: 0; color: #2c3e50; font-size: 18px;">
-                        Order #<?php echo esc_html($order->get_order_number()); ?>
-                    </h3>
-                    <div style="font-size: 12px; margin-top: 5px;">
-                        <strong>Postal Code:</strong> <span style="font-size: 16px; font-weight: bold; color: #e74c3c;"><?php echo esc_html($postal_code); ?></span>
-                    </div>
+                <td style="width: 55%; vertical-align: top;">
+                    <span style="font-size: 13px; font-weight: bold;">#<?php echo esc_html($order->get_order_number()); ?></span>
+                    <span style="font-size: 12px; font-weight: bold; color: #c00; margin-left: 8px;"><?php echo esc_html($postal_code); ?></span>
                 </td>
-                <td style="width: 50%; text-align: right; vertical-align: top;">
-                    <strong style="font-size: 14px;"><?php echo esc_html($order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name()); ?></strong><br>
+                <td style="width: 45%; text-align: right; vertical-align: top; font-size: 10px;">
+                    <strong><?php echo esc_html(trim($order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name())); ?></strong>
                     <?php if ($order->get_shipping_company()): ?>
-                        <?php echo esc_html($order->get_shipping_company()); ?><br>
+                        | <?php echo esc_html($order->get_shipping_company()); ?>
                     <?php endif; ?>
-                    <div style="font-size: 11px;">
-                        <?php echo esc_html($order->get_shipping_address_1()); ?><br>
-                        <?php if ($order->get_shipping_address_2()): ?>
-                            <?php echo esc_html($order->get_shipping_address_2()); ?><br>
-                        <?php endif; ?>
-                        Singapore <?php echo esc_html($postal_code); ?>
-                    </div>
-                    <div style="margin-top: 5px; font-size: 12px;">
-                        <strong>Tel:</strong> <?php echo esc_html($order->get_billing_phone()); ?>
-                    </div>
+                    <br>
+                    <?php echo esc_html($order->get_shipping_address_1()); ?>
+                    <?php if ($order->get_shipping_address_2()): ?>
+                        <?php echo esc_html($order->get_shipping_address_2()); ?>
+                    <?php endif; ?>
+                    S<?php echo esc_html($postal_code); ?>
+                    <?php
+                    $phone = $order->get_shipping_phone();
+                    if (empty($phone)) { $phone = $order->get_billing_phone(); }
+                    if (!empty($phone)):
+                    ?>
+                        &nbsp;|&nbsp;Tel: <?php echo esc_html($phone); ?>
+                    <?php endif; ?>
                 </td>
             </tr>
         </table>
 
         <?php
-        // Display customer notes if present (with highlighting)
+        // Customer notes (highlighted if critical keywords)
         echo AH_HO_Packing_Slip::format_customer_notes($order);
         ?>
 
         <!-- Items -->
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <table style="width: 100%; border-collapse: collapse;">
             <thead>
-                <tr style="background-color: #95a5a6; color: white; font-size: 11px;">
-                    <th style="padding: 5px; text-align: left; border: 1px solid #ddd;">Item</th>
-                    <th style="padding: 5px; text-align: center; width: 60px; border: 1px solid #ddd;">SKU</th>
-                    <th style="padding: 5px; text-align: center; width: 40px; border: 1px solid #ddd;">Qty</th>
-                    <th style="padding: 5px; text-align: center; width: 60px; border: 1px solid #ddd;">Weight</th>
-                    <th style="padding: 5px; text-align: center; width: 30px; border: 1px solid #ddd;">OK</th>
+                <tr style="background-color: #555; color: white; font-size: 9px;">
+                    <th style="padding: 3px 4px; text-align: left; border: 1px solid #999;">Item</th>
+                    <th style="padding: 3px 4px; text-align: center; width: 35px; border: 1px solid #999;">Qty</th>
+                    <th style="padding: 3px 4px; text-align: center; width: 28px; border: 1px solid #999;">OK</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
                 $order_items = 0;
-                $order_weight = 0;
                 foreach ($order->get_items() as $item_id => $item):
                     $product = $item->get_product();
                     $quantity = $item->get_quantity();
                     $order_items += $quantity;
-                    $item_weight = $product ? ((float) $product->get_weight() * $quantity) : 0;
-                    $order_weight += $item_weight;
                 ?>
-                    <tr style="font-size: 11px;">
-                        <td style="padding: 5px; border: 1px solid #ddd;">
+                    <tr style="font-size: 10px;">
+                        <td style="padding: 3px 4px; border: 1px solid #ccc;">
                             <strong><?php echo esc_html($item->get_name()); ?></strong>
                             <?php
-                            // Extract product notes and gift data - check multiple possible meta keys
+                            // Extract product notes and gift data
                             $special_request_keys = ['Special Requests', __('Special Requests', 'ah-ho-fruits'), 'special_requests', '_special_requests'];
                             $gift_keys = ['Gift', __('Gift', 'ah-ho-fruits'), 'gift', '_gift'];
                             $gift_message_keys = ['Gift Message', __('Gift Message', 'ah-ho-fruits'), 'gift_message', '_gift_message'];
@@ -169,52 +152,32 @@ foreach ($orders_data as $index => $data):
                             $is_gift = '';
                             $gift_message = '';
 
-                            // Try each possible key for special requests
                             foreach ($special_request_keys as $key) {
                                 $value = wc_get_order_item_meta($item_id, $key, true);
-                                if (!empty($value)) {
-                                    $product_notes = $value;
-                                    break;
-                                }
+                                if (!empty($value)) { $product_notes = $value; break; }
                             }
-
-                            // Try each possible key for gift
                             foreach ($gift_keys as $key) {
                                 $value = wc_get_order_item_meta($item_id, $key, true);
-                                if (!empty($value)) {
-                                    $is_gift = $value;
-                                    break;
-                                }
+                                if (!empty($value)) { $is_gift = $value; break; }
                             }
-
-                            // Try each possible key for gift message
                             foreach ($gift_message_keys as $key) {
                                 $value = wc_get_order_item_meta($item_id, $key, true);
-                                if (!empty($value)) {
-                                    $gift_message = $value;
-                                    break;
-                                }
+                                if (!empty($value)) { $gift_message = $value; break; }
                             }
 
-                            // Build list of keys to skip in general meta display
                             $skip_keys = array_merge($special_request_keys, $gift_keys, $gift_message_keys);
 
-                            // Display item meta (variations) - excluding custom addons
+                            // Display item meta (variations)
                             $item_data = $item->get_formatted_meta_data();
-                            $has_other_meta = false;
+                            $meta_parts = array();
                             if (!empty($item_data)):
                                 foreach ($item_data as $meta):
-                                    // Skip our custom addon fields
                                     $should_skip = false;
                                     foreach ($skip_keys as $skip_key) {
-                                        if (strcasecmp($meta->display_key, $skip_key) === 0) {
-                                            $should_skip = true;
-                                            break;
-                                        }
+                                        if (strcasecmp($meta->display_key, $skip_key) === 0) { $should_skip = true; break; }
                                     }
                                     if ($should_skip) continue;
 
-                                    // Fallback capture if not found via direct meta
                                     if (empty($product_notes) && stripos($meta->display_key, 'special') !== false) {
                                         $product_notes = strip_tags($meta->display_value);
                                         continue;
@@ -228,75 +191,43 @@ foreach ($orders_data as $index => $data):
                                         continue;
                                     }
 
-                                    if (!$has_other_meta) {
-                                        echo '<br><small style="color: #666;">';
-                                        $has_other_meta = true;
-                                    }
-                                    echo esc_html($meta->display_key) . ': ' . wp_kses_post($meta->display_value) . ' ';
+                                    $meta_parts[] = $meta->display_key . ': ' . strip_tags($meta->display_value);
                                 endforeach;
-                                if ($has_other_meta) {
-                                    echo '</small>';
-                                }
                             endif;
+                            if (!empty($meta_parts)):
                             ?>
+                                <br><small style="color: #555;"><?php echo esc_html(implode(', ', $meta_parts)); ?></small>
+                            <?php endif; ?>
 
-                            <?php
-                            // Display Customer Requests (GREEN box - prominent for packer)
-                            if (!empty($product_notes)):
-                            ?>
-                                <div style="margin-top: 6px; padding: 8px; background-color: #e8f5e9; border: 2px solid #2E7D32; border-radius: 3px; font-size: 10px;">
-                                    <strong style="color: #2E7D32;">** Customer Requests (Preferences/Allergies):</strong><br>
-                                    <span style="font-weight: bold; color: #000;"><?php echo nl2br(esc_html($product_notes)); ?></span>
+                            <?php if (!empty($product_notes)): ?>
+                                <div style="margin-top: 3px; padding: 4px 6px; background-color: #e8f5e9; border: 1.5px solid #2E7D32; font-size: 9px;">
+                                    <strong style="color: #2E7D32;">** REQUESTS:</strong>
+                                    <span style="font-weight: bold;"><?php echo nl2br(esc_html($product_notes)); ?></span>
                                 </div>
                             <?php endif; ?>
 
                             <?php
-                            // Display Gift Section (ORANGE box - prominent for packer)
                             $is_gift_order = (strtolower($is_gift) === 'yes' || $is_gift === '1' || $is_gift === 'true' || !empty($gift_message));
                             if ($is_gift_order):
                             ?>
-                                <div style="margin-top: 6px; padding: 8px; background-color: #fff8e1; border: 2px solid #FF6F00; border-radius: 3px; font-size: 10px;">
-                                    <strong style="color: #FF6F00;">*** GIFT - Include Gift Card! ***</strong>
-                                    <?php if (!empty($gift_message)): ?>
-                                        <br><span style="font-style: italic; color: #000; font-weight: bold;">"<?php echo nl2br(esc_html($gift_message)); ?>"</span>
-                                    <?php endif; ?>
+                                <div style="margin-top: 3px; padding: 4px 6px; background-color: #fff8e1; border: 1.5px solid #FF6F00; font-size: 9px;">
+                                    <strong style="color: #FF6F00;">*** GIFT<?php if (!empty($gift_message)): ?> — "<?php echo esc_html($gift_message); ?>"<?php endif; ?></strong>
                                 </div>
                             <?php endif; ?>
                         </td>
-                        <td style="padding: 5px; text-align: center; border: 1px solid #ddd;">
-                            <?php if ($product && $product->get_sku()): ?>
-                                <?php echo esc_html($product->get_sku()); ?>
-                            <?php else: ?>
-                                -
-                            <?php endif; ?>
+                        <td style="padding: 3px 4px; text-align: center; border: 1px solid #ccc; font-weight: bold; font-size: 12px;">
+                            <?php echo esc_html($quantity); ?>
                         </td>
-                        <td style="padding: 5px; text-align: center; border: 1px solid #ddd;">
-                            <strong><?php echo esc_html($quantity); ?></strong>
-                        </td>
-                        <td style="padding: 5px; text-align: center; border: 1px solid #ddd;">
-                            <?php if ($item_weight > 0): ?>
-                                <?php echo esc_html(number_format($item_weight, 1)); ?> kg
-                            <?php else: ?>
-                                -
-                            <?php endif; ?>
-                        </td>
-                        <td style="padding: 5px; text-align: center; border: 1px solid #ddd; background-color: #f8f9fa;">
+                        <td style="padding: 3px 4px; text-align: center; border: 1px solid #ccc; background-color: #f5f5f5;">
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
             <tfoot>
-                <tr style="background-color: #ecf0f1; font-weight: bold; font-size: 11px;">
-                    <td style="padding: 5px; text-align: right; border: 1px solid #ddd;" colspan="2">
-                        Order Total:
-                    </td>
-                    <td style="padding: 5px; text-align: center; border: 1px solid #ddd;">
-                        <?php echo esc_html($order_items); ?>
-                    </td>
-                    <td style="padding: 5px; text-align: center; border: 1px solid #ddd;">
-                        <?php echo esc_html(number_format($order_weight, 1)); ?> kg
-                    </td>
-                    <td style="padding: 5px; border: 1px solid #ddd;"></td>
+                <tr style="background-color: #eee; font-size: 10px; font-weight: bold;">
+                    <td style="padding: 3px 4px; text-align: right; border: 1px solid #ccc;">Total:</td>
+                    <td style="padding: 3px 4px; text-align: center; border: 1px solid #ccc;"><?php echo esc_html($order_items); ?></td>
+                    <td style="padding: 3px 4px; border: 1px solid #ccc;"></td>
                 </tr>
             </tfoot>
         </table>
@@ -309,62 +240,19 @@ endforeach;
 echo '</div>';
 ?>
 
-<!-- Summary Footer -->
-<div style="page-break-before: avoid; margin-top: 30px; border-top: 2px solid #2c3e50; padding-top: 20px;">
-    <h3 style="color: #2c3e50;">PACKING SUMMARY</h3>
-    <table style="width: 100%; border-collapse: collapse;">
-        <thead>
-            <tr style="background-color: #2c3e50; color: white;">
-                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Metric</th>
-                <th style="padding: 10px; text-align: center; border: 1px solid #ddd;">Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Total Orders</strong></td>
-                <td style="padding: 10px; text-align: center; border: 1px solid #ddd; font-size: 16px; font-weight: bold;">
-                    <?php echo esc_html($total_orders); ?>
-                </td>
-            </tr>
-            <tr>
-                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Total Items to Pack</strong></td>
-                <td style="padding: 10px; text-align: center; border: 1px solid #ddd; font-size: 16px; font-weight: bold;">
-                    <?php echo esc_html($total_items); ?>
-                </td>
-            </tr>
-            <tr>
-                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Total Weight</strong></td>
-                <td style="padding: 10px; text-align: center; border: 1px solid #ddd; font-size: 16px; font-weight: bold;">
-                    <?php echo esc_html(number_format($total_weight, 2)); ?> kg
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-<!-- Signatures -->
-<div style="margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
-    <table style="width: 100%;">
+<!-- ===== SIGN-OFF ===== -->
+<div style="margin-top: 10px; border-top: 1px solid #000; padding-top: 8px;">
+    <table style="width: 100%; font-size: 10px;">
         <tr>
             <td style="width: 50%;">
-                <strong>Packed By:</strong><br>
-                <div style="border-bottom: 1px solid #000; width: 200px; margin-top: 10px;"></div>
-                <small>(Name & Signature)</small><br><br>
-                <div style="border-bottom: 1px solid #000; width: 200px; margin-top: 10px;"></div>
-                <small>(Date & Time)</small>
+                <strong>Packed by:</strong> ____________________&nbsp;&nbsp;&nbsp;&nbsp;<strong>Date/Time:</strong> _______________
             </td>
-            <td style="width: 50%;">
-                <strong>Checked By:</strong><br>
-                <div style="border-bottom: 1px solid #000; width: 200px; margin-top: 10px;"></div>
-                <small>(Name & Signature)</small><br><br>
-                <div style="border-bottom: 1px solid #000; width: 200px; margin-top: 10px;"></div>
-                <small>(Date & Time)</small>
+            <td style="width: 50%; text-align: right;">
+                <strong>Checked by:</strong> ____________________&nbsp;&nbsp;&nbsp;&nbsp;<strong>Date/Time:</strong> _______________
             </td>
         </tr>
     </table>
 </div>
-
-<?php include AH_HO_INVOICING_PLUGIN_DIR . 'templates/shared/footer.php'; ?>
 
 </body>
 </html>
