@@ -204,10 +204,17 @@ Admin page (WordPress Admin > Catalog) with two sections:
 
 - **Product access control:** Storeman can only see inventory tab, prices hidden via CSS + server-side protection
 - **Quick Stock Update page** (Products > Quick Stock Update):
-  - Summary cards (In Stock, Out of Stock, Low Stock, Total)
-  - Category filter + search
-  - Editable stock table with visual feedback (yellow=changed, green=saved)
-  - Bulk AJAX update
+  - Clickable summary cards (All Products, In Stock, Low Stock, Out of Stock) that filter the table
+  - Category dropdown filter + real-time search by product name or SKU
+  - Clickable column sorting (Product name, Stock level — ASC/DESC)
+  - Product thumbnails (hidden on mobile)
+  - +/- buttons for quick stock adjustment with change tracking (yellow highlight)
+  - Unsaved changes warning (browser beforeunload) + confirmation dialog before save
+  - Keyboard navigation (Tab/Enter/Arrow keys between stock inputs)
+  - Reset all changes button
+  - Sticky table header + sticky footer action bar with change count
+  - Mobile responsive layout (hides thumbnail/category columns, 2x2 summary cards, larger touch targets)
+  - Bulk AJAX update with real-time summary card refresh
 
 #### Feature J: Payment Gateway Settings
 **File:** `includes/payment-settings.php`
@@ -239,7 +246,7 @@ Centralized settings at WooCommerce > Salesperson Settings:
 | **Invoice** | `templates/invoice/invoice.php` | Yes | No | Customer billing |
 | **Packing Slip** | `templates/packing-slip/packing-slip.php` | No | Packed/Checked By | Warehouse |
 | **Delivery Order** | `templates/delivery-order/delivery-order.php` | No | Delivered/Customer | Driver |
-| **Consolidated Packing** | `templates/packing-slip/consolidated.php` | No | Packed/Checked By | Multi-order batch |
+| **Consolidated Packing** | `templates/packing-slip/consolidated.php` | No | Packed/Checked By | Multi-order batch (compact, paper-optimized) |
 
 #### Invoice Numbering
 - Format: `AHF-YYYY-NNNNN` (sequential, thread-safe with MySQL table locking)
@@ -550,7 +557,12 @@ curl -s -o /dev/null -w "%{http_code}" "https://fruits.heymag.app/wp-admin/"  # 
 - Configurable payment terms via admin settings UI
 - Quick Stock Update page for rapid inventory management
 
-### Phase 7: SEO & Legal (Jan 2026)
+### Phase 7: UX & Efficiency (Feb 2026)
+- Quick Stock Update major UX overhaul: clickable sorting, composable filters (category + stock status + search), +/- stock buttons, change tracking, unsaved changes warning, sticky header/footer, keyboard navigation, product thumbnails
+- Quick Stock Update mobile responsive layout (hidden columns, 2x2 cards, enlarged touch targets)
+- Consolidated packing slip redesigned for paper efficiency: custom compact header, removed SKU/weight/footer, tighter spacing, date-grouped page breaks
+
+### Phase 8: SEO & Legal (Jan 2026)
 - robots.txt with WooCommerce-specific rules
 - Legal pages (Terms & Conditions, Privacy Policy — PDPA-compliant)
 - Typography fix plugin for Avada theme readability
