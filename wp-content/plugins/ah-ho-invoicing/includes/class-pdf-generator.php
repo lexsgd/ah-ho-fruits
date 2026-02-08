@@ -52,11 +52,14 @@ class AH_HO_PDF_Generator {
         }
 
         try {
+            // Ensure CJK font is installed before generating PDF
+            self::install_cjk_font();
+
             // Configure Dompdf
             $options = new Options();
             $options->set('isHtml5ParserEnabled', true);
             $options->set('isRemoteEnabled', true); // Allow loading remote images (logo)
-            $options->set('defaultFont', 'Arial');
+            $options->set('defaultFont', 'Noto Sans SC');
             $options->set('dpi', 96);
             $options->set('isFontSubsettingEnabled', true);
             $options->set('debugPng', false);
@@ -101,6 +104,60 @@ class AH_HO_PDF_Generator {
         } catch (Exception $e) {
             error_log('Ah Ho Invoicing - PDF Generation Error: ' . $e->getMessage());
             return false;
+        }
+    }
+
+    /**
+     * Install CJK (Chinese) font into Dompdf's font directory
+     *
+     * Copies Noto Sans SC from plugin assets to Dompdf's font dir
+     * and registers it in the font registry. Survives composer updates
+     * because the source TTF lives in assets/fonts/.
+     */
+    private static function install_cjk_font() {
+        $source_font = AH_HO_INVOICING_PLUGIN_DIR . 'assets/fonts/NotoSansSC-Regular.ttf';
+        $dompdf_font_dir = AH_HO_INVOICING_PLUGIN_DIR . 'vendor/dompdf/dompdf/lib/fonts/';
+        $dest_font = $dompdf_font_dir . 'NotoSansSC-Regular.ttf';
+        $registry_file = $dompdf_font_dir . 'installed-fonts.json';
+
+        // Skip if source font doesn't exist
+        if (!file_exists($source_font)) {
+            return;
+        }
+
+        // Copy font file if not already in Dompdf's font directory
+        if (!file_exists($dest_font)) {
+            copy($source_font, $dest_font);
+        }
+
+        // Check if font is already registered
+        $registry = array();
+        if (file_exists($registry_file)) {
+            $registry = json_decode(file_get_contents($registry_file), true);
+            if (!is_array($registry)) {
+                $registry = array();
+            }
+        }
+
+        if (!isset($registry['noto sans sc'])) {
+            // Load the base registry and add our font
+            $dist_file = $dompdf_font_dir . 'installed-fonts.dist.json';
+            if (empty($registry) && file_exists($dist_file)) {
+                $registry = json_decode(file_get_contents($dist_file), true);
+                if (!is_array($registry)) {
+                    $registry = array();
+                }
+            }
+
+            // Register Noto Sans SC (use regular for all styles)
+            $registry['noto sans sc'] = array(
+                'normal'      => 'NotoSansSC-Regular',
+                'bold'        => 'NotoSansSC-Regular',
+                'italic'      => 'NotoSansSC-Regular',
+                'bold_italic' => 'NotoSansSC-Regular',
+            );
+
+            file_put_contents($registry_file, json_encode($registry, JSON_PRETTY_PRINT));
         }
     }
 

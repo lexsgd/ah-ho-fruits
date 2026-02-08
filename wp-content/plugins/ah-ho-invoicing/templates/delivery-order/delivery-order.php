@@ -120,7 +120,7 @@ if (!empty($customer_note) && empty($remarks)) {
         }
         * { padding: 0; box-sizing: border-box; }
         body {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Noto Sans SC', Arial, Helvetica, sans-serif;
             font-size: 11px;
             line-height: 1.4;
             color: #000;

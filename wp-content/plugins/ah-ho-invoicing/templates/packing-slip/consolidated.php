@@ -26,7 +26,7 @@ $total_orders = count($orders_data);
         @page { size: A4; margin: 5mm 5mm 5mm 5mm; }
         * { padding: 0; box-sizing: border-box; }
         body {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Noto Sans SC', Arial, Helvetica, sans-serif;
             font-size: 10px;
             line-height: 1.3;
             color: #000;
