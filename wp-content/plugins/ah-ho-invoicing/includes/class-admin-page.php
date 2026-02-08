@@ -327,12 +327,6 @@ class AH_HO_Admin_Page {
     private static function render_statistics() {
         global $wpdb;
 
-        // Get invoice count
-        $invoice_count = $wpdb->get_var("
-            SELECT COUNT(*) FROM {$wpdb->postmeta}
-            WHERE meta_key = '_ah_ho_invoice_number'
-        ");
-
         // Get cached PDF count
         $cache_dir = AH_HO_INVOICING_CACHE_DIR;
         $pdf_count = 0;
@@ -367,20 +361,12 @@ class AH_HO_Admin_Page {
             </thead>
             <tbody>
                 <tr>
-                    <td><strong><?php _e('Total Invoices Generated', 'ah-ho-invoicing'); ?></strong></td>
-                    <td><?php echo esc_html(number_format($invoice_count)); ?></td>
-                </tr>
-                <tr>
                     <td><strong><?php _e('Cached PDFs', 'ah-ho-invoicing'); ?></strong></td>
                     <td><?php echo esc_html($pdf_count); ?></td>
                 </tr>
                 <tr>
                     <td><strong><?php _e('Cache Size', 'ah-ho-invoicing'); ?></strong></td>
                     <td><?php echo esc_html($cache_size_mb); ?> MB</td>
-                </tr>
-                <tr>
-                    <td><strong><?php _e('Next Invoice Number', 'ah-ho-invoicing'); ?></strong></td>
-                    <td><?php echo esc_html(get_option('ah_ho_invoice_counter', 1)); ?></td>
                 </tr>
             </tbody>
         </table>

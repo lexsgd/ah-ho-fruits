@@ -15,7 +15,7 @@ Custom PDF invoice, packing slip, and delivery order generator for Ah Ho Fruits.
 ### 📄 PDF Document Types
 
 1. **Invoices**
-   - Sequential invoice numbering (AHF-00001, AHF-00002, etc.)
+   - Uses WooCommerce order number as invoice number
    - Company branding (logo, UEN, GST, bank details)
    - Itemized order details with prices
    - Auto-attach to "Order Completed" email

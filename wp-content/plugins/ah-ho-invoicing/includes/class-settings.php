@@ -323,48 +323,6 @@ class AH_HO_Settings {
                 'type' => 'sectionend',
                 'id'   => 'ah_ho_pdf_options',
             ),
-
-            // Section: Invoice Numbering
-            array(
-                'title' => __('Invoice Numbering', 'ah-ho-invoicing'),
-                'type'  => 'title',
-                'desc'  => __('Sequential invoice numbering configuration.', 'ah-ho-invoicing'),
-                'id'    => 'ah_ho_invoice_numbering',
-            ),
-            array(
-                'title'   => __('Invoice Prefix', 'ah-ho-invoicing'),
-                'desc'    => __('Prefix for invoice numbers (e.g., "AHF-" → AHF-00001)', 'ah-ho-invoicing'),
-                'id'      => 'ah_ho_invoice_prefix',
-                'type'    => 'text',
-                'default' => 'AHF-',
-            ),
-            array(
-                'title'   => __('Starting Number', 'ah-ho-invoicing'),
-                'desc'    => __('Next invoice number (current: ' . get_option('ah_ho_invoice_counter', 1) . ')', 'ah-ho-invoicing'),
-                'id'      => 'ah_ho_invoice_counter',
-                'type'    => 'number',
-                'default' => '1',
-                'custom_attributes' => array(
-                    'min'  => 1,
-                    'step' => 1,
-                ),
-            ),
-            array(
-                'title'   => __('Number Padding', 'ah-ho-invoicing'),
-                'desc'    => __('Minimum digits (5 = 00001, 4 = 0001)', 'ah-ho-invoicing'),
-                'id'      => 'ah_ho_invoice_padding',
-                'type'    => 'number',
-                'default' => '5',
-                'custom_attributes' => array(
-                    'min'  => 1,
-                    'max'  => 10,
-                    'step' => 1,
-                ),
-            ),
-            array(
-                'type' => 'sectionend',
-                'id'   => 'ah_ho_invoice_numbering',
-            ),
         );
 
         return apply_filters('ah_ho_invoicing_settings', $settings);

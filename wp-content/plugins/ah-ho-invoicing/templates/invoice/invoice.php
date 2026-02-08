@@ -6,8 +6,8 @@
  * totals breakdown, and payment status indicator.
  *
  * Available variables (from class-invoice.php extract):
- * - $invoice_number (string) - Sequential invoice number (AHF-YYYY-NNNNN)
  * - $order (WC_Order) - WooCommerce order object
+ * - Invoice number = order number ($order->get_order_number())
  * - $order_id (int) - Order ID
  * - $date (string) - Invoice date
  * - $due_date (string) - Payment due date
