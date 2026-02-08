@@ -107,6 +107,43 @@ function ah_ho_custom_activate() {
 register_activation_hook(__FILE__, 'ah_ho_custom_activate');
 
 /**
+ * One-time migration: Make B2B (hidden) products visible in shop and search
+ *
+ * B2B products were previously set to catalog_visibility='hidden'. Now that
+ * B2C customers can also buy carton products, make them visible everywhere.
+ * Runs once on admin_init, then sets an option flag to prevent re-running.
+ */
+function ah_ho_migrate_b2b_visibility() {
+    if (get_option('ah_ho_b2b_visibility_migrated')) {
+        return;
+    }
+
+    if (!class_exists('WooCommerce')) {
+        return;
+    }
+
+    $hidden_products = wc_get_products(array(
+        'status'             => 'publish',
+        'limit'              => -1,
+        'catalog_visibility' => 'hidden',
+    ));
+
+    $count = 0;
+    foreach ($hidden_products as $product) {
+        $product->set_catalog_visibility('visible');
+        $product->save();
+        $count++;
+    }
+
+    update_option('ah_ho_b2b_visibility_migrated', current_time('mysql'));
+
+    if ($count > 0) {
+        error_log("Ah Ho Custom: Migrated {$count} hidden B2B products to visible.");
+    }
+}
+add_action('admin_init', 'ah_ho_migrate_b2b_visibility');
+
+/**
  * Deactivation hook
  */
 function ah_ho_custom_deactivate() {
