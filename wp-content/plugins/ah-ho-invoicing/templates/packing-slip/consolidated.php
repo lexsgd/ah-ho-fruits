@@ -240,19 +240,5 @@ endforeach;
 echo '</div>';
 ?>
 
-<!-- ===== SIGN-OFF ===== -->
-<div style="margin-top: 10px; border-top: 1px solid #000; padding-top: 8px;">
-    <table style="width: 100%; font-size: 10px;">
-        <tr>
-            <td style="width: 50%;">
-                <strong>Packed by:</strong> ____________________&nbsp;&nbsp;&nbsp;&nbsp;<strong>Date/Time:</strong> _______________
-            </td>
-            <td style="width: 50%; text-align: right;">
-                <strong>Checked by:</strong> ____________________&nbsp;&nbsp;&nbsp;&nbsp;<strong>Date/Time:</strong> _______________
-            </td>
-        </tr>
-    </table>
-</div>
-
 </body>
 </html>
