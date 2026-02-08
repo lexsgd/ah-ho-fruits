@@ -232,7 +232,7 @@ $order_total = $order->get_total();
 
         <?php
         // Add empty rows to fill out the table
-        $min_rows = 10;
+        $min_rows = 14;
         for ($i = $row_count; $i < $min_rows; $i++):
         ?>
             <tr>
@@ -320,7 +320,7 @@ $order_total = $order->get_total();
 <div style="margin-top: 8px; margin-bottom: 3px;">
     <div style="font-size: 10px; font-weight: bold; color: #c00;">Thank you for your support!</div>
     <div style="font-size: 10px; font-weight: bold; margin-top: 1px;">
-        Email: <?php echo esc_html($company_email); ?>
+        Email: hello@ahhofruit.com
     </div>
 </div>
 

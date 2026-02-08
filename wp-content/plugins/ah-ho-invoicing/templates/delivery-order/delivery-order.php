@@ -289,7 +289,7 @@ if (!empty($customer_note) && empty($remarks)) {
 <div style="margin-top: 3px; margin-bottom: 3px;">
     <div style="font-size: 10px; font-weight: bold; color: #c00;">Thank you for your support!</div>
     <div style="font-size: 10px; font-weight: bold; margin-top: 1px;">
-        Email: ahhofruitweb@gmail.com
+        Email: hello@ahhofruit.com
     </div>
 </div>
 
