@@ -14,7 +14,7 @@
  * Domain Path: /languages
  *
  * WC requires at least: 6.0
- * WC tested up to: 9.6
+ * WC tested up to: 10.4
  *
  * @package HeyMag_Chat
  */
@@ -196,6 +196,24 @@ final class HeyMag_Chat {
         return !empty($settings['widget_token']);
     }
 }
+
+/**
+ * Declare WooCommerce feature compatibility (HPOS, Blocks, etc.)
+ */
+add_action('before_woocommerce_init', function () {
+    if (class_exists('\Automattic\WooCommerce\Utilities\FeaturesUtil')) {
+        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
+            'custom_order_tables',
+            __FILE__,
+            true
+        );
+        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
+            'cart_checkout_blocks',
+            __FILE__,
+            true
+        );
+    }
+});
 
 /**
  * Get plugin instance
