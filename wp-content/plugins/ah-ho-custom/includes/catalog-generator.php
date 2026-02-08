@@ -5,7 +5,7 @@
  * Generates a WhatsApp-compatible product catalog text that can be
  * easily shared with B2B customers.
  *
- * @modified 2026-02-08 - re-deploy to fix UTF-8 encoding (emojis, separators)
+ * @modified 2026-02-08 - exclude parent "Fruits" category to prevent duplicates
  */
 
 if (!defined('ABSPATH')) {
@@ -157,12 +157,19 @@ function ah_ho_generate_catalog_text() {
         'local'      => '🇸🇬',
     );
 
+    // Exclude parent categories that duplicate subcategory products
+    $excluded_slugs = array('fruits', 'uncategorized');
+
     $output = "*AH HO FRUITS - WHOLESALE PRICE LIST*\n";
     $output .= "_Prices exclusive of GST_\n";
     $output .= "_B2B wholesale prices only_\n";
     $output .= "━━━━━━━━━━━━━━━━━━━━\n\n";
 
     foreach ($categories as $category) {
+        // Skip excluded parent categories
+        if (in_array($category->slug, $excluded_slugs, true)) {
+            continue;
+        }
         // Query in-stock products for this category that have wholesale price set
         $products = wc_get_products(array(
             'status'       => 'publish',
@@ -252,11 +259,18 @@ function ah_ho_generate_stock_catalog_text() {
         'local'      => '🇸🇬',
     );
 
+    // Exclude parent categories that duplicate subcategory products
+    $excluded_slugs = array('fruits', 'uncategorized');
+
     $output = "*AH HO FRUITS - B2B STOCK LIST*\n";
     $output .= "_Internal use only - Do not share_\n";
     $output .= "━━━━━━━━━━━━━━━━━━━━\n\n";
 
     foreach ($categories as $category) {
+        // Skip excluded parent categories
+        if (in_array($category->slug, $excluded_slugs, true)) {
+            continue;
+        }
         $products = wc_get_products(array(
             'status'       => 'publish',
             'stock_status' => 'instock',
