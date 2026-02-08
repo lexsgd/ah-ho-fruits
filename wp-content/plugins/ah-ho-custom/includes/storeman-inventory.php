@@ -422,6 +422,124 @@ function ah_ho_render_quick_stock_page() {
             .ah-ho-reset-btn:hover {
                 color: #d63638;
             }
+
+            /* ===== MOBILE RESPONSIVE ===== */
+            @media screen and (max-width: 782px) {
+                /* Summary cards: 2x2 grid, tighter */
+                .ah-ho-summary-cards {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 6px;
+                    margin: 8px 0;
+                }
+                .ah-ho-summary-card {
+                    padding: 8px 10px;
+                    min-width: 0;
+                }
+                .ah-ho-summary-card .card-number {
+                    font-size: 22px;
+                }
+                .ah-ho-summary-card .card-label {
+                    font-size: 11px;
+                }
+
+                /* Filters: stack vertically */
+                .ah-ho-filters {
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 6px;
+                    margin: 8px 0;
+                }
+                .ah-ho-filters label {
+                    display: none;
+                }
+                .ah-ho-filters select,
+                .ah-ho-filters input[type="search"] {
+                    width: 100%;
+                    min-width: 0;
+                    height: 36px;
+                    font-size: 14px;
+                }
+                #ah-ho-visible-count {
+                    text-align: center;
+                    font-size: 12px;
+                }
+
+                /* Table: hide thumbnail and category columns */
+                .ah-ho-stock-table th:nth-child(1),
+                .ah-ho-stock-table td:nth-child(1),
+                .ah-ho-stock-table th:nth-child(3),
+                .ah-ho-stock-table td:nth-child(3) {
+                    display: none;
+                }
+
+                /* Tighter table cells */
+                .ah-ho-stock-table th {
+                    padding: 6px 4px;
+                    font-size: 11px;
+                }
+                .ah-ho-stock-table td {
+                    padding: 5px 4px;
+                    font-size: 12px;
+                }
+
+                /* Hide SKU on mobile */
+                .ah-ho-stock-table td:nth-child(2) small {
+                    display: none;
+                }
+
+                /* Stock column: narrower */
+                .ah-ho-stock-table th:nth-child(4),
+                .ah-ho-stock-table td:nth-child(4) {
+                    width: 40px;
+                    font-size: 13px;
+                }
+
+                /* +/- input group: compact */
+                .stock-input-group button {
+                    width: 32px;
+                    height: 32px;
+                    font-size: 18px;
+                }
+                .stock-input-group input[type="number"] {
+                    width: 48px;
+                    height: 32px;
+                    font-size: 14px;
+                }
+
+                /* Table wrapper: taller on mobile */
+                .ah-ho-table-wrap {
+                    max-height: calc(100vh - 280px);
+                }
+
+                /* Sticky footer: compact */
+                .ah-ho-sticky-footer {
+                    padding: 8px 10px;
+                    gap: 8px;
+                    flex-wrap: wrap;
+                }
+                .ah-ho-sticky-footer .button-primary {
+                    font-size: 13px;
+                    padding: 6px 16px;
+                    width: 100%;
+                    text-align: center;
+                }
+                #ah-ho-changed-count {
+                    font-size: 12px;
+                    width: 100%;
+                    text-align: center;
+                }
+                .ah-ho-reset-btn {
+                    font-size: 12px;
+                    width: 100%;
+                    text-align: center;
+                }
+
+                /* Page title */
+                #ah-ho-stock-wrap > h1 {
+                    font-size: 18px;
+                }
+            }
         </style>
 
         <!-- Summary Cards (clickable filters) -->
