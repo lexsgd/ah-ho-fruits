@@ -108,7 +108,7 @@ $order_total = $order->get_total();
 </table>
 
 <!-- ===== BILL TO / INVOICE INFO ===== -->
-<table style="width: 100%; margin-bottom: 2px;" cellspacing="0" cellpadding="0">
+<table style="width: 100%; margin-bottom: 8px;" cellspacing="0" cellpadding="0">
     <tr>
         <!-- Bill To -->
         <td style="width: 55%; vertical-align: top; padding-right: 10px;">
@@ -142,7 +142,7 @@ $order_total = $order->get_total();
             <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
                 <tr>
                     <td style="border: 1px solid #000; padding: 2px 4px; font-weight: bold; width: 40%;">Invoice No</td>
-                    <td style="border: 1px solid #000; padding: 2px 4px;"><?php echo esc_html($invoice_number); ?></td>
+                    <td style="border: 1px solid #000; padding: 2px 4px;"><?php echo esc_html($order->get_order_number()); ?></td>
                 </tr>
                 <tr>
                     <td style="border: 1px solid #000; padding: 2px 4px; font-weight: bold;">Date</td>
@@ -162,7 +162,7 @@ $order_total = $order->get_total();
 </table>
 
 <!-- ===== ITEMS TABLE ===== -->
-<table style="width: 100%; border-collapse: collapse; margin-bottom: 2px;" cellspacing="0" cellpadding="0">
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;" cellspacing="0" cellpadding="0">
     <thead>
         <tr>
             <th style="border: 1px solid #000; padding: 2px 4px; text-align: center; width: 40px; font-size: 10px; font-weight: bold;">Qty</th>
@@ -246,7 +246,7 @@ $order_total = $order->get_total();
 </table>
 
 <!-- ===== TOTALS ===== -->
-<table style="width: 100%; margin-bottom: 2px;" cellspacing="0" cellpadding="0">
+<table style="width: 100%; margin-bottom: 8px;" cellspacing="0" cellpadding="0">
     <tr>
         <td style="width: 60%;"></td>
         <td style="width: 40%;">
@@ -302,11 +302,11 @@ $order_total = $order->get_total();
 
 <!-- ===== PAYMENT STATUS ===== -->
 <?php if ($is_paid): ?>
-<div style="margin-top: 3px; padding: 3px 6px; border: 2px solid #000; font-size: 10px; text-align: center;">
+<div style="margin-top: 8px; padding: 3px 6px; border: 2px solid #000; font-size: 10px; text-align: center;">
     <strong>PAID</strong> - <?php echo esc_html($order->get_payment_method_title()); ?>
 </div>
 <?php else: ?>
-<div style="margin-top: 3px; padding: 3px 6px; border: 2px solid #000; font-size: 10px; text-align: center;">
+<div style="margin-top: 8px; padding: 3px 6px; border: 2px solid #000; font-size: 10px; text-align: center;">
     <strong>PAYMENT REQUIRED: $<?php echo esc_html(number_format($order_total, 2)); ?></strong>
     <?php if ($payment_method === 'cod'): ?>
         - C.O.D.
@@ -317,7 +317,7 @@ $order_total = $order->get_total();
 <?php endif; ?>
 
 <!-- ===== THANK YOU + EMAIL ===== -->
-<div style="margin-top: 3px; margin-bottom: 3px;">
+<div style="margin-top: 8px; margin-bottom: 3px;">
     <div style="font-size: 10px; font-weight: bold; color: #c00;">Thank you for your support!</div>
     <div style="font-size: 10px; font-weight: bold; margin-top: 1px;">
         Email: <?php echo esc_html($company_email); ?>
