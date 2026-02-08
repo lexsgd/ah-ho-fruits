@@ -707,14 +707,15 @@ function ah_ho_filter_user_list_for_salesperson($query) {
 }
 
 /**
- * Helper: Check if current user is a salesperson
+ * Helper: Check if current user is a salesperson or storeman
  */
 function ah_ho_is_current_user_salesperson() {
     $current_user = wp_get_current_user();
     if (!$current_user || !$current_user->ID) {
         return false;
     }
-    return in_array('ah_ho_salesperson', (array) $current_user->roles);
+    $roles = (array) $current_user->roles;
+    return in_array('ah_ho_salesperson', $roles) || in_array('ah_ho_storeman', $roles);
 }
 
 /**
