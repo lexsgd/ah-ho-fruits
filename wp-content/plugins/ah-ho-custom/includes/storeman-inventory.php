@@ -40,8 +40,8 @@ function ah_ho_bulk_update_stock_handler() {
         wp_send_json_error(array('message' => 'Security check failed.'));
     }
 
-    // Capability check
-    if (!current_user_can('edit_products')) {
+    // Capability check - must be admin or storeman (not salesperson)
+    if (!current_user_can('edit_products') || (!current_user_can('manage_options') && !ah_ho_is_current_user_storeman())) {
         wp_send_json_error(array('message' => 'You do not have permission to update stock.'));
     }
 
@@ -93,6 +93,11 @@ function ah_ho_bulk_update_stock_handler() {
  * Render the Quick Stock Update page
  */
 function ah_ho_render_quick_stock_page() {
+    // Block salesperson direct URL access - only admin and storeman allowed
+    if (!current_user_can('manage_options') && !ah_ho_is_current_user_storeman()) {
+        wp_die(__('You do not have permission to access this page.', 'ah-ho-custom'), 403);
+    }
+
     // Get selected category filter
     $selected_cat = isset($_GET['product_cat']) ? absint($_GET['product_cat']) : 0;
 
