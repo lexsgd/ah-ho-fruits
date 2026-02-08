@@ -5,8 +5,12 @@
  * Provides a bulk inventory management page where storeman can view all products
  * in a single table and update stock quantities inline with one "Update All" button.
  *
+ * Features: column sorting, stock status filters, sticky header/footer,
+ * +/- buttons, client-side category filter, tab navigation, unsaved changes warning.
+ *
  * @package AhHoCustom
  * @since 1.7.0
+ * @modified 2026-02-08 - major UX improvements for storeman efficiency
  */
 
 if (!defined('ABSPATH')) {
@@ -98,10 +102,7 @@ function ah_ho_render_quick_stock_page() {
         wp_die(__('You do not have permission to access this page.', 'ah-ho-custom'), 403);
     }
 
-    // Get selected category filter
-    $selected_cat = isset($_GET['product_cat']) ? absint($_GET['product_cat']) : 0;
-
-    // Query products
+    // Always load ALL products (filtering is client-side)
     $args = array(
         'post_type'      => 'product',
         'post_status'    => 'publish',
@@ -109,16 +110,6 @@ function ah_ho_render_quick_stock_page() {
         'orderby'        => 'title',
         'order'          => 'ASC',
     );
-
-    if ($selected_cat) {
-        $args['tax_query'] = array(
-            array(
-                'taxonomy' => 'product_cat',
-                'field'    => 'term_id',
-                'terms'    => $selected_cat,
-            ),
-        );
-    }
 
     $products_query = new WP_Query($args);
     $products_data = array();
@@ -136,7 +127,6 @@ function ah_ho_render_quick_stock_page() {
 
             $stock_qty = $product->get_stock_quantity();
             $stock_qty = $stock_qty !== null ? (int) $stock_qty : 0;
-            $manages_stock = $product->get_manage_stock();
 
             $total++;
             if ($stock_qty <= 0) {
@@ -155,13 +145,17 @@ function ah_ho_render_quick_stock_page() {
                 $cat_names = implode(', ', wp_list_pluck($cat_terms, 'name'));
             }
 
+            // Get thumbnail URL
+            $thumb_id = $product->get_image_id();
+            $thumb_url = $thumb_id ? wp_get_attachment_image_url($thumb_id, 'thumbnail') : '';
+
             $products_data[] = array(
-                'id'            => get_the_ID(),
-                'name'          => $product->get_name(),
-                'sku'           => $product->get_sku(),
-                'stock'         => $stock_qty,
-                'manages_stock' => $manages_stock,
-                'categories'    => $cat_names,
+                'id'         => get_the_ID(),
+                'name'       => $product->get_name(),
+                'sku'        => $product->get_sku(),
+                'stock'      => $stock_qty,
+                'categories' => $cat_names,
+                'thumb'      => $thumb_url,
             );
         }
     }
@@ -176,65 +170,131 @@ function ah_ho_render_quick_stock_page() {
 
     $nonce = wp_create_nonce('ah_ho_stock_update_nonce');
     ?>
-    <div class="wrap">
-        <h1>Quick Stock Update</h1>
+    <div class="wrap" id="ah-ho-stock-wrap">
+        <h1 style="margin-bottom: 4px;">Quick Stock Update</h1>
 
         <style>
+            /* ===== Summary Cards ===== */
             .ah-ho-summary-cards {
                 display: flex;
-                gap: 12px;
-                margin: 16px 0;
+                gap: 10px;
+                margin: 12px 0;
                 flex-wrap: wrap;
             }
             .ah-ho-summary-card {
                 background: #fff;
-                border: 1px solid #c3c4c7;
+                border: 2px solid #c3c4c7;
                 border-left: 4px solid #2271b1;
-                padding: 12px 20px;
-                min-width: 140px;
+                padding: 10px 16px;
+                min-width: 120px;
                 border-radius: 2px;
+                cursor: pointer;
+                transition: all 0.15s;
+                user-select: none;
+            }
+            .ah-ho-summary-card:hover {
+                border-color: #2271b1;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            }
+            .ah-ho-summary-card.active {
+                border-color: #2271b1;
+                box-shadow: 0 0 0 1px #2271b1;
+                background: #f0f6fc;
             }
             .ah-ho-summary-card.in-stock { border-left-color: #00a32a; }
+            .ah-ho-summary-card.in-stock.active { border-color: #00a32a; box-shadow: 0 0 0 1px #00a32a; }
             .ah-ho-summary-card.out-of-stock { border-left-color: #d63638; }
+            .ah-ho-summary-card.out-of-stock.active { border-color: #d63638; box-shadow: 0 0 0 1px #d63638; }
             .ah-ho-summary-card.low-stock { border-left-color: #dba617; }
+            .ah-ho-summary-card.low-stock.active { border-color: #dba617; box-shadow: 0 0 0 1px #dba617; }
             .ah-ho-summary-card .card-number {
-                font-size: 28px;
+                font-size: 26px;
                 font-weight: 600;
                 line-height: 1.2;
             }
             .ah-ho-summary-card .card-label {
                 color: #50575e;
-                font-size: 13px;
+                font-size: 12px;
             }
+
+            /* ===== Filters Row ===== */
             .ah-ho-filters {
                 display: flex;
-                gap: 12px;
+                gap: 10px;
                 align-items: center;
-                margin: 16px 0;
+                margin: 12px 0;
                 flex-wrap: wrap;
             }
             .ah-ho-filters label {
                 font-weight: 600;
+                font-size: 13px;
+            }
+            .ah-ho-filters select,
+            .ah-ho-filters input[type="search"] {
+                height: 32px;
+                font-size: 13px;
             }
             .ah-ho-filters input[type="search"] {
-                min-width: 250px;
+                min-width: 220px;
+            }
+            #ah-ho-visible-count {
+                color: #50575e;
+                font-size: 13px;
+            }
+
+            /* ===== Stock Table ===== */
+            .ah-ho-table-wrap {
+                max-height: calc(100vh - 320px);
+                overflow-y: auto;
+                border: 1px solid #c3c4c7;
+                background: #fff;
             }
             .ah-ho-stock-table {
                 border-collapse: collapse;
                 width: 100%;
                 background: #fff;
-                border: 1px solid #c3c4c7;
+                border: none;
             }
-            .ah-ho-stock-table th,
-            .ah-ho-stock-table td {
-                padding: 8px 12px;
-                text-align: left;
-                border-bottom: 1px solid #f0f0f1;
+            .ah-ho-stock-table thead {
+                position: sticky;
+                top: 0;
+                z-index: 10;
             }
             .ah-ho-stock-table th {
-                background: #f6f7f7;
+                background: #23282d;
+                color: #fff;
+                padding: 8px 10px;
+                text-align: left;
                 font-weight: 600;
-                border-bottom: 1px solid #c3c4c7;
+                font-size: 12px;
+                border-bottom: 2px solid #000;
+                white-space: nowrap;
+                cursor: pointer;
+                user-select: none;
+            }
+            .ah-ho-stock-table th:hover {
+                background: #32373c;
+            }
+            .ah-ho-stock-table th .sort-arrow {
+                margin-left: 4px;
+                font-size: 10px;
+                opacity: 0.4;
+            }
+            .ah-ho-stock-table th.sort-active .sort-arrow {
+                opacity: 1;
+            }
+            .ah-ho-stock-table th.no-sort {
+                cursor: default;
+            }
+            .ah-ho-stock-table th.no-sort:hover {
+                background: #23282d;
+            }
+            .ah-ho-stock-table td {
+                padding: 6px 10px;
+                text-align: left;
+                border-bottom: 1px solid #f0f0f1;
+                font-size: 13px;
+                vertical-align: middle;
             }
             .ah-ho-stock-table tr:hover {
                 background: #f6f7f7;
@@ -246,71 +306,153 @@ function ah_ho_render_quick_stock_page() {
                 background: #edfaef !important;
                 transition: background 0.5s ease;
             }
-            .ah-ho-stock-table input[type="number"] {
-                width: 80px;
-                padding: 4px 8px;
+
+            /* Stock colors */
+            .stock-zero { color: #d63638; font-weight: 700; }
+            .stock-low { color: #dba617; font-weight: 700; }
+            .stock-ok { color: #00a32a; font-weight: 600; }
+
+            /* ===== +/- Input Group ===== */
+            .stock-input-group {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0;
+            }
+            .stock-input-group button {
+                width: 28px;
+                height: 28px;
+                border: 1px solid #8c8f94;
+                background: #f0f0f1;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #50575e;
+                padding: 0;
+                line-height: 1;
+            }
+            .stock-input-group button:hover {
+                background: #dcdcde;
+                color: #1d2327;
+            }
+            .stock-input-group button.btn-minus {
+                border-radius: 3px 0 0 3px;
+                border-right: none;
+            }
+            .stock-input-group button.btn-plus {
+                border-radius: 0 3px 3px 0;
+                border-left: none;
+            }
+            .stock-input-group input[type="number"] {
+                width: 60px;
+                height: 28px;
+                padding: 2px 4px;
                 text-align: center;
-            }
-            .ah-ho-stock-table .stock-zero {
-                color: #d63638;
+                font-size: 13px;
                 font-weight: 600;
+                border: 1px solid #8c8f94;
+                border-radius: 0;
+                -moz-appearance: textfield;
             }
-            .ah-ho-stock-table .stock-low {
-                color: #dba617;
-                font-weight: 600;
+            .stock-input-group input[type="number"]::-webkit-outer-spin-button,
+            .stock-input-group input[type="number"]::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
             }
-            .ah-ho-actions {
-                margin: 16px 0;
+
+            /* ===== Thumbnail ===== */
+            .product-thumb {
+                width: 32px;
+                height: 32px;
+                object-fit: cover;
+                border-radius: 3px;
+                border: 1px solid #ddd;
+                vertical-align: middle;
+            }
+            .product-thumb-placeholder {
+                width: 32px;
+                height: 32px;
+                background: #f0f0f1;
+                border-radius: 3px;
+                border: 1px solid #ddd;
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            /* ===== Sticky Footer Bar ===== */
+            .ah-ho-sticky-footer {
+                position: sticky;
+                bottom: 0;
+                background: #fff;
+                border-top: 2px solid #c3c4c7;
+                padding: 10px 16px;
                 display: flex;
                 align-items: center;
                 gap: 12px;
+                z-index: 20;
+                box-shadow: 0 -2px 6px rgba(0,0,0,0.08);
             }
-            .ah-ho-actions .button-primary {
+            .ah-ho-sticky-footer .button-primary {
                 font-size: 14px;
                 padding: 6px 24px;
                 height: auto;
             }
-            #ah-ho-update-status {
-                font-weight: 600;
-            }
+            #ah-ho-update-status { font-weight: 600; }
             #ah-ho-update-status.success { color: #00a32a; }
             #ah-ho-update-status.error { color: #d63638; }
-            .ah-ho-no-stock-mgmt {
-                color: #999;
-                font-style: italic;
+            #ah-ho-changed-count {
+                color: #b32d2e;
+                font-weight: 600;
+                font-size: 13px;
+            }
+
+            /* ===== Misc ===== */
+            .ah-ho-reset-btn {
+                color: #b32d2e;
+                cursor: pointer;
+                text-decoration: underline;
+                font-size: 13px;
+                background: none;
+                border: none;
+                padding: 0;
+            }
+            .ah-ho-reset-btn:hover {
+                color: #d63638;
             }
         </style>
 
-        <!-- Summary Cards -->
+        <!-- Summary Cards (clickable filters) -->
         <div class="ah-ho-summary-cards">
-            <div class="ah-ho-summary-card in-stock">
+            <div class="ah-ho-summary-card active" data-filter="all" onclick="ahHoFilterByStatus('all')">
+                <div class="card-number"><?php echo esc_html($total); ?></div>
+                <div class="card-label">All Products</div>
+            </div>
+            <div class="ah-ho-summary-card in-stock" data-filter="in" onclick="ahHoFilterByStatus('in')">
                 <div class="card-number"><?php echo esc_html($in_stock); ?></div>
                 <div class="card-label">In Stock</div>
             </div>
-            <div class="ah-ho-summary-card out-of-stock">
-                <div class="card-number"><?php echo esc_html($out_of_stock); ?></div>
-                <div class="card-label">Out of Stock</div>
-            </div>
-            <div class="ah-ho-summary-card low-stock">
+            <div class="ah-ho-summary-card low-stock" data-filter="low" onclick="ahHoFilterByStatus('low')">
                 <div class="card-number"><?php echo esc_html($low_stock); ?></div>
                 <div class="card-label">Low Stock (&le;<?php echo $low_stock_threshold; ?>)</div>
             </div>
-            <div class="ah-ho-summary-card">
-                <div class="card-number"><?php echo esc_html($total); ?></div>
-                <div class="card-label">Total Products</div>
+            <div class="ah-ho-summary-card out-of-stock" data-filter="out" onclick="ahHoFilterByStatus('out')">
+                <div class="card-number"><?php echo esc_html($out_of_stock); ?></div>
+                <div class="card-label">Out of Stock</div>
             </div>
         </div>
 
         <!-- Filters -->
         <div class="ah-ho-filters">
             <label for="ah-ho-cat-filter">Category:</label>
-            <select id="ah-ho-cat-filter" onchange="ahHoFilterByCategory(this.value)">
+            <select id="ah-ho-cat-filter" onchange="ahHoApplyFilters()">
                 <option value="">All Categories</option>
                 <?php
                 if (!is_wp_error($categories)) {
                     foreach ($categories as $cat) {
-                        $selected = ($selected_cat == $cat->term_id) ? ' selected' : '';
-                        echo '<option value="' . esc_attr($cat->term_id) . '"' . $selected . '>'
+                        echo '<option value="' . esc_attr(strtolower($cat->name)) . '">'
                             . esc_html($cat->name) . ' (' . esc_html($cat->count) . ')'
                             . '</option>';
                     }
@@ -319,45 +461,59 @@ function ah_ho_render_quick_stock_page() {
             </select>
 
             <label for="ah-ho-search">Search:</label>
-            <input type="search" id="ah-ho-search" placeholder="Filter by product name or SKU..." oninput="ahHoSearchProducts(this.value)">
+            <input type="search" id="ah-ho-search" placeholder="Filter by product name or SKU..." oninput="ahHoApplyFilters()">
 
-            <span id="ah-ho-visible-count" style="color: #50575e;"></span>
+            <span id="ah-ho-visible-count"></span>
         </div>
 
         <!-- Products Table -->
-        <form id="ah-ho-stock-form">
-            <table class="ah-ho-stock-table">
+        <div class="ah-ho-table-wrap">
+            <table class="ah-ho-stock-table" id="ah-ho-stock-table">
                 <thead>
                     <tr>
-                        <th style="width: 40px;">#</th>
-                        <th>Product Name</th>
-                        <th>SKU</th>
-                        <th>Category</th>
-                        <th style="width: 100px; text-align: center;">Current Stock</th>
-                        <th style="width: 120px; text-align: center;">New Stock</th>
+                        <th style="width: 36px;" class="no-sort"></th>
+                        <th data-sort="name" class="sort-active" style="width: auto;">
+                            Product <span class="sort-arrow">&#9650;</span>
+                        </th>
+                        <th data-sort="category" style="width: 120px;">
+                            Category <span class="sort-arrow">&#9650;</span>
+                        </th>
+                        <th data-sort="stock" style="width: 80px; text-align: center;">
+                            Stock <span class="sort-arrow">&#9650;</span>
+                        </th>
+                        <th style="width: 140px; text-align: center;" class="no-sort">New Stock</th>
                     </tr>
                 </thead>
                 <tbody id="ah-ho-stock-tbody">
                     <?php if (empty($products_data)) : ?>
-                        <tr><td colspan="6" style="text-align: center; padding: 24px;">No products found.</td></tr>
+                        <tr><td colspan="5" style="text-align: center; padding: 24px;">No products found.</td></tr>
                     <?php else : ?>
-                        <?php $row_num = 1; foreach ($products_data as $p) : ?>
+                        <?php $tab_index = 1; foreach ($products_data as $p) : ?>
                             <tr data-product-id="<?php echo esc_attr($p['id']); ?>"
                                 data-name="<?php echo esc_attr(strtolower($p['name'])); ?>"
                                 data-sku="<?php echo esc_attr(strtolower($p['sku'])); ?>"
-                                data-categories="<?php echo esc_attr(strtolower($p['categories'])); ?>">
-                                <td><?php echo $row_num++; ?></td>
+                                data-categories="<?php echo esc_attr(strtolower($p['categories'])); ?>"
+                                data-stock="<?php echo esc_attr($p['stock']); ?>">
                                 <td>
-                                    <a href="<?php echo get_edit_post_link($p['id']); ?>" target="_blank">
+                                    <?php if ($p['thumb']): ?>
+                                        <img src="<?php echo esc_url($p['thumb']); ?>" alt="" class="product-thumb">
+                                    <?php else: ?>
+                                        <span class="product-thumb-placeholder"></span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <a href="<?php echo get_edit_post_link($p['id']); ?>" target="_blank" style="text-decoration: none;">
                                         <?php echo esc_html($p['name']); ?>
                                     </a>
+                                    <?php if ($p['sku']): ?>
+                                        <br><small style="color: #999;"><?php echo esc_html($p['sku']); ?></small>
+                                    <?php endif; ?>
                                 </td>
-                                <td><?php echo esc_html($p['sku'] ?: '-'); ?></td>
-                                <td><?php echo esc_html($p['categories'] ?: '-'); ?></td>
+                                <td style="font-size: 12px;"><?php echo esc_html($p['categories'] ?: '-'); ?></td>
                                 <td style="text-align: center;">
                                     <?php
-                                    $stock_class = '';
-                                    if ($p['stock'] === 0) {
+                                    $stock_class = 'stock-ok';
+                                    if ($p['stock'] <= 0) {
                                         $stock_class = 'stock-zero';
                                     } elseif ($p['stock'] <= $low_stock_threshold) {
                                         $stock_class = 'stock-low';
@@ -366,35 +522,57 @@ function ah_ho_render_quick_stock_page() {
                                     <span class="<?php echo $stock_class; ?>"><?php echo esc_html($p['stock']); ?></span>
                                 </td>
                                 <td style="text-align: center;">
-                                    <input type="number"
-                                           name="stock_<?php echo esc_attr($p['id']); ?>"
-                                           value="<?php echo esc_attr($p['stock']); ?>"
-                                           data-original="<?php echo esc_attr($p['stock']); ?>"
-                                           min="0"
-                                           step="1">
+                                    <div class="stock-input-group">
+                                        <button type="button" class="btn-minus" onclick="ahHoAdjustStock(this, -1)" tabindex="-1">&minus;</button>
+                                        <input type="number"
+                                               name="stock_<?php echo esc_attr($p['id']); ?>"
+                                               value="<?php echo esc_attr($p['stock']); ?>"
+                                               data-original="<?php echo esc_attr($p['stock']); ?>"
+                                               min="0"
+                                               step="1"
+                                               tabindex="<?php echo $tab_index++; ?>">
+                                        <button type="button" class="btn-plus" onclick="ahHoAdjustStock(this, 1)" tabindex="-1">&plus;</button>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
             </table>
+        </div>
 
-            <?php if (!empty($products_data)) : ?>
-                <div class="ah-ho-actions">
-                    <button type="button" id="ah-ho-update-btn" class="button button-primary" onclick="ahHoUpdateAllStock()">
-                        Update All Stock
-                    </button>
-                    <span id="ah-ho-update-status"></span>
-                </div>
-            <?php endif; ?>
-        </form>
+        <?php if (!empty($products_data)) : ?>
+            <!-- Sticky Footer Action Bar -->
+            <div class="ah-ho-sticky-footer">
+                <button type="button" id="ah-ho-update-btn" class="button button-primary" onclick="ahHoUpdateAllStock()">
+                    Update All Stock
+                </button>
+                <span id="ah-ho-changed-count"></span>
+                <button type="button" class="ah-ho-reset-btn" id="ah-ho-reset-btn" onclick="ahHoResetAll()" style="display:none;">
+                    Reset all changes
+                </button>
+                <span id="ah-ho-update-status"></span>
+            </div>
+        <?php endif; ?>
 
         <script>
         (function() {
             var ajaxUrl = '<?php echo admin_url('admin-ajax.php'); ?>';
             var nonce = '<?php echo $nonce; ?>';
+            var LOW_THRESHOLD = <?php echo $low_stock_threshold; ?>;
+            var activeStatus = 'all';
+            var currentSort = { col: 'name', dir: 'asc' };
+            var hasUnsavedChanges = false;
 
-            // Track changes - highlight row yellow when input changes
+            // ===== UNSAVED CHANGES WARNING =====
+            window.addEventListener('beforeunload', function(e) {
+                if (hasUnsavedChanges) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            });
+
+            // ===== CHANGE TRACKING =====
             var inputs = document.querySelectorAll('#ah-ho-stock-tbody input[type="number"]');
             inputs.forEach(function(input) {
                 input.addEventListener('input', function() {
@@ -411,48 +589,186 @@ function ah_ho_render_quick_stock_page() {
 
             function updateChangedCount() {
                 var changed = document.querySelectorAll('#ah-ho-stock-tbody tr.ah-ho-changed').length;
+                hasUnsavedChanges = changed > 0;
                 var btn = document.getElementById('ah-ho-update-btn');
+                var countEl = document.getElementById('ah-ho-changed-count');
+                var resetBtn = document.getElementById('ah-ho-reset-btn');
                 if (btn) {
-                    btn.textContent = changed > 0
-                        ? 'Update All Stock (' + changed + ' changed)'
-                        : 'Update All Stock';
+                    btn.textContent = changed > 0 ? 'Update All Stock (' + changed + ')' : 'Update All Stock';
+                }
+                if (countEl) {
+                    countEl.textContent = changed > 0 ? changed + ' unsaved change' + (changed > 1 ? 's' : '') : '';
+                }
+                if (resetBtn) {
+                    resetBtn.style.display = changed > 0 ? 'inline' : 'none';
                 }
             }
 
-            // Category filter via URL reload
-            window.ahHoFilterByCategory = function(catId) {
-                var url = new URL(window.location.href);
-                if (catId) {
-                    url.searchParams.set('product_cat', catId);
-                } else {
-                    url.searchParams.delete('product_cat');
-                }
-                window.location.href = url.toString();
+            // ===== +/- BUTTONS =====
+            window.ahHoAdjustStock = function(btn, delta) {
+                var group = btn.closest('.stock-input-group');
+                var input = group.querySelector('input[type="number"]');
+                var val = parseInt(input.value) || 0;
+                val = Math.max(0, val + delta);
+                input.value = val;
+                input.dispatchEvent(new Event('input'));
             };
 
-            // Client-side search filter
-            window.ahHoSearchProducts = function(query) {
-                query = query.toLowerCase().trim();
+            // ===== RESET ALL CHANGES =====
+            window.ahHoResetAll = function() {
+                var inputs = document.querySelectorAll('#ah-ho-stock-tbody input[type="number"]');
+                inputs.forEach(function(input) {
+                    input.value = input.getAttribute('data-original');
+                    input.closest('tr').classList.remove('ah-ho-changed');
+                });
+                updateChangedCount();
+            };
+
+            // ===== COMPOSABLE FILTERS =====
+            window.ahHoFilterByStatus = function(status) {
+                activeStatus = status;
+                // Update card active state
+                document.querySelectorAll('.ah-ho-summary-card').forEach(function(card) {
+                    card.classList.toggle('active', card.getAttribute('data-filter') === status);
+                });
+                ahHoApplyFilters();
+            };
+
+            window.ahHoApplyFilters = function() {
+                var searchQuery = (document.getElementById('ah-ho-search').value || '').toLowerCase().trim();
+                var catFilter = (document.getElementById('ah-ho-cat-filter').value || '').toLowerCase();
                 var rows = document.querySelectorAll('#ah-ho-stock-tbody tr[data-product-id]');
                 var visible = 0;
+
                 rows.forEach(function(row) {
                     var name = row.getAttribute('data-name') || '';
                     var sku = row.getAttribute('data-sku') || '';
                     var cats = row.getAttribute('data-categories') || '';
-                    if (!query || name.indexOf(query) !== -1 || sku.indexOf(query) !== -1 || cats.indexOf(query) !== -1) {
+                    var stock = parseInt(row.getAttribute('data-stock')) || 0;
+
+                    // Use the live input value for stock status filtering
+                    var input = row.querySelector('input[type="number"]');
+                    if (input) {
+                        stock = parseInt(input.getAttribute('data-original')) || 0;
+                    }
+
+                    var passSearch = !searchQuery || name.indexOf(searchQuery) !== -1 || sku.indexOf(searchQuery) !== -1;
+                    var passCat = !catFilter || cats.indexOf(catFilter) !== -1;
+                    var passStatus = true;
+
+                    if (activeStatus === 'out') {
+                        passStatus = stock <= 0;
+                    } else if (activeStatus === 'low') {
+                        passStatus = stock > 0 && stock <= LOW_THRESHOLD;
+                    } else if (activeStatus === 'in') {
+                        passStatus = stock > 0;
+                    }
+
+                    if (passSearch && passCat && passStatus) {
                         row.style.display = '';
                         visible++;
                     } else {
                         row.style.display = 'none';
                     }
                 });
+
                 var countEl = document.getElementById('ah-ho-visible-count');
                 if (countEl) {
-                    countEl.textContent = query ? 'Showing ' + visible + ' of ' + rows.length : '';
+                    var total = rows.length;
+                    countEl.textContent = (visible < total) ? 'Showing ' + visible + ' of ' + total : '';
                 }
+
+                updateRowNumbers();
             };
 
-            // Bulk update via AJAX
+            // ===== ROW NUMBERS =====
+            function updateRowNumbers() {
+                // Row numbers not used in new design (replaced by thumbnail)
+            }
+
+            // ===== COLUMN SORTING =====
+            document.querySelectorAll('.ah-ho-stock-table th[data-sort]').forEach(function(th) {
+                th.addEventListener('click', function() {
+                    var col = this.getAttribute('data-sort');
+                    var dir = 'asc';
+                    if (currentSort.col === col && currentSort.dir === 'asc') {
+                        dir = 'desc';
+                    }
+                    currentSort = { col: col, dir: dir };
+
+                    // Update header styling
+                    document.querySelectorAll('.ah-ho-stock-table th').forEach(function(h) {
+                        h.classList.remove('sort-active');
+                        var arrow = h.querySelector('.sort-arrow');
+                        if (arrow) arrow.innerHTML = '&#9650;';
+                    });
+                    this.classList.add('sort-active');
+                    var arrow = this.querySelector('.sort-arrow');
+                    if (arrow) {
+                        arrow.innerHTML = dir === 'asc' ? '&#9650;' : '&#9660;';
+                    }
+
+                    sortTable(col, dir);
+                });
+            });
+
+            function sortTable(col, dir) {
+                var tbody = document.getElementById('ah-ho-stock-tbody');
+                var rows = Array.from(tbody.querySelectorAll('tr[data-product-id]'));
+
+                rows.sort(function(a, b) {
+                    var valA, valB;
+                    if (col === 'stock') {
+                        valA = parseInt(a.getAttribute('data-stock')) || 0;
+                        valB = parseInt(b.getAttribute('data-stock')) || 0;
+                        return dir === 'asc' ? valA - valB : valB - valA;
+                    } else if (col === 'name') {
+                        valA = a.getAttribute('data-name') || '';
+                        valB = b.getAttribute('data-name') || '';
+                    } else if (col === 'category') {
+                        valA = a.getAttribute('data-categories') || '';
+                        valB = b.getAttribute('data-categories') || '';
+                    } else {
+                        return 0;
+                    }
+                    var cmp = valA.localeCompare(valB);
+                    return dir === 'asc' ? cmp : -cmp;
+                });
+
+                rows.forEach(function(row) {
+                    tbody.appendChild(row);
+                });
+            }
+
+            // ===== TAB NAVIGATION =====
+            document.getElementById('ah-ho-stock-tbody').addEventListener('keydown', function(e) {
+                if (e.target.tagName !== 'INPUT') return;
+
+                var allInputs = Array.from(document.querySelectorAll('#ah-ho-stock-tbody tr[data-product-id]:not([style*="display: none"]) input[type="number"]'));
+                var currentIndex = allInputs.indexOf(e.target);
+
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (currentIndex < allInputs.length - 1) {
+                        allInputs[currentIndex + 1].focus();
+                        allInputs[currentIndex + 1].select();
+                    }
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    if (currentIndex < allInputs.length - 1) {
+                        allInputs[currentIndex + 1].focus();
+                        allInputs[currentIndex + 1].select();
+                    }
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    if (currentIndex > 0) {
+                        allInputs[currentIndex - 1].focus();
+                        allInputs[currentIndex - 1].select();
+                    }
+                }
+            });
+
+            // ===== BULK UPDATE VIA AJAX =====
             window.ahHoUpdateAllStock = function() {
                 var inputs = document.querySelectorAll('#ah-ho-stock-tbody input[type="number"]');
                 var updates = [];
@@ -473,6 +789,11 @@ function ah_ho_render_quick_stock_page() {
                     statusEl.textContent = 'No changes to save.';
                     statusEl.className = '';
                     setTimeout(function() { statusEl.textContent = ''; }, 3000);
+                    return;
+                }
+
+                // Confirmation
+                if (!confirm('Update stock for ' + updates.length + ' product(s)?')) {
                     return;
                 }
 
@@ -502,24 +823,29 @@ function ah_ho_render_quick_stock_page() {
                         statusEl.textContent = result.data.message;
                         statusEl.className = 'success';
 
-                        // Update original values and flash green
+                        // Update original values, current stock display, and flash green
                         inputs.forEach(function(input) {
                             var row = input.closest('tr');
                             if (row.classList.contains('ah-ho-changed')) {
-                                input.setAttribute('data-original', input.value);
-                                // Update the "Current Stock" column
-                                var currentStockCell = row.querySelector('td:nth-child(5) span');
-                                if (currentStockCell) {
-                                    var val = parseInt(input.value) || 0;
-                                    currentStockCell.textContent = val;
-                                    currentStockCell.className = val === 0 ? 'stock-zero' : (val <= 5 ? 'stock-low' : '');
+                                var val = parseInt(input.value) || 0;
+                                input.setAttribute('data-original', val);
+                                row.setAttribute('data-stock', val);
+
+                                // Update current stock column
+                                var stockCell = row.querySelector('td:nth-child(4) span');
+                                if (stockCell) {
+                                    stockCell.textContent = val;
+                                    stockCell.className = val <= 0 ? 'stock-zero' : (val <= LOW_THRESHOLD ? 'stock-low' : 'stock-ok');
                                 }
+
                                 row.classList.remove('ah-ho-changed');
                                 row.classList.add('ah-ho-saved');
                                 setTimeout(function() { row.classList.remove('ah-ho-saved'); }, 2000);
                             }
                         });
+
                         updateChangedCount();
+                        updateSummaryCards();
                     } else {
                         statusEl.textContent = result.data ? result.data.message : 'Update failed.';
                         statusEl.className = 'error';
@@ -533,6 +859,35 @@ function ah_ho_render_quick_stock_page() {
 
                 btn.textContent = 'Update All Stock';
             };
+
+            // ===== UPDATE SUMMARY CARDS AFTER SAVE =====
+            function updateSummaryCards() {
+                var rows = document.querySelectorAll('#ah-ho-stock-tbody tr[data-product-id]');
+                var total = 0, inStock = 0, outStock = 0, lowStock = 0;
+                rows.forEach(function(row) {
+                    var stock = parseInt(row.getAttribute('data-stock')) || 0;
+                    total++;
+                    if (stock <= 0) {
+                        outStock++;
+                    } else {
+                        inStock++;
+                        if (stock <= LOW_THRESHOLD) {
+                            lowStock++;
+                        }
+                    }
+                });
+
+                var cards = document.querySelectorAll('.ah-ho-summary-card');
+                cards.forEach(function(card) {
+                    var filter = card.getAttribute('data-filter');
+                    var num = card.querySelector('.card-number');
+                    if (filter === 'all') num.textContent = total;
+                    else if (filter === 'in') num.textContent = inStock;
+                    else if (filter === 'low') num.textContent = lowStock;
+                    else if (filter === 'out') num.textContent = outStock;
+                });
+            }
+
         })();
         </script>
     </div>
