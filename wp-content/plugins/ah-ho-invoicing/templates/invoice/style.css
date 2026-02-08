@@ -1,51 +1,48 @@
 /**
  * Invoice PDF Styles
  *
- * Note: Dompdf has limited CSS support
- * - Use HTML tables for layout (not Flexbox/Grid)
- * - Avoid complex CSS3 properties
- * - Keep styles simple and inline where possible
+ * Matches delivery order format - clean, B&W, commercial document
+ * Note: Styles are primarily inline in the template for Dompdf compatibility
+ *
+ * @package AhHoInvoicing
+ * @since 2.0.0
  */
+
+@page {
+    size: A4;
+}
+
+* {
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 12px;
-    line-height: 1.6;
-    color: #333;
-    margin: 0;
-    padding: 0;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #000;
+    margin: 2mm 3mm 2mm 3mm;
 }
 
-.invoice-container {
-    padding: 20px;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    margin: 0;
-    padding: 0;
+h1, h2, h3, h4 {
+    margin: 0 0 1px 0;
 }
 
 table {
     border-collapse: collapse;
+    width: 100%;
 }
 
-/* Override WooCommerce price styles for better PDF rendering */
-.woocommerce-Price-amount {
-    font-weight: normal;
+strong {
+    font-weight: bold;
 }
 
-.woocommerce-Price-currencySymbol {
-    font-weight: normal;
+/* Page break control */
+.page-break {
+    page-break-after: always;
 }
 
-/* Print styles */
-@media print {
-    body {
-        margin: 0;
-        padding: 0;
-    }
-
-    .invoice-container {
-        padding: 0;
-    }
+.no-break {
+    page-break-inside: avoid;
 }
