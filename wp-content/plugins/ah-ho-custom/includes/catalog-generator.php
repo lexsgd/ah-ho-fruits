@@ -193,6 +193,21 @@ function ah_ho_generate_catalog_text() {
             continue;
         }
 
+        // Build product lines first, only output header if there are products
+        $lines = '';
+        foreach ($products as $product) {
+            $wholesale_price = $product->get_meta('_wholesale_price');
+            if (empty($wholesale_price) || floatval($wholesale_price) <= 0) {
+                continue;
+            }
+            $lines .= sprintf("%s @ $%.2f\n", $product->get_name(), floatval($wholesale_price));
+        }
+
+        // Skip category if no products passed the filter
+        if (empty($lines)) {
+            continue;
+        }
+
         // Get emoji for category (check slug against mapping)
         $emoji = '';
         foreach ($category_emojis as $key => $icon) {
@@ -202,22 +217,8 @@ function ah_ho_generate_catalog_text() {
             }
         }
 
-        // Category header
         $output .= sprintf("*%s%s*\n", $emoji, strtoupper($category->name));
-
-        foreach ($products as $product) {
-            // Use wholesale price for B2B catalog
-            $wholesale_price = $product->get_meta('_wholesale_price');
-            $name = $product->get_name();
-
-            // Skip products without a valid wholesale price (B2C products)
-            if (empty($wholesale_price) || floatval($wholesale_price) <= 0) {
-                continue;
-            }
-
-            $output .= sprintf("%s @ $%.2f\n", $name, floatval($wholesale_price));
-        }
-
+        $output .= $lines;
         $output .= "\n";
     }
 
