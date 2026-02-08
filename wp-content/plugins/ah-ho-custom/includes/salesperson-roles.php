@@ -1,8 +1,8 @@
 <?php
 /**
- * Salesperson Role & Permissions
+ * Salesperson & Storeman Roles & Permissions
  *
- * Registers the B2B salesperson role with restricted order access
+ * Registers the B2B salesperson and storeman roles with restricted access
  */
 
 if (!defined('ABSPATH')) {
@@ -55,6 +55,101 @@ function ah_ho_register_salesperson_role() {
             'view_salesperson_commission'   => true,
         )
     );
+}
+
+/**
+ * Register storeman role on plugin activation
+ * Similar to salesperson but with product inventory editing
+ */
+function ah_ho_register_storeman_role() {
+    if (get_role('ah_ho_storeman')) {
+        return;
+    }
+
+    add_role(
+        'ah_ho_storeman',
+        __('Storeman', 'ah-ho-custom'),
+        array(
+            // Basic WordPress capabilities
+            'read'                          => true,
+
+            // WooCommerce order capabilities (same as salesperson)
+            'read_shop_order'               => true,
+            'read_shop_orders'              => true,
+            'edit_shop_order'               => true,
+            'edit_shop_orders'              => true,
+            'publish_shop_orders'           => true,
+            'create_shop_orders'            => true,
+
+            // HPOS compatibility
+            'edit_others_shop_orders'       => true,
+            'read_others_shop_orders'       => true,
+            'delete_shop_orders'            => false,
+            'delete_others_shop_orders'     => false,
+
+            // Product access - read AND edit for inventory management
+            'read_product'                  => true,
+            'read_products'                 => true,
+            'edit_product'                  => true,
+            'edit_products'                 => true,
+            'edit_others_products'          => true,
+            'edit_published_products'       => true,
+
+            // Customer management
+            'list_users'                    => true,
+            'read_shop_customer'            => true,
+
+            // Commission viewing
+            'view_salesperson_commission'   => true,
+        )
+    );
+}
+
+/**
+ * Update storeman role capabilities
+ */
+function ah_ho_update_storeman_role() {
+    $role = get_role('ah_ho_storeman');
+
+    if (!$role) {
+        ah_ho_register_storeman_role();
+        error_log('Ah Ho Custom: Storeman role created via plugins_loaded hook');
+        return;
+    }
+
+    $capabilities = array(
+        'read'                          => true,
+        'upload_files'                  => false,
+        'read_shop_order'               => true,
+        'read_shop_orders'              => true,
+        'edit_shop_order'               => true,
+        'edit_shop_orders'              => true,
+        'publish_shop_orders'           => true,
+        'create_shop_orders'            => true,
+        'edit_others_shop_orders'       => true,
+        'read_others_shop_orders'       => true,
+        'delete_shop_orders'            => false,
+        'delete_others_shop_orders'     => false,
+        'read_product'                  => true,
+        'read_products'                 => true,
+        'edit_product'                  => true,
+        'edit_products'                 => true,
+        'edit_others_products'          => true,
+        'edit_published_products'       => true,
+        'list_users'                    => true,
+        'read_shop_customer'            => true,
+        'view_salesperson_commission'   => true,
+        'create_users'                  => true,
+        'edit_users'                    => true,
+    );
+
+    foreach ($capabilities as $cap => $grant) {
+        if ($grant) {
+            $role->add_cap($cap);
+        } else {
+            $role->remove_cap($cap);
+        }
+    }
 }
 
 /**
@@ -125,17 +220,19 @@ function ah_ho_remove_salesperson_role() {
 }
 
 /**
- * Initialize role on plugin activation
+ * Initialize roles on plugin activation
  */
 add_action('ah_ho_custom_activate', 'ah_ho_register_salesperson_role');
+add_action('ah_ho_custom_activate', 'ah_ho_register_storeman_role');
 
 /**
  * Update role capabilities on plugin updates
  */
 add_action('plugins_loaded', 'ah_ho_update_salesperson_role', 5);
+add_action('plugins_loaded', 'ah_ho_update_storeman_role', 5);
 
 /**
- * Clean up role on deactivation (only if no users)
+ * Clean up roles on deactivation (only if no users)
  */
 add_action('ah_ho_custom_deactivate', 'ah_ho_remove_salesperson_role');
 
@@ -272,8 +369,8 @@ add_action('show_user_profile', 'ah_ho_add_commission_rate_field');
 add_action('edit_user_profile', 'ah_ho_add_commission_rate_field');
 
 function ah_ho_add_commission_rate_field($user) {
-    // Only show for salespersons
-    if (!in_array('ah_ho_salesperson', $user->roles)) {
+    // Only show for salespersons and storemen
+    if (!in_array('ah_ho_salesperson', $user->roles) && !in_array('ah_ho_storeman', $user->roles)) {
         return;
     }
 
@@ -385,8 +482,8 @@ function ah_ho_show_salesperson_admin_bar($disable) {
 add_action('wp_login', 'ah_ho_salesperson_redirect_after_login', 10, 2);
 
 function ah_ho_salesperson_redirect_after_login($user_login, $user) {
-    // Check if user is a salesperson
-    if (in_array('ah_ho_salesperson', (array) $user->roles)) {
+    // Check if user is a salesperson or storeman
+    if (in_array('ah_ho_salesperson', (array) $user->roles) || in_array('ah_ho_storeman', (array) $user->roles)) {
         wp_safe_redirect(admin_url('admin.php?page=wc-orders'));
         exit;
     }
@@ -398,7 +495,7 @@ function ah_ho_salesperson_redirect_after_login($user_login, $user) {
 add_filter('woocommerce_login_redirect', 'ah_ho_wc_salesperson_login_redirect', 99, 2);
 
 function ah_ho_wc_salesperson_login_redirect($redirect, $user) {
-    if ($user && in_array('ah_ho_salesperson', (array) $user->roles)) {
+    if ($user && (in_array('ah_ho_salesperson', (array) $user->roles) || in_array('ah_ho_storeman', (array) $user->roles))) {
         return admin_url('admin.php?page=wc-orders');
     }
     return $redirect;
@@ -410,7 +507,7 @@ function ah_ho_wc_salesperson_login_redirect($redirect, $user) {
 add_filter('login_redirect', 'ah_ho_wp_salesperson_login_redirect', 99, 3);
 
 function ah_ho_wp_salesperson_login_redirect($redirect_to, $requested_redirect_to, $user) {
-    if (!is_wp_error($user) && in_array('ah_ho_salesperson', (array) $user->roles)) {
+    if (!is_wp_error($user) && (in_array('ah_ho_salesperson', (array) $user->roles) || in_array('ah_ho_storeman', (array) $user->roles))) {
         return admin_url('admin.php?page=wc-orders');
     }
     return $redirect_to;
@@ -427,12 +524,21 @@ function ah_ho_hide_menus_for_salesperson() {
         return;
     }
 
+    $current_user = wp_get_current_user();
+    $is_storeman = in_array('ah_ho_storeman', (array) $current_user->roles);
+
     // Hide top-level menus
     remove_menu_page('index.php');                    // Dashboard
     remove_menu_page('upload.php');                   // Media
     remove_menu_page('woocommerce-marketing');        // Marketing
     remove_menu_page('admin.php?page=wc-settings&tab=checkout&from=PAYMENTS_MENU_ITEM'); // Payments
     remove_menu_page('ah-ho-pdf-bulk');               // PDF Documents
+
+    // Storeman keeps Products menu for inventory management
+    // Salesperson does not get Products menu
+    if (!$is_storeman) {
+        remove_menu_page('edit.php?post_type=product');
+    }
 
     // Hide WooCommerce submenus (keep only Orders)
     remove_submenu_page('woocommerce', 'wc-admin');                    // Home
@@ -491,8 +597,8 @@ function ah_ho_clean_admin_bar_for_salesperson($wp_admin_bar) {
 add_filter('editable_roles', 'ah_ho_restrict_salesperson_editable_roles');
 
 function ah_ho_restrict_salesperson_editable_roles($roles) {
-    // Only restrict for salespersons
-    if (!ah_ho_is_current_user_salesperson()) {
+    // Only restrict for salespersons and storemen
+    if (!ah_ho_is_current_user_staff()) {
         return $roles;
     }
 
@@ -517,8 +623,8 @@ function ah_ho_restrict_salesperson_user_editing($allcaps, $caps, $args, $user) 
         return $allcaps;
     }
 
-    // Only restrict salespersons
-    if (!in_array('ah_ho_salesperson', (array) $user->roles)) {
+    // Only restrict salespersons and storemen
+    if (!in_array('ah_ho_salesperson', (array) $user->roles) && !in_array('ah_ho_storeman', (array) $user->roles)) {
         return $allcaps;
     }
 
@@ -540,11 +646,12 @@ function ah_ho_restrict_salesperson_user_editing($allcaps, $caps, $args, $user) 
         return $allcaps;
     }
 
-    // Privileged roles that salespersons cannot edit
+    // Privileged roles that salespersons/storemen cannot edit
     $protected_roles = array(
         'administrator',
         'shop_manager',
         'ah_ho_salesperson',
+        'ah_ho_storeman',
         'editor',
         'author',
     );
@@ -569,8 +676,8 @@ function ah_ho_restrict_salesperson_user_editing($allcaps, $caps, $args, $user) 
 add_action('user_register', 'ah_ho_force_customer_role_for_salesperson_created_users', 10, 1);
 
 function ah_ho_force_customer_role_for_salesperson_created_users($user_id) {
-    // Only apply when salesperson creates user
-    if (!ah_ho_is_current_user_salesperson()) {
+    // Only apply when salesperson/storeman creates user
+    if (!ah_ho_is_current_user_staff()) {
         return;
     }
 
@@ -590,8 +697,8 @@ function ah_ho_filter_user_list_for_salesperson($query) {
         return;
     }
 
-    // Only for salespersons
-    if (!ah_ho_is_current_user_salesperson()) {
+    // Only for salespersons and storemen
+    if (!ah_ho_is_current_user_staff()) {
         return;
     }
 
@@ -608,6 +715,19 @@ function ah_ho_is_current_user_salesperson() {
         return false;
     }
     return in_array('ah_ho_salesperson', (array) $current_user->roles);
+}
+
+/**
+ * Helper: Check if current user is a salesperson OR storeman
+ * Used for shared functionality (orders, commissions, customer management)
+ */
+function ah_ho_is_current_user_staff() {
+    $current_user = wp_get_current_user();
+    if (!$current_user || !$current_user->ID) {
+        return false;
+    }
+    $roles = (array) $current_user->roles;
+    return in_array('ah_ho_salesperson', $roles) || in_array('ah_ho_storeman', $roles);
 }
 
 

@@ -222,7 +222,8 @@ function ah_ho_is_salesperson($user_id = null) {
         return false;
     }
 
-    return in_array('ah_ho_salesperson', (array) $user->roles, true);
+    $roles = (array) $user->roles;
+    return in_array('ah_ho_salesperson', $roles, true) || in_array('ah_ho_storeman', $roles, true);
 }
 
 /**

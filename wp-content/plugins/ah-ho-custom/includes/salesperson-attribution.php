@@ -222,8 +222,9 @@ add_action('woocommerce_new_order', 'ah_ho_assign_salesperson_to_new_order', 10,
 function ah_ho_assign_salesperson_to_new_order($order_id, $order) {
     $current_user = wp_get_current_user();
 
-    // Only auto-assign if current user is a salesperson
-    if (!in_array('ah_ho_salesperson', $current_user->roles)) {
+    // Only auto-assign if current user is a salesperson or storeman
+    $roles = (array) $current_user->roles;
+    if (!in_array('ah_ho_salesperson', $roles) && !in_array('ah_ho_storeman', $roles)) {
         return;
     }
 
@@ -512,8 +513,8 @@ function ah_ho_render_salesperson_meta_box($post) {
     $commission_rate = $order->get_meta('_commission_rate', true);
     $commission_status = $order->get_meta('_commission_status', true);
 
-    // Get all salespersons
-    $salespersons = get_users(array('role' => 'ah_ho_salesperson'));
+    // Get all salespersons and storemen
+    $salespersons = get_users(array('role__in' => array('ah_ho_salesperson', 'ah_ho_storeman'), 'orderby' => 'display_name'));
 
     wp_nonce_field('ah_ho_save_salesperson', 'ah_ho_salesperson_nonce');
     ?>

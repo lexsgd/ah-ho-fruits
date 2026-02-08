@@ -352,8 +352,8 @@ function ah_ho_render_settings_page() {
  * Render salesperson overview stats
  */
 function ah_ho_render_salesperson_overview() {
-    // Count salespersons
-    $salespersons = get_users(array('role' => 'ah_ho_salesperson'));
+    // Count salespersons and storemen
+    $salespersons = get_users(array('role__in' => array('ah_ho_salesperson', 'ah_ho_storeman')));
     $total_salespersons = count($salespersons);
 
     // Count orders with commission

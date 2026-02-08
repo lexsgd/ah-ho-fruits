@@ -16,12 +16,13 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Helper function to check if current user is a salesperson
+ * Helper function to check if current user is a salesperson or storeman
  */
 if (!function_exists('ah_ho_is_current_user_salesperson')) {
     function ah_ho_is_current_user_salesperson() {
         $user = wp_get_current_user();
-        return in_array('ah_ho_salesperson', (array) $user->roles);
+        $roles = (array) $user->roles;
+        return in_array('ah_ho_salesperson', $roles) || in_array('ah_ho_storeman', $roles);
     }
 }
 
@@ -35,8 +36,9 @@ if (!function_exists('ah_ho_is_current_user_salesperson')) {
 add_filter('user_has_cap', 'ah_ho_grant_salesperson_edit_cap', 1, 4);
 
 function ah_ho_grant_salesperson_edit_cap($allcaps, $caps, $args, $user) {
-    // Only for salespersons
-    if (!in_array('ah_ho_salesperson', (array) $user->roles)) {
+    // Only for salespersons and storemen
+    $roles = (array) $user->roles;
+    if (!in_array('ah_ho_salesperson', $roles) && !in_array('ah_ho_storeman', $roles)) {
         return $allcaps;
     }
 
@@ -79,7 +81,7 @@ function ah_ho_map_order_meta_cap($caps, $cap, $user_id, $args) {
 
     // Check if user is a salesperson
     $user = get_userdata($user_id);
-    if (!$user || !in_array('ah_ho_salesperson', (array) $user->roles)) {
+    if (!$user || (!in_array('ah_ho_salesperson', (array) $user->roles) && !in_array('ah_ho_storeman', (array) $user->roles))) {
         return $caps;
     }
 
@@ -478,8 +480,9 @@ function ah_ho_filter_dashboard_widget() {
 add_filter('user_has_cap', 'ah_ho_grant_salesperson_order_caps', 10, 4);
 
 function ah_ho_grant_salesperson_order_caps($allcaps, $caps, $args, $user) {
-    // Check if user is a salesperson
-    if (!in_array('ah_ho_salesperson', (array) $user->roles)) {
+    // Check if user is a salesperson or storeman
+    $roles = (array) $user->roles;
+    if (!in_array('ah_ho_salesperson', $roles) && !in_array('ah_ho_storeman', $roles)) {
         return $allcaps;
     }
 
@@ -531,8 +534,9 @@ function ah_ho_grant_salesperson_order_caps($allcaps, $caps, $args, $user) {
 add_filter('user_has_cap', 'ah_ho_restrict_user_profile_access', 20, 4);
 
 function ah_ho_restrict_user_profile_access($allcaps, $caps, $args, $user) {
-    // Check if user is a salesperson
-    if (!in_array('ah_ho_salesperson', (array) $user->roles)) {
+    // Check if user is a salesperson or storeman
+    $roles = (array) $user->roles;
+    if (!in_array('ah_ho_salesperson', $roles) && !in_array('ah_ho_storeman', $roles)) {
         return $allcaps;
     }
 
@@ -540,8 +544,8 @@ function ah_ho_restrict_user_profile_access($allcaps, $caps, $args, $user) {
     if (isset($args[2]) && $args[2] !== $user->ID) {
         $target_user = get_userdata($args[2]);
 
-        // Prevent editing other salespersons
-        if ($target_user && in_array('ah_ho_salesperson', (array) $target_user->roles)) {
+        // Prevent editing other salespersons or storemen
+        if ($target_user && (in_array('ah_ho_salesperson', (array) $target_user->roles) || in_array('ah_ho_storeman', (array) $target_user->roles))) {
             $allcaps['edit_user'] = false;
             $allcaps['edit_users'] = false;
         }

@@ -149,7 +149,7 @@ function ah_ho_add_commission_dashboard_pages() {
 
     // Personal Commission Dashboard (for salespersons)
     $user = wp_get_current_user();
-    if (in_array('ah_ho_salesperson', $user->roles)) {
+    if (in_array('ah_ho_salesperson', $user->roles) || in_array('ah_ho_storeman', $user->roles)) {
         add_menu_page(
             __('My Commission', 'ah-ho-custom'),
             __('My Commission', 'ah-ho-custom'),
@@ -219,7 +219,7 @@ function ah_ho_render_admin_commission_dashboard() {
                 <select name="filter_salesperson">
                     <option value=""><?php _e('All Salespersons', 'ah-ho-custom'); ?></option>
                     <?php
-                    $salespersons = get_users(array('role' => 'ah_ho_salesperson'));
+                    $salespersons = get_users(array('role__in' => array('ah_ho_salesperson', 'ah_ho_storeman'), 'orderby' => 'display_name'));
                     foreach ($salespersons as $sp) {
                         printf(
                             '<option value="%d" %s>%s</option>',
@@ -307,7 +307,7 @@ function ah_ho_render_admin_commission_dashboard() {
 function ah_ho_render_salesperson_dashboard() {
     $user = wp_get_current_user();
 
-    if (!in_array('ah_ho_salesperson', $user->roles)) {
+    if (!in_array('ah_ho_salesperson', $user->roles) && !in_array('ah_ho_storeman', $user->roles)) {
         return;
     }
 

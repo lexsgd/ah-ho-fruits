@@ -70,6 +70,9 @@ function ah_ho_custom_init() {
     // Include wholesale pricing for B2B orders
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/wholesale-pricing.php';
 
+    // Include storeman product access restrictions
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/storeman-product-access.php';
+
     // Include payment gateway settings (default to PayNow)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/payment-settings.php';
 
@@ -88,8 +91,9 @@ function ah_ho_custom_activate() {
     // Load salesperson roles file first (needed for role registration)
     require_once plugin_dir_path(__FILE__) . 'includes/salesperson-roles.php';
 
-    // Register salesperson role directly
+    // Register salesperson and storeman roles directly
     ah_ho_register_salesperson_role();
+    ah_ho_register_storeman_role();
 
     // Trigger other activation hooks
     do_action('ah_ho_custom_activate');
