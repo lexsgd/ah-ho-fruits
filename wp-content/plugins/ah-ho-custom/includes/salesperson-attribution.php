@@ -118,12 +118,7 @@ function ah_ho_ajax_get_customer_payment_terms() {
     }
 
     $payment_terms = get_user_meta($customer_id, '_payment_terms', true);
-    $terms_labels = array(
-        'cod' => array('label' => 'COD', 'color' => '#2ea44f'),
-        'credit_7' => array('label' => 'Credit 7 Days', 'color' => '#dba617'),
-        'credit_14' => array('label' => 'Credit 14 Days', 'color' => '#f56e28'),
-        'credit_30' => array('label' => 'Credit 30 Days', 'color' => '#b32d2e'),
-    );
+    $terms_labels = ah_ho_get_payment_terms();
 
     if ($payment_terms && isset($terms_labels[$payment_terms])) {
         $html = sprintf(
@@ -693,12 +688,7 @@ function ah_ho_display_salesperson_in_order_details($order) {
     // Get customer payment terms
     $customer_id = $order->get_customer_id();
     $payment_terms = $customer_id ? get_user_meta($customer_id, '_payment_terms', true) : '';
-    $terms_labels = array(
-        'cod' => array('label' => 'COD', 'color' => '#2ea44f'),
-        'credit_7' => array('label' => 'Credit 7 Days', 'color' => '#dba617'),
-        'credit_14' => array('label' => 'Credit 14 Days', 'color' => '#f56e28'),
-        'credit_30' => array('label' => 'Credit 30 Days', 'color' => '#b32d2e'),
-    );
+    $terms_labels = ah_ho_get_payment_terms();
     ?>
     <p class="form-field form-field-wide ah-ho-salesperson-field">
         <label for="ah_ho_salesperson_display">

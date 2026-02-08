@@ -41,9 +41,18 @@ if (empty($delivery_date)) {
     $delivery_date = $order->get_date_created()->format('j/n/Y');
 }
 
-// Payment terms
-$payment_method = $order->get_payment_method();
-$terms = ($payment_method === 'cod') ? 'C.O.D.' : $order->get_payment_method_title();
+// Payment terms - read from customer profile, fallback to payment method
+$customer_id = $order->get_customer_id();
+$customer_terms = $customer_id ? get_user_meta($customer_id, '_payment_terms', true) : '';
+
+$all_payment_terms = ah_ho_get_payment_terms();
+
+if ($customer_terms && isset($all_payment_terms[$customer_terms])) {
+    $terms = $all_payment_terms[$customer_terms]['label'];
+} else {
+    $payment_method = $order->get_payment_method();
+    $terms = ($payment_method === 'cod') ? 'C.O.D.' : $order->get_payment_method_title();
+}
 
 // PO Number from order meta
 $po_number = $order->get_meta('_po_number', true);

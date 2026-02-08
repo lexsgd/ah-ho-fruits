@@ -245,6 +245,28 @@ add_action('ah_ho_custom_deactivate', 'ah_ho_remove_salesperson_role');
  */
 
 /**
+ * Get configurable payment terms from wp_options
+ * Returns array keyed by slug: ['cod' => ['label' => 'C.O.D.', 'color' => '#2ea44f'], ...]
+ *
+ * @return array
+ */
+function ah_ho_get_payment_terms() {
+    $terms = get_option('ah_ho_payment_terms');
+
+    if (!empty($terms) && is_array($terms)) {
+        return $terms;
+    }
+
+    // Defaults — backwards compatible with existing user meta values
+    return array(
+        'cod'       => array('label' => 'C.O.D.',           'color' => '#2ea44f'),
+        'credit_7'  => array('label' => 'Credit - 7 Days',  'color' => '#dba617'),
+        'credit_14' => array('label' => 'Credit - 14 Days', 'color' => '#f56e28'),
+        'credit_30' => array('label' => 'Credit - 30 Days', 'color' => '#b32d2e'),
+    );
+}
+
+/**
  * Add payment terms field to customer profile
  */
 add_action('show_user_profile', 'ah_ho_add_payment_terms_field');
@@ -266,10 +288,9 @@ function ah_ho_add_payment_terms_field($user) {
             <td>
                 <select name="payment_terms" id="payment_terms" style="min-width: 200px;">
                     <option value=""><?php _e('-- Select Payment Terms --', 'ah-ho-custom'); ?></option>
-                    <option value="cod" <?php selected($payment_terms, 'cod'); ?>><?php _e('COD (Cash on Delivery)', 'ah-ho-custom'); ?></option>
-                    <option value="credit_7" <?php selected($payment_terms, 'credit_7'); ?>><?php _e('Credit - 7 Days', 'ah-ho-custom'); ?></option>
-                    <option value="credit_14" <?php selected($payment_terms, 'credit_14'); ?>><?php _e('Credit - 14 Days', 'ah-ho-custom'); ?></option>
-                    <option value="credit_30" <?php selected($payment_terms, 'credit_30'); ?>><?php _e('Credit - 30 Days', 'ah-ho-custom'); ?></option>
+                    <?php foreach (ah_ho_get_payment_terms() as $key => $term): ?>
+                        <option value="<?php echo esc_attr($key); ?>" <?php selected($payment_terms, $key); ?>><?php echo esc_html($term['label']); ?></option>
+                    <?php endforeach; ?>
                 </select>
                 <p class="description">
                     <?php _e('COD = Payment collected on delivery. Credit = Invoice sent, payment due within X days.', 'ah-ho-custom'); ?>
@@ -296,10 +317,9 @@ function ah_ho_add_payment_terms_field_new_user($operation) {
             <td>
                 <select name="payment_terms" id="payment_terms" style="min-width: 200px;">
                     <option value=""><?php _e('-- Select Payment Terms --', 'ah-ho-custom'); ?></option>
-                    <option value="cod"><?php _e('COD (Cash on Delivery)', 'ah-ho-custom'); ?></option>
-                    <option value="credit_7"><?php _e('Credit - 7 Days', 'ah-ho-custom'); ?></option>
-                    <option value="credit_14"><?php _e('Credit - 14 Days', 'ah-ho-custom'); ?></option>
-                    <option value="credit_30"><?php _e('Credit - 30 Days', 'ah-ho-custom'); ?></option>
+                    <?php foreach (ah_ho_get_payment_terms() as $key => $term): ?>
+                        <option value="<?php echo esc_attr($key); ?>"><?php echo esc_html($term['label']); ?></option>
+                    <?php endforeach; ?>
                 </select>
             </td>
         </tr>
@@ -321,7 +341,7 @@ function ah_ho_save_payment_terms_field($user_id) {
 
     if (isset($_POST['payment_terms'])) {
         $terms = sanitize_text_field($_POST['payment_terms']);
-        $valid_terms = array('', 'cod', 'credit_7', 'credit_14', 'credit_30');
+        $valid_terms = array_merge(array(''), array_keys(ah_ho_get_payment_terms()));
 
         if (in_array($terms, $valid_terms)) {
             update_user_meta($user_id, '_payment_terms', $terms);
@@ -350,14 +370,17 @@ function ah_ho_display_payment_terms_column($value, $column_name, $user_id) {
         }
 
         $terms = get_user_meta($user_id, '_payment_terms', true);
-        $labels = array(
-            'cod' => '<span style="background:#2ea44f;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;">COD</span>',
-            'credit_7' => '<span style="background:#dba617;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;">Credit 7d</span>',
-            'credit_14' => '<span style="background:#f56e28;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;">Credit 14d</span>',
-            'credit_30' => '<span style="background:#b32d2e;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;">Credit 30d</span>',
-        );
+        $all_terms = ah_ho_get_payment_terms();
 
-        return isset($labels[$terms]) ? $labels[$terms] : '<span style="color:#999;">Not set</span>';
+        if ($terms && isset($all_terms[$terms])) {
+            return sprintf(
+                '<span style="background:%s;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;">%s</span>',
+                esc_attr($all_terms[$terms]['color']),
+                esc_html($all_terms[$terms]['label'])
+            );
+        }
+
+        return '<span style="color:#999;">Not set</span>';
     }
     return $value;
 }

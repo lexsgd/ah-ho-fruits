@@ -82,6 +82,13 @@ function ah_ho_register_settings() {
         'sanitize_callback' => 'rest_sanitize_boolean'
     ));
 
+    // B2B Payment Terms
+    register_setting('ah_ho_salesperson_settings', 'ah_ho_payment_terms', array(
+        'type'              => 'array',
+        'default'           => array(),
+        'sanitize_callback' => 'ah_ho_sanitize_payment_terms'
+    ));
+
     // Wholesale Pricing Settings
     register_setting('ah_ho_salesperson_settings', 'ah_ho_default_wholesale_discount', array(
         'type'              => 'number',
@@ -103,6 +110,31 @@ function ah_ho_sanitize_email_list($input) {
     $emails = array_map('trim', explode(',', $input));
     $valid_emails = array_filter($emails, 'is_email');
     return implode(', ', $valid_emails);
+}
+
+/**
+ * Sanitize payment terms array from settings form
+ */
+function ah_ho_sanitize_payment_terms($input) {
+    if (!is_array($input)) {
+        return array();
+    }
+
+    $sanitized = array();
+    foreach ($input as $item) {
+        if (empty($item['key']) || empty($item['label'])) {
+            continue;
+        }
+        $key   = sanitize_key($item['key']);
+        $label = sanitize_text_field($item['label']);
+        $color = sanitize_hex_color($item['color']);
+        if (empty($color)) {
+            $color = '#666666';
+        }
+        $sanitized[$key] = array('label' => $label, 'color' => $color);
+    }
+
+    return $sanitized;
 }
 
 /**
@@ -310,6 +342,68 @@ function ah_ho_render_settings_page() {
                     </td>
                 </tr>
             </table>
+
+            <!-- B2B Payment Terms -->
+            <h2><?php _e('B2B Payment Terms', 'ah-ho-custom'); ?></h2>
+            <p class="description"><?php _e('Configure the payment terms available when editing customer profiles. Changes apply to all dropdowns, badges, invoices, and delivery orders.', 'ah-ho-custom'); ?></p>
+            <table class="widefat" id="ah-ho-payment-terms-table" style="max-width: 650px;">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;"><?php _e('Key', 'ah-ho-custom'); ?></th>
+                        <th style="width: 35%;"><?php _e('Label', 'ah-ho-custom'); ?></th>
+                        <th style="width: 20%;"><?php _e('Color', 'ah-ho-custom'); ?></th>
+                        <th style="width: 15%;"><?php _e('Preview', 'ah-ho-custom'); ?></th>
+                        <th style="width: 10%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $payment_terms = ah_ho_get_payment_terms();
+                    $idx = 0;
+                    foreach ($payment_terms as $key => $term):
+                    ?>
+                    <tr>
+                        <td><input type="text" name="ah_ho_payment_terms[<?php echo $idx; ?>][key]" value="<?php echo esc_attr($key); ?>" class="regular-text" style="width:100%;" pattern="[a-z0-9_]+" title="<?php esc_attr_e('Lowercase letters, numbers, underscores only', 'ah-ho-custom'); ?>" /></td>
+                        <td><input type="text" name="ah_ho_payment_terms[<?php echo $idx; ?>][label]" value="<?php echo esc_attr($term['label']); ?>" class="regular-text" style="width:100%;" /></td>
+                        <td><input type="color" name="ah_ho_payment_terms[<?php echo $idx; ?>][color]" value="<?php echo esc_attr($term['color']); ?>" style="width:50px;height:30px;padding:0;border:1px solid #ccc;cursor:pointer;" /></td>
+                        <td><span style="display:inline-block;background:<?php echo esc_attr($term['color']); ?>;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;" class="ah-ho-term-preview"><?php echo esc_html($term['label']); ?></span></td>
+                        <td><button type="button" class="button ah-ho-remove-term" title="<?php esc_attr_e('Remove', 'ah-ho-custom'); ?>">&times;</button></td>
+                    </tr>
+                    <?php $idx++; endforeach; ?>
+                </tbody>
+            </table>
+            <p><button type="button" class="button" id="ah-ho-add-term"><?php _e('+ Add Term', 'ah-ho-custom'); ?></button></p>
+
+            <script type="text/javascript">
+            jQuery(function($) {
+                var idx = <?php echo $idx; ?>;
+                var $tbody = $('#ah-ho-payment-terms-table tbody');
+
+                $('#ah-ho-add-term').on('click', function() {
+                    var row = '<tr>' +
+                        '<td><input type="text" name="ah_ho_payment_terms[' + idx + '][key]" value="" class="regular-text" style="width:100%;" pattern="[a-z0-9_]+" title="Lowercase letters, numbers, underscores only" placeholder="e.g. credit_90" /></td>' +
+                        '<td><input type="text" name="ah_ho_payment_terms[' + idx + '][label]" value="" class="regular-text" style="width:100%;" placeholder="e.g. Credit - 90 Days" /></td>' +
+                        '<td><input type="color" name="ah_ho_payment_terms[' + idx + '][color]" value="#666666" style="width:50px;height:30px;padding:0;border:1px solid #ccc;cursor:pointer;" /></td>' +
+                        '<td><span style="display:inline-block;background:#666666;color:#fff;padding:2px 8px;border-radius:3px;font-size:11px;" class="ah-ho-term-preview"></span></td>' +
+                        '<td><button type="button" class="button ah-ho-remove-term" title="Remove">&times;</button></td>' +
+                        '</tr>';
+                    $tbody.append(row);
+                    idx++;
+                });
+
+                $tbody.on('click', '.ah-ho-remove-term', function() {
+                    $(this).closest('tr').remove();
+                });
+
+                // Live preview update
+                $tbody.on('input change', 'input', function() {
+                    var $row = $(this).closest('tr');
+                    var label = $row.find('input[name*="[label]"]').val();
+                    var color = $row.find('input[name*="[color]"]').val();
+                    $row.find('.ah-ho-term-preview').text(label).css('background', color);
+                });
+            });
+            </script>
 
             <?php submit_button(__('Save Settings', 'ah-ho-custom')); ?>
         </form>
