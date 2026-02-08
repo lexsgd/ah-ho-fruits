@@ -665,7 +665,19 @@ function ah_ho_restrict_salesperson_user_editing($allcaps, $caps, $args, $user) 
         }
     }
 
-    // Allow editing - user has non-privileged role (customer, subscriber, etc.)
+    // Only allow editing customers created by this staff member
+    $created_by = get_user_meta($target_user_id, '_created_by_staff_id', true);
+    if ($created_by && (int) $created_by !== $user->ID) {
+        $allcaps['edit_users'] = false;
+        return $allcaps;
+    }
+    // Also block if customer has no creator meta (created by admin/web)
+    if (!$created_by) {
+        $allcaps['edit_users'] = false;
+        return $allcaps;
+    }
+
+    // Allow editing - customer was created by this staff member
     return $allcaps;
 }
 
@@ -684,6 +696,9 @@ function ah_ho_force_customer_role_for_salesperson_created_users($user_id) {
     // Force customer role
     $user = new WP_User($user_id);
     $user->set_role('customer');
+
+    // Track which staff member created this customer
+    update_user_meta($user_id, '_created_by_staff_id', get_current_user_id());
 }
 
 /**
@@ -704,6 +719,15 @@ function ah_ho_filter_user_list_for_salesperson($query) {
 
     // Only show customers
     $query->set('role', 'customer');
+
+    // Only show customers created by this staff member
+    $meta_query = $query->get('meta_query') ?: array();
+    $meta_query[] = array(
+        'key'     => '_created_by_staff_id',
+        'value'   => get_current_user_id(),
+        'compare' => '='
+    );
+    $query->set('meta_query', $meta_query);
 }
 
 /**
