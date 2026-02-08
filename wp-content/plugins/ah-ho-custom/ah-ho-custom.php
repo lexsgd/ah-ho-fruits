@@ -73,6 +73,9 @@ function ah_ho_custom_init() {
     // Include storeman product access restrictions
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/storeman-product-access.php';
 
+    // Include storeman quick stock update page
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/storeman-inventory.php';
+
     // Include payment gateway settings (default to PayNow)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/payment-settings.php';
 
