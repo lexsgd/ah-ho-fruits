@@ -1,0 +1,408 @@
+/**
+ * HeyMag Chat - Admin Styles
+ *
+ * @package HeyMag_Chat
+ */
+
+/* Card Styling */
+.heymag-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.heymag-card h2 {
+    margin-top: 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Status Indicators */
+.heymag-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.heymag-status.connected {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.heymag-status.disconnected {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.heymag-status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.heymag-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.heymag-status.connected .heymag-status-dot {
+    background: #22c55e;
+}
+
+.heymag-status.disconnected .heymag-status-dot {
+    background: #ef4444;
+}
+
+.heymag-status.pending .heymag-status-dot {
+    background: #f59e0b;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Form Styling */
+.heymag-form-row {
+    margin-bottom: 20px;
+}
+
+.heymag-form-row label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.heymag-form-row .description {
+    margin-top: 6px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.heymag-form-row input[type="text"],
+.heymag-form-row input[type="number"],
+.heymag-form-row select,
+.heymag-form-row textarea {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.heymag-form-row input:focus,
+.heymag-form-row select:focus,
+.heymag-form-row textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Color Picker */
+.heymag-color-picker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.heymag-color-preview {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    cursor: pointer;
+}
+
+/* Toggle Switch */
+.heymag-toggle {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+}
+
+.heymag-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.heymag-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #d1d5db;
+    transition: 0.3s;
+    border-radius: 24px;
+}
+
+.heymag-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.heymag-toggle input:checked + .heymag-toggle-slider {
+    background-color: #2563eb;
+}
+
+.heymag-toggle input:checked + .heymag-toggle-slider:before {
+    transform: translateX(24px);
+}
+
+/* Button Styling */
+.heymag-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.heymag-button-primary {
+    background: #2563eb;
+    color: #fff;
+}
+
+.heymag-button-primary:hover {
+    background: #1d4ed8;
+}
+
+.heymag-button-primary:disabled {
+    background: #93c5fd;
+    cursor: not-allowed;
+}
+
+.heymag-button-secondary {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.heymag-button-secondary:hover {
+    background: #e5e7eb;
+}
+
+/* Stats Grid */
+.heymag-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.heymag-stat-card {
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+}
+
+.heymag-stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.heymag-stat-label {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+/* Sync Progress */
+.heymag-sync-progress {
+    margin-top: 16px;
+}
+
+.heymag-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.heymag-progress-fill {
+    height: 100%;
+    background: #2563eb;
+    border-radius: 4px;
+    transition: width 0.3s;
+}
+
+.heymag-progress-text {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* Widget Preview */
+.heymag-widget-preview {
+    max-width: 400px;
+    background: #f3f4f6;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.heymag-widget-preview-header {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.heymag-widget-preview-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 24px;
+    color: #fff;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Notices */
+.heymag-notice {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.heymag-notice.success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.heymag-notice.error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.heymag-notice.warning {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.heymag-notice.info {
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+/* Loading Spinner */
+.heymag-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #e5e7eb;
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Tab Navigation */
+.heymag-tabs {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 20px;
+}
+
+.heymag-tab {
+    padding: 12px 20px;
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+}
+
+.heymag-tab:hover {
+    color: #374151;
+}
+
+.heymag-tab.active {
+    color: #2563eb;
+    border-bottom-color: #2563eb;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .heymag-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .heymag-form-row input[type="text"],
+    .heymag-form-row select,
+    .heymag-form-row textarea {
+        max-width: 100%;
+    }
+}
+
+/* Code Input */
+.heymag-code-input {
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+    font-size: 13px;
+    background: #f9fafb;
+    letter-spacing: 0.5px;
+}
+
+/* Links */
+.heymag-link {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.heymag-link:hover {
+    text-decoration: underline;
+}
+
+/* Icon styling for inline dashicons */
+.heymag-button .dashicons,
+.heymag-status .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+}
