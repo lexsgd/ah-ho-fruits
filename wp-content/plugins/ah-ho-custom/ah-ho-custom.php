@@ -88,12 +88,56 @@ function ah_ho_custom_init() {
     // Include shop product ordering (pin Omakase Boxes first)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/shop-ordering.php';
 
-    // One-time setup: create salesman accounts (remove after setup)
-    if (file_exists(AH_HO_CUSTOM_PLUGIN_DIR . 'includes/setup-salesman-accounts.php')) {
-        require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/setup-salesman-accounts.php';
-    }
 }
 add_action('plugins_loaded', 'ah_ho_custom_init');
+
+/**
+ * One-time: Create 5 salesman accounts via REST endpoint.
+ * DELETE this block after accounts are created.
+ * Trigger: GET /wp-json/ah-ho/v1/create-salesman?key=ahho2026setup
+ */
+add_action('rest_api_init', function () {
+    register_rest_route('ah-ho/v1', '/create-salesman', array(
+        'methods'  => 'GET',
+        'callback' => function ($request) {
+            if ($request->get_param('key') !== 'ahho2026setup') {
+                return new WP_Error('unauthorized', 'Bad key', array('status' => 403));
+            }
+
+            $results = array();
+            $role = get_role('ah_ho_salesperson');
+            $results[] = 'Role exists: ' . ($role ? 'YES' : 'NO');
+
+            for ($i = 1; $i <= 5; $i++) {
+                $username = 'salesman' . $i;
+                $email = 'enquiry+' . $username . '@ahhofruit.com';
+
+                if (username_exists($username)) {
+                    $results[] = $username . ': already exists';
+                    continue;
+                }
+
+                $user_id = wp_insert_user(array(
+                    'user_login'   => $username,
+                    'user_pass'    => 'ahho1234',
+                    'user_email'   => $email,
+                    'display_name' => 'Salesman ' . $i,
+                    'first_name'   => 'Salesman ' . $i,
+                    'role'         => 'ah_ho_salesperson',
+                ));
+
+                if (is_wp_error($user_id)) {
+                    $results[] = $username . ': ERROR - ' . $user_id->get_error_message();
+                } else {
+                    $results[] = $username . ': CREATED (ID ' . $user_id . ')';
+                }
+            }
+
+            return $results;
+        },
+        'permission_callback' => '__return_true',
+    ));
+});
 
 /**
  * Activation hook
