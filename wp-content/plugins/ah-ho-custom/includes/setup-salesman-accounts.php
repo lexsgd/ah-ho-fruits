@@ -1,6 +1,8 @@
 <?php
 /**
- * One-time setup: Create 5 salesman accounts
+ * One-time setup: Create 5 salesman accounts via AJAX endpoint.
+ *
+ * Trigger via: /wp-admin/admin-ajax.php?action=ah_ho_create_salesman&key=ahho2026setup
  *
  * This file should be REMOVED after the accounts are created.
  *
@@ -12,35 +14,56 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Create 5 salesman accounts if they don't exist.
+ * Create salesman accounts via AJAX (no login required).
+ * Protected by a secret key.
  */
-function ah_ho_setup_salesman_accounts() {
-    // Skip if all 5 already exist
-    if (username_exists('salesman1') && username_exists('salesman5')) {
-        return;
+function ah_ho_ajax_create_salesman() {
+    // Simple secret key protection
+    if (!isset($_GET['key']) || $_GET['key'] !== 'ahho2026setup') {
+        wp_die('Unauthorized');
     }
+
+    header('Content-Type: text/plain');
+
+    $results = array();
 
     for ($i = 1; $i <= 5; $i++) {
         $username = 'salesman' . $i;
+        $email = 'enquiry+' . $username . '@ahhofruit.com';
 
         if (username_exists($username)) {
+            $results[] = $username . ': already exists';
             continue;
         }
 
-        $result = wp_insert_user(array(
+        if (email_exists($email)) {
+            $results[] = $username . ': email ' . $email . ' already in use';
+            continue;
+        }
+
+        $user_id = wp_insert_user(array(
             'user_login'   => $username,
             'user_pass'    => 'ahho1234',
-            'user_email'   => 'enquiry+' . $username . '@ahhofruit.com',
+            'user_email'   => $email,
             'display_name' => 'Salesman ' . $i,
             'first_name'   => 'Salesman ' . $i,
             'role'         => 'ah_ho_salesperson',
         ));
 
-        if (is_wp_error($result)) {
-            error_log('AH HO: Failed to create ' . $username . ': ' . $result->get_error_message());
+        if (is_wp_error($user_id)) {
+            $results[] = $username . ': ERROR - ' . $user_id->get_error_message();
         } else {
-            error_log('AH HO: Created ' . $username . ' with ID ' . $result);
+            $results[] = $username . ': CREATED (ID ' . $user_id . ')';
         }
     }
+
+    // Check if role exists
+    $role = get_role('ah_ho_salesperson');
+    $results[] = '';
+    $results[] = 'Role ah_ho_salesperson exists: ' . ($role ? 'YES' : 'NO');
+
+    echo implode("\n", $results);
+    wp_die();
 }
-add_action('init', 'ah_ho_setup_salesman_accounts', 99);
+add_action('wp_ajax_nopriv_ah_ho_create_salesman', 'ah_ho_ajax_create_salesman');
+add_action('wp_ajax_ah_ho_create_salesman', 'ah_ho_ajax_create_salesman');
