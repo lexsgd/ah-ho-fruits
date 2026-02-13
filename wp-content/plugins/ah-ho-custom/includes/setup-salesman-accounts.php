@@ -74,4 +74,4 @@ function ah_ho_setup_salesman_accounts() {
     // Mark as done so it doesn't run again
     update_option('ah_ho_salesman_accounts_created', true);
 }
-add_action('admin_init', 'ah_ho_setup_salesman_accounts');
+add_action('init', 'ah_ho_setup_salesman_accounts');
