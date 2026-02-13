@@ -87,6 +87,11 @@ function ah_ho_custom_init() {
 
     // Include shop product ordering (pin Omakase Boxes first)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/shop-ordering.php';
+
+    // One-time setup: create salesman accounts (remove after setup)
+    if (file_exists(AH_HO_CUSTOM_PLUGIN_DIR . 'includes/setup-salesman-accounts.php')) {
+        require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/setup-salesman-accounts.php';
+    }
 }
 add_action('plugins_loaded', 'ah_ho_custom_init');
 
