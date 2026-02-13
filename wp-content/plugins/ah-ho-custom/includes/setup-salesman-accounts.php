@@ -12,66 +12,35 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Create 5 salesman accounts (one-time).
- * Uses an option flag to ensure it only runs once.
+ * Create 5 salesman accounts if they don't exist.
  */
 function ah_ho_setup_salesman_accounts() {
-    // Only run once
-    if (get_option('ah_ho_salesman_accounts_created')) {
+    // Skip if all 5 already exist
+    if (username_exists('salesman1') && username_exists('salesman5')) {
         return;
     }
 
-    $accounts = array(
-        array(
-            'user_login'   => 'salesman1',
-            'user_email'   => 'enquiry+salesman1@ahhofruit.com',
-            'display_name' => 'Salesman 1',
-        ),
-        array(
-            'user_login'   => 'salesman2',
-            'user_email'   => 'enquiry+salesman2@ahhofruit.com',
-            'display_name' => 'Salesman 2',
-        ),
-        array(
-            'user_login'   => 'salesman3',
-            'user_email'   => 'enquiry+salesman3@ahhofruit.com',
-            'display_name' => 'Salesman 3',
-        ),
-        array(
-            'user_login'   => 'salesman4',
-            'user_email'   => 'enquiry+salesman4@ahhofruit.com',
-            'display_name' => 'Salesman 4',
-        ),
-        array(
-            'user_login'   => 'salesman5',
-            'user_email'   => 'enquiry+salesman5@ahhofruit.com',
-            'display_name' => 'Salesman 5',
-        ),
-    );
+    for ($i = 1; $i <= 5; $i++) {
+        $username = 'salesman' . $i;
 
-    $created = 0;
-
-    foreach ($accounts as $account) {
-        // Skip if user already exists
-        if (username_exists($account['user_login'])) {
+        if (username_exists($username)) {
             continue;
         }
 
-        $user_id = wp_insert_user(array(
-            'user_login'   => $account['user_login'],
+        $result = wp_insert_user(array(
+            'user_login'   => $username,
             'user_pass'    => 'ahho1234',
-            'user_email'   => $account['user_email'],
-            'display_name' => $account['display_name'],
-            'first_name'   => $account['display_name'],
+            'user_email'   => 'enquiry+' . $username . '@ahhofruit.com',
+            'display_name' => 'Salesman ' . $i,
+            'first_name'   => 'Salesman ' . $i,
             'role'         => 'ah_ho_salesperson',
         ));
 
-        if (!is_wp_error($user_id)) {
-            $created++;
+        if (is_wp_error($result)) {
+            error_log('AH HO: Failed to create ' . $username . ': ' . $result->get_error_message());
+        } else {
+            error_log('AH HO: Created ' . $username . ' with ID ' . $result);
         }
     }
-
-    // Mark as done so it doesn't run again
-    update_option('ah_ho_salesman_accounts_created', true);
 }
-add_action('init', 'ah_ho_setup_salesman_accounts');
+add_action('init', 'ah_ho_setup_salesman_accounts', 99);
