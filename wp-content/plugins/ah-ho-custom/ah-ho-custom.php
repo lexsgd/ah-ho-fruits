@@ -91,53 +91,26 @@ function ah_ho_custom_init() {
 }
 add_action('plugins_loaded', 'ah_ho_custom_init');
 
-/**
- * One-time: Create 5 salesman accounts via REST endpoint.
- * DELETE this block after accounts are created.
- * Trigger: GET /wp-json/ah-ho/v1/create-salesman?key=ahho2026setup
- */
-add_action('rest_api_init', function () {
-    register_rest_route('ah-ho/v1', '/create-salesman', array(
-        'methods'  => 'GET',
-        'callback' => function ($request) {
-            if ($request->get_param('key') !== 'ahho2026setup') {
-                return new WP_Error('unauthorized', 'Bad key', array('status' => 403));
-            }
-
-            $results = array();
-            $role = get_role('ah_ho_salesperson');
-            $results[] = 'Role exists: ' . ($role ? 'YES' : 'NO');
-
-            for ($i = 1; $i <= 5; $i++) {
-                $username = 'salesman' . $i;
-                $email = 'enquiry+' . $username . '@ahhofruit.com';
-
-                if (username_exists($username)) {
-                    $results[] = $username . ': already exists';
-                    continue;
-                }
-
-                $user_id = wp_insert_user(array(
-                    'user_login'   => $username,
-                    'user_pass'    => 'ahho1234',
-                    'user_email'   => $email,
-                    'display_name' => 'Salesman ' . $i,
-                    'first_name'   => 'Salesman ' . $i,
-                    'role'         => 'ah_ho_salesperson',
-                ));
-
-                if (is_wp_error($user_id)) {
-                    $results[] = $username . ': ERROR - ' . $user_id->get_error_message();
-                } else {
-                    $results[] = $username . ': CREATED (ID ' . $user_id . ')';
-                }
-            }
-
-            return $results;
-        },
-        'permission_callback' => '__return_true',
-    ));
-});
+// TEMPORARY: Create salesman accounts via query param
+// Visit any page with ?ah_ho_setup=ahho2026setup to trigger
+function ah_ho_maybe_create_salesman_accounts() {
+    if (!isset($_GET['ah_ho_setup']) || $_GET['ah_ho_setup'] !== 'ahho2026setup') {
+        return;
+    }
+    header('Content-Type: text/plain');
+    $role = get_role('ah_ho_salesperson');
+    echo "Role ah_ho_salesperson: " . ($role ? 'YES' : 'NO') . "\n";
+    for ($i = 1; $i <= 5; $i++) {
+        $u = 'salesman' . $i;
+        $e = 'enquiry+' . $u . '@ahhofruit.com';
+        if (username_exists($u)) { echo $u . ": exists\n"; continue; }
+        $id = wp_insert_user(array('user_login'=>$u,'user_pass'=>'ahho1234','user_email'=>$e,'display_name'=>'Salesman '.$i,'first_name'=>'Salesman '.$i,'role'=>'ah_ho_salesperson'));
+        echo is_wp_error($id) ? $u.': ERROR - '.$id->get_error_message()."\n" : $u.': CREATED (ID '.$id.")\n";
+    }
+    echo "Done.\n";
+    exit;
+}
+add_action('init', 'ah_ho_maybe_create_salesman_accounts', 1);
 
 /**
  * Activation hook
