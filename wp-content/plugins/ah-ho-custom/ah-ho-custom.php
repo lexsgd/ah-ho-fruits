@@ -85,6 +85,9 @@ function ah_ho_custom_init() {
     // Include delivery date field (checkout + admin)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/delivery-date-field.php';
 
+    // Include order fulfillment (partial deliveries & item returns)
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/order-fulfillment.php';
+
     // Include shop product ordering (pin Omakase Boxes first)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/shop-ordering.php';
 

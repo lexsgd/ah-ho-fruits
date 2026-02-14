@@ -476,6 +476,74 @@ function ah_ho_handle_commission_cancellation($order_id) {
 }
 
 /**
+ * ========================================
+ * COMMISSION RECALCULATION ON PARTIAL REFUND
+ * ========================================
+ * When items are returned via wc_create_refund(), recalculate
+ * both percentage (from reduced total) and per-carton (from reduced qty).
+ */
+add_action('woocommerce_refund_created', 'ah_ho_recalculate_commission_on_partial_refund', 10, 2);
+
+function ah_ho_recalculate_commission_on_partial_refund($refund_id, $args) {
+    $order_id = isset($args['order_id']) ? $args['order_id'] : 0;
+    $order = wc_get_order($order_id);
+
+    if (!$order) {
+        return;
+    }
+
+    $salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
+    if (!$salesperson_id) {
+        return;
+    }
+
+    $commission_status = $order->get_meta('_commission_status', true);
+
+    // Don't auto-recalculate if commission is already paid
+    if ($commission_status === 'paid') {
+        $order->add_order_note(
+            __('Item return processed but commission was already paid. Manual adjustment may be needed.', 'ah-ho-custom')
+        );
+        $order->save();
+        return;
+    }
+
+    $old_commission = floatval($order->get_meta('_commission_amount', true));
+
+    // Recalculate using existing helper (percentage is based on order total, already reduced by WC)
+    $components = ah_ho_calculate_commission_components($order, $salesperson_id);
+
+    // Adjust per-carton commission: subtract total returned quantity
+    $total_returned_qty = 0;
+    foreach ($order->get_refunds() as $refund) {
+        foreach ($refund->get_items() as $refund_item) {
+            $total_returned_qty += abs($refund_item->get_quantity());
+        }
+    }
+
+    $effective_quantity = max(0, $components['total_quantity'] - $total_returned_qty);
+    $adjusted_carton_amount = round($components['per_carton_rate'] * $effective_quantity, 2);
+    $adjusted_total = round($components['percentage_amount'] + $adjusted_carton_amount, 2);
+
+    $components['carton_amount'] = $adjusted_carton_amount;
+    $components['total'] = $adjusted_total;
+    $components['total_quantity'] = $effective_quantity;
+
+    // Store with existing status preserved (pending/approved)
+    ah_ho_store_commission_meta($order, $components, $commission_status ?: 'pending');
+
+    $order->add_order_note(sprintf(
+        __('Commission recalculated after return: $%s -> $%s (order total now %s, effective qty: %d)', 'ah-ho-custom'),
+        number_format($old_commission, 2),
+        number_format($adjusted_total, 2),
+        $order->get_total(),
+        $effective_quantity
+    ));
+
+    $order->save();
+}
+
+/**
  * Add meta box to order edit page for manual salesperson assignment
  */
 add_action('add_meta_boxes', 'ah_ho_add_salesperson_meta_box');
