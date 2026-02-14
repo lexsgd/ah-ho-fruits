@@ -13,6 +13,13 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Temporary diagnostic - remove after confirming file loads
+add_action('admin_notices', function() {
+    if (current_user_can('manage_options') && isset($_GET['page']) && $_GET['page'] === 'wc-orders') {
+        echo '<!-- order-fulfillment.php LOADED -->';
+    }
+});
+
 /**
  * ========================================
  * HELPER FUNCTIONS
