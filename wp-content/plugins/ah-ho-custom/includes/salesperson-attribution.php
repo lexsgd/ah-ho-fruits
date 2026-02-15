@@ -549,21 +549,30 @@ function ah_ho_recalculate_commission_on_partial_refund($refund_id, $args) {
 add_action('add_meta_boxes', 'ah_ho_add_salesperson_meta_box');
 
 function ah_ho_add_salesperson_meta_box() {
-    add_meta_box(
-        'ah_ho_salesperson_assignment',
-        __('Salesperson Assignment', 'ah-ho-custom'),
-        'ah_ho_render_salesperson_meta_box',
-        'shop_order',
-        'side',
-        'default'
-    );
+    // Register for both legacy (shop_order) and HPOS (woocommerce_page_wc-orders) screens
+    $screens = array('shop_order', 'woocommerce_page_wc-orders');
+    foreach ($screens as $screen) {
+        add_meta_box(
+            'ah_ho_salesperson_assignment',
+            __('Salesperson Assignment', 'ah-ho-custom'),
+            'ah_ho_render_salesperson_meta_box',
+            $screen,
+            'side',
+            'default'
+        );
+    }
 }
 
 /**
  * Render salesperson assignment meta box (HPOS Compatible)
  */
-function ah_ho_render_salesperson_meta_box($post) {
-    $order = wc_get_order($post->ID);
+function ah_ho_render_salesperson_meta_box($post_or_order) {
+    // HPOS compatibility: parameter may be WC_Order or WP_Post
+    if ($post_or_order instanceof WC_Order) {
+        $order = $post_or_order;
+    } else {
+        $order = wc_get_order($post_or_order->ID);
+    }
 
     if (!$order) {
         echo '<p>' . __('Unable to load order data.', 'ah-ho-custom') . '</p>';
@@ -664,7 +673,16 @@ function ah_ho_render_salesperson_meta_box($post) {
 /**
  * Save salesperson assignment and commission status
  */
+// Register save handler for both legacy and HPOS
 add_action('save_post_shop_order', 'ah_ho_save_salesperson_assignment', 10, 2);
+add_action('woocommerce_process_shop_order_meta', 'ah_ho_save_salesperson_assignment_hpos', 10, 2);
+
+/**
+ * HPOS-compatible save handler wrapper
+ */
+function ah_ho_save_salesperson_assignment_hpos($order_id, $order = null) {
+    ah_ho_save_salesperson_assignment($order_id, null);
+}
 
 function ah_ho_save_salesperson_assignment($post_id, $post) {
     // Verify nonce
@@ -673,7 +691,7 @@ function ah_ho_save_salesperson_assignment($post_id, $post) {
     }
 
     // Check permissions
-    if (!current_user_can('edit_post', $post_id)) {
+    if (!current_user_can('manage_woocommerce')) {
         return;
     }
 
@@ -699,9 +717,22 @@ function ah_ho_save_salesperson_assignment($post_id, $post) {
                 $order->add_order_note(
                     sprintf(__('Order assigned to salesperson: %s', 'ah-ho-custom'), $salesperson->display_name)
                 );
+
+                // Calculate and store commission for newly assigned salesperson
+                if (function_exists('ah_ho_calculate_commission_components')) {
+                    ah_ho_store_commission_meta($order, $new_salesperson);
+                    $order->update_meta_data('_commission_status', 'pending');
+                }
             } else {
                 $order->delete_meta_data('_assigned_salesperson_id');
-                $order->add_order_note(__('Salesperson assignment removed', 'ah-ho-custom'));
+                $order->delete_meta_data('_commission_amount');
+                $order->delete_meta_data('_commission_rate');
+                $order->delete_meta_data('_commission_per_carton_rate');
+                $order->delete_meta_data('_commission_percentage_amount');
+                $order->delete_meta_data('_commission_carton_amount');
+                $order->delete_meta_data('_commission_total_quantity');
+                $order->delete_meta_data('_commission_status');
+                $order->add_order_note(__('Salesperson assignment removed, commission cleared', 'ah-ho-custom'));
             }
             $order->save();
         }
