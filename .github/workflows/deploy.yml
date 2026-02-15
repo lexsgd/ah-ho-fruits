@@ -42,53 +42,75 @@ jobs:
             **/*.sh
             **/docker-compose.yml
 
-      - name: Upload to correct path (ah-ho-fruits/ at root, not public_html/)
+      - name: Find correct document root
         run: |
-          echo "=== Listing root-level ah-ho-fruits dir ==="
-          curl -s "ftp://${{ secrets.VODIEN_HOST }}/ah-ho-fruits/" \
-            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
-            --list-only 2>&1 | head -20
+          # Create unique test file
+          TESTID=$(date +%s)
+          echo "<?php echo 'FOUND-$TESTID'; ?>" > /tmp/ftp-test.php
 
+          # Try uploading test file to multiple candidate paths
+          for path in \
+            "public_html/ah-ho-fruits" \
+            "ah-ho-fruits" \
+            "public_html" \
+            "www" \
+            "public_html/ah-ho-fruits/public_html" \
+            "home/public_html/ah-ho-fruits" \
+            "home2/public_html/ah-ho-fruits"; do
+            echo "Trying path: $path/"
+            curl -T /tmp/ftp-test.php \
+              --ftp-create-dirs \
+              "ftp://${{ secrets.VODIEN_HOST }}/$path/ftp-path-test.php" \
+              --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+              -s 2>&1 | tail -1
+          done
+
+          # Check which path is accessible via HTTP
+          sleep 2
           echo ""
-          echo "=== Listing root ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/ ==="
-          curl -s "ftp://${{ secrets.VODIEN_HOST }}/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/" \
-            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
-            --list-only 2>&1 | head -20
+          echo "=== Checking HTTP access ==="
+          HTTP_CODE=$(curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/ftp-path-test.php")
+          echo "ahhofruit.com/ftp-path-test.php -> $HTTP_CODE"
+          if [ "$HTTP_CODE" = "200" ]; then
+            CONTENT=$(curl -s "https://ahhofruit.com/ftp-path-test.php")
+            echo "Content: $CONTENT"
+          fi
 
+          # Also try using VODIEN_PATH secret if available
           echo ""
-          echo "Uploading order-fulfillment.php to ROOT ah-ho-fruits/..."
-          curl -T wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php \
-            --ftp-create-dirs \
-            "ftp://${{ secrets.VODIEN_HOST }}/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php" \
-            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
-            -v 2>&1 | tail -5
+          echo "=== Using VODIEN_PATH ==="
+          echo "Path value: ${{ secrets.VODIEN_PATH }}"
+          if [ -n "${{ secrets.VODIEN_PATH }}" ]; then
+            echo "Uploading test to VODIEN_PATH..."
+            curl -T /tmp/ftp-test.php \
+              --ftp-create-dirs \
+              "ftp://${{ secrets.VODIEN_HOST }}/${{ secrets.VODIEN_PATH }}/ftp-path-test-2.php" \
+              --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+              -s 2>&1 | tail -1
+            sleep 2
+            HTTP_CODE2=$(curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/ftp-path-test-2.php")
+            echo "ahhofruit.com/ftp-path-test-2.php -> $HTTP_CODE2"
+          fi
 
-          echo "Uploading shop-ordering.php..."
-          curl -T wp-content/plugins/ah-ho-custom/includes/shop-ordering.php \
-            --ftp-create-dirs \
-            "ftp://${{ secrets.VODIEN_HOST }}/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/shop-ordering.php" \
-            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
-            -v 2>&1 | tail -5
-
-          echo "Uploading ah-ho-custom.php..."
-          curl -T wp-content/plugins/ah-ho-custom/ah-ho-custom.php \
-            --ftp-create-dirs \
-            "ftp://${{ secrets.VODIEN_HOST }}/ah-ho-fruits/wp-content/plugins/ah-ho-custom/ah-ho-custom.php" \
-            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
-            -v 2>&1 | tail -5
-
-          echo "Uploading mu-plugins..."
-          curl -T wp-content/mu-plugins/ah-ho-debug.php \
-            --ftp-create-dirs \
-            "ftp://${{ secrets.VODIEN_HOST }}/ah-ho-fruits/wp-content/mu-plugins/ah-ho-debug.php" \
-            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
-            -v 2>&1 | tail -5
-
-          curl -T wp-content/mu-plugins/opcache-reset.php \
-            --ftp-create-dirs \
-            "ftp://${{ secrets.VODIEN_HOST }}/ah-ho-fruits/wp-content/mu-plugins/opcache-reset.php" \
-            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
-            -v 2>&1 | tail -5
+          # Clean up test files
+          echo ""
+          echo "=== Cleaning up test files ==="
+          for path in \
+            "public_html/ah-ho-fruits" \
+            "ah-ho-fruits" \
+            "public_html" \
+            "www"; do
+            curl -s -Q "DELE /$path/ftp-path-test.php" \
+              "ftp://${{ secrets.VODIEN_HOST }}/" \
+              --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+              2>&1 | tail -1 || true
+          done
+          if [ -n "${{ secrets.VODIEN_PATH }}" ]; then
+            curl -s -Q "DELE /${{ secrets.VODIEN_PATH }}/ftp-path-test-2.php" \
+              "ftp://${{ secrets.VODIEN_HOST }}/" \
+              --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+              2>&1 | tail -1 || true
+          fi
 
       - name: Verify uploads via HTTP
         run: |
