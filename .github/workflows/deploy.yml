@@ -42,84 +42,85 @@ jobs:
             **/*.sh
             **/docker-compose.yml
 
-      - name: Find correct document root
+      - name: SSH diagnostic - find real document root
+        env:
+          SSH_KEY: ${{ secrets.VODIEN_SSH_KEY }}
+          SSH_HOST: ${{ secrets.VODIEN_HOST }}
+          SSH_USER: ${{ secrets.VODIEN_USER }}
+          SSH_PASS: ${{ secrets.VODIEN_PASSWORD }}
+          SSH_PORT: ${{ secrets.VODIEN_PORT }}
         run: |
-          # Create unique test file
-          TESTID=$(date +%s)
-          echo "<?php echo 'FOUND-$TESTID'; ?>" > /tmp/ftp-test.php
+          # Try SSH first (if SSH key is available)
+          if [ -n "$SSH_KEY" ]; then
+            echo "=== Using SSH key ==="
+            mkdir -p ~/.ssh
+            echo "$SSH_KEY" > ~/.ssh/deploy_key
+            chmod 600 ~/.ssh/deploy_key
+            ssh-keyscan -p ${SSH_PORT:-22} "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
 
-          # Try uploading test file to multiple candidate paths
-          for path in \
-            "public_html/ah-ho-fruits" \
-            "ah-ho-fruits" \
-            "public_html" \
-            "www" \
-            "public_html/ah-ho-fruits/public_html" \
-            "home/public_html/ah-ho-fruits" \
-            "home2/public_html/ah-ho-fruits"; do
-            echo "Trying path: $path/"
-            curl -T /tmp/ftp-test.php \
-              --ftp-create-dirs \
-              "ftp://${{ secrets.VODIEN_HOST }}/$path/ftp-path-test.php" \
-              --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
-              -s 2>&1 | tail -1
-          done
+            ssh -i ~/.ssh/deploy_key -p ${SSH_PORT:-22} -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" bash -s <<'REMOTE_SCRIPT'
+              echo "=== PWD ==="
+              pwd
+              echo ""
+              echo "=== Document root for ahhofruit.com ==="
+              # Check Apache config for document root
+              grep -r "ahhofruit" /usr/local/apache/conf/ 2>/dev/null || \
+              grep -r "ahhofruit" /etc/apache2/ 2>/dev/null || \
+              grep -r "ahhofruit" /etc/httpd/ 2>/dev/null || \
+              echo "Cannot read Apache config"
 
-          # Check which path is accessible via HTTP
-          sleep 2
-          echo ""
-          echo "=== Checking HTTP access ==="
-          HTTP_CODE=$(curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/ftp-path-test.php")
-          echo "ahhofruit.com/ftp-path-test.php -> $HTTP_CODE"
-          if [ "$HTTP_CODE" = "200" ]; then
-            CONTENT=$(curl -s "https://ahhofruit.com/ftp-path-test.php")
-            echo "Content: $CONTENT"
+              echo ""
+              echo "=== Check cPanel user data ==="
+              cat ~/var/cpanel/domain_data/ahhofruit.com 2>/dev/null || \
+              cat /var/cpanel/userdata/$USER/ahhofruit.com 2>/dev/null || \
+              echo "Cannot read cPanel domain data"
+
+              echo ""
+              echo "=== Real path check ==="
+              readlink -f ~/public_html/ah-ho-fruits 2>/dev/null || echo "readlink failed"
+              ls -la ~/public_html/ 2>/dev/null | grep ah-ho
+
+              echo ""
+              echo "=== Check if ah-ho-fruits is a symlink ==="
+              file ~/public_html/ah-ho-fruits
+              ls -ld ~/public_html/ah-ho-fruits
+
+              echo ""
+              echo "=== Check actual plugin includes dir ==="
+              ls -la ~/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/ 2>/dev/null | head -20
+              echo ""
+              echo "=== Check root ah-ho-fruits ==="
+              ls -la ~/ah-ho-fruits/ 2>/dev/null | head -10
+
+              echo ""
+              echo "=== Find order-fulfillment.php anywhere ==="
+              find ~ -name "order-fulfillment.php" -type f 2>/dev/null
+
+              echo ""
+              echo "=== Find salesperson-attribution.php (working file) ==="
+              find ~ -name "salesperson-attribution.php" -type f 2>/dev/null
+REMOTE_SCRIPT
+          else
+            echo "No SSH key available, trying sshpass..."
+            sudo apt-get install -y sshpass 2>/dev/null || true
+
+            sshpass -p "$SSH_PASS" ssh -p ${SSH_PORT:-22} -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" bash -s <<'REMOTE_SCRIPT'
+              echo "=== PWD ==="
+              pwd
+              echo ""
+              echo "=== Real path check ==="
+              readlink -f ~/public_html/ah-ho-fruits 2>/dev/null || echo "readlink failed"
+              ls -la ~/public_html/ | grep ah-ho
+              echo ""
+              echo "=== Check if symlink ==="
+              file ~/public_html/ah-ho-fruits
+              ls -ld ~/public_html/ah-ho-fruits
+              echo ""
+              echo "=== Plugin includes ==="
+              ls -la ~/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/ 2>/dev/null | head -20
+              echo ""
+              echo "=== Find files ==="
+              find ~ -name "order-fulfillment.php" -type f 2>/dev/null
+              find ~ -name "salesperson-attribution.php" -type f 2>/dev/null
+REMOTE_SCRIPT
           fi
-
-          # Also try using VODIEN_PATH secret if available
-          echo ""
-          echo "=== Using VODIEN_PATH ==="
-          echo "Path value: ${{ secrets.VODIEN_PATH }}"
-          if [ -n "${{ secrets.VODIEN_PATH }}" ]; then
-            echo "Uploading test to VODIEN_PATH..."
-            curl -T /tmp/ftp-test.php \
-              --ftp-create-dirs \
-              "ftp://${{ secrets.VODIEN_HOST }}/${{ secrets.VODIEN_PATH }}/ftp-path-test-2.php" \
-              --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
-              -s 2>&1 | tail -1
-            sleep 2
-            HTTP_CODE2=$(curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/ftp-path-test-2.php")
-            echo "ahhofruit.com/ftp-path-test-2.php -> $HTTP_CODE2"
-          fi
-
-          # Clean up test files
-          echo ""
-          echo "=== Cleaning up test files ==="
-          for path in \
-            "public_html/ah-ho-fruits" \
-            "ah-ho-fruits" \
-            "public_html" \
-            "www"; do
-            curl -s -Q "DELE /$path/ftp-path-test.php" \
-              "ftp://${{ secrets.VODIEN_HOST }}/" \
-              --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
-              2>&1 | tail -1 || true
-          done
-          if [ -n "${{ secrets.VODIEN_PATH }}" ]; then
-            curl -s -Q "DELE /${{ secrets.VODIEN_PATH }}/ftp-path-test-2.php" \
-              "ftp://${{ secrets.VODIEN_HOST }}/" \
-              --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
-              2>&1 | tail -1 || true
-          fi
-
-      - name: Verify uploads via HTTP
-        run: |
-          echo "Checking order-fulfillment.php..."
-          curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php"
-          echo ""
-          echo "Checking shop-ordering.php..."
-          curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/wp-content/plugins/ah-ho-custom/includes/shop-ordering.php"
-          echo ""
-          echo "Checking debug endpoint..."
-          curl -s "https://ahhofruit.com/wp-json/ah-ho/v1/debug"
-          echo ""
