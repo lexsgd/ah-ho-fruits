@@ -7,39 +7,37 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     steps:
-      - name: List stale directory contents
+      - name: Delete stale directory via FTP
         run: |
           HOST="${{ secrets.VODIEN_HOST }}"
           USER="${{ secrets.VODIEN_USER }}"
           PASS="${{ secrets.VODIEN_PASSWORD }}"
 
-          echo "=== Listing public_html/ah-ho-fruits/ (stale directory) ==="
-          curl -s "ftp://$HOST/public_html/ah-ho-fruits/" --user "$USER:$PASS" 2>&1
+          echo "=== Checking stale directory exists ==="
+          curl -s "ftp://$HOST/public_html/ah-ho-fruits/" --user "$USER:$PASS" 2>&1 | head -5
 
           echo ""
-          echo "=== Listing public_html/ah-ho-fruit/ (correct directory) ==="
-          curl -s "ftp://$HOST/public_html/ah-ho-fruit/" --user "$USER:$PASS" 2>&1
+          echo "=== Removing stale directory recursively via FTP ==="
 
-      - name: Delete stale directory via cPanel
-        run: |
-          HOST="${{ secrets.VODIEN_HOST }}"
-          USER="${{ secrets.VODIEN_USER }}"
-          PASS="${{ secrets.VODIEN_PASSWORD }}"
+          # Install lftp for recursive FTP operations
+          sudo apt-get install -y -qq lftp > /dev/null 2>&1
 
-          echo "=== Trashing public_html/ah-ho-fruits/ via cPanel Fileman ==="
-          curl -sk "https://$HOST:2083/execute/Fileman/trash" \
-            -u "$USER:$PASS" \
-            --data-urlencode "path=/public_html" \
-            --data-urlencode "files=ah-ho-fruits" \
-            2>&1
+          # Use lftp to recursively delete the stale directory
+          lftp -u "$USER","$PASS" "ftp://$HOST" <<LFTP_SCRIPT
+          set ssl:verify-certificate no
+          set ftp:ssl-allow yes
+          rm -rf public_html/ah-ho-fruits/
+          quit
+          LFTP_SCRIPT
 
           echo ""
-          echo "=== Verify directory is gone ==="
-          curl -s "ftp://$HOST/public_html/ah-ho-fruits/" --user "$USER:$PASS" 2>&1 || echo "Directory no longer accessible (expected)"
-
-          echo ""
-          echo "=== Verify correct directory still exists ==="
-          curl -s "ftp://$HOST/public_html/ah-ho-fruit/" --user "$USER:$PASS" 2>&1
+          echo "=== Verify stale directory is gone ==="
+          if curl -s "ftp://$HOST/public_html/ah-ho-fruits/" --user "$USER:$PASS" 2>&1 | grep -q "550\|Access denied\|No such"; then
+            echo "SUCCESS: Directory removed"
+          else
+            echo "WARNING: Directory may still exist, checking contents..."
+            curl -s "ftp://$HOST/public_html/ah-ho-fruits/" --user "$USER:$PASS" 2>&1 | head -5
+          fi
 
       - name: Verify site still works
         run: |
