@@ -1,0 +1,58 @@
+name: Cleanup stale ah-ho-fruits directory
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: List stale directory contents
+        run: |
+          HOST="${{ secrets.VODIEN_HOST }}"
+          USER="${{ secrets.VODIEN_USER }}"
+          PASS="${{ secrets.VODIEN_PASSWORD }}"
+
+          echo "=== Listing public_html/ah-ho-fruits/ (stale directory) ==="
+          curl -s "ftp://$HOST/public_html/ah-ho-fruits/" --user "$USER:$PASS" 2>&1
+
+          echo ""
+          echo "=== Listing public_html/ah-ho-fruit/ (correct directory) ==="
+          curl -s "ftp://$HOST/public_html/ah-ho-fruit/" --user "$USER:$PASS" 2>&1
+
+      - name: Delete stale directory via cPanel
+        run: |
+          HOST="${{ secrets.VODIEN_HOST }}"
+          USER="${{ secrets.VODIEN_USER }}"
+          PASS="${{ secrets.VODIEN_PASSWORD }}"
+
+          echo "=== Trashing public_html/ah-ho-fruits/ via cPanel Fileman ==="
+          curl -sk "https://$HOST:2083/execute/Fileman/trash" \
+            -u "$USER:$PASS" \
+            --data-urlencode "path=/public_html" \
+            --data-urlencode "files=ah-ho-fruits" \
+            2>&1
+
+          echo ""
+          echo "=== Verify directory is gone ==="
+          curl -s "ftp://$HOST/public_html/ah-ho-fruits/" --user "$USER:$PASS" 2>&1 || echo "Directory no longer accessible (expected)"
+
+          echo ""
+          echo "=== Verify correct directory still exists ==="
+          curl -s "ftp://$HOST/public_html/ah-ho-fruit/" --user "$USER:$PASS" 2>&1
+
+      - name: Verify site still works
+        run: |
+          sleep 3
+          echo -n "Homepage: "
+          curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com"
+          echo ""
+          echo -n "Shop page: "
+          curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/shop/"
+          echo ""
+          echo -n "order-fulfillment.php: "
+          curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php"
+          echo ""
+          echo -n "Fulfillment check API: "
+          curl -s "https://ahhofruit.com/wp-json/ah-ho/v1/fulfillment-check"
+          echo ""
