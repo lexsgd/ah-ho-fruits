@@ -720,8 +720,8 @@ function ah_ho_save_salesperson_assignment($post_id, $post) {
 
                 // Calculate and store commission for newly assigned salesperson
                 if (function_exists('ah_ho_calculate_commission_components')) {
-                    ah_ho_store_commission_meta($order, $new_salesperson);
-                    $order->update_meta_data('_commission_status', 'pending');
+                    $components = ah_ho_calculate_commission_components($order, $new_salesperson);
+                    ah_ho_store_commission_meta($order, $components, 'pending');
                 }
             } else {
                 $order->delete_meta_data('_assigned_salesperson_id');
