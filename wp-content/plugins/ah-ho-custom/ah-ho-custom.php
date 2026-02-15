@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-// Define plugin constants
+// Define plugin constants - v1.6.0 adds order fulfillment (partial deliveries & returns)
 define('AH_HO_CUSTOM_VERSION', '1.6.0');
 define('AH_HO_CUSTOM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AH_HO_CUSTOM_PLUGIN_URL', plugin_dir_url(__FILE__));
