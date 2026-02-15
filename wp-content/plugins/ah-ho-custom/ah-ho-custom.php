@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-// Define plugin constants - v1.6.1 force re-deploy
+// Define plugin constants
 define('AH_HO_CUSTOM_VERSION', '1.6.1');
 define('AH_HO_CUSTOM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AH_HO_CUSTOM_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -93,27 +93,6 @@ function ah_ho_custom_init() {
 
 }
 add_action('plugins_loaded', 'ah_ho_custom_init');
-
-// Temporary diagnostic - remove after debugging
-add_action('rest_api_init', function() {
-    register_rest_route('ah-ho/v1', '/debug', array(
-        'methods' => 'GET',
-        'callback' => function() {
-            $dir = defined('AH_HO_CUSTOM_PLUGIN_DIR') ? AH_HO_CUSTOM_PLUGIN_DIR : 'NOT_DEFINED';
-            $file = $dir . 'includes/order-fulfillment.php';
-            return array(
-                'plugin_version' => defined('AH_HO_CUSTOM_VERSION') ? AH_HO_CUSTOM_VERSION : 'unknown',
-                'plugin_dir' => $dir,
-                'fulfillment_path' => $file,
-                'fulfillment_exists' => file_exists($file),
-                'fulfillment_size' => file_exists($file) ? filesize($file) : 0,
-                'fulfillment_fn_exists' => function_exists('ah_ho_get_delivered_qty_per_item'),
-                'meta_box_fn_exists' => function_exists('ah_ho_add_fulfillment_meta_box'),
-            );
-        },
-        'permission_callback' => '__return_true',
-    ));
-});
 
 /**
  * Activation hook

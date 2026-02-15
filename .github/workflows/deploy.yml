@@ -42,69 +42,12 @@ jobs:
             **/*.sh
             **/docker-compose.yml
 
-      - name: Upload critical files via cPanel (belt-and-suspenders)
-        continue-on-error: true
-        run: |
-          HOST="${{ secrets.VODIEN_HOST }}"
-          USER="${{ secrets.VODIEN_USER }}"
-          PASS="${{ secrets.VODIEN_PASSWORD }}"
-
-          echo "=== Uploading order-fulfillment.php ==="
-          curl -sk "https://$HOST:2083/execute/Fileman/upload_files" \
-            -u "$USER:$PASS" \
-            -F "dir=/public_html/ah-ho-fruit/wp-content/plugins/ah-ho-custom/includes" \
-            -F "file-1=@wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php;filename=order-fulfillment.php" \
-            -F "overwrite=1" \
-            2>&1 | head -20
-
-          echo ""
-          echo "=== Uploading shop-ordering.php ==="
-          curl -sk "https://$HOST:2083/execute/Fileman/upload_files" \
-            -u "$USER:$PASS" \
-            -F "dir=/public_html/ah-ho-fruit/wp-content/plugins/ah-ho-custom/includes" \
-            -F "file-1=@wp-content/plugins/ah-ho-custom/includes/shop-ordering.php;filename=shop-ordering.php" \
-            -F "overwrite=1" \
-            2>&1 | head -20
-
-          echo ""
-          echo "=== Uploading ah-ho-custom.php ==="
-          curl -sk "https://$HOST:2083/execute/Fileman/upload_files" \
-            -u "$USER:$PASS" \
-            -F "dir=/public_html/ah-ho-fruit/wp-content/plugins/ah-ho-custom" \
-            -F "file-1=@wp-content/plugins/ah-ho-custom/ah-ho-custom.php;filename=ah-ho-custom.php" \
-            -F "overwrite=1" \
-            2>&1 | head -20
-
-          echo ""
-          echo "=== Uploading mu-plugins ==="
-          curl -sk "https://$HOST:2083/execute/Fileman/upload_files" \
-            -u "$USER:$PASS" \
-            -F "dir=/public_html/ah-ho-fruit/wp-content/mu-plugins" \
-            -F "file-1=@wp-content/mu-plugins/ah-ho-debug.php;filename=ah-ho-debug.php" \
-            -F "overwrite=1" \
-            2>&1 | head -20
-
-          curl -sk "https://$HOST:2083/execute/Fileman/upload_files" \
-            -u "$USER:$PASS" \
-            -F "dir=/public_html/ah-ho-fruit/wp-content/mu-plugins" \
-            -F "file-1=@wp-content/mu-plugins/opcache-reset.php;filename=opcache-reset.php" \
-            -F "overwrite=1" \
-            2>&1 | head -20
-
       - name: Verify deployment
         run: |
-          sleep 5
-          echo "=== HTTP status checks ==="
+          sleep 3
           echo -n "order-fulfillment.php: "
           curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php"
           echo ""
           echo -n "shop-ordering.php: "
           curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/wp-content/plugins/ah-ho-custom/includes/shop-ordering.php"
-          echo ""
-          echo -n "ah-ho-custom.php: "
-          curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/wp-content/plugins/ah-ho-custom/ah-ho-custom.php"
-          echo ""
-          echo ""
-          echo "=== Debug REST endpoint ==="
-          curl -s "https://ahhofruit.com/wp-json/ah-ho/v1/debug"
           echo ""
