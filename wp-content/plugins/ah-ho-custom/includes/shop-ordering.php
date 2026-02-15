@@ -96,7 +96,7 @@ function ah_ho_get_omakase_product_ids() {
             array(
                 'taxonomy' => 'product_cat',
                 'field'    => 'slug',
-                'terms'    => 'omakase-boxes',
+                'terms'    => 'omakase-fruit-boxes',
             ),
         ),
     );
