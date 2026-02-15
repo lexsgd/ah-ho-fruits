@@ -42,85 +42,41 @@ jobs:
             **/*.sh
             **/docker-compose.yml
 
-      - name: SSH diagnostic - find real document root
-        env:
-          SSH_KEY: ${{ secrets.VODIEN_SSH_KEY }}
-          SSH_HOST: ${{ secrets.VODIEN_HOST }}
-          SSH_USER: ${{ secrets.VODIEN_USER }}
-          SSH_PASS: ${{ secrets.VODIEN_PASSWORD }}
-          SSH_PORT: ${{ secrets.VODIEN_PORT }}
+      - name: SSH diagnostic
         run: |
-          # Try SSH first (if SSH key is available)
-          if [ -n "$SSH_KEY" ]; then
-            echo "=== Using SSH key ==="
-            mkdir -p ~/.ssh
-            echo "$SSH_KEY" > ~/.ssh/deploy_key
-            chmod 600 ~/.ssh/deploy_key
-            ssh-keyscan -p ${SSH_PORT:-22} "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VODIEN_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          PORT="${{ secrets.VODIEN_PORT }}"
+          PORT="${PORT:-22}"
+          ssh-keyscan -p "$PORT" "${{ secrets.VODIEN_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
 
-            ssh -i ~/.ssh/deploy_key -p ${SSH_PORT:-22} -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" bash -s <<'REMOTE_SCRIPT'
-              echo "=== PWD ==="
-              pwd
-              echo ""
-              echo "=== Document root for ahhofruit.com ==="
-              # Check Apache config for document root
-              grep -r "ahhofruit" /usr/local/apache/conf/ 2>/dev/null || \
-              grep -r "ahhofruit" /etc/apache2/ 2>/dev/null || \
-              grep -r "ahhofruit" /etc/httpd/ 2>/dev/null || \
-              echo "Cannot read Apache config"
+          # Write remote script to a file to avoid heredoc YAML issues
+          cat > /tmp/remote_diag.sh << 'SCRIPT'
+          echo "=== PWD ==="
+          pwd
+          echo "=== ls -la public_html/ ==="
+          ls -la ~/public_html/ | head -20
+          echo "=== Is public_html/ah-ho-fruits a symlink? ==="
+          ls -ld ~/public_html/ah-ho-fruits
+          readlink -f ~/public_html/ah-ho-fruits
+          echo "=== ls -la public_html/ah-ho-fruits/ ==="
+          ls -la ~/public_html/ah-ho-fruits/ | head -20
+          echo "=== Find salesperson-attribution.php ==="
+          find ~ -name "salesperson-attribution.php" -type f 2>/dev/null
+          echo "=== Find order-fulfillment.php ==="
+          find ~ -name "order-fulfillment.php" -type f 2>/dev/null
+          echo "=== Find ah-ho-custom.php ==="
+          find ~ -name "ah-ho-custom.php" -type f 2>/dev/null | head -5
+          echo "=== Check plugin includes dir ==="
+          for d in ~/public_html/ah-ho-fruits ~/ah-ho-fruits ~/public_html; do
+            if [ -d "$d/wp-content/plugins/ah-ho-custom/includes" ]; then
+              echo "FOUND at: $d/wp-content/plugins/ah-ho-custom/includes/"
+              ls -la "$d/wp-content/plugins/ah-ho-custom/includes/" | head -20
+            fi
+          done
+          SCRIPT
 
-              echo ""
-              echo "=== Check cPanel user data ==="
-              cat ~/var/cpanel/domain_data/ahhofruit.com 2>/dev/null || \
-              cat /var/cpanel/userdata/$USER/ahhofruit.com 2>/dev/null || \
-              echo "Cannot read cPanel domain data"
-
-              echo ""
-              echo "=== Real path check ==="
-              readlink -f ~/public_html/ah-ho-fruits 2>/dev/null || echo "readlink failed"
-              ls -la ~/public_html/ 2>/dev/null | grep ah-ho
-
-              echo ""
-              echo "=== Check if ah-ho-fruits is a symlink ==="
-              file ~/public_html/ah-ho-fruits
-              ls -ld ~/public_html/ah-ho-fruits
-
-              echo ""
-              echo "=== Check actual plugin includes dir ==="
-              ls -la ~/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/ 2>/dev/null | head -20
-              echo ""
-              echo "=== Check root ah-ho-fruits ==="
-              ls -la ~/ah-ho-fruits/ 2>/dev/null | head -10
-
-              echo ""
-              echo "=== Find order-fulfillment.php anywhere ==="
-              find ~ -name "order-fulfillment.php" -type f 2>/dev/null
-
-              echo ""
-              echo "=== Find salesperson-attribution.php (working file) ==="
-              find ~ -name "salesperson-attribution.php" -type f 2>/dev/null
-REMOTE_SCRIPT
-          else
-            echo "No SSH key available, trying sshpass..."
-            sudo apt-get install -y sshpass 2>/dev/null || true
-
-            sshpass -p "$SSH_PASS" ssh -p ${SSH_PORT:-22} -o StrictHostKeyChecking=no "$SSH_USER@$SSH_HOST" bash -s <<'REMOTE_SCRIPT'
-              echo "=== PWD ==="
-              pwd
-              echo ""
-              echo "=== Real path check ==="
-              readlink -f ~/public_html/ah-ho-fruits 2>/dev/null || echo "readlink failed"
-              ls -la ~/public_html/ | grep ah-ho
-              echo ""
-              echo "=== Check if symlink ==="
-              file ~/public_html/ah-ho-fruits
-              ls -ld ~/public_html/ah-ho-fruits
-              echo ""
-              echo "=== Plugin includes ==="
-              ls -la ~/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/ 2>/dev/null | head -20
-              echo ""
-              echo "=== Find files ==="
-              find ~ -name "order-fulfillment.php" -type f 2>/dev/null
-              find ~ -name "salesperson-attribution.php" -type f 2>/dev/null
-REMOTE_SCRIPT
-          fi
+          ssh -i ~/.ssh/deploy_key -p "$PORT" -o StrictHostKeyChecking=no \
+            "${{ secrets.VODIEN_USER }}@${{ secrets.VODIEN_HOST }}" \
+            'bash -s' < /tmp/remote_diag.sh
