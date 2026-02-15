@@ -78,7 +78,44 @@ jobs:
             --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
             -v 2>&1 | tail -5
 
-      - name: Verify uploads
+      - name: List remote directory via FTP
+        run: |
+          echo "=== FTP root directory ==="
+          curl -s "ftp://${{ secrets.VODIEN_HOST }}/" \
+            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+            --list-only 2>&1
+
+          echo ""
+          echo "=== public_html contents ==="
+          curl -s "ftp://${{ secrets.VODIEN_HOST }}/public_html/" \
+            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+            --list-only 2>&1 || echo "(failed)"
+
+          echo ""
+          echo "=== public_html/ah-ho-fruits contents ==="
+          curl -s "ftp://${{ secrets.VODIEN_HOST }}/public_html/ah-ho-fruits/" \
+            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+            --list-only 2>&1 || echo "(failed)"
+
+          echo ""
+          echo "=== plugin includes dir ==="
+          curl -s "ftp://${{ secrets.VODIEN_HOST }}/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/" \
+            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+            --list-only 2>&1 || echo "(failed)"
+
+          echo ""
+          echo "=== mu-plugins dir ==="
+          curl -s "ftp://${{ secrets.VODIEN_HOST }}/public_html/ah-ho-fruits/wp-content/mu-plugins/" \
+            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+            --list-only 2>&1 || echo "(failed)"
+
+          echo ""
+          echo "=== Verify file exists via FTP RETR ==="
+          curl -s "ftp://${{ secrets.VODIEN_HOST }}/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php" \
+            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+            2>&1 | head -5
+
+      - name: Verify uploads via HTTP
         run: |
           echo "Checking order-fulfillment.php..."
           curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php"
