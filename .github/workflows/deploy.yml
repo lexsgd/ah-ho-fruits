@@ -41,3 +41,51 @@ jobs:
             **/*.yml
             **/*.sh
             **/docker-compose.yml
+
+      - name: Force upload missing files via curl FTP
+        run: |
+          echo "Uploading order-fulfillment.php..."
+          curl -T wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php \
+            --ftp-create-dirs \
+            "ftp://${{ secrets.VODIEN_HOST }}/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php" \
+            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+            -v 2>&1 | tail -5
+
+          echo "Uploading shop-ordering.php..."
+          curl -T wp-content/plugins/ah-ho-custom/includes/shop-ordering.php \
+            --ftp-create-dirs \
+            "ftp://${{ secrets.VODIEN_HOST }}/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/shop-ordering.php" \
+            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+            -v 2>&1 | tail -5
+
+          echo "Uploading ah-ho-custom.php..."
+          curl -T wp-content/plugins/ah-ho-custom/ah-ho-custom.php \
+            --ftp-create-dirs \
+            "ftp://${{ secrets.VODIEN_HOST }}/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom/ah-ho-custom.php" \
+            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+            -v 2>&1 | tail -5
+
+          echo "Uploading mu-plugins..."
+          curl -T wp-content/mu-plugins/ah-ho-debug.php \
+            --ftp-create-dirs \
+            "ftp://${{ secrets.VODIEN_HOST }}/public_html/ah-ho-fruits/wp-content/mu-plugins/ah-ho-debug.php" \
+            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+            -v 2>&1 | tail -5
+
+          curl -T wp-content/mu-plugins/opcache-reset.php \
+            --ftp-create-dirs \
+            "ftp://${{ secrets.VODIEN_HOST }}/public_html/ah-ho-fruits/wp-content/mu-plugins/opcache-reset.php" \
+            --user "${{ secrets.VODIEN_USER }}:${{ secrets.VODIEN_PASSWORD }}" \
+            -v 2>&1 | tail -5
+
+      - name: Verify uploads
+        run: |
+          echo "Checking order-fulfillment.php..."
+          curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php"
+          echo ""
+          echo "Checking shop-ordering.php..."
+          curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/wp-content/plugins/ah-ho-custom/includes/shop-ordering.php"
+          echo ""
+          echo "Checking debug endpoint..."
+          curl -s "https://ahhofruit.com/wp-json/ah-ho/v1/debug"
+          echo ""
