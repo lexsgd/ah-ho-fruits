@@ -1,6 +1,6 @@
 <?php
 /**
- * TEMPORARY: Load order-fulfillment.php directly via mu-plugin.
+ * TEMPORARY: Load order-fulfillment.php directly via mu-plugin. (v2 force redeploy)
  * This bypasses OPcache on ah-ho-custom.php which has stale cached version.
  * Also registers a debug REST endpoint to verify loading.
  * DELETE THIS FILE once OPcache is resolved.

@@ -7,6 +7,7 @@
  * 2. Processing item returns via WooCommerce refund system
  *
  * @since 1.6.0
+ * @version 1.6.1
  */
 
 if (!defined('ABSPATH')) {
