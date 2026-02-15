@@ -42,46 +42,100 @@ jobs:
             **/*.sh
             **/docker-compose.yml
 
-      - name: Find WordPress root via FTP and cPanel
+      - name: Diagnose filesystem
+        continue-on-error: true
         run: |
+          set +e
           HOST="${{ secrets.VODIEN_HOST }}"
           USER="${{ secrets.VODIEN_USER }}"
           PASS="${{ secrets.VODIEN_PASSWORD }}"
 
-          echo "=== Find wp-config.php via FTP ==="
-          # Check common WordPress locations
-          for path in \
-            "public_html/ah-ho-fruits/wp-config.php" \
-            "public_html/wp-config.php" \
-            "ah-ho-fruits/wp-config.php" \
-            "wp-config.php"; do
-            echo -n "  $path: "
-            STATUS=$(curl -sI "ftp://$HOST/$path" --user "$USER:$PASS" -o /dev/null -w "%{http_code}" 2>&1)
-            echo "$STATUS"
-          done
-
-          echo ""
-          echo "=== Full listing of public_html/ah-ho-fruits/ ==="
+          echo "=== Full LIST of public_html/ah-ho-fruits/ ==="
           curl -s "ftp://$HOST/public_html/ah-ho-fruits/" --user "$USER:$PASS" 2>&1
 
           echo ""
-          echo "=== Check if ah-ho-fruits is symlink (via long listing of public_html) ==="
-          curl -s "ftp://$HOST/public_html/" --user "$USER:$PASS" 2>&1
+          echo "=== Full LIST of plugin includes dir ==="
+          curl -s "ftp://$HOST/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/" --user "$USER:$PASS" 2>&1
 
           echo ""
-          echo "=== Try cPanel UAPI to get document root ==="
-          # cPanel UAPI - get domain data
-          CPANEL_URL="https://$HOST:2083"
-          echo "Trying $CPANEL_URL..."
-          curl -sk "$CPANEL_URL/execute/DomainInfo/domains_data" \
-            -u "$USER:$PASS" 2>&1 | head -50 || echo "cPanel API failed"
+          echo "=== cPanel DomainInfo ==="
+          curl -sk "https://$HOST:2083/execute/DomainInfo/domains_data" -u "$USER:$PASS" 2>&1
 
           echo ""
-          echo "=== Try cPanel UAPI - list files ==="
-          curl -sk "$CPANEL_URL/execute/Fileman/list_files?dir=/public_html/ah-ho-fruits" \
-            -u "$USER:$PASS" 2>&1 | python3 -c "import sys,json; d=json.load(sys.stdin); [print(f['file']) for f in d.get('data',[])]" 2>&1 | head -30 || echo "Fileman API failed"
+          echo "=== cPanel SubDomain list ==="
+          curl -sk "https://$HOST:2083/execute/SubDomain/listsubdomains" -u "$USER:$PASS" 2>&1 | head -100
 
           echo ""
-          echo "=== Check cPanel addon domains ==="
-          curl -sk "$CPANEL_URL/execute/AddonDomain/list_addon_domains" \
-            -u "$USER:$PASS" 2>&1 | head -50 || echo "AddonDomain API failed"
+          echo "=== cPanel list addon domains ==="
+          curl -sk "https://$HOST:2083/json-api/cpanel?cpanel_jsonapi_user=$USER&cpanel_jsonapi_apiversion=2&cpanel_jsonapi_module=AddonDomain&cpanel_jsonapi_func=listaddondomains" -u "$USER:$PASS" 2>&1 | head -100
+
+          echo ""
+          echo "=== cPanel Fileman list ==="
+          curl -sk "https://$HOST:2083/execute/Fileman/list_files?dir=%2Fpublic_html%2Fah-ho-fruits&include_mime=0&include_permissions=1&include_hash=0&include_size=1" -u "$USER:$PASS" 2>&1 | python3 -c "
+          import sys, json
+          try:
+              d = json.load(sys.stdin)
+              for f in d.get('data', []):
+                  t = f.get('type', '?')
+                  n = f.get('file', f.get('name', '?'))
+                  s = f.get('size', '?')
+                  p = f.get('niceperms', f.get('permissions', '?'))
+                  target = f.get('target', '')
+                  extra = f' -> {target}' if target else ''
+                  print(f'{t:4} {p:10} {s:>8} {n}{extra}')
+          except Exception as e:
+              print(f'Parse error: {e}')
+              print(sys.stdin.read()[:500])
+          " 2>&1
+
+          echo ""
+          echo "=== Upload files via cPanel Fileman API ==="
+          # Upload order-fulfillment.php via cPanel File Manager API
+          DEST="/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php"
+          echo "Uploading to $DEST via cPanel..."
+          curl -sk "https://$HOST:2083/execute/Fileman/upload_files" \
+            -u "$USER:$PASS" \
+            -F "dir=/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes" \
+            -F "file-1=@wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php" \
+            2>&1 | head -20
+
+          echo ""
+          DEST2="/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes/shop-ordering.php"
+          echo "Uploading to $DEST2 via cPanel..."
+          curl -sk "https://$HOST:2083/execute/Fileman/upload_files" \
+            -u "$USER:$PASS" \
+            -F "dir=/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom/includes" \
+            -F "file-1=@wp-content/plugins/ah-ho-custom/includes/shop-ordering.php" \
+            2>&1 | head -20
+
+          echo ""
+          echo "Uploading ah-ho-custom.php via cPanel..."
+          curl -sk "https://$HOST:2083/execute/Fileman/upload_files" \
+            -u "$USER:$PASS" \
+            -F "dir=/public_html/ah-ho-fruits/wp-content/plugins/ah-ho-custom" \
+            -F "file-1=@wp-content/plugins/ah-ho-custom/ah-ho-custom.php" \
+            2>&1 | head -20
+
+          echo ""
+          echo "Uploading mu-plugins via cPanel..."
+          curl -sk "https://$HOST:2083/execute/Fileman/upload_files" \
+            -u "$USER:$PASS" \
+            -F "dir=/public_html/ah-ho-fruits/wp-content/mu-plugins" \
+            -F "file-1=@wp-content/mu-plugins/ah-ho-debug.php" \
+            2>&1 | head -20
+
+          curl -sk "https://$HOST:2083/execute/Fileman/upload_files" \
+            -u "$USER:$PASS" \
+            -F "dir=/public_html/ah-ho-fruits/wp-content/mu-plugins" \
+            -F "file-1=@wp-content/mu-plugins/opcache-reset.php" \
+            2>&1 | head -20
+
+      - name: Verify uploads
+        run: |
+          sleep 3
+          echo "order-fulfillment.php:"
+          curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php"
+          echo ""
+          echo "debug endpoint:"
+          curl -s "https://ahhofruit.com/wp-json/ah-ho/v1/debug"
+          echo ""
