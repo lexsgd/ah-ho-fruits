@@ -42,41 +42,46 @@ jobs:
             **/*.sh
             **/docker-compose.yml
 
-      - name: SSH diagnostic
+      - name: Find WordPress root via FTP and cPanel
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VODIEN_SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          PORT="${{ secrets.VODIEN_PORT }}"
-          PORT="${PORT:-22}"
-          ssh-keyscan -p "$PORT" "${{ secrets.VODIEN_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
+          HOST="${{ secrets.VODIEN_HOST }}"
+          USER="${{ secrets.VODIEN_USER }}"
+          PASS="${{ secrets.VODIEN_PASSWORD }}"
 
-          # Write remote script to a file to avoid heredoc YAML issues
-          cat > /tmp/remote_diag.sh << 'SCRIPT'
-          echo "=== PWD ==="
-          pwd
-          echo "=== ls -la public_html/ ==="
-          ls -la ~/public_html/ | head -20
-          echo "=== Is public_html/ah-ho-fruits a symlink? ==="
-          ls -ld ~/public_html/ah-ho-fruits
-          readlink -f ~/public_html/ah-ho-fruits
-          echo "=== ls -la public_html/ah-ho-fruits/ ==="
-          ls -la ~/public_html/ah-ho-fruits/ | head -20
-          echo "=== Find salesperson-attribution.php ==="
-          find ~ -name "salesperson-attribution.php" -type f 2>/dev/null
-          echo "=== Find order-fulfillment.php ==="
-          find ~ -name "order-fulfillment.php" -type f 2>/dev/null
-          echo "=== Find ah-ho-custom.php ==="
-          find ~ -name "ah-ho-custom.php" -type f 2>/dev/null | head -5
-          echo "=== Check plugin includes dir ==="
-          for d in ~/public_html/ah-ho-fruits ~/ah-ho-fruits ~/public_html; do
-            if [ -d "$d/wp-content/plugins/ah-ho-custom/includes" ]; then
-              echo "FOUND at: $d/wp-content/plugins/ah-ho-custom/includes/"
-              ls -la "$d/wp-content/plugins/ah-ho-custom/includes/" | head -20
-            fi
+          echo "=== Find wp-config.php via FTP ==="
+          # Check common WordPress locations
+          for path in \
+            "public_html/ah-ho-fruits/wp-config.php" \
+            "public_html/wp-config.php" \
+            "ah-ho-fruits/wp-config.php" \
+            "wp-config.php"; do
+            echo -n "  $path: "
+            STATUS=$(curl -sI "ftp://$HOST/$path" --user "$USER:$PASS" -o /dev/null -w "%{http_code}" 2>&1)
+            echo "$STATUS"
           done
-          SCRIPT
 
-          ssh -i ~/.ssh/deploy_key -p "$PORT" -o StrictHostKeyChecking=no \
-            "${{ secrets.VODIEN_USER }}@${{ secrets.VODIEN_HOST }}" \
-            'bash -s' < /tmp/remote_diag.sh
+          echo ""
+          echo "=== Full listing of public_html/ah-ho-fruits/ ==="
+          curl -s "ftp://$HOST/public_html/ah-ho-fruits/" --user "$USER:$PASS" 2>&1
+
+          echo ""
+          echo "=== Check if ah-ho-fruits is symlink (via long listing of public_html) ==="
+          curl -s "ftp://$HOST/public_html/" --user "$USER:$PASS" 2>&1
+
+          echo ""
+          echo "=== Try cPanel UAPI to get document root ==="
+          # cPanel UAPI - get domain data
+          CPANEL_URL="https://$HOST:2083"
+          echo "Trying $CPANEL_URL..."
+          curl -sk "$CPANEL_URL/execute/DomainInfo/domains_data" \
+            -u "$USER:$PASS" 2>&1 | head -50 || echo "cPanel API failed"
+
+          echo ""
+          echo "=== Try cPanel UAPI - list files ==="
+          curl -sk "$CPANEL_URL/execute/Fileman/list_files?dir=/public_html/ah-ho-fruits" \
+            -u "$USER:$PASS" 2>&1 | python3 -c "import sys,json; d=json.load(sys.stdin); [print(f['file']) for f in d.get('data',[])]" 2>&1 | head -30 || echo "Fileman API failed"
+
+          echo ""
+          echo "=== Check cPanel addon domains ==="
+          curl -sk "$CPANEL_URL/execute/AddonDomain/list_addon_domains" \
+            -u "$USER:$PASS" 2>&1 | head -50 || echo "AddonDomain API failed"
