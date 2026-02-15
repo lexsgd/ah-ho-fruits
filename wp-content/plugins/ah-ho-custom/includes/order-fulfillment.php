@@ -14,17 +14,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Temporary diagnostic REST endpoint - remove after confirming file loads
-add_action('rest_api_init', function() {
-    register_rest_route('ah-ho/v1', '/fulfillment-check', array(
-        'methods' => 'GET',
-        'callback' => function() {
-            return array('status' => 'loaded', 'file' => 'order-fulfillment.php', 'version' => AH_HO_CUSTOM_VERSION);
-        },
-        'permission_callback' => '__return_true',
-    ));
-});
-
 /**
  * ========================================
  * HELPER FUNCTIONS
