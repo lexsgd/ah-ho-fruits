@@ -3,7 +3,7 @@
  * Plugin Name: Ah Ho Fruits Custom
  * Plugin URI: https://heymag.app
  * Description: Custom functionality for Ah Ho Fruits - WooCommerce custom order statuses
- * Version: 1.6.1
+ * Version: 1.6.2
  * Author: Ah Ho Fruits
  * Author URI: https://heymag.app
  * Text Domain: ah-ho-custom
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AH_HO_CUSTOM_VERSION', '1.6.1');
+define('AH_HO_CUSTOM_VERSION', '1.6.2');
 define('AH_HO_CUSTOM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AH_HO_CUSTOM_PLUGIN_URL', plugin_dir_url(__FILE__));
 
