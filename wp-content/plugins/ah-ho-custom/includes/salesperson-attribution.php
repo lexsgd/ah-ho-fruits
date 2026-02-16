@@ -545,11 +545,11 @@ function ah_ho_recalculate_commission_on_partial_refund($refund_id, $args) {
 
 /**
  * Add meta box to order edit page for manual salesperson assignment
+ * Priority 'high' positions it right after Order actions in the sidebar
  */
 add_action('add_meta_boxes', 'ah_ho_add_salesperson_meta_box');
 
 function ah_ho_add_salesperson_meta_box() {
-    // Register for both legacy (shop_order) and HPOS (woocommerce_page_wc-orders) screens
     $screens = array('shop_order', 'woocommerce_page_wc-orders');
     foreach ($screens as $screen) {
         add_meta_box(
@@ -558,16 +558,15 @@ function ah_ho_add_salesperson_meta_box() {
             'ah_ho_render_salesperson_meta_box',
             $screen,
             'side',
-            'default'
+            'high'
         );
     }
 }
 
 /**
- * Render salesperson assignment meta box (HPOS Compatible)
+ * Render salesperson assignment meta box (HPOS Compatible, AJAX-based)
  */
 function ah_ho_render_salesperson_meta_box($post_or_order) {
-    // HPOS compatibility: parameter may be WC_Order or WP_Post
     if ($post_or_order instanceof WC_Order) {
         $order = $post_or_order;
     } else {
@@ -579,21 +578,20 @@ function ah_ho_render_salesperson_meta_box($post_or_order) {
         return;
     }
 
-    // HPOS compatible - use order meta methods
+    $order_id = $order->get_id();
     $assigned_salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
     $commission_amount = $order->get_meta('_commission_amount', true);
     $commission_rate = $order->get_meta('_commission_rate', true);
     $commission_status = $order->get_meta('_commission_status', true);
 
-    // Get all salespersons and storemen
     $salespersons = get_users(array('role__in' => array('ah_ho_salesperson', 'ah_ho_storeman'), 'orderby' => 'display_name'));
 
-    wp_nonce_field('ah_ho_save_salesperson', 'ah_ho_salesperson_nonce');
+    $nonce = wp_create_nonce('ah_ho_salesperson_ajax');
     ?>
-    <div class="ah-ho-salesperson-assignment">
+    <div class="ah-ho-salesperson-assignment" id="ah-ho-salesperson-box">
         <p>
-            <label for="assigned_salesperson"><?php _e('Assign to Salesperson:', 'ah-ho-custom'); ?></label>
-            <select name="assigned_salesperson" id="assigned_salesperson" style="width: 100%;">
+            <label for="ah_ho_assigned_salesperson"><?php _e('Assign to Salesperson:', 'ah-ho-custom'); ?></label>
+            <select id="ah_ho_assigned_salesperson" style="width: 100%;">
                 <option value=""><?php _e('-- None --', 'ah-ho-custom'); ?></option>
                 <?php foreach ($salespersons as $salesperson) : ?>
                     <option value="<?php echo esc_attr($salesperson->ID); ?>" <?php selected($assigned_salesperson_id, $salesperson->ID); ?>>
@@ -602,7 +600,9 @@ function ah_ho_render_salesperson_meta_box($post_or_order) {
                 <?php endforeach; ?>
             </select>
         </p>
+        <p id="ah-ho-salesperson-status" style="display:none; padding: 4px 8px; border-radius: 4px; font-size: 12px;"></p>
 
+        <div id="ah-ho-commission-details">
         <?php if ($commission_amount) :
             $per_carton_rate = $order->get_meta('_commission_per_carton_rate', true);
             $percentage_amount = $order->get_meta('_commission_percentage_amount', true);
@@ -650,116 +650,267 @@ function ah_ho_render_salesperson_meta_box($post_or_order) {
 
             <?php if ($commission_status === 'approved' && current_user_can('manage_options')) : ?>
                 <p>
-                    <label>
-                        <input type="checkbox" name="mark_commission_paid" value="1">
-                        <?php _e('Mark commission as paid', 'ah-ho-custom'); ?>
-                    </label>
+                    <button type="button" class="button button-small" id="ah-ho-mark-commission-paid">
+                        <?php _e('Mark as Paid', 'ah-ho-custom'); ?>
+                    </button>
                 </p>
             <?php endif; ?>
 
             <?php if ($commission_status === 'pending' && current_user_can('manage_options') && get_option('ah_ho_commission_approval_mode', 'auto') === 'manual') : ?>
                 <p>
-                    <label>
-                        <input type="checkbox" name="approve_commission" value="1">
-                        <?php _e('Approve commission', 'ah-ho-custom'); ?>
-                    </label>
+                    <button type="button" class="button button-small" id="ah-ho-approve-commission">
+                        <?php _e('Approve Commission', 'ah-ho-custom'); ?>
+                    </button>
                 </p>
             <?php endif; ?>
         <?php endif; ?>
+        </div>
     </div>
+
+    <script type="text/javascript">
+    jQuery(document).ready(function($) {
+        var orderId = <?php echo intval($order_id); ?>;
+        var nonce = '<?php echo $nonce; ?>';
+        var $status = $('#ah-ho-salesperson-status');
+
+        function showStatus(message, type) {
+            $status.text(message)
+                .css('background', type === 'success' ? '#d4edda' : type === 'error' ? '#f8d7da' : '#fff3cd')
+                .css('color', type === 'success' ? '#155724' : type === 'error' ? '#721c24' : '#856404')
+                .show();
+            if (type === 'success') {
+                setTimeout(function() { $status.fadeOut(); }, 3000);
+            }
+        }
+
+        // Save salesperson on dropdown change
+        $('#ah_ho_assigned_salesperson').on('change', function() {
+            var salespersonId = $(this).val();
+            showStatus('Saving...', 'info');
+
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'ah_ho_assign_salesperson',
+                    order_id: orderId,
+                    salesperson_id: salespersonId,
+                    nonce: nonce
+                },
+                success: function(response) {
+                    if (response.success) {
+                        showStatus(response.data.message, 'success');
+                        // Update the display in order details area
+                        var $field = $('.ah-ho-salesperson-field .ah-ho-salesperson-name, .ah-ho-salesperson-field span');
+                        if (response.data.salesperson_name) {
+                            $field.first().replaceWith(
+                                '<span class="ah-ho-salesperson-name" style="display:inline-block;background:#8b5cf6;color:#fff;padding:4px 12px;border-radius:4px;font-weight:500;">' +
+                                response.data.salesperson_name + '</span>'
+                            );
+                        } else {
+                            $field.first().replaceWith(
+                                '<span style="color:#666;font-style:italic;">Not assigned (Web/E-commerce order)</span>'
+                            );
+                        }
+                        // Refresh commission details
+                        if (response.data.commission_html) {
+                            $('#ah-ho-commission-details').html(response.data.commission_html);
+                        }
+                    } else {
+                        showStatus(response.data || 'Error saving', 'error');
+                    }
+                },
+                error: function() {
+                    showStatus('Network error - please try again', 'error');
+                }
+            });
+        });
+
+        // Mark commission as paid
+        $(document).on('click', '#ah-ho-mark-commission-paid', function() {
+            var $btn = $(this);
+            $btn.prop('disabled', true).text('Saving...');
+
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'ah_ho_update_commission_status',
+                    order_id: orderId,
+                    commission_action: 'mark_paid',
+                    nonce: nonce
+                },
+                success: function(response) {
+                    if (response.success) {
+                        showStatus('Commission marked as paid', 'success');
+                        $btn.replaceWith('<span style="color:#155724;font-weight:500;">Paid</span>');
+                        $('.commission-status-approved').text('Paid').removeClass('commission-status-approved').addClass('commission-status-paid');
+                    } else {
+                        showStatus(response.data || 'Error', 'error');
+                        $btn.prop('disabled', false).text('Mark as Paid');
+                    }
+                }
+            });
+        });
+
+        // Approve commission
+        $(document).on('click', '#ah-ho-approve-commission', function() {
+            var $btn = $(this);
+            $btn.prop('disabled', true).text('Approving...');
+
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'ah_ho_update_commission_status',
+                    order_id: orderId,
+                    commission_action: 'approve',
+                    nonce: nonce
+                },
+                success: function(response) {
+                    if (response.success) {
+                        showStatus('Commission approved', 'success');
+                        $btn.replaceWith('<span style="color:#155724;font-weight:500;">Approved</span>');
+                        $('.commission-status-pending').text('Approved').removeClass('commission-status-pending').addClass('commission-status-approved');
+                    } else {
+                        showStatus(response.data || 'Error', 'error');
+                        $btn.prop('disabled', false).text('Approve Commission');
+                    }
+                }
+            });
+        });
+    });
+    </script>
     <?php
 }
 
 /**
- * Save salesperson assignment and commission status
+ * AJAX: Assign salesperson to order
  */
-// Register save handler for both legacy and HPOS
-add_action('save_post_shop_order', 'ah_ho_save_salesperson_assignment', 10, 2);
-add_action('woocommerce_process_shop_order_meta', 'ah_ho_save_salesperson_assignment_hpos', 10, 2);
+add_action('wp_ajax_ah_ho_assign_salesperson', 'ah_ho_ajax_assign_salesperson');
 
-/**
- * HPOS-compatible save handler wrapper
- */
-function ah_ho_save_salesperson_assignment_hpos($order_id, $order = null) {
-    ah_ho_save_salesperson_assignment($order_id, null);
+function ah_ho_ajax_assign_salesperson() {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'ah_ho_salesperson_ajax')) {
+        wp_send_json_error('Invalid nonce');
+    }
+
+    if (!current_user_can('manage_woocommerce')) {
+        wp_send_json_error('Permission denied');
+    }
+
+    $order_id = absint($_POST['order_id']);
+    $new_salesperson = absint($_POST['salesperson_id']);
+    $order = wc_get_order($order_id);
+
+    if (!$order) {
+        wp_send_json_error('Order not found');
+    }
+
+    $old_salesperson = absint($order->get_meta('_assigned_salesperson_id', true));
+
+    if ($old_salesperson === $new_salesperson) {
+        wp_send_json_success(array('message' => 'No change'));
+        return;
+    }
+
+    $commission_html = '';
+
+    if ($new_salesperson) {
+        $salesperson = get_userdata($new_salesperson);
+        if (!$salesperson) {
+            wp_send_json_error('Salesperson not found');
+        }
+
+        $order->update_meta_data('_assigned_salesperson_id', $new_salesperson);
+        $order->add_order_note(
+            sprintf(__('Order assigned to salesperson: %s', 'ah-ho-custom'), $salesperson->display_name)
+        );
+
+        // Calculate commission
+        $components = ah_ho_calculate_commission_components($order, $new_salesperson);
+        ah_ho_store_commission_meta($order, $components, 'pending');
+        $order->save();
+
+        // Build commission details HTML for live update
+        $commission_html = '<hr><h4>' . __('Commission Details', 'ah-ho-custom') . '</h4>';
+        if ($components['percentage_amount'] > 0) {
+            $commission_html .= '<p><strong>' . __('Percentage:', 'ah-ho-custom') . '</strong> $' . number_format($components['percentage_amount'], 2) . ' (' . $components['percentage_rate'] . '% of order)</p>';
+        }
+        if ($components['carton_amount'] > 0) {
+            $commission_html .= '<p><strong>' . __('Per-Carton:', 'ah-ho-custom') . '</strong> $' . number_format($components['carton_amount'], 2) . ' ($' . number_format($components['per_carton_rate'], 2) . ' x ' . $components['total_quantity'] . ' cartons)</p>';
+        }
+        $commission_html .= '<p><strong>' . __('Total Commission:', 'ah-ho-custom') . '</strong> $' . number_format($components['total'], 2) . '</p>';
+        $commission_html .= '<p><strong>' . __('Status:', 'ah-ho-custom') . '</strong> <span class="commission-status-pending">Pending</span></p>';
+
+        wp_send_json_success(array(
+            'message' => sprintf('Assigned to %s (commission: $%s)', $salesperson->display_name, number_format($components['total'], 2)),
+            'salesperson_name' => $salesperson->display_name,
+            'commission_html' => $commission_html,
+        ));
+    } else {
+        // Remove assignment
+        $order->delete_meta_data('_assigned_salesperson_id');
+        $order->delete_meta_data('_commission_amount');
+        $order->delete_meta_data('_commission_rate');
+        $order->delete_meta_data('_commission_per_carton_rate');
+        $order->delete_meta_data('_commission_percentage_amount');
+        $order->delete_meta_data('_commission_carton_amount');
+        $order->delete_meta_data('_commission_total_quantity');
+        $order->delete_meta_data('_commission_status');
+        $order->add_order_note(__('Salesperson assignment removed, commission cleared', 'ah-ho-custom'));
+        $order->save();
+
+        wp_send_json_success(array(
+            'message' => 'Salesperson removed',
+            'salesperson_name' => '',
+            'commission_html' => '',
+        ));
+    }
 }
 
-function ah_ho_save_salesperson_assignment($post_id, $post) {
-    // Verify nonce
-    if (!isset($_POST['ah_ho_salesperson_nonce']) || !wp_verify_nonce($_POST['ah_ho_salesperson_nonce'], 'ah_ho_save_salesperson')) {
-        return;
+/**
+ * AJAX: Update commission status (mark paid / approve)
+ */
+add_action('wp_ajax_ah_ho_update_commission_status', 'ah_ho_ajax_update_commission_status');
+
+function ah_ho_ajax_update_commission_status() {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'ah_ho_salesperson_ajax')) {
+        wp_send_json_error('Invalid nonce');
     }
 
-    // Check permissions
-    if (!current_user_can('manage_woocommerce')) {
-        return;
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error('Permission denied');
     }
 
-    // Prevent autosave
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-        return;
-    }
+    $order_id = absint($_POST['order_id']);
+    $action = sanitize_text_field($_POST['commission_action']);
+    $order = wc_get_order($order_id);
 
-    $order = wc_get_order($post_id);
     if (!$order) {
-        return;
+        wp_send_json_error('Order not found');
     }
 
-    // Save assigned salesperson (HPOS compatible)
-    if (isset($_POST['assigned_salesperson'])) {
-        $old_salesperson = $order->get_meta('_assigned_salesperson_id', true);
-        $new_salesperson = absint($_POST['assigned_salesperson']);
-
-        if ($old_salesperson != $new_salesperson) {
-            if ($new_salesperson) {
-                $order->update_meta_data('_assigned_salesperson_id', $new_salesperson);
-                $salesperson = get_userdata($new_salesperson);
-                $order->add_order_note(
-                    sprintf(__('Order assigned to salesperson: %s', 'ah-ho-custom'), $salesperson->display_name)
-                );
-
-                // Calculate and store commission for newly assigned salesperson
-                if (function_exists('ah_ho_calculate_commission_components')) {
-                    $components = ah_ho_calculate_commission_components($order, $new_salesperson);
-                    ah_ho_store_commission_meta($order, $components, 'pending');
-                }
-            } else {
-                $order->delete_meta_data('_assigned_salesperson_id');
-                $order->delete_meta_data('_commission_amount');
-                $order->delete_meta_data('_commission_rate');
-                $order->delete_meta_data('_commission_per_carton_rate');
-                $order->delete_meta_data('_commission_percentage_amount');
-                $order->delete_meta_data('_commission_carton_amount');
-                $order->delete_meta_data('_commission_total_quantity');
-                $order->delete_meta_data('_commission_status');
-                $order->add_order_note(__('Salesperson assignment removed, commission cleared', 'ah-ho-custom'));
-            }
-            $order->save();
-        }
-    }
-
-    // Mark commission as paid (HPOS compatible)
-    if (isset($_POST['mark_commission_paid']) && $_POST['mark_commission_paid'] === '1') {
+    if ($action === 'mark_paid') {
         $order->update_meta_data('_commission_status', 'paid');
         $order->update_meta_data('_commission_paid_date', current_time('Y-m-d'));
         $order->add_order_note(__('Commission marked as paid', 'ah-ho-custom'));
         $order->save();
-    }
-
-    // Approve commission (manual approval mode) - HPOS compatible
-    if (isset($_POST['approve_commission']) && $_POST['approve_commission'] === '1') {
+        wp_send_json_success(array('message' => 'Commission marked as paid'));
+    } elseif ($action === 'approve') {
         $order->update_meta_data('_commission_status', 'approved');
         $order->add_order_note(__('Commission manually approved', 'ah-ho-custom'));
         $order->save();
 
-        // Send notification if enabled (HPOS compatible)
         if (get_option('ah_ho_notify_on_approval', true)) {
             $salesperson_id = $order->get_meta('_assigned_salesperson_id', true);
             $commission = $order->get_meta('_commission_amount', true);
             if ($salesperson_id && $commission) {
-                ah_ho_send_commission_notification($post_id, $salesperson_id, $commission);
+                ah_ho_send_commission_notification($order_id, $salesperson_id, $commission);
             }
         }
+        wp_send_json_success(array('message' => 'Commission approved'));
+    } else {
+        wp_send_json_error('Invalid action');
     }
 }
 
