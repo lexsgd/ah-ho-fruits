@@ -1,5 +1,5 @@
 /**
- * Ah Ho Fruits - Main JavaScript
+ * Ah Ho Fruit - Main JavaScript
  */
 
 (function($) {

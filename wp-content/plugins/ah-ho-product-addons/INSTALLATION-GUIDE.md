@@ -2,7 +2,7 @@
 
 **Version:** 1.0.0
 **Date:** 2026-01-25
-**Plugin Name:** Ah Ho Fruits - Product Add-ons
+**Plugin Name:** Ah Ho Fruit - Product Add-ons
 
 ---
 
@@ -55,7 +55,7 @@ Upload the entire plugin folder to your WordPress plugins directory. You can use
 ### Step 2: Activate Plugin
 
 1. Go to WordPress Admin > **Plugins**
-2. Find "Ah Ho Fruits - Product Add-ons"
+2. Find "Ah Ho Fruit - Product Add-ons"
 3. Click **Activate**
 4. You should see a success message
 5. No configuration needed - ready to use!

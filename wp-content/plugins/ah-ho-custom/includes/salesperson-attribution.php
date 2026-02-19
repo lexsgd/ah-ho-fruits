@@ -396,7 +396,7 @@ function ah_ho_send_commission_notification($order_id, $salesperson_id, $commiss
 
     // Prepare email
     $subject = sprintf(
-        __('[Ah Ho Fruits] Commission Approved - Order #%s', 'ah-ho-custom'),
+        __('[Ah Ho Fruit] Commission Approved - Order #%s', 'ah-ho-custom'),
         $order->get_order_number()
     );
 

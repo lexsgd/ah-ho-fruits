@@ -1,4 +1,4 @@
-# Ah Ho Fruits - Project Structure & Deployment Documentation
+# Ah Ho Fruit - Project Structure & Deployment Documentation
 
 ## Project Overview
 
@@ -13,7 +13,7 @@
 
 ### Local Development
 ```
-/Users/lexnaweiming/Downloads/Ah Ho Fruits/ah-ho-fruits/
+/Users/lexnaweiming/Downloads/Ah Ho Fruit/ah-ho-fruits/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml              # GitHub Actions deployment workflow
@@ -305,7 +305,7 @@ on:
 
 3. **Revert git commit:**
    ```bash
-   cd "/Users/lexnaweiming/Downloads/Ah Ho Fruits/ah-ho-fruits"
+   cd "/Users/lexnaweiming/Downloads/Ah Ho Fruit/ah-ho-fruits"
    git revert HEAD
    git push origin main
    ```

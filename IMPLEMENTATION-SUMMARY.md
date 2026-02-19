@@ -2,7 +2,7 @@
 
 ## 🎉 Implementation Complete!
 
-The B2B salesperson role with commission tracking has been successfully implemented in the Ah Ho Fruits Custom plugin (v1.2.0).
+The B2B salesperson role with commission tracking has been successfully implemented in the Ah Ho Fruit Custom plugin (v1.2.0).
 
 ---
 
@@ -155,13 +155,13 @@ Order Created → Order Completed → Status: Pending → Admin Approves → Sta
 
 The plugin files are already in place at:
 ```
-/Users/lexnaweiming/Downloads/Ah Ho Fruits/ah-ho-fruits/wp-content/plugins/ah-ho-custom/
+/Users/lexnaweiming/Downloads/Ah Ho Fruit/ah-ho-fruits/wp-content/plugins/ah-ho-custom/
 ```
 
 **To activate**:
 1. Login to WordPress admin
 2. Go to **Plugins**
-3. Find **Ah Ho Fruits Custom** (v1.2.0)
+3. Find **Ah Ho Fruit Custom** (v1.2.0)
 4. Click **Activate** (if not already active)
 5. If already active, click **Deactivate** then **Activate** to trigger role registration
 
@@ -461,5 +461,5 @@ All 5 implementation phases completed:
 ---
 
 **Implementation Date**: January 24, 2026
-**Plugin Location**: `/Users/lexnaweiming/Downloads/Ah Ho Fruits/ah-ho-fruits/wp-content/plugins/ah-ho-custom/`
+**Plugin Location**: `/Users/lexnaweiming/Downloads/Ah Ho Fruit/ah-ho-fruits/wp-content/plugins/ah-ho-custom/`
 **Plugin Version**: 1.2.0

@@ -286,4 +286,4 @@ Option value: {
 
 ---
 
-**Ah Ho Fruits • Payment Gateway Fees System** — Page {PAGE}
+**Ah Ho Fruit • Payment Gateway Fees System** — Page {PAGE}

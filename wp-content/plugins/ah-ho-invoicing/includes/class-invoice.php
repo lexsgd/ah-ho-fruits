@@ -30,7 +30,7 @@ class AH_HO_Invoice {
             'date' => $order->get_date_created()->format('d M Y'),
             'due_date' => $order->get_date_created()->modify('+30 days')->format('d M Y'),
             'company_logo' => AH_HO_INVOICING_PLUGIN_URL . 'assets/images/ah-ho-logo.png',
-            'company_name' => get_option('ah_ho_company_name', 'Ah Ho Fruits Pte Ltd'),
+            'company_name' => get_option('ah_ho_company_name', 'Ah Ho Fruit Trading Co'),
             'company_address' => get_option('ah_ho_company_address', '123 Fruit Lane, Singapore 123456'),
             'company_phone' => get_option('ah_ho_company_phone', '+65 1234 5678'),
             'company_email' => get_option('ah_ho_company_email', 'hello@ahhofruits.com'),

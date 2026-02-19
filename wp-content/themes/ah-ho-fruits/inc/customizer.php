@@ -2,7 +2,7 @@
 /**
  * Theme Customizer
  *
- * @package Ah_Ho_Fruits
+ * @package Ah_Ho_Fruit
  */
 
 if (!defined('ABSPATH')) {
@@ -16,7 +16,7 @@ function ah_ho_customize_register($wp_customize) {
 
     // Theme Options Panel
     $wp_customize->add_panel('ah_ho_theme_options', array(
-        'title'       => __('Ah Ho Fruits Options', 'ah-ho-fruits'),
+        'title'       => __('Ah Ho Fruit Options', 'ah-ho-fruits'),
         'description' => __('Customize your theme settings', 'ah-ho-fruits'),
         'priority'    => 30,
     ));

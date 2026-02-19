@@ -3,7 +3,7 @@
  * Plugin Name: Payment Gateway Fees
  * Description: Add fees based on selected payment method at checkout
  * Version: 1.2.0
- * Author: Ah Ho Fruits
+ * Author: Ah Ho Fruit
  * Requires Plugins: woocommerce
  */
 

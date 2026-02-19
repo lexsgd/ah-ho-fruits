@@ -1,5 +1,5 @@
-=== Ah Ho Fruits - Product Add-ons ===
-Contributors: Ah Ho Fruits
+=== Ah Ho Fruit - Product Add-ons ===
+Contributors: Ah Ho Fruit
 Requires at least: 6.0
 Tested up to: 6.4
 Requires PHP: 7.4
@@ -176,7 +176,7 @@ Repeat for `class-delivery-order.php` if you want it on delivery orders too.
 
 == Support ==
 
-For support, contact Ah Ho Fruits development team.
+For support, contact Ah Ho Fruit development team.
 
 == Upgrade Notice ==
 

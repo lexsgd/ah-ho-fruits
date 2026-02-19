@@ -2,7 +2,7 @@
 /**
  * Payment Gateway Settings
  *
- * Custom payment gateway configurations for Ah Ho Fruits
+ * Custom payment gateway configurations for Ah Ho Fruit
  * Sets PayNow as the default payment method
  *
  * @since 1.5.0

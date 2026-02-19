@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: Ah Ho Fruits - Product Add-ons
+ * Plugin Name: Ah Ho Fruit - Product Add-ons
  * Description: Gift messages and product notes/remarks for customer customization
  * Version: 1.0.0
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * WC requires at least: 8.0
  * WC tested up to: 9.0
- * Author: Ah Ho Fruits
+ * Author: Ah Ho Fruit
  * Text Domain: ah-ho-fruits
  */
 

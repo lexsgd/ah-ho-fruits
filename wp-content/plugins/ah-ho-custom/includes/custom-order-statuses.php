@@ -2,7 +2,7 @@
 /**
  * Custom WooCommerce Order Statuses
  *
- * Adds delivery workflow statuses for Ah Ho Fruits
+ * Adds delivery workflow statuses for Ah Ho Fruit
  */
 
 if (!defined('ABSPATH')) {

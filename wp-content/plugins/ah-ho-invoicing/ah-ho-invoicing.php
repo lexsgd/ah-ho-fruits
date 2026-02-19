@@ -1,10 +1,10 @@
 <?php
 /**
- * Plugin Name: Ah Ho Fruits - Invoicing & Packing Lists
+ * Plugin Name: Ah Ho Fruit - Invoicing & Packing Lists
  * Plugin URI: https://heymag.app
- * Description: Custom PDF invoices, packing lists, and delivery orders for Ah Ho Fruits. Features: Sequential invoice numbering, consolidated packing lists sorted by postal code + delivery date, customer notes highlighting (allergies/gifts).
+ * Description: Custom PDF invoices, packing lists, and delivery orders for Ah Ho Fruit. Features: Sequential invoice numbering, consolidated packing lists sorted by postal code + delivery date, customer notes highlighting (allergies/gifts).
  * Version: 1.4.1
- * Author: Ah Ho Fruits
+ * Author: Ah Ho Fruit
  * Author URI: https://heymag.app
  * Text Domain: ah-ho-invoicing
  * Domain Path: /languages
@@ -42,7 +42,7 @@ add_action('before_woocommerce_init', function() {
 function ah_ho_invoicing_check_woocommerce() {
     if (!class_exists('WooCommerce')) {
         add_action('admin_notices', function() {
-            echo '<div class="error"><p><strong>Ah Ho Fruits - Invoicing & Packing Lists</strong> requires WooCommerce to be installed and active.</p></div>';
+            echo '<div class="error"><p><strong>Ah Ho Fruit - Invoicing & Packing Lists</strong> requires WooCommerce to be installed and active.</p></div>';
         });
         return false;
     }
@@ -142,7 +142,7 @@ function ah_ho_invoicing_activate() {
 
     // Set default options
     if (get_option('ah_ho_company_name') === false) {
-        update_option('ah_ho_company_name', 'Ah Ho Fruits Pte Ltd');
+        update_option('ah_ho_company_name', 'Ah Ho Fruit Trading Co');
     }
     if (get_option('ah_ho_company_address') === false) {
         update_option('ah_ho_company_address', '123 Fruit Lane, Singapore 123456');

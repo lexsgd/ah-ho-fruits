@@ -1,4 +1,4 @@
-# Ah Ho Fruits - Invoicing & Packing Lists
+# Ah Ho Fruit - Invoicing & Packing Lists
 
 > **Version:** 1.3.0  
 > **Requires:** WordPress 6.0+, WooCommerce 8.0+, PHP 7.4+  
@@ -6,7 +6,7 @@
 
 ## Overview
 
-Custom PDF invoice, packing slip, and delivery order generator for Ah Ho Fruits. Designed specifically for fruit delivery businesses with features like sequential invoice numbering, consolidated packing slips sorted by delivery route, and customer allergy highlighting.
+Custom PDF invoice, packing slip, and delivery order generator for Ah Ho Fruit. Designed specifically for fruit delivery businesses with features like sequential invoice numbering, consolidated packing slips sorted by delivery route, and customer allergy highlighting.
 
 ---
 
@@ -76,7 +76,7 @@ The vendor/ directory is committed to the repository (not .gitignored) because V
 ### 3. Activate Plugin
 
 1. Go to **WordPress Admin > Plugins**
-2. Find "Ah Ho Fruits - Invoicing & Packing Lists"
+2. Find "Ah Ho Fruit - Invoicing & Packing Lists"
 3. Click **Activate**
 
 ### 4. Configure Settings

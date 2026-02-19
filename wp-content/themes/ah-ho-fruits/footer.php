@@ -2,7 +2,7 @@
 /**
  * The footer template
  *
- * @package Ah_Ho_Fruits
+ * @package Ah_Ho_Fruit
  */
 ?>
 
@@ -17,7 +17,7 @@
                     </div>
                 <?php else : ?>
                     <div class="footer-column">
-                        <h4><?php esc_html_e('About Ah Ho Fruits', 'ah-ho-fruits'); ?></h4>
+                        <h4><?php esc_html_e('About Ah Ho Fruit', 'ah-ho-fruits'); ?></h4>
                         <p><?php esc_html_e('Premium fresh fruits delivered to your doorstep in Singapore. Quality guaranteed.', 'ah-ho-fruits'); ?></p>
                     </div>
                 <?php endif; ?>

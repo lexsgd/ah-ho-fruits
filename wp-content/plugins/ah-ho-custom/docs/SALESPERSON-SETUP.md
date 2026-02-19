@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Ah Ho Fruits Custom plugin now includes a complete B2B salesperson management system with commission tracking, multi-layer security, and customizable approval workflows.
+The Ah Ho Fruit Custom plugin now includes a complete B2B salesperson management system with commission tracking, multi-layer security, and customizable approval workflows.
 
 ---
 

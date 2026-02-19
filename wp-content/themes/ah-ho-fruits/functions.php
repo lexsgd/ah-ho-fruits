@@ -1,6 +1,6 @@
 <?php
 /**
- * Ah Ho Fruits Theme Functions
+ * Ah Ho Fruit Theme Functions
  *
  * @package Ah_Ho_Fruits
  * @version 1.0.0

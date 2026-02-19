@@ -18,7 +18,7 @@ git config user.name "Lex"
 git add .
 
 # Create initial commit
-git commit -m "Initial commit: Ah Ho Fruits WordPress theme and deployment setup"
+git commit -m "Initial commit: Ah Ho Fruit WordPress theme and deployment setup"
 
 # Add remote
 git remote add origin https://github.com/lexsgd/ah-ho-fruits.git

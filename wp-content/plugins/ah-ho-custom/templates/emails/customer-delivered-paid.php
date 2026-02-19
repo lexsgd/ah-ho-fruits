@@ -20,7 +20,7 @@ do_action('woocommerce_email_header', $email_heading, $email); ?>
 
 <p><?php esc_html_e('Your order has been successfully delivered! 🎉', 'ah-ho-custom'); ?></p>
 
-<p><?php esc_html_e('We hope you enjoy your fresh fruits. Thank you for choosing Ah Ho Fruits!', 'ah-ho-custom'); ?></p>
+<p><?php esc_html_e('We hope you enjoy your fresh fruits. Thank you for choosing Ah Ho Fruit!', 'ah-ho-custom'); ?></p>
 
 <p><?php esc_html_e('If you have any questions or concerns about your order, please don\'t hesitate to contact us.', 'ah-ho-custom'); ?></p>
 

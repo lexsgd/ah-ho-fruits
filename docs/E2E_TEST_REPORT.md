@@ -1,4 +1,4 @@
-# Ah Ho Fruits - E2E Test Report
+# Ah Ho Fruit - E2E Test Report
 ## PDF Invoicing & Salesperson Features
 
 **Test Date:** January 24, 2026
@@ -137,10 +137,10 @@ Test Phase 7: Consolidated Features
 **Test Steps:**
 
 1. ✅ Navigate to WordPress Admin > Plugins
-2. ✅ Locate "Ah Ho Fruits - Invoicing & Packing Lists" (v1.1.0)
+2. ✅ Locate "Ah Ho Fruit - Invoicing & Packing Lists" (v1.1.0)
 3. ✅ Click "Activate" button
 4. ✅ Verify activation success message
-5. ✅ Verify "Ah Ho Fruits Custom" (v1.0.0) active status
+5. ✅ Verify "Ah Ho Fruit Custom" (v1.0.0) active status
 6. ✅ Check for activation errors (none found)
 
 **Expected Results:**
@@ -225,7 +225,7 @@ Test Phase 7: Consolidated Features
 
 ```
 ✅ Company Branding:
-   - Company Name: Ah Ho Fruits Pte Ltd
+   - Company Name: Ah Ho Fruit Trading Co
    - Address: 123 Fruit Lane, Singapore 123456
    - Phone: +65 1234 5678
    - Email: hello@ahhofruits.com
@@ -394,7 +394,7 @@ Test Phase 7: Consolidated Features
    - Pages: 1
    - Format: A4
    - Invoice Number: [Generated]
-   - Company: Ah Ho Fruits Pte Ltd
+   - Company: Ah Ho Fruit Trading Co
    - Status: Valid PDF ✅
 
 ✅ packing-slip-3590.pdf
@@ -944,7 +944,7 @@ WordPress Default Roles:
 
 **Shows:**
 - WordPress Plugins admin page
-- "Ah Ho Fruits - Invoicing & Packing Lists" visible
+- "Ah Ho Fruit - Invoicing & Packing Lists" visible
 - Status: Inactive
 - "Activate" link present
 - Plugin count: 23 active plugins
@@ -959,7 +959,7 @@ WordPress Default Roles:
 
 **Shows:**
 - Success message: "Plugin activated."
-- "Ah Ho Fruits - Invoicing & Packing Lists" now active
+- "Ah Ho Fruit - Invoicing & Packing Lists" now active
 - Plugin count: 24 active plugins
 - "PDF Documents" menu item appeared in sidebar
 
@@ -973,8 +973,8 @@ WordPress Default Roles:
 
 **Shows:**
 - Both plugins active:
-  - Ah Ho Fruits - Invoicing & Packing Lists (v1.1.0)
-  - Ah Ho Fruits Custom (v1.0.0)
+  - Ah Ho Fruit - Invoicing & Packing Lists (v1.1.0)
+  - Ah Ho Fruit Custom (v1.0.0)
 - No error messages
 - Admin menu items present
 
@@ -1440,8 +1440,8 @@ WordPress Default Roles:
 - Database: MySQL/MariaDB (HPOS enabled)
 
 **Plugins Installed (24 total):**
-1. Ah Ho Fruits - Invoicing & Packing Lists (v1.1.0) ✅
-2. Ah Ho Fruits Custom (v1.0.0) ✅
+1. Ah Ho Fruit - Invoicing & Packing Lists (v1.1.0) ✅
+2. Ah Ho Fruit Custom (v1.0.0) ✅
 3. WooCommerce (v8.x) ✅
 4. Advanced Custom Fields ✅
 5. [Other plugins not tested]

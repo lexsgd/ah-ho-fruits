@@ -1,4 +1,4 @@
-# Ah Ho Fruits - Storeman & Inventory Guide
+# Ah Ho Fruit - Storeman & Inventory Guide
 
 **Managing stock the fast way!**
 

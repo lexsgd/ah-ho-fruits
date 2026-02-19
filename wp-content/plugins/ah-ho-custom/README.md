@@ -1,6 +1,6 @@
-# Ah Ho Fruits Custom Plugin
+# Ah Ho Fruit Custom Plugin
 
-Custom WooCommerce functionality for Ah Ho Fruits delivery workflow.
+Custom WooCommerce functionality for Ah Ho Fruit delivery workflow.
 
 ## Features
 

@@ -623,4 +623,4 @@ The system handles the boring administrative work (calculations, tracking, secur
 
 **Plugin Version:** 1.2.2
 **Last Updated:** January 2026
-**Author:** Ah Ho Fruits Development Team
+**Author:** Ah Ho Fruit Development Team

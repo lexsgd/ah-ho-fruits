@@ -20,7 +20,7 @@ echo sprintf(esc_html__('Hi %s,', 'ah-ho-custom'), esc_html($order->get_billing_
 
 echo esc_html__('Your order has been successfully delivered!', 'ah-ho-custom') . "\n\n";
 
-echo esc_html__('We hope you enjoy your fresh fruits. Thank you for choosing Ah Ho Fruits!', 'ah-ho-custom') . "\n\n";
+echo esc_html__('We hope you enjoy your fresh fruits. Thank you for choosing Ah Ho Fruit!', 'ah-ho-custom') . "\n\n";
 
 echo esc_html__('If you have any questions or concerns about your order, please don\'t hesitate to contact us.', 'ah-ho-custom') . "\n\n";
 

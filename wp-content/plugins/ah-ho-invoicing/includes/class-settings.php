@@ -186,7 +186,7 @@ class AH_HO_Settings {
                 'desc'    => __('Legal company name', 'ah-ho-invoicing'),
                 'id'      => 'ah_ho_company_name',
                 'type'    => 'text',
-                'default' => 'Ah Ho Fruits Pte Ltd',
+                'default' => 'Ah Ho Fruit Trading Co',
             ),
             array(
                 'title'   => __('Company Address', 'ah-ho-invoicing'),

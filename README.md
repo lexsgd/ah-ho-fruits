@@ -1,4 +1,4 @@
-# Ah Ho Fruits - WordPress E-commerce
+# Ah Ho Fruit - WordPress E-commerce
 
 Premium fresh fruits delivery website for Singapore, built with WordPress and WooCommerce.
 
@@ -78,4 +78,4 @@ Push to `main` branch - changes in `wp-content/` trigger automatic deployment.
 3. Commit and push to trigger deployment
 
 ---
-*Ah Ho Fruits - Fresh fruits delivered to your doorstep*
+*Ah Ho Fruit - Fresh fruits delivered to your doorstep*

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document explains how commissions are calculated, tracked, and paid in the Ah Ho Fruits salesperson system.
+This document explains how commissions are calculated, tracked, and paid in the Ah Ho Fruit salesperson system.
 
 ---
 
@@ -465,7 +465,7 @@ Commission % of Revenue = (Total Commission / Total Order Value) × 100
 
 ### Approval Notification
 
-**Subject**: `[Ah Ho Fruits] Commission Approved - Order #123`
+**Subject**: `[Ah Ho Fruit] Commission Approved - Order #123`
 
 **Body**:
 ```

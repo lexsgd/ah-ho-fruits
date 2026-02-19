@@ -1,6 +1,6 @@
 {
     "name": "ah-ho-fruits/invoicing",
-    "description": "Custom PDF invoicing and packing lists for Ah Ho Fruits",
+    "description": "Custom PDF invoicing and packing lists for Ah Ho Fruit",
     "type": "wordpress-plugin",
     "require": {
         "php": ">=7.4",

@@ -1,9 +1,9 @@
-# Ah Ho Fruits - PDF Invoicing & Packing Lists System
+# Ah Ho Fruit - PDF Invoicing & Packing Lists System
 ## Complete User Guide
 
 **Version:** 1.3.0
 **Date:** January 24, 2026
-**Plugin:** Ah Ho Fruits - Invoicing & Packing Lists
+**Plugin:** Ah Ho Fruit - Invoicing & Packing Lists
 **WordPress Version:** 6.0+
 **WooCommerce Version:** 8.0+
 **PHP Version:** 7.4+
@@ -29,7 +29,7 @@
 
 ## Executive Summary
 
-The **Ah Ho Fruits - Invoicing & Packing Lists** plugin is a comprehensive PDF document generation system designed specifically for fruit delivery businesses. It automates the creation of invoices, packing slips, and delivery orders while integrating seamlessly with WooCommerce.
+The **Ah Ho Fruit - Invoicing & Packing Lists** plugin is a comprehensive PDF document generation system designed specifically for fruit delivery businesses. It automates the creation of invoices, packing slips, and delivery orders while integrating seamlessly with WooCommerce.
 
 ### Key Benefits
 
@@ -290,7 +290,7 @@ After activation, check for:
 
 | Field | Example | Required |
 |-------|---------|----------|
-| Company Name | Ah Ho Fruits Pte Ltd | ✅ Yes |
+| Company Name | Ah Ho Fruit Pte Ltd | ✅ Yes |
 | Company Address | 123 Fruit Lane, Singapore 123456 | ✅ Yes |
 | Phone Number | +65 1234 5678 | ✅ Yes |
 | Email Address | hello@ahhofruits.com | ✅ Yes |
@@ -438,7 +438,7 @@ add_role('warehouse_staff', 'Warehouse Staff', [
 ┌─────────────────────────────────────────────────┐
 │ [Company Logo]        INVOICE #AHF-00001        │
 │                                                  │
-│ Ah Ho Fruits Pte Ltd                            │
+│ Ah Ho Fruit Pte Ltd                            │
 │ 123 Fruit Lane, Singapore 123456                │
 │ UEN: 201234567A | GST: M12345678X               │
 │                                                  │
@@ -631,7 +631,7 @@ Special Notes:
 
 | Setting | Description | Example | Required |
 |---------|-------------|---------|----------|
-| Company Name | Legal business name | Ah Ho Fruits Pte Ltd | ✅ |
+| Company Name | Legal business name | Ah Ho Fruit Pte Ltd | ✅ |
 | Company Address | Full business address (multiline) | 123 Fruit Lane<br>Singapore 123456 | ✅ |
 | Phone Number | Business contact number | +65 1234 5678 | ✅ |
 | Email Address | Business email | hello@ahhofruits.com | ✅ |
@@ -1813,14 +1813,14 @@ Cmd/Ctrl + Click = Open PDF in new tab
 ### Appendix F: License & Credits
 
 **License:** GPL v2 or later
-**Copyright:** © 2026 Ah Ho Fruits Pte Ltd
+**Copyright:** © 2026 Ah Ho Fruit Pte Ltd
 
 **Credits:**
 - **Dompdf Library:** https://github.com/dompdf/dompdf (LGPL 2.1)
 - **WooCommerce:** Automattic Inc.
 - **WordPress:** WordPress Foundation
 
-**Developer:** Ah Ho Fruits Development Team
+**Developer:** Ah Ho Fruit Development Team
 **Support Email:** dev@ahhofruits.com
 
 ---

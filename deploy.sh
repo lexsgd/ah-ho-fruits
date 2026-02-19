@@ -1,5 +1,5 @@
 #!/bin/bash
-# Manual deployment script for Ah Ho Fruits
+# Manual deployment script for Ah Ho Fruit
 # Usage: ./deploy.sh
 
 # Configuration - UPDATE THESE VALUES
@@ -15,7 +15,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 echo -e "${YELLOW}========================================${NC}"
-echo -e "${YELLOW}Ah Ho Fruits - Manual Deployment Script${NC}"
+echo -e "${YELLOW}Ah Ho Fruit - Manual Deployment Script${NC}"
 echo -e "${YELLOW}========================================${NC}"
 echo ""
 

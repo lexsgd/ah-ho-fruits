@@ -1,7 +1,7 @@
-# Ah Ho Fruits - Remaining Tasks Implementation Plan
+# Ah Ho Fruit - Remaining Tasks Implementation Plan
 
 **Date**: January 22, 2026
-**Project**: Ah Ho Fruits WordPress Site Transformation
+**Project**: Ah Ho Fruit WordPress Site Transformation
 **Site URL**: https://fruits.heymag.app/
 **Status**: Phase 1 Complete (Footer Menu Links Updated)
 
@@ -69,14 +69,14 @@ WordPress admin pages return 100k-200k+ characters of HTML/accessibility tree da
 - phpMyAdmin: https://sh00017.vodien.com:2083/cpsess0585210987/frontend/jupiter/sql/index.html
 
 **Local Project**:
-- Repository: `/Users/lexnaweiming/Downloads/Ah Ho Fruits/ah-ho-fruits/`
-- SQL Scripts: `/Users/lexnaweiming/Downloads/Ah Ho Fruits/ah-ho-fruits/sql/` (to be created)
+- Repository: `/Users/lexnaweiming/Downloads/Ah Ho Fruit/ah-ho-fruits/`
+- SQL Scripts: `/Users/lexnaweiming/Downloads/Ah Ho Fruit/ah-ho-fruits/sql/` (to be created)
 
 ### Recommended Approach: Direct Database Edit
 
 **SQL File Path**:
 ```
-/Users/lexnaweiming/Downloads/Ah Ho Fruits/ah-ho-fruits/sql/update-meta-description.sql
+/Users/lexnaweiming/Downloads/Ah Ho Fruit/ah-ho-fruits/sql/update-meta-description.sql
 ```
 
 **SQL Query**:
@@ -217,8 +217,8 @@ AND meta_value LIKE '%vegan%';
 - Link URL: https://fruits.heymag.app/
 
 **New**:
-- Alt Text: "Ah Ho Fruits"
-- Link Title: "Ah Ho Fruits"
+- Alt Text: "Ah Ho Fruit"
+- Link Title: "Ah Ho Fruit"
 - Link URL: https://fruits.heymag.app/ (unchanged)
 
 ### Recommended Approach: WordPress Customizer
@@ -228,8 +228,8 @@ AND meta_value LIKE '%vegan%';
 2. Click "Footer" section
 3. OR navigate to: https://fruits.heymag.app/wp-admin/themes.php?page=avada_options
 4. Find "Footer Content" or "Footer Logo" settings
-5. Update alt text field to: "Ah Ho Fruits"
-6. Update link title to: "Ah Ho Fruits"
+5. Update alt text field to: "Ah Ho Fruit"
+6. Update link title to: "Ah Ho Fruit"
 7. Click "Publish" to save changes
 
 ### Alternative: Widget Editor
@@ -304,7 +304,7 @@ AND option_value LIKE '%Vegan%';
 
 **SQL File Path**:
 ```
-/Users/lexnaweiming/Downloads/Ah Ho Fruits/ah-ho-fruits/sql/create-fruits10-coupon.sql
+/Users/lexnaweiming/Downloads/Ah Ho Fruit/ah-ho-fruits/sql/create-fruits10-coupon.sql
 ```
 
 **SQL Query**:
@@ -399,7 +399,7 @@ ORDER BY pm.meta_key;
 - **Description**: "Experience the king of fruits with our hand-selected premium Alphonso mangoes from India. Each box contains 6 perfectly ripened mangoes, known for their rich, sweet flavor and smooth texture. Perfect for gifting or treating yourself to a tropical delight."
 - **Regular Price**: SGD $45.00
 - **Stock**: In stock
-- **Image**: `/Users/lexnaweiming/Downloads/Ah Ho Fruits/product-images/mango-box.jpg` (to be provided)
+- **Image**: `/Users/lexnaweiming/Downloads/Ah Ho Fruit/product-images/mango-box.jpg` (to be provided)
 
 #### Product 2: Dragon Fruit Trio
 - **SKU**: DRAGON-TRIO-01
@@ -409,7 +409,7 @@ ORDER BY pm.meta_key;
 - **Description**: "Vibrant red dragon fruits packed with antioxidants and natural sweetness. Each trio contains 3 fresh dragon fruits, perfect for smoothies, salads, or enjoying fresh. Locally sourced for maximum freshness."
 - **Regular Price**: SGD $28.00
 - **Stock**: In stock
-- **Image**: `/Users/lexnaweiming/Downloads/Ah Ho Fruits/product-images/dragon-fruit.jpg` (to be provided)
+- **Image**: `/Users/lexnaweiming/Downloads/Ah Ho Fruit/product-images/dragon-fruit.jpg` (to be provided)
 
 #### Product 3: Japanese Melon
 - **SKU**: MELON-JP-01
@@ -419,7 +419,7 @@ ORDER BY pm.meta_key;
 - **Description**: "The ultimate luxury fruit - a premium Japanese Yubari King melon, carefully cultivated for perfect sweetness and texture. Each melon is individually selected and comes in an elegant gift box. The perfect gift for special occasions."
 - **Regular Price**: SGD $88.00
 - **Stock**: In stock
-- **Image**: `/Users/lexnaweiming/Downloads/Ah Ho Fruits/product-images/japanese-melon.jpg` (to be provided)
+- **Image**: `/Users/lexnaweiming/Downloads/Ah Ho Fruit/product-images/japanese-melon.jpg` (to be provided)
 
 #### Product 4: Berry Mix Box
 - **SKU**: BERRY-MIX-01
@@ -429,7 +429,7 @@ ORDER BY pm.meta_key;
 - **Description**: "A delightful assortment of fresh berries including strawberries, blueberries, and raspberries. Perfect for breakfast, desserts, or healthy snacking. All berries are fresh and locally sourced when possible."
 - **Regular Price**: SGD $35.00
 - **Stock**: In stock
-- **Image**: `/Users/lexnaweiming/Downloads/Ah Ho Fruits/product-images/berry-mix.jpg` (to be provided)
+- **Image**: `/Users/lexnaweiming/Downloads/Ah Ho Fruit/product-images/berry-mix.jpg` (to be provided)
 
 #### Product 5: Citrus Collection
 - **SKU**: CITRUS-COL-01
@@ -439,18 +439,18 @@ ORDER BY pm.meta_key;
 - **Description**: "Start your day with vitamin C! Our citrus collection includes fresh oranges, grapefruits, and sweet mandarins. Perfect for juicing or eating fresh. Each box contains approximately 2kg of mixed citrus fruits."
 - **Regular Price**: SGD $32.00
 - **Stock**: In stock
-- **Image**: `/Users/lexnaweiming/Downloads/Ah Ho Fruits/product-images/citrus-collection.jpg` (to be provided)
+- **Image**: `/Users/lexnaweiming/Downloads/Ah Ho Fruit/product-images/citrus-collection.jpg` (to be provided)
 
 ### File Paths
 
 **CSV Import Template**:
 ```
-/Users/lexnaweiming/Downloads/Ah Ho Fruits/ah-ho-fruits/products/fruit-products-import.csv
+/Users/lexnaweiming/Downloads/Ah Ho Fruit/ah-ho-fruits/products/fruit-products-import.csv
 ```
 
 **Product Images Directory** (local staging):
 ```
-/Users/lexnaweiming/Downloads/Ah Ho Fruits/product-images/
+/Users/lexnaweiming/Downloads/Ah Ho Fruit/product-images/
 ├── mango-box.jpg
 ├── dragon-fruit.jpg
 ├── japanese-melon.jpg
@@ -479,7 +479,7 @@ simple,CITRUS-COL-01,Citrus Collection,1,"Fruits > Citrus","Oranges, grapefruits
 
 **Steps**:
 1. **User Action Required**: Provide 5 product images
-   - Save to: `/Users/lexnaweiming/Downloads/Ah Ho Fruits/product-images/`
+   - Save to: `/Users/lexnaweiming/Downloads/Ah Ho Fruit/product-images/`
    - Filenames: mango-box.jpg, dragon-fruit.jpg, japanese-melon.jpg, berry-mix.jpg, citrus-collection.jpg
    - Recommended size: 800x800px or larger
    - Format: JPG or PNG
@@ -538,7 +538,7 @@ simple,CITRUS-COL-01,Citrus Collection,1,"Fruits > Citrus","Oranges, grapefruits
 
 ```
 Local Project Structure:
-└── /Users/lexnaweiming/Downloads/Ah Ho Fruits/ah-ho-fruits/
+└── /Users/lexnaweiming/Downloads/Ah Ho Fruit/ah-ho-fruits/
     ├── .github/
     │   └── workflows/
     │       └── deploy.yml (FTP deployment via GitHub Actions)
@@ -557,7 +557,7 @@ Local Project Structure:
     └── IMPLEMENTATION_PLAN.md (this file)
 
 Product Images Directory:
-└── /Users/lexnaweiming/Downloads/Ah Ho Fruits/product-images/
+└── /Users/lexnaweiming/Downloads/Ah Ho Fruit/product-images/
     ├── mango-box.jpg
     ├── dragon-fruit.jpg
     ├── japanese-melon.jpg
@@ -598,7 +598,7 @@ Database Tables:
 **Tasks**: Meta description + FRUITS10 coupon (if using SQL)
 
 **Steps**:
-1. Create `/Users/lexnaweiming/Downloads/Ah Ho Fruits/ah-ho-fruits/sql/` directory
+1. Create `/Users/lexnaweiming/Downloads/Ah Ho Fruit/ah-ho-fruits/sql/` directory
 2. Create SQL files for meta description and coupon
 3. Log into phpMyAdmin: https://sh00017.vodien.com:2083/.../sql/
 4. Execute SQL queries
@@ -639,7 +639,7 @@ Database Tables:
 
 **Prerequisites**:
 - User must provide 5 product images
-- Images saved to: `/Users/lexnaweiming/Downloads/Ah Ho Fruits/product-images/`
+- Images saved to: `/Users/lexnaweiming/Downloads/Ah Ho Fruit/product-images/`
 
 **Steps**:
 1. Upload product images to WordPress media library
@@ -666,10 +666,10 @@ Database Tables:
   - Check: "Fresh Seasonal Fruits & Gift Hampers" visible
   - Check: "Fruit News & Recipes" visible
 
-- [ ] **Task 4**: Footer logo text changed to "Ah Ho Fruits"
+- [ ] **Task 4**: Footer logo text changed to "Ah Ho Fruit"
   - Verify: Scroll to footer at https://fruits.heymag.app/
-  - Check: Hover over logo shows "Ah Ho Fruits" tooltip
-  - Check: Screen reader reads "Ah Ho Fruits"
+  - Check: Hover over logo shows "Ah Ho Fruit" tooltip
+  - Check: Screen reader reads "Ah Ho Fruit"
 
 - [ ] **Task 5**: FRUITS10 coupon code created and functional
   - Verify: Add product to cart
@@ -715,7 +715,7 @@ RENAME TABLE wp_posts_backup_20260122 TO wp_posts;
 ## Contact Information
 
 **Deployment Method**: FTP via GitHub Actions
-**GitHub Repo**: `/Users/lexnaweiming/Downloads/Ah Ho Fruits/ah-ho-fruits/`
+**GitHub Repo**: `/Users/lexnaweiming/Downloads/Ah Ho Fruit/ah-ho-fruits/`
 **Live Site**: https://fruits.heymag.app/
 **Admin**: https://fruits.heymag.app/wp-admin/
 **cPanel**: https://sh00017.vodien.com:2083/
