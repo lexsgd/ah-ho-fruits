@@ -42,12 +42,18 @@ jobs:
             **/*.sh
             **/docker-compose.yml
 
-      - name: Verify deployment
+      - name: Reset OPcache
         run: |
           sleep 3
-          echo -n "order-fulfillment.php: "
-          curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/wp-content/plugins/ah-ho-custom/includes/order-fulfillment.php"
-          echo ""
-          echo -n "shop-ordering.php: "
-          curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/wp-content/plugins/ah-ho-custom/includes/shop-ordering.php"
+          echo "Resetting OPcache..."
+          RESULT=$(curl -s "https://ahhofruit.com/opcache-reset.php?token=ah_ho_deploy_2026" || echo "failed")
+          echo "OPcache reset result: $RESULT"
+          # Also hit wp-cron as fallback
+          curl -s -o /dev/null "https://ahhofruit.com/wp-cron.php?doing_wp_cron=$(date +%s)"
+          sleep 2
+
+      - name: Verify deployment
+        run: |
+          echo -n "class-pdf-generator.php: "
+          curl -sI -o /dev/null -w "%{http_code}" "https://ahhofruit.com/wp-content/plugins/ah-ho-invoicing/includes/class-pdf-generator.php"
           echo ""

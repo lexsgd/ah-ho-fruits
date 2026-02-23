@@ -78,9 +78,9 @@
         "normal": "DejaVuSerif"
     },
     "noto sans sc": {
-        "normal": "NotoSansSC-Regular",
-        "bold": "NotoSansSC-Regular",
-        "italic": "NotoSansSC-Regular",
-        "bold_italic": "NotoSansSC-Regular"
+        "normal": "noto_sans_sc_normal_d4251901d7080d141f2a9b2da90ce3a3",
+        "bold": "noto_sans_sc_normal_d4251901d7080d141f2a9b2da90ce3a3",
+        "italic": "noto_sans_sc_normal_d4251901d7080d141f2a9b2da90ce3a3",
+        "bold_italic": "noto_sans_sc_normal_d4251901d7080d141f2a9b2da90ce3a3"
     }
 }
