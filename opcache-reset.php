@@ -1,7 +1,8 @@
 <?php
 /**
- * OPcache Reset - Deployed temporarily by CI/CD, self-deletes after use.
+ * OPcache Reset - Permanent endpoint for CI/CD deploys.
  * Security: requires secret token via query string.
+ * Version: 2 (force FTP re-upload)
  */
 if (!isset($_GET['token']) || $_GET['token'] !== 'ah_ho_deploy_2026') {
     http_response_code(403);
@@ -30,5 +31,4 @@ if (function_exists('opcache_invalidate')) {
 header('Content-Type: application/json');
 echo json_encode($result);
 
-// Self-delete after successful reset
-@unlink(__FILE__);
+// Persistent — no self-delete. Token-protected for security.
