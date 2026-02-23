@@ -41,7 +41,7 @@ class AH_HO_PDF_Generator {
      * @return string|false Path to generated PDF or false on failure
      */
     // Bump this version to invalidate all cached PDFs (e.g. after font fixes)
-    const CACHE_VERSION = '2';
+    const CACHE_VERSION = '3';
 
     public static function generate_pdf($html, $filename, $cache = true) {
         // Check cache first

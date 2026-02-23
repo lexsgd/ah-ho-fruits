@@ -82,7 +82,7 @@ if (empty($ship_phone)) {
                 &nbsp;&nbsp;Tel: <?php echo esc_html($ship_phone); ?>
             <?php endif; ?>
         </td>
-        <td style="width: 45%; vertical-align: top; text-align: right; font-size: 10px; color: #333;">
+        <td style="width: 45%; vertical-align: top; text-align: right; font-size: 10px; color: #000;">
             <strong>Order Date:</strong> <?php echo esc_html($order->get_date_created()->format('d/m/Y')); ?>
         </td>
     </tr>
@@ -96,7 +96,7 @@ echo AH_HO_Packing_Slip::format_customer_notes($order);
 <!-- ===== ITEMS TABLE ===== -->
 <table style="width: 100%; border-collapse: collapse; margin-top: 4px;">
     <thead>
-        <tr style="background-color: #555; color: white; font-size: 10px;">
+        <tr style="background-color: #000; color: white; font-size: 10px;">
             <th style="padding: 4px 6px; text-align: left; border: 1px solid #999;">Item</th>
             <th style="padding: 4px 6px; text-align: center; width: 45px; border: 1px solid #999;">Qty</th>
             <th style="padding: 4px 6px; text-align: center; width: 35px; border: 1px solid #999;">OK</th>
@@ -167,7 +167,7 @@ echo AH_HO_Packing_Slip::format_customer_notes($order);
                     endif;
                     if (!empty($meta_parts)):
                     ?>
-                        <br><small style="color: #555;"><?php echo esc_html(implode(', ', $meta_parts)); ?></small>
+                        <br><small style="color: #000;"><?php echo esc_html(implode(', ', $meta_parts)); ?></small>
                     <?php endif; ?>
 
                     <?php if (!empty($product_notes)): ?>

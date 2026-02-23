@@ -147,7 +147,7 @@ if (!empty($customer_note) && empty($remarks)) {
             <div style="font-size: 18px; font-weight: bold; letter-spacing: 0.5px; line-height: 1.1;">
                 <?php echo esc_html(strtoupper($company_name)); ?>
             </div>
-            <div style="font-size: 9px; color: #333; margin-top: 3px; line-height: 1.4;">
+            <div style="font-size: 9px; color: #000; margin-top: 3px; line-height: 1.4;">
                 <?php echo nl2br(esc_html($company_address)); ?>
                 &nbsp;&nbsp;&nbsp;&nbsp;Phone: <?php echo esc_html($company_phone); ?>&nbsp;&nbsp;&nbsp;&nbsp;WhatsApp: 80138128
             </div>
@@ -272,10 +272,10 @@ if (!empty($customer_note) && empty($remarks)) {
                 <td style="border: 1px solid #000; padding: 2px 4px; font-size: 10px;">
                     <?php echo esc_html($description); ?>
                     <?php if (!empty($product_notes)): ?>
-                        <br><span style="font-size: 10px; color: #333;">** <?php echo esc_html($product_notes); ?></span>
+                        <br><span style="font-size: 10px; color: #000;">** <?php echo esc_html($product_notes); ?></span>
                     <?php endif; ?>
                     <?php if ($is_gift === __('Yes', 'ah-ho-fruits')): ?>
-                        <br><span style="font-size: 10px; color: #333;">*** GIFT<?php if (!empty($gift_message)): ?> - "<?php echo esc_html($gift_message); ?>"<?php endif; ?></span>
+                        <br><span style="font-size: 10px; color: #000;">*** GIFT<?php if (!empty($gift_message)): ?> - "<?php echo esc_html($gift_message); ?>"<?php endif; ?></span>
                     <?php endif; ?>
                 </td>
             </tr>

@@ -50,7 +50,7 @@ $total_orders = count($orders_data);
         </td>
         <td style="text-align: right; vertical-align: bottom;">
             <div style="font-size: 11px;"><strong>Date:</strong> <?php echo esc_html(date('d/m/Y')); ?></div>
-            <div style="font-size: 10px; color: #333;">Sorted by Date, then Postal Code</div>
+            <div style="font-size: 10px; color: #000;">Sorted by Date, then Postal Code</div>
         </td>
     </tr>
 </table>
@@ -125,7 +125,7 @@ foreach ($orders_data as $index => $data):
         <!-- Items -->
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
-                <tr style="background-color: #555; color: white; font-size: 9px;">
+                <tr style="background-color: #000; color: white; font-size: 9px;">
                     <th style="padding: 3px 4px; text-align: left; border: 1px solid #999;">Item</th>
                     <th style="padding: 3px 4px; text-align: center; width: 35px; border: 1px solid #999;">Qty</th>
                     <th style="padding: 3px 4px; text-align: center; width: 28px; border: 1px solid #999;">OK</th>
@@ -196,7 +196,7 @@ foreach ($orders_data as $index => $data):
                             endif;
                             if (!empty($meta_parts)):
                             ?>
-                                <br><small style="color: #555;"><?php echo esc_html(implode(', ', $meta_parts)); ?></small>
+                                <br><small style="color: #000;"><?php echo esc_html(implode(', ', $meta_parts)); ?></small>
                             <?php endif; ?>
 
                             <?php if (!empty($product_notes)): ?>
