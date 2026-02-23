@@ -16,13 +16,17 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Helper function to check if current user is a salesperson or storeman
+ * Helper function to check if current user is a salesperson (NOT storeman)
+ *
+ * Storemen need unrestricted order access for warehouse management
+ * and WooCommerce mobile app access. Only salespersons have their
+ * orders restricted to assigned orders via _assigned_salesperson_id.
  */
 if (!function_exists('ah_ho_is_current_user_salesperson')) {
     function ah_ho_is_current_user_salesperson() {
         $user = wp_get_current_user();
         $roles = (array) $user->roles;
-        return in_array('ah_ho_salesperson', $roles) || in_array('ah_ho_storeman', $roles);
+        return in_array('ah_ho_salesperson', $roles);
     }
 }
 

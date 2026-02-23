@@ -762,7 +762,12 @@ function ah_ho_filter_user_list_for_salesperson($query) {
 }
 
 /**
- * Helper: Check if current user is a salesperson or storeman
+ * Helper: Check if current user is a salesperson (NOT storeman)
+ *
+ * Used by salesperson-query-filters.php to restrict order access.
+ * Storemen need unrestricted order access for warehouse management
+ * and WooCommerce mobile app, so they are NOT included here.
+ * Storeman capabilities are granted via direct role checks in query-filters.php.
  */
 function ah_ho_is_current_user_salesperson() {
     $current_user = wp_get_current_user();
@@ -770,7 +775,7 @@ function ah_ho_is_current_user_salesperson() {
         return false;
     }
     $roles = (array) $current_user->roles;
-    return in_array('ah_ho_salesperson', $roles) || in_array('ah_ho_storeman', $roles);
+    return in_array('ah_ho_salesperson', $roles);
 }
 
 /**
