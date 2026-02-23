@@ -70,11 +70,10 @@ class AH_HO_Metabox {
         ?>
         <div class="ah-ho-pdf-actions">
             <div class="ah-ho-btn-row">
-                <a href="<?php echo esc_url($ajax_url . "?action=ah_ho_download_pdf&type=invoice&order_id={$order_id}&_wpnonce={$download_nonce}"); ?>"
-                   download="invoice-<?php echo $order_id; ?>.pdf"
+                <button type="button" onclick="ahHoDownloadPdf('invoice', <?php echo $order_id; ?>, this)"
                    class="button button-primary ah-ho-btn-download">
                     Invoice
-                </a>
+                </button>
                 <a href="<?php echo esc_url($ajax_url . "?action=ah_ho_print_pdf&type=invoice&order_id={$order_id}&_wpnonce={$print_nonce}"); ?>"
                    class="button ah-ho-btn-print"
                    target="_blank">
@@ -83,11 +82,10 @@ class AH_HO_Metabox {
             </div>
 
             <div class="ah-ho-btn-row">
-                <a href="<?php echo esc_url($ajax_url . "?action=ah_ho_download_pdf&type=packing-slip&order_id={$order_id}&_wpnonce={$download_nonce}"); ?>"
-                   download="packing-slip-<?php echo $order_id; ?>.pdf"
+                <button type="button" onclick="ahHoDownloadPdf('packing-slip', <?php echo $order_id; ?>, this)"
                    class="button ah-ho-btn-download">
                     Packing Slip
-                </a>
+                </button>
                 <a href="<?php echo esc_url($ajax_url . "?action=ah_ho_print_pdf&type=packing-slip&order_id={$order_id}&_wpnonce={$print_nonce}"); ?>"
                    class="button ah-ho-btn-print"
                    target="_blank">
@@ -96,11 +94,10 @@ class AH_HO_Metabox {
             </div>
 
             <div class="ah-ho-btn-row">
-                <a href="<?php echo esc_url($ajax_url . "?action=ah_ho_download_pdf&type=delivery-order&order_id={$order_id}&_wpnonce={$download_nonce}"); ?>"
-                   download="delivery-order-<?php echo $order_id; ?>.pdf"
+                <button type="button" onclick="ahHoDownloadPdf('delivery-order', <?php echo $order_id; ?>, this)"
                    class="button ah-ho-btn-download">
                     Delivery Order
-                </a>
+                </button>
                 <a href="<?php echo esc_url($ajax_url . "?action=ah_ho_print_pdf&type=delivery-order&order_id={$order_id}&_wpnonce={$print_nonce}"); ?>"
                    class="button ah-ho-btn-print"
                    target="_blank">
@@ -131,6 +128,57 @@ class AH_HO_Metabox {
                 min-width: 70px;
             }
         </style>
+
+        <script>
+        function ahHoDownloadPdf(type, orderId, btn) {
+            var url = '<?php echo esc_js($ajax_url); ?>' +
+                '?action=ah_ho_download_pdf&type=' + type +
+                '&order_id=' + orderId +
+                '&_wpnonce=<?php echo esc_js($download_nonce); ?>';
+            var filename = type + '-' + orderId + '.pdf';
+            var originalText = btn.textContent;
+
+            btn.textContent = 'Generating...';
+            btn.disabled = true;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.responseType = 'blob';
+
+            xhr.onload = function() {
+                btn.textContent = originalText;
+                btn.disabled = false;
+
+                if (xhr.status === 200 && xhr.response.size > 1000) {
+                    /* Create a PDF blob and trigger download entirely client-side.
+                       This bypasses Vodien's proxy which strips Content-Disposition
+                       headers and replaces filenames with UUIDs. */
+                    var blob = new Blob([xhr.response], {type: 'application/pdf'});
+                    var blobUrl = URL.createObjectURL(blob);
+                    var link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = filename;
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    setTimeout(function() {
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(blobUrl);
+                    }, 250);
+                } else {
+                    alert('PDF generation failed (' + xhr.response.size + ' bytes). Please try again.');
+                }
+            };
+
+            xhr.onerror = function() {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                alert('Network error generating PDF. Please try again.');
+            };
+
+            xhr.send();
+        }
+        </script>
         <?php
     }
 
