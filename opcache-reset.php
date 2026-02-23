@@ -2,7 +2,7 @@
 /**
  * OPcache Reset - Permanent endpoint for CI/CD deploys.
  * Security: requires secret token via query string.
- * Version: 7
+ * Version: 8
  */
 if (!isset($_GET['token']) || $_GET['token'] !== 'ah_ho_deploy_2026') {
     http_response_code(403);
@@ -48,6 +48,22 @@ if (isset($_GET['check_roles'])) {
     define('WPINC', 'wp-includes');
     require_once(ABSPATH . 'wp-load.php');
 
+    // Force-add the capabilities if missing
+    $storeman = get_role('ah_ho_storeman');
+    $salesperson = get_role('ah_ho_salesperson');
+
+    if ($storeman && empty($storeman->capabilities['manage_woocommerce'])) {
+        $storeman->add_cap('manage_woocommerce', true);
+        $storeman->add_cap('view_woocommerce_reports', true);
+        $result['storeman_caps_added'] = true;
+    }
+    if ($salesperson && empty($salesperson->capabilities['manage_woocommerce'])) {
+        $salesperson->add_cap('manage_woocommerce', true);
+        $salesperson->add_cap('view_woocommerce_reports', true);
+        $result['salesperson_caps_added'] = true;
+    }
+
+    // Re-read roles after update
     $storeman = get_role('ah_ho_storeman');
     $salesperson = get_role('ah_ho_salesperson');
 
