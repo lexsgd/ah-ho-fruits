@@ -183,12 +183,8 @@ class AH_HO_Metabox {
         </style>
 
         <script>
+        /* PDF Download v8 — static temp file approach */
         function ahHoDownloadPdf(type, orderId, btn) {
-            /* Step 1: Ask server to generate PDF and save as static temp file.
-               Step 2: Server returns JSON with the static file URL.
-               Step 3: Navigate to the static file URL to download.
-               This completely bypasses Vodien's proxy (which only
-               mangles PHP responses, not static file serving). */
             var url = '<?php echo esc_js($ajax_url); ?>' +
                 '?action=ah_ho_prepare_pdf&type=' + type +
                 '&order_id=' + orderId +
@@ -200,21 +196,48 @@ class AH_HO_Metabox {
 
             var xhr = new XMLHttpRequest();
             xhr.open('GET', url, true);
-            xhr.responseType = 'json';
+            /* Use text, not json — admin-ajax may prepend PHP notices
+               that break JSON.parse. We parse manually below. */
+            xhr.responseType = 'text';
 
             xhr.onload = function() {
                 btn.textContent = originalText;
                 btn.disabled = false;
 
-                var r = xhr.response;
-                if (xhr.status === 200 && r && r.success && r.data && r.data.url) {
-                    /* Redirect to the static file URL.
-                       The filename is embedded in the URL path itself,
-                       so it works regardless of proxy header manipulation. */
-                    window.location.href = r.data.url;
+                var raw = xhr.responseText;
+                var r = null;
+
+                /* Try to extract JSON even if PHP notices are prepended */
+                try {
+                    var jsonStart = raw.indexOf('{');
+                    if (jsonStart >= 0) {
+                        r = JSON.parse(raw.substring(jsonStart));
+                    }
+                } catch (e) {
+                    console.error('PDF prepare parse error:', e, 'Raw:', raw);
+                }
+
+                if (r && r.success && r.data && r.data.url) {
+                    /* Download via hidden iframe — doesn't navigate away
+                       from the order page. The .htaccess in the temp dir
+                       forces Content-Type: application/octet-stream so
+                       the browser downloads instead of displaying. */
+                    var iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = r.data.url;
+                    document.body.appendChild(iframe);
+                    setTimeout(function() {
+                        try { document.body.removeChild(iframe); } catch(e) {}
+                    }, 60000);
                 } else {
-                    var msg = (r && r.data && r.data.error) ? r.data.error : 'Unknown error';
-                    alert('PDF generation failed: ' + msg);
+                    var msg = 'Unknown error';
+                    if (r && r.data && r.data.error) {
+                        msg = r.data.error;
+                    } else if (raw === '0') {
+                        msg = 'Session expired — please reload the page';
+                    }
+                    alert('PDF generation failed: ' + msg + '\n\nDebug: HTTP ' + xhr.status + ', response length ' + raw.length);
+                    console.error('PDF prepare failed. Status:', xhr.status, 'Raw:', raw);
                 }
             };
 
@@ -271,6 +294,7 @@ class AH_HO_Metabox {
         }
 
         if (!$pdf_path) {
+            error_log("Ah Ho PDF prepare: generate() returned false for type={$type} order={$order_id}");
             wp_send_json_error(array('error' => 'Error generating PDF'), 500);
         }
 
@@ -294,6 +318,7 @@ class AH_HO_Metabox {
         }
 
         if (!$copied) {
+            error_log("Ah Ho PDF prepare: copy failed. src={$pdf_path} dest={$temp_path} src_exists=" . (file_exists($pdf_path) ? 'yes' : 'no'));
             wp_send_json_error(array('error' => 'Failed to prepare download'), 500);
         }
 
