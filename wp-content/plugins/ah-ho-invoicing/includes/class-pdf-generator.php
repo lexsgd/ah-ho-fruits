@@ -41,7 +41,7 @@ class AH_HO_PDF_Generator {
      * @return string|false Path to generated PDF or false on failure
      */
     // Bump this version to invalidate all cached PDFs (e.g. after font fixes)
-    const CACHE_VERSION = '4';
+    const CACHE_VERSION = '5';
 
     public static function generate_pdf($html, $filename, $cache = true) {
         // Check cache first
@@ -64,7 +64,7 @@ class AH_HO_PDF_Generator {
             $options->set('isRemoteEnabled', true); // Allow loading remote images (logo)
             $options->set('defaultFont', 'Noto Sans SC');
             $options->set('dpi', 96);
-            $options->set('isFontSubsettingEnabled', true); // Re-enabled: proper .ufm files now generated via FontMetrics API
+            $options->set('isFontSubsettingEnabled', false); // Disabled: CJK subsetting breaks PDF generation on this host
             $options->set('debugPng', false);
             $options->set('debugKeepTemp', false);
             $options->set('debugCss', false);

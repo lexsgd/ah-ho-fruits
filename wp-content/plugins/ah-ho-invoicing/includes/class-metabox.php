@@ -64,15 +64,18 @@ class AH_HO_Metabox {
             return;
         }
 
+        <?php
+        $download_nonce = wp_create_nonce('ah_ho_download_pdf');
+        $print_nonce    = wp_create_nonce('ah_ho_print_pdf');
+        $ajax_url       = admin_url('admin-ajax.php');
         ?>
         <div class="ah-ho-pdf-actions">
             <div class="ah-ho-btn-row">
-                <a href="<?php echo esc_url(admin_url("admin-ajax.php?action=ah_ho_download_pdf&type=invoice&order_id={$order_id}&_wpnonce=" . wp_create_nonce('ah_ho_download_pdf'))); ?>"
-                   class="button button-primary ah-ho-btn-download"
-                   target="_blank">
+                <a href="#" onclick="ahHoDownloadPdf('invoice', <?php echo $order_id; ?>); return false;"
+                   class="button button-primary ah-ho-btn-download">
                     Invoice
                 </a>
-                <a href="<?php echo esc_url(admin_url("admin-ajax.php?action=ah_ho_print_pdf&type=invoice&order_id={$order_id}&_wpnonce=" . wp_create_nonce('ah_ho_print_pdf'))); ?>"
+                <a href="<?php echo esc_url($ajax_url . "?action=ah_ho_print_pdf&type=invoice&order_id={$order_id}&_wpnonce={$print_nonce}"); ?>"
                    class="button ah-ho-btn-print"
                    target="_blank">
                     Print
@@ -80,12 +83,11 @@ class AH_HO_Metabox {
             </div>
 
             <div class="ah-ho-btn-row">
-                <a href="<?php echo esc_url(admin_url("admin-ajax.php?action=ah_ho_download_pdf&type=packing-slip&order_id={$order_id}&_wpnonce=" . wp_create_nonce('ah_ho_download_pdf'))); ?>"
-                   class="button ah-ho-btn-download"
-                   target="_blank">
+                <a href="#" onclick="ahHoDownloadPdf('packing-slip', <?php echo $order_id; ?>); return false;"
+                   class="button ah-ho-btn-download">
                     Packing Slip
                 </a>
-                <a href="<?php echo esc_url(admin_url("admin-ajax.php?action=ah_ho_print_pdf&type=packing-slip&order_id={$order_id}&_wpnonce=" . wp_create_nonce('ah_ho_print_pdf'))); ?>"
+                <a href="<?php echo esc_url($ajax_url . "?action=ah_ho_print_pdf&type=packing-slip&order_id={$order_id}&_wpnonce={$print_nonce}"); ?>"
                    class="button ah-ho-btn-print"
                    target="_blank">
                     Print
@@ -93,12 +95,11 @@ class AH_HO_Metabox {
             </div>
 
             <div class="ah-ho-btn-row">
-                <a href="<?php echo esc_url(admin_url("admin-ajax.php?action=ah_ho_download_pdf&type=delivery-order&order_id={$order_id}&_wpnonce=" . wp_create_nonce('ah_ho_download_pdf'))); ?>"
-                   class="button ah-ho-btn-download"
-                   target="_blank">
+                <a href="#" onclick="ahHoDownloadPdf('delivery-order', <?php echo $order_id; ?>); return false;"
+                   class="button ah-ho-btn-download">
                     Delivery Order
                 </a>
-                <a href="<?php echo esc_url(admin_url("admin-ajax.php?action=ah_ho_print_pdf&type=delivery-order&order_id={$order_id}&_wpnonce=" . wp_create_nonce('ah_ho_print_pdf'))); ?>"
+                <a href="<?php echo esc_url($ajax_url . "?action=ah_ho_print_pdf&type=delivery-order&order_id={$order_id}&_wpnonce={$print_nonce}"); ?>"
                    class="button ah-ho-btn-print"
                    target="_blank">
                     Print
@@ -128,6 +129,41 @@ class AH_HO_Metabox {
                 min-width: 70px;
             }
         </style>
+
+        <script>
+        function ahHoDownloadPdf(type, orderId) {
+            var url = '<?php echo esc_js($ajax_url); ?>' +
+                '?action=ah_ho_download_pdf' +
+                '&type=' + type +
+                '&order_id=' + orderId +
+                '&_wpnonce=<?php echo esc_js($download_nonce); ?>';
+            var filename = type + '-' + orderId + '.pdf';
+
+            // Use fetch + Blob to force correct filename
+            // (bypasses server header stripping on shared hosting)
+            fetch(url, { credentials: 'same-origin' })
+                .then(function(response) {
+                    if (!response.ok) throw new Error('PDF generation failed');
+                    return response.blob();
+                })
+                .then(function(blob) {
+                    var a = document.createElement('a');
+                    a.href = window.URL.createObjectURL(blob);
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(function() {
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(a.href);
+                    }, 200);
+                })
+                .catch(function(err) {
+                    console.error('PDF download error:', err);
+                    // Fallback: direct link in new tab
+                    window.open(url, '_blank');
+                });
+        }
+        </script>
         <?php
     }
 
