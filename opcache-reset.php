@@ -2,7 +2,7 @@
 /**
  * OPcache Reset - Permanent endpoint for CI/CD deploys.
  * Security: requires secret token via query string.
- * Version: 6
+ * Version: 7
  */
 if (!isset($_GET['token']) || $_GET['token'] !== 'ah_ho_deploy_2026') {
     http_response_code(403);
@@ -30,6 +30,19 @@ if (function_exists('opcache_invalidate')) {
 
 // Check role capabilities if requested
 if (isset($_GET['check_roles'])) {
+    // First check if the file on disk has the new capabilities
+    $roles_file = __DIR__ . '/wp-content/plugins/ah-ho-custom/includes/salesperson-roles.php';
+    if (file_exists($roles_file)) {
+        $content = file_get_contents($roles_file);
+        $result['file_check'] = array(
+            'has_manage_woocommerce' => (strpos($content, "'manage_woocommerce'") !== false),
+            'has_view_woocommerce_reports' => (strpos($content, "'view_woocommerce_reports'") !== false),
+            'file_size' => filesize($roles_file),
+            'file_mtime' => date('Y-m-d H:i:s', filemtime($roles_file)),
+        );
+    } else {
+        $result['file_check'] = 'FILE NOT FOUND';
+    }
     // Bootstrap WordPress to check roles in database
     define('ABSPATH', __DIR__ . '/');
     define('WPINC', 'wp-includes');
