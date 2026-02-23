@@ -103,7 +103,7 @@ add_filter('woocommerce_sale_flash', function($html, $post, $product) {
  */
 function ah_ho_shipping_notice() {
     if (is_cart() || is_checkout()) {
-        $min_free_shipping = 50; // SGD
+        $min_free_shipping = 60; // SGD
         $cart_total = WC()->cart->get_subtotal();
 
         if ($cart_total < $min_free_shipping) {

@@ -61,7 +61,7 @@ class AH_HO_PDF_Generator {
             $options->set('isRemoteEnabled', true); // Allow loading remote images (logo)
             $options->set('defaultFont', 'Noto Sans SC');
             $options->set('dpi', 96);
-            $options->set('isFontSubsettingEnabled', true);
+            $options->set('isFontSubsettingEnabled', false); // Disabled for CJK font reliability
             $options->set('debugPng', false);
             $options->set('debugKeepTemp', false);
             $options->set('debugCss', false);
@@ -110,15 +110,16 @@ class AH_HO_PDF_Generator {
     /**
      * Install CJK (Chinese) font into Dompdf's font directory
      *
-     * Copies Noto Sans SC from plugin assets to Dompdf's font dir
-     * and registers it in the font registry. Survives composer updates
-     * because the source TTF lives in assets/fonts/.
+     * Uses Dompdf's FontMetrics API to properly register Noto Sans SC,
+     * generating the required .ufm (Unicode Font Metrics) files.
+     * Source TTF lives in assets/fonts/ and survives composer updates.
+     *
+     * @modified 2026-02-23 - Use FontMetrics::registerFont() for proper .ufm generation
      */
     private static function install_cjk_font() {
         $source_font = AH_HO_INVOICING_PLUGIN_DIR . 'assets/fonts/NotoSansSC-Regular.ttf';
         $dompdf_font_dir = AH_HO_INVOICING_PLUGIN_DIR . 'vendor/dompdf/dompdf/lib/fonts/';
         $dest_font = $dompdf_font_dir . 'NotoSansSC-Regular.ttf';
-        $registry_file = $dompdf_font_dir . 'installed-fonts.json';
 
         // Skip if source font doesn't exist
         if (!file_exists($source_font)) {
@@ -130,7 +131,46 @@ class AH_HO_PDF_Generator {
             copy($source_font, $dest_font);
         }
 
-        // Check if font is already registered
+        // Check if .ufm file exists — if it does, font is properly installed
+        $ufm_file = $dompdf_font_dir . 'NotoSansSC-Regular.ufm';
+        if (file_exists($ufm_file)) {
+            // Also ensure the font is in the JSON registry
+            self::ensure_font_registry($dompdf_font_dir);
+            return;
+        }
+
+        // Use Dompdf's FontMetrics API to properly register the font
+        // This generates the required .ufm file for glyph mapping
+        try {
+            $options = new Options();
+            $options->set('isFontSubsettingEnabled', false);
+            $temp_dompdf = new Dompdf($options);
+            $fontMetrics = $temp_dompdf->getFontMetrics();
+
+            // registerFont generates the .ufm file and adds to registry
+            $fontMetrics->registerFont(
+                array('family' => 'Noto Sans SC', 'style' => 'normal', 'weight' => 'normal'),
+                $dest_font
+            );
+
+            unset($temp_dompdf);
+
+            // Ensure all styles point to the same font file in registry
+            self::ensure_font_registry($dompdf_font_dir);
+        } catch (Exception $e) {
+            error_log('Ah Ho Invoicing - CJK Font Registration Error: ' . $e->getMessage());
+            // Fallback: at least ensure the JSON registry is correct
+            self::ensure_font_registry($dompdf_font_dir);
+        }
+    }
+
+    /**
+     * Ensure Noto Sans SC is in the installed-fonts.json registry
+     * with all style variants pointing to the same regular font.
+     */
+    private static function ensure_font_registry($dompdf_font_dir) {
+        $registry_file = $dompdf_font_dir . 'installed-fonts.json';
+
         $registry = array();
         if (file_exists($registry_file)) {
             $registry = json_decode(file_get_contents($registry_file), true);
@@ -139,8 +179,8 @@ class AH_HO_PDF_Generator {
             }
         }
 
-        if (!isset($registry['noto sans sc'])) {
-            // Load the base registry and add our font
+        if (!isset($registry['noto sans sc']) || !isset($registry['noto sans sc']['bold'])) {
+            // Load base registry if empty
             $dist_file = $dompdf_font_dir . 'installed-fonts.dist.json';
             if (empty($registry) && file_exists($dist_file)) {
                 $registry = json_decode(file_get_contents($dist_file), true);
@@ -149,7 +189,7 @@ class AH_HO_PDF_Generator {
                 }
             }
 
-            // Register Noto Sans SC (use regular for all styles)
+            // Register all style variants (we only have one weight)
             $registry['noto sans sc'] = array(
                 'normal'      => 'NotoSansSC-Regular',
                 'bold'        => 'NotoSansSC-Regular',

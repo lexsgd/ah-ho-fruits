@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 $company_name    = get_option('ah_ho_company_name', 'Ah Ho Fruit Trading Co');
 $company_address = get_option('ah_ho_company_address', '123 Fruit Lane, Singapore 123456');
 $company_phone   = get_option('ah_ho_company_phone', '+65 1234 5678');
-$company_email   = get_option('ah_ho_company_email', 'hello@ahhofruits.com');
+$company_email   = get_option('ah_ho_company_email', 'enquiry@ahhofruit.com');
 $company_uen     = get_option('ah_ho_company_uen', '201234567A');
 $company_gst     = get_option('ah_ho_company_gst', 'M12345678X');
 $bank_name       = get_option('ah_ho_bank_name', 'DBS Bank');
@@ -298,7 +298,7 @@ if (!empty($customer_note) && empty($remarks)) {
 <div style="margin-top: 3px; margin-bottom: 3px;">
     <div style="font-size: 10px; font-weight: bold; color: #c00;">Thank you for your support!</div>
     <div style="font-size: 10px; font-weight: bold; margin-top: 1px;">
-        Email: hello@ahhofruit.com
+        Email: enquiry@ahhofruit.com
     </div>
 </div>
 

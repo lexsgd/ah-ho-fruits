@@ -151,7 +151,7 @@ function ah_ho_invoicing_activate() {
         update_option('ah_ho_company_phone', '+65 1234 5678');
     }
     if (get_option('ah_ho_company_email') === false) {
-        update_option('ah_ho_company_email', 'hello@ahhofruits.com');
+        update_option('ah_ho_company_email', 'enquiry@ahhofruit.com');
     }
     if (get_option('ah_ho_company_uen') === false) {
         update_option('ah_ho_company_uen', '201234567A');

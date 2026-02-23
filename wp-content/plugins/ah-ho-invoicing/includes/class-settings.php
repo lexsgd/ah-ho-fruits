@@ -208,7 +208,7 @@ class AH_HO_Settings {
                 'desc'    => __('Business email address', 'ah-ho-invoicing'),
                 'id'      => 'ah_ho_company_email',
                 'type'    => 'email',
-                'default' => 'hello@ahhofruits.com',
+                'default' => 'enquiry@ahhofruit.com',
             ),
             array(
                 'title'   => __('UEN Number', 'ah-ho-invoicing'),

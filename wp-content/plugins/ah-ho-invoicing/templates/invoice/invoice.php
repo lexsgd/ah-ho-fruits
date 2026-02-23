@@ -329,7 +329,7 @@ $order_total = $order->get_total();
 <div style="margin-top: 8px; margin-bottom: 3px;">
     <div style="font-size: 10px; font-weight: bold; color: #c00;">Thank you for your support!</div>
     <div style="font-size: 10px; font-weight: bold; margin-top: 1px;">
-        Email: hello@ahhofruit.com
+        Email: enquiry@ahhofruit.com
     </div>
 </div>
 

@@ -3,9 +3,11 @@
  * Shop Product Ordering
  *
  * Pins Omakase Boxes category products to the top of the shop page.
+ * Sorts B2C products before B2B (wholesale) products.
  *
  * @package AhHoCustom
  * @since 1.5.1
+ * @modified 2026-02-23 - B2C products first, B2B products last
  */
 
 if (!defined('ABSPATH')) {
@@ -13,7 +15,7 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Pin Omakase Boxes products first on the shop page.
+ * Pin Omakase Boxes products first and sort B2C before B2B on the shop page.
  *
  * Uses a two-pass approach: first query omakase products, then exclude them
  * from the main query and prepend them via the loop_start hook.
@@ -35,20 +37,30 @@ function ah_ho_pin_omakase_first($query) {
 
     // Get omakase product IDs
     $omakase_ids = ah_ho_get_omakase_product_ids();
-    if (empty($omakase_ids)) {
+
+    // Get B2B product IDs (products with wholesale price)
+    $b2b_ids = ah_ho_get_b2b_product_ids();
+
+    // Need at least one set of IDs to modify ordering
+    if (empty($omakase_ids) && empty($b2b_ids)) {
         return;
     }
 
-    // Use post__in with orderby to pin omakase products first
-    // We modify the orderby to use FIELD() for pinned products
+    // Store IDs on the query for use in the clauses filter
     $query->set('ah_ho_pin_omakase', true);
-    $query->set('ah_ho_omakase_ids', $omakase_ids);
+    $query->set('ah_ho_omakase_ids', $omakase_ids ?: array());
+    $query->set('ah_ho_b2b_ids', $b2b_ids ?: array());
 
     add_filter('posts_clauses', 'ah_ho_omakase_orderby_clauses', 10, 2);
 }
 
 /**
- * Modify SQL clauses to sort omakase products first.
+ * Modify SQL clauses to sort omakase products first, B2B products last.
+ *
+ * ORDER BY:
+ *   1. Omakase products first (CASE 0 vs 1)
+ *   2. B2B products last (CASE 1 vs 0)
+ *   3. Original ordering
  */
 function ah_ho_omakase_orderby_clauses($clauses, $query) {
     if (!$query->get('ah_ho_pin_omakase')) {
@@ -61,17 +73,28 @@ function ah_ho_omakase_orderby_clauses($clauses, $query) {
     global $wpdb;
 
     $omakase_ids = $query->get('ah_ho_omakase_ids');
-    if (empty($omakase_ids)) {
-        return $clauses;
+    $b2b_ids     = $query->get('ah_ho_b2b_ids');
+
+    $order_parts = array();
+
+    // Tier 1: Omakase products first
+    if (!empty($omakase_ids)) {
+        $ids = array_map('absint', $omakase_ids);
+        $ids_str = implode(',', $ids);
+        $order_parts[] = "CASE WHEN {$wpdb->posts}.ID IN ({$ids_str}) THEN 0 ELSE 1 END ASC";
     }
 
-    // Sanitize IDs
-    $ids = array_map('absint', $omakase_ids);
-    $ids_str = implode(',', $ids);
+    // Tier 2: B2B (wholesale) products last
+    if (!empty($b2b_ids)) {
+        $ids = array_map('absint', $b2b_ids);
+        $ids_str = implode(',', $ids);
+        $order_parts[] = "CASE WHEN {$wpdb->posts}.ID IN ({$ids_str}) THEN 1 ELSE 0 END ASC";
+    }
 
-    // Prepend: omakase products first (FIELD gives them order 1,2,3...),
-    // non-omakase products get 0 from NOT IN, so we use a CASE statement
-    $clauses['orderby'] = "CASE WHEN {$wpdb->posts}.ID IN ({$ids_str}) THEN 0 ELSE 1 END ASC, " . $clauses['orderby'];
+    // Prepend our custom ordering before the existing orderby
+    if (!empty($order_parts)) {
+        $clauses['orderby'] = implode(', ', $order_parts) . ', ' . $clauses['orderby'];
+    }
 
     return $clauses;
 }
@@ -97,6 +120,36 @@ function ah_ho_get_omakase_product_ids() {
                 'taxonomy' => 'product_cat',
                 'field'    => 'slug',
                 'terms'    => 'omakase-fruit-boxes',
+            ),
+        ),
+    );
+
+    $ids = get_posts($args);
+    return $ids;
+}
+
+/**
+ * Get B2B product IDs (products with wholesale pricing).
+ * These are products that have a _wholesale_price meta set.
+ * Cached for the duration of the request.
+ */
+function ah_ho_get_b2b_product_ids() {
+    static $ids = null;
+
+    if ($ids !== null) {
+        return $ids;
+    }
+
+    $args = array(
+        'post_type'      => 'product',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+        'meta_query'     => array(
+            array(
+                'key'     => '_wholesale_price',
+                'value'   => '',
+                'compare' => '!=',
             ),
         ),
     );

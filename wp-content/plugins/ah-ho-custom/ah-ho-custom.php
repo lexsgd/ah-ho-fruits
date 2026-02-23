@@ -88,8 +88,11 @@ function ah_ho_custom_init() {
     // Include order fulfillment (partial deliveries & item returns)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/order-fulfillment.php';
 
-    // Include shop product ordering (pin Omakase Boxes first)
+    // Include shop product ordering (pin Omakase Boxes first, B2C before B2B)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/shop-ordering.php';
+
+    // Include shipping rules (free delivery >= $60)
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/shipping-rules.php';
 
 }
 add_action('plugins_loaded', 'ah_ho_custom_init');
