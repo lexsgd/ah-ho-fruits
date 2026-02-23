@@ -141,6 +141,9 @@ function ah_ho_update_storeman_role() {
         'view_salesperson_commission'   => true,
         'create_users'                  => true,
         'edit_users'                    => true,
+        // WooCommerce mobile app access
+        'manage_woocommerce'            => true,
+        'view_woocommerce_reports'      => true,
     );
 
     foreach ($capabilities as $cap => $grant) {
@@ -195,6 +198,9 @@ function ah_ho_update_salesperson_role() {
         // Customer management - security via ah_ho_restrict_salesperson_user_editing filter
         'create_users'                  => true,
         'edit_users'                    => true,
+        // WooCommerce mobile app access
+        'manage_woocommerce'            => true,
+        'view_woocommerce_reports'      => true,
     );
 
     foreach ($capabilities as $cap => $grant) {
@@ -569,6 +575,8 @@ function ah_ho_hide_menus_for_salesperson() {
     remove_submenu_page('woocommerce', 'wc-stripe-main');              // Stripe by Payment Plugins
     remove_submenu_page('woocommerce', 'wc-settings');                 // Settings
     remove_submenu_page('woocommerce', 'wc-status');                   // Status
+    remove_submenu_page('woocommerce', 'wc-reports');                  // Reports (exposed by manage_woocommerce)
+    remove_submenu_page('woocommerce', 'wc-admin&path=/analytics/overview'); // Analytics (exposed by manage_woocommerce)
 
     // Also try alternative menu slugs for Payments
     global $menu;
