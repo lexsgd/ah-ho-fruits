@@ -78,9 +78,9 @@
         "normal": "DejaVuSerif"
     },
     "noto sans sc": {
-        "normal": "noto_sans_sc_normal_d4251901d7080d141f2a9b2da90ce3a3",
-        "bold": "noto_sans_sc_normal_d4251901d7080d141f2a9b2da90ce3a3",
-        "italic": "noto_sans_sc_normal_d4251901d7080d141f2a9b2da90ce3a3",
-        "bold_italic": "noto_sans_sc_normal_d4251901d7080d141f2a9b2da90ce3a3"
+        "normal": "noto_sans_sc_medium_6414f22937fa743cf56f4eb5b0fa1909",
+        "bold": "noto_sans_sc_medium_6414f22937fa743cf56f4eb5b0fa1909",
+        "italic": "noto_sans_sc_medium_6414f22937fa743cf56f4eb5b0fa1909",
+        "bold_italic": "noto_sans_sc_medium_6414f22937fa743cf56f4eb5b0fa1909"
     }
 }
