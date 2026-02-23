@@ -206,13 +206,14 @@ class AH_HO_Metabox {
                 btn.textContent = originalText;
                 btn.disabled = false;
 
-                if (xhr.status === 200 && xhr.response && xhr.response.url) {
+                var r = xhr.response;
+                if (xhr.status === 200 && r && r.success && r.data && r.data.url) {
                     /* Redirect to the static file URL.
                        The filename is embedded in the URL path itself,
                        so it works regardless of proxy header manipulation. */
-                    window.location.href = xhr.response.url;
+                    window.location.href = r.data.url;
                 } else {
-                    var msg = (xhr.response && xhr.response.error) ? xhr.response.error : 'Unknown error';
+                    var msg = (r && r.data && r.data.error) ? r.data.error : 'Unknown error';
                     alert('PDF generation failed: ' + msg);
                 }
             };
