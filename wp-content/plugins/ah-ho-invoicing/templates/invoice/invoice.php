@@ -79,6 +79,7 @@ $order_total = $order->get_total();
         body {
             font-family: 'Noto Sans SC', Arial, Helvetica, sans-serif;
             font-size: 11px;
+            font-weight: bold;
             line-height: 1.4;
             color: #000;
             margin: 2mm 3mm 2mm 3mm;

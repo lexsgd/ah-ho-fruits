@@ -28,6 +28,7 @@ $total_orders = count($orders_data);
         body {
             font-family: 'Noto Sans SC', Arial, Helvetica, sans-serif;
             font-size: 10px;
+            font-weight: bold;
             line-height: 1.3;
             color: #000;
             margin: 0;

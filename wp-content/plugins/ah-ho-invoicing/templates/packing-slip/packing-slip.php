@@ -37,6 +37,7 @@ if (empty($ship_phone)) {
         body {
             font-family: 'Noto Sans SC', Arial, Helvetica, sans-serif;
             font-size: 11px;
+            font-weight: bold;
             line-height: 1.4;
             color: #000;
             margin: 0;

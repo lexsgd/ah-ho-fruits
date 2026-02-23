@@ -41,7 +41,7 @@ class AH_HO_PDF_Generator {
      * @return string|false Path to generated PDF or false on failure
      */
     // Bump this version to invalidate all cached PDFs (e.g. after font fixes)
-    const CACHE_VERSION = '3';
+    const CACHE_VERSION = '4';
 
     public static function generate_pdf($html, $filename, $cache = true) {
         // Check cache first
@@ -64,7 +64,7 @@ class AH_HO_PDF_Generator {
             $options->set('isRemoteEnabled', true); // Allow loading remote images (logo)
             $options->set('defaultFont', 'Noto Sans SC');
             $options->set('dpi', 96);
-            $options->set('isFontSubsettingEnabled', false); // Disabled for CJK font reliability
+            $options->set('isFontSubsettingEnabled', true); // Re-enabled: proper .ufm files now generated via FontMetrics API
             $options->set('debugPng', false);
             $options->set('debugKeepTemp', false);
             $options->set('debugCss', false);
@@ -232,32 +232,59 @@ class AH_HO_PDF_Generator {
             ob_end_clean();
         }
 
-        // Disable Apache gzip - Content-Length mismatch causes Chrome filename issues
+        // Aggressively disable ALL compression — shared hosting gzip
+        // causes Content-Length mismatch which makes Chrome use URL as filename
         if (function_exists('apache_setenv')) {
             apache_setenv('no-gzip', '1');
         }
         ini_set('zlib.output_compression', 'Off');
 
+        // Remove any previously set headers that might interfere
+        @header_remove('Content-Encoding');
+        @header_remove('Transfer-Encoding');
+        @header_remove('Content-Disposition');
+
+        // Sanitize filename for Content-Disposition
+        $safe_filename = preg_replace('/[^a-zA-Z0-9._-]/', '_', $filename);
+
         // Check if it's a file path or raw data
         if (file_exists($pdf_path)) {
-            // It's a file path
+            $size = filesize($pdf_path);
+
+            // Headers — order matters for shared hosting compatibility
             header('Content-Type: application/pdf');
-            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Content-Disposition: attachment; filename="' . $safe_filename . '"');
+            header('Content-Length: ' . $size);
             header('Content-Transfer-Encoding: binary');
-            header('Content-Length: ' . filesize($pdf_path));
+            header('Accept-Ranges: none');
+            header('X-Content-Type-Options: nosniff');
             header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
             header('Pragma: no-cache');
             header('Expires: 0');
+
+            // Flush headers before body
+            if (function_exists('flush')) {
+                flush();
+            }
+
             readfile($pdf_path);
         } else {
-            // It's raw PDF data
+            $size = strlen($pdf_path);
+
             header('Content-Type: application/pdf');
-            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Content-Disposition: attachment; filename="' . $safe_filename . '"');
+            header('Content-Length: ' . $size);
             header('Content-Transfer-Encoding: binary');
-            header('Content-Length: ' . strlen($pdf_path));
+            header('Accept-Ranges: none');
+            header('X-Content-Type-Options: nosniff');
             header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
             header('Pragma: no-cache');
             header('Expires: 0');
+
+            if (function_exists('flush')) {
+                flush();
+            }
+
             echo $pdf_path;
         }
         exit;
@@ -280,13 +307,27 @@ class AH_HO_PDF_Generator {
             }
             ini_set('zlib.output_compression', 'Off');
 
+            @header_remove('Content-Encoding');
+            @header_remove('Transfer-Encoding');
+            @header_remove('Content-Disposition');
+
+            $safe_filename = preg_replace('/[^a-zA-Z0-9._-]/', '_', $filename);
+            $size = filesize($pdf_path);
+
             header('Content-Type: application/pdf');
-            header('Content-Disposition: inline; filename="' . $filename . '"');
+            header('Content-Disposition: inline; filename="' . $safe_filename . '"');
+            header('Content-Length: ' . $size);
             header('Content-Transfer-Encoding: binary');
-            header('Content-Length: ' . filesize($pdf_path));
+            header('Accept-Ranges: none');
+            header('X-Content-Type-Options: nosniff');
             header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
             header('Pragma: no-cache');
             header('Expires: 0');
+
+            if (function_exists('flush')) {
+                flush();
+            }
+
             readfile($pdf_path);
             exit;
         }
