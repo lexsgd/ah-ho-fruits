@@ -2,7 +2,7 @@
 /**
  * OPcache Reset - Permanent endpoint for CI/CD deploys.
  * Security: requires secret token via query string.
- * Version: 5
+ * Version: 6
  */
 if (!isset($_GET['token']) || $_GET['token'] !== 'ah_ho_deploy_2026') {
     http_response_code(403);
@@ -26,6 +26,30 @@ if (function_exists('opcache_invalidate')) {
         }
     }
     $result['files_invalidated'] = count($files_to_invalidate);
+}
+
+// Check role capabilities if requested
+if (isset($_GET['check_roles'])) {
+    // Bootstrap WordPress to check roles in database
+    define('ABSPATH', __DIR__ . '/');
+    define('WPINC', 'wp-includes');
+    require_once(ABSPATH . 'wp-load.php');
+
+    $storeman = get_role('ah_ho_storeman');
+    $salesperson = get_role('ah_ho_salesperson');
+
+    $result['roles'] = array(
+        'storeman' => array(
+            'exists' => !empty($storeman),
+            'manage_woocommerce' => $storeman ? !empty($storeman->capabilities['manage_woocommerce']) : false,
+            'view_woocommerce_reports' => $storeman ? !empty($storeman->capabilities['view_woocommerce_reports']) : false,
+        ),
+        'salesperson' => array(
+            'exists' => !empty($salesperson),
+            'manage_woocommerce' => $salesperson ? !empty($salesperson->capabilities['manage_woocommerce']) : false,
+            'view_woocommerce_reports' => $salesperson ? !empty($salesperson->capabilities['view_woocommerce_reports']) : false,
+        ),
+    );
 }
 
 header('Content-Type: application/json');
