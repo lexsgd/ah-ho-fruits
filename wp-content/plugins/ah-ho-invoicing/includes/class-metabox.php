@@ -64,7 +64,6 @@ class AH_HO_Metabox {
             return;
         }
 
-        <?php
         $download_nonce = wp_create_nonce('ah_ho_download_pdf');
         $print_nonce    = wp_create_nonce('ah_ho_print_pdf');
         $ajax_url       = admin_url('admin-ajax.php');
