@@ -2,7 +2,7 @@
 /**
  * OPcache Reset - Permanent endpoint for CI/CD deploys.
  * Security: requires secret token via query string.
- * Version: 2 (force FTP re-upload)
+ * Version: 3
  */
 if (!isset($_GET['token']) || $_GET['token'] !== 'ah_ho_deploy_2026') {
     http_response_code(403);

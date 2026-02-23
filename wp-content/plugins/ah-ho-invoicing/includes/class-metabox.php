@@ -18,6 +18,7 @@ class AH_HO_Metabox {
         add_action('add_meta_boxes', array(__CLASS__, 'add_meta_boxes'));
         add_action('wp_ajax_ah_ho_download_pdf', array(__CLASS__, 'ajax_download_pdf'));
         add_action('wp_ajax_ah_ho_print_pdf', array(__CLASS__, 'ajax_print_pdf'));
+        add_action('wp_ajax_ah_ho_prepare_pdf', array(__CLASS__, 'ajax_prepare_pdf'));
     }
 
     /**
@@ -45,6 +46,58 @@ class AH_HO_Metabox {
     }
 
     /**
+     * Get the temp directory for PDF downloads
+     */
+    private static function get_temp_dir() {
+        $upload_dir = wp_upload_dir();
+        $temp_dir = $upload_dir['basedir'] . '/ah-ho-invoicing/temp/';
+        if (!file_exists($temp_dir)) {
+            wp_mkdir_p($temp_dir);
+        }
+        // Add .htaccess to force downloads and block directory listing
+        $htaccess = $temp_dir . '.htaccess';
+        if (!file_exists($htaccess)) {
+            file_put_contents($htaccess,
+                "Options -Indexes\n" .
+                "<FilesMatch \"\\.pdf$\">\n" .
+                "    ForceType application/octet-stream\n" .
+                "    Header set Content-Disposition attachment\n" .
+                "</FilesMatch>\n"
+            );
+        }
+        // Add index.php for security
+        $index = $temp_dir . 'index.php';
+        if (!file_exists($index)) {
+            file_put_contents($index, '<?php // Silence is golden');
+        }
+        return $temp_dir;
+    }
+
+    /**
+     * Get the temp URL for PDF downloads
+     */
+    private static function get_temp_url() {
+        $upload_dir = wp_upload_dir();
+        return $upload_dir['baseurl'] . '/ah-ho-invoicing/temp/';
+    }
+
+    /**
+     * Clean up old temp PDF files (older than 1 hour)
+     */
+    private static function cleanup_temp_files() {
+        $temp_dir = self::get_temp_dir();
+        $files = glob($temp_dir . '*.pdf');
+        if ($files) {
+            $cutoff = time() - 3600; // 1 hour
+            foreach ($files as $file) {
+                if (filemtime($file) < $cutoff) {
+                    @unlink($file);
+                }
+            }
+        }
+    }
+
+    /**
      * Render metabox content
      *
      * @param WP_Post|WC_Order $post_or_order Post object or Order object
@@ -64,7 +117,7 @@ class AH_HO_Metabox {
             return;
         }
 
-        $download_nonce = wp_create_nonce('ah_ho_download_pdf');
+        $prepare_nonce  = wp_create_nonce('ah_ho_prepare_pdf');
         $print_nonce    = wp_create_nonce('ah_ho_print_pdf');
         $ajax_url       = admin_url('admin-ajax.php');
         ?>
@@ -131,11 +184,15 @@ class AH_HO_Metabox {
 
         <script>
         function ahHoDownloadPdf(type, orderId, btn) {
+            /* Step 1: Ask server to generate PDF and save as static temp file.
+               Step 2: Server returns JSON with the static file URL.
+               Step 3: Navigate to the static file URL to download.
+               This completely bypasses Vodien's proxy (which only
+               mangles PHP responses, not static file serving). */
             var url = '<?php echo esc_js($ajax_url); ?>' +
-                '?action=ah_ho_download_pdf&type=' + type +
+                '?action=ah_ho_prepare_pdf&type=' + type +
                 '&order_id=' + orderId +
-                '&_wpnonce=<?php echo esc_js($download_nonce); ?>';
-            var filename = type + '-' + orderId + '.pdf';
+                '&_wpnonce=<?php echo esc_js($prepare_nonce); ?>';
             var originalText = btn.textContent;
 
             btn.textContent = 'Generating...';
@@ -143,16 +200,20 @@ class AH_HO_Metabox {
 
             var xhr = new XMLHttpRequest();
             xhr.open('GET', url, true);
-            xhr.responseType = 'blob';
+            xhr.responseType = 'json';
 
             xhr.onload = function() {
                 btn.textContent = originalText;
                 btn.disabled = false;
 
-                if (xhr.status === 200 && xhr.response.size > 1000) {
-                    ahHoSaveBlob(xhr.response, filename);
+                if (xhr.status === 200 && xhr.response && xhr.response.url) {
+                    /* Redirect to the static file URL.
+                       The filename is embedded in the URL path itself,
+                       so it works regardless of proxy header manipulation. */
+                    window.location.href = xhr.response.url;
                 } else {
-                    alert('PDF generation failed (' + xhr.response.size + ' bytes). Please try again.');
+                    var msg = (xhr.response && xhr.response.error) ? xhr.response.error : 'Unknown error';
+                    alert('PDF generation failed: ' + msg);
                 }
             };
 
@@ -164,47 +225,85 @@ class AH_HO_Metabox {
 
             xhr.send();
         }
-
-        function ahHoSaveBlob(blob, filename) {
-            /* Use application/octet-stream to prevent Chrome's PDF viewer
-               from intercepting the blob URL (which causes UUID filenames). */
-            var forceBlob = new Blob([blob], {type: 'application/octet-stream'});
-            var blobUrl = URL.createObjectURL(forceBlob);
-
-            var a = document.createElement('a');
-            a.href = blobUrl;
-            a.download = filename;
-            a.rel = 'noopener';
-
-            /* Position off-screen instead of display:none.
-               Hidden elements may not trigger download in some browsers. */
-            a.style.position = 'fixed';
-            a.style.left = '-9999px';
-            a.style.top = '-9999px';
-
-            document.body.appendChild(a);
-
-            /* Delay click to ensure element is fully rendered in DOM */
-            setTimeout(function() {
-                a.dispatchEvent(new MouseEvent('click', {
-                    bubbles: true,
-                    cancelable: true,
-                    view: window
-                }));
-
-                /* Clean up after generous delay */
-                setTimeout(function() {
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(blobUrl);
-                }, 30000);
-            }, 100);
-        }
         </script>
         <?php
     }
 
     /**
-     * AJAX handler for PDF downloads
+     * AJAX handler: Generate PDF, save as temp static file, return URL.
+     * This allows the browser to download a static file (bypassing proxy).
+     */
+    public static function ajax_prepare_pdf() {
+        if (!current_user_can('edit_shop_orders')) {
+            wp_send_json_error(array('error' => 'Unauthorized'), 403);
+        }
+
+        if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'ah_ho_prepare_pdf')) {
+            wp_send_json_error(array('error' => 'Security check failed'), 403);
+        }
+
+        $type = sanitize_text_field($_GET['type']);
+        $order_id = absint($_GET['order_id']);
+
+        if (!$order_id) {
+            wp_send_json_error(array('error' => 'Invalid order ID'), 400);
+        }
+
+        switch ($type) {
+            case 'invoice':
+                $pdf_path = AH_HO_Invoice::generate($order_id);
+                $filename = "invoice-{$order_id}.pdf";
+                break;
+
+            case 'packing-slip':
+                $pdf_path = AH_HO_Packing_Slip::generate($order_id);
+                $filename = "packing-slip-{$order_id}.pdf";
+                break;
+
+            case 'delivery-order':
+                $pdf_path = AH_HO_Delivery_Order::generate($order_id);
+                $filename = "delivery-order-{$order_id}.pdf";
+                break;
+
+            default:
+                wp_send_json_error(array('error' => 'Invalid document type'), 400);
+        }
+
+        if (!$pdf_path) {
+            wp_send_json_error(array('error' => 'Error generating PDF'), 500);
+        }
+
+        // Clean up old temp files
+        self::cleanup_temp_files();
+
+        // Copy PDF to temp dir with correct filename
+        $temp_dir = self::get_temp_dir();
+        $temp_url = self::get_temp_url();
+
+        // Add a short random token to prevent caching/guessing
+        $token = substr(md5(wp_salt() . $order_id . time()), 0, 8);
+        $temp_filename = pathinfo($filename, PATHINFO_FILENAME) . '-' . $token . '.pdf';
+        $temp_path = $temp_dir . $temp_filename;
+
+        if (file_exists($pdf_path)) {
+            $copied = copy($pdf_path, $temp_path);
+        } else {
+            // $pdf_path might be raw PDF data
+            $copied = (file_put_contents($temp_path, $pdf_path) !== false);
+        }
+
+        if (!$copied) {
+            wp_send_json_error(array('error' => 'Failed to prepare download'), 500);
+        }
+
+        wp_send_json_success(array(
+            'url' => $temp_url . $temp_filename,
+            'filename' => $filename,
+        ));
+    }
+
+    /**
+     * AJAX handler for PDF downloads (legacy, kept for backwards compat)
      */
     public static function ajax_download_pdf() {
         if (!current_user_can('edit_shop_orders')) {
