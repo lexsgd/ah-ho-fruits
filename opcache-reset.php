@@ -48,19 +48,32 @@ if (isset($_GET['check_roles'])) {
     define('WPINC', 'wp-includes');
     require_once(ABSPATH . 'wp-load.php');
 
-    // Force-add the capabilities if missing
+    // Force-add ALL required capabilities for WC mobile app
     $storeman = get_role('ah_ho_storeman');
     $salesperson = get_role('ah_ho_salesperson');
 
-    if ($storeman && empty($storeman->capabilities['manage_woocommerce'])) {
-        $storeman->add_cap('manage_woocommerce', true);
-        $storeman->add_cap('view_woocommerce_reports', true);
-        $result['storeman_caps_added'] = true;
+    $wc_app_caps = array(
+        'manage_woocommerce',
+        'view_woocommerce_reports',
+        'read_private_shop_orders',
+        'read_private_products',
+    );
+
+    if ($storeman) {
+        foreach ($wc_app_caps as $cap) {
+            if (empty($storeman->capabilities[$cap])) {
+                $storeman->add_cap($cap, true);
+                $result['storeman_caps_added'][] = $cap;
+            }
+        }
     }
-    if ($salesperson && empty($salesperson->capabilities['manage_woocommerce'])) {
-        $salesperson->add_cap('manage_woocommerce', true);
-        $salesperson->add_cap('view_woocommerce_reports', true);
-        $result['salesperson_caps_added'] = true;
+    if ($salesperson) {
+        foreach ($wc_app_caps as $cap) {
+            if (empty($salesperson->capabilities[$cap])) {
+                $salesperson->add_cap($cap, true);
+                $result['salesperson_caps_added'][] = $cap;
+            }
+        }
     }
 
     // Re-read roles after update
@@ -72,11 +85,15 @@ if (isset($_GET['check_roles'])) {
             'exists' => !empty($storeman),
             'manage_woocommerce' => $storeman ? !empty($storeman->capabilities['manage_woocommerce']) : false,
             'view_woocommerce_reports' => $storeman ? !empty($storeman->capabilities['view_woocommerce_reports']) : false,
+            'read_private_shop_orders' => $storeman ? !empty($storeman->capabilities['read_private_shop_orders']) : false,
+            'read_private_products' => $storeman ? !empty($storeman->capabilities['read_private_products']) : false,
         ),
         'salesperson' => array(
             'exists' => !empty($salesperson),
             'manage_woocommerce' => $salesperson ? !empty($salesperson->capabilities['manage_woocommerce']) : false,
             'view_woocommerce_reports' => $salesperson ? !empty($salesperson->capabilities['view_woocommerce_reports']) : false,
+            'read_private_shop_orders' => $salesperson ? !empty($salesperson->capabilities['read_private_shop_orders']) : false,
+            'read_private_products' => $salesperson ? !empty($salesperson->capabilities['read_private_products']) : false,
         ),
     );
 }

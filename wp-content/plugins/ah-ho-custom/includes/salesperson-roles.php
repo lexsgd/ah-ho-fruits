@@ -128,10 +128,12 @@ function ah_ho_update_storeman_role() {
         'create_shop_orders'            => true,
         'edit_others_shop_orders'       => true,
         'read_others_shop_orders'       => true,
+        'read_private_shop_orders'      => true,  // WC REST API order listing
         'delete_shop_orders'            => false,
         'delete_others_shop_orders'     => false,
         'read_product'                  => true,
         'read_products'                 => true,
+        'read_private_products'         => true,   // WC REST API product listing
         'edit_product'                  => true,
         'edit_products'                 => true,
         'edit_others_products'          => true,
@@ -186,10 +188,12 @@ function ah_ho_update_salesperson_role() {
         'create_shop_orders'            => true,
         'edit_others_shop_orders'       => true,  // Required for HPOS - security via query filters
         'read_others_shop_orders'       => true,  // Required for HPOS - security via query filters
+        'read_private_shop_orders'      => true,  // WC REST API order listing
         'delete_shop_orders'            => false,
         'delete_others_shop_orders'     => false,
         'read_product'                  => true,
         'read_products'                 => true,
+        'read_private_products'         => true,   // WC REST API product listing
         'edit_product'                  => true,  // Required for adding products to orders
         'edit_products'                 => true,  // Required for product search in orders
         'list_users'                    => true,
@@ -502,6 +506,39 @@ function ah_ho_show_salesperson_admin_bar($disable) {
         return false; // Show admin bar
     }
     return $disable;
+}
+
+/**
+ * WooCommerce Mobile App — Spoof shop_manager role in REST API response
+ *
+ * The WooCommerce mobile app does a CLIENT-SIDE check on the role string
+ * from GET /wp/v2/users/me — it only allows 'administrator' or 'shop_manager'.
+ * Custom roles like ah_ho_storeman are rejected regardless of capabilities.
+ *
+ * This filter injects 'shop_manager' into the REST API roles array for
+ * storeman/salesperson users WITHOUT changing the actual stored role.
+ * Server-side security remains enforced by real capabilities and query filters.
+ */
+add_filter('rest_prepare_user', 'ah_ho_spoof_role_for_wc_app', 10, 3);
+
+function ah_ho_spoof_role_for_wc_app($response, $user, $request) {
+    $roles = (array) $user->roles;
+
+    // Only for storeman and salesperson roles
+    if (!in_array('ah_ho_storeman', $roles) && !in_array('ah_ho_salesperson', $roles)) {
+        return $response;
+    }
+
+    // Inject shop_manager into the REST response roles array
+    $data = $response->get_data();
+    if (isset($data['roles']) && is_array($data['roles'])) {
+        if (!in_array('shop_manager', $data['roles'])) {
+            $data['roles'][] = 'shop_manager';
+        }
+        $response->set_data($data);
+    }
+
+    return $response;
 }
 
 /**
