@@ -40,10 +40,13 @@ class AH_HO_PDF_Generator {
      * @param bool $cache Whether to cache the PDF
      * @return string|false Path to generated PDF or false on failure
      */
+    // Bump this version to invalidate all cached PDFs (e.g. after font fixes)
+    const CACHE_VERSION = '2';
+
     public static function generate_pdf($html, $filename, $cache = true) {
         // Check cache first
         if ($cache) {
-            $hash = md5($html);
+            $hash = md5($html . self::CACHE_VERSION);
             $cache_path = AH_HO_INVOICING_CACHE_DIR . "{$filename}_{$hash}.pdf";
 
             if (file_exists($cache_path)) {
