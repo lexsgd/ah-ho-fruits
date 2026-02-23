@@ -44,6 +44,16 @@ class AH_HO_PDF_Generator {
     const CACHE_VERSION = '5';
 
     public static function generate_pdf($html, $filename, $cache = true) {
+        // Auto-create cache directory if missing (may not exist after migration/deploy)
+        if ($cache && !is_dir(AH_HO_INVOICING_CACHE_DIR)) {
+            @mkdir(AH_HO_INVOICING_CACHE_DIR, 0755, true);
+            // Security: deny direct access
+            $htaccess = AH_HO_INVOICING_CACHE_DIR . '.htaccess';
+            if (!file_exists($htaccess)) {
+                @file_put_contents($htaccess, "deny from all\n");
+            }
+        }
+
         // Check cache first
         if ($cache) {
             $hash = md5($html . self::CACHE_VERSION);
@@ -87,23 +97,25 @@ class AH_HO_PDF_Generator {
 
             // Save to cache if enabled
             if ($cache) {
-                file_put_contents($cache_path, $output);
+                $written = @file_put_contents($cache_path, $output);
 
-                // Cleanup old versions
-                self::cleanup_old_versions($filename, $hash);
+                if ($written !== false) {
+                    // Cache write succeeded — return file path
+                    self::cleanup_old_versions($filename, $hash);
+                    unset($dompdf);
+                    gc_collect_cycles();
+                    return $cache_path;
+                }
 
-                // Free memory
-                unset($dompdf);
-                gc_collect_cycles();
-
-                return $cache_path;
+                // Cache write failed — fall through to return raw PDF data
+                error_log('Ah Ho Invoicing - Cache write failed: ' . $cache_path);
             }
 
             // Free memory
             unset($dompdf);
             gc_collect_cycles();
 
-            return $output; // Return raw PDF data if not caching
+            return $output; // Return raw PDF data as fallback
         } catch (Exception $e) {
             error_log('Ah Ho Invoicing - PDF Generation Error: ' . $e->getMessage());
             return false;
