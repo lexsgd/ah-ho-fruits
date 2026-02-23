@@ -150,21 +150,7 @@ class AH_HO_Metabox {
                 btn.disabled = false;
 
                 if (xhr.status === 200 && xhr.response.size > 1000) {
-                    /* Create a PDF blob and trigger download entirely client-side.
-                       This bypasses Vodien's proxy which strips Content-Disposition
-                       headers and replaces filenames with UUIDs. */
-                    var blob = new Blob([xhr.response], {type: 'application/pdf'});
-                    var blobUrl = URL.createObjectURL(blob);
-                    var link = document.createElement('a');
-                    link.href = blobUrl;
-                    link.download = filename;
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    link.click();
-                    setTimeout(function() {
-                        document.body.removeChild(link);
-                        URL.revokeObjectURL(blobUrl);
-                    }, 250);
+                    ahHoSaveBlob(xhr.response, filename);
                 } else {
                     alert('PDF generation failed (' + xhr.response.size + ' bytes). Please try again.');
                 }
@@ -177,6 +163,41 @@ class AH_HO_Metabox {
             };
 
             xhr.send();
+        }
+
+        function ahHoSaveBlob(blob, filename) {
+            /* Use application/octet-stream to prevent Chrome's PDF viewer
+               from intercepting the blob URL (which causes UUID filenames). */
+            var forceBlob = new Blob([blob], {type: 'application/octet-stream'});
+            var blobUrl = URL.createObjectURL(forceBlob);
+
+            var a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = filename;
+            a.rel = 'noopener';
+
+            /* Position off-screen instead of display:none.
+               Hidden elements may not trigger download in some browsers. */
+            a.style.position = 'fixed';
+            a.style.left = '-9999px';
+            a.style.top = '-9999px';
+
+            document.body.appendChild(a);
+
+            /* Delay click to ensure element is fully rendered in DOM */
+            setTimeout(function() {
+                a.dispatchEvent(new MouseEvent('click', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                }));
+
+                /* Clean up after generous delay */
+                setTimeout(function() {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(blobUrl);
+                }, 30000);
+            }, 100);
         }
         </script>
         <?php
