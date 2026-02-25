@@ -289,6 +289,15 @@ class AH_HO_Metabox {
                 $filename = "delivery-order-{$order_id}.pdf";
                 break;
 
+            case 'partial-delivery-order':
+                $delivery_id = isset($_GET['delivery_id']) ? sanitize_text_field($_GET['delivery_id']) : '';
+                if (empty($delivery_id)) {
+                    wp_send_json_error(array('error' => 'Missing delivery ID'), 400);
+                }
+                $pdf_path = AH_HO_Delivery_Order::generate_partial($order_id, $delivery_id);
+                $filename = "delivery-order-{$order_id}-{$delivery_id}.pdf";
+                break;
+
             default:
                 wp_send_json_error(array('error' => 'Invalid document type'), 400);
         }
@@ -363,6 +372,15 @@ class AH_HO_Metabox {
                 $filename = "delivery-order-{$order_id}.pdf";
                 break;
 
+            case 'partial-delivery-order':
+                $delivery_id = isset($_GET['delivery_id']) ? sanitize_text_field($_GET['delivery_id']) : '';
+                if (empty($delivery_id)) {
+                    wp_die(__('Missing delivery ID', 'ah-ho-invoicing'));
+                }
+                $pdf_path = AH_HO_Delivery_Order::generate_partial($order_id, $delivery_id);
+                $filename = "delivery-order-{$order_id}-{$delivery_id}.pdf";
+                break;
+
             default:
                 wp_die(__('Invalid document type', 'ah-ho-invoicing'));
         }
@@ -407,6 +425,15 @@ class AH_HO_Metabox {
             case 'delivery-order':
                 $pdf_path = AH_HO_Delivery_Order::generate($order_id);
                 $filename = "delivery-order-{$order_id}.pdf";
+                break;
+
+            case 'partial-delivery-order':
+                $delivery_id = isset($_GET['delivery_id']) ? sanitize_text_field($_GET['delivery_id']) : '';
+                if (empty($delivery_id)) {
+                    wp_die(__('Missing delivery ID', 'ah-ho-invoicing'));
+                }
+                $pdf_path = AH_HO_Delivery_Order::generate_partial($order_id, $delivery_id);
+                $filename = "delivery-order-{$order_id}-{$delivery_id}.pdf";
                 break;
 
             default:

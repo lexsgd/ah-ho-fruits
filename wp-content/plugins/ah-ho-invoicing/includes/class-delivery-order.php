@@ -40,6 +40,53 @@ class AH_HO_Delivery_Order {
     }
 
     /**
+     * Generate delivery order for a specific partial delivery batch
+     *
+     * @param int $order_id WooCommerce order ID
+     * @param string $delivery_id Delivery record ID (e.g. "del_abc12345")
+     * @return string|false Path to generated PDF file or false on failure
+     */
+    public static function generate_partial($order_id, $delivery_id) {
+        $order = wc_get_order($order_id);
+        if (!$order) {
+            return false;
+        }
+
+        $deliveries = $order->get_meta('_partial_deliveries', true);
+        if (!is_array($deliveries) || empty($deliveries)) {
+            return false;
+        }
+
+        // Find the specific delivery record
+        $partial_delivery = null;
+        $partial_delivery_index = 0;
+        foreach ($deliveries as $i => $d) {
+            if ($d['id'] === $delivery_id) {
+                $partial_delivery = $d;
+                $partial_delivery_index = $i + 1;
+                break;
+            }
+        }
+
+        if (!$partial_delivery) {
+            return false;
+        }
+
+        $partial_delivery_total = count($deliveries);
+
+        // Generate HTML from template (template detects $partial_delivery)
+        ob_start();
+        include AH_HO_INVOICING_PLUGIN_DIR . 'templates/delivery-order/delivery-order.php';
+        $html = ob_get_clean();
+
+        // Don't cache — delivery history can change (records deleted/added)
+        $filename = "delivery-order_{$order_id}_partial_{$delivery_id}";
+        $pdf_path = AH_HO_PDF_Generator::generate_pdf($html, $filename, false);
+
+        return $pdf_path;
+    }
+
+    /**
      * Check if order has delivery order
      *
      * @param int $order_id Order ID

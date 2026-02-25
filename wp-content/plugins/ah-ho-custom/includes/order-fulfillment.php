@@ -311,6 +311,19 @@ function ah_ho_render_deliveries_tab($order) {
                         <?php echo esc_html($d_item['product_name']); ?> &times;<?php echo intval($d_item['qty']); ?>
                     </span>
                 <?php endforeach; ?>
+                <?php
+                $print_nonce = wp_create_nonce('ah_ho_print_pdf');
+                $print_url = admin_url('admin-ajax.php') . '?' . http_build_query(array(
+                    'action'      => 'ah_ho_print_pdf',
+                    'type'        => 'partial-delivery-order',
+                    'order_id'    => $order->get_id(),
+                    'delivery_id' => $delivery['id'],
+                    '_wpnonce'    => $print_nonce,
+                ));
+                ?>
+                <a href="<?php echo esc_url($print_url); ?>" target="_blank" class="ah-ho-print-partial-do" title="<?php esc_attr_e('Print Delivery Order for this batch', 'ah-ho-custom'); ?>" style="display:inline-block;margin-left:4px;font-size:12px;color:#2271b1;text-decoration:none;vertical-align:middle;">
+                    <?php _e('Print DO', 'ah-ho-custom'); ?> &#8599;
+                </a>
             </div>
         </div>
         <?php endforeach; ?>

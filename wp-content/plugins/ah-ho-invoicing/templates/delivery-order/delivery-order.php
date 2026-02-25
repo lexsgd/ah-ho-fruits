@@ -92,22 +92,35 @@ if (empty($ship_name) || $ship_name === ' ') {
     $ship_postal  = $bill_postal;
 }
 
+// Partial delivery mode — set by AH_HO_Delivery_Order::generate_partial()
+$is_partial = isset($partial_delivery) && !empty($partial_delivery);
+
 // Remarks: combine delivery instructions
 $remarks = '';
+
+// Prepend partial delivery notes if present
+if ($is_partial && !empty($partial_delivery['notes'])) {
+    $remarks = $partial_delivery['notes'];
+}
+
 if (!empty($instructions)) {
     $remarks_parts = array();
     foreach ($instructions as $inst) {
         $remarks_parts[] = $inst['label'] . ': ' . $inst['value'];
     }
-    $remarks = implode("\n", $remarks_parts);
+    $inst_text = implode("\n", $remarks_parts);
+    $remarks = $remarks ? $remarks . "\n" . $inst_text : $inst_text;
 }
 
 // Customer note
 $customer_note = $order->get_customer_note();
-if (!empty($customer_note) && empty($remarks)) {
-    $remarks = $customer_note;
-} elseif (!empty($customer_note) && !empty($remarks)) {
-    $remarks = $customer_note . "\n" . $remarks;
+if (!empty($customer_note)) {
+    $remarks = $remarks ? $customer_note . "\n" . $remarks : $customer_note;
+}
+
+// Override delivery date for partial delivery
+if ($is_partial) {
+    $delivery_date = date('j/n/Y', strtotime($partial_delivery['date']));
 }
 ?>
 <!DOCTYPE html>
@@ -188,7 +201,7 @@ if (!empty($customer_note) && empty($remarks)) {
 
         <!-- Delivery Order title + Invoice details -->
         <td style="width: 45%; vertical-align: top;">
-            <div style="font-size: 16px; font-weight: bold; margin-bottom: 2px;">Delivery Order</div>
+            <div style="font-size: 16px; font-weight: bold; margin-bottom: 2px;">Delivery Order<?php if ($is_partial): ?> <span style="font-size: 11px;">(<?php echo intval($partial_delivery_index); ?> of <?php echo intval($partial_delivery_total); ?>)</span><?php endif; ?></div>
             <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
                 <tr>
                     <td style="border: 1px solid #000; padding: 2px 4px; font-weight: bold; width: 40%;">Invoice No</td>
@@ -236,8 +249,26 @@ if (!empty($customer_note) && empty($remarks)) {
     <tbody>
         <?php
         $row_count = 0;
+
+        // Build items list — partial delivery shows only that batch's items
+        if ($is_partial) {
+            // Map delivery items by order item ID for lookup
+            $delivery_items = array();
+            foreach ($partial_delivery['items'] as $d_item) {
+                $delivery_items[intval($d_item['item_id'])] = $d_item;
+            }
+        }
+
         foreach ($order->get_items() as $item_id => $item):
+            // In partial mode, skip items not in this delivery batch
+            if ($is_partial && !isset($delivery_items[$item_id])) {
+                continue;
+            }
+
             $row_count++;
+
+            // Quantity: use delivery qty in partial mode, order qty otherwise
+            $display_qty = $is_partial ? intval($delivery_items[$item_id]['qty']) : $item->get_quantity();
 
             // Build description with meta/variations
             $description = $item->get_name();
@@ -268,7 +299,7 @@ if (!empty($customer_note) && empty($remarks)) {
         ?>
             <tr>
                 <td style="border: 1px solid #000; padding: 2px 4px; text-align: center; font-size: 10px; font-weight: bold;">
-                    <?php echo esc_html($item->get_quantity()); ?>
+                    <?php echo esc_html($display_qty); ?>
                 </td>
                 <td style="border: 1px solid #000; padding: 2px 4px; font-size: 10px;">
                     <?php echo esc_html($description); ?>
