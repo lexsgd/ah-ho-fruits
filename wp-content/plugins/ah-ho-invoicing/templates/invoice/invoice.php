@@ -269,6 +269,32 @@ if ($has_returns) {
         <?php endforeach; ?>
 
         <?php
+        // Return line items (negative qty/amount, shown in red)
+        if ($has_returns):
+            foreach ($return_lines as $return_line):
+                if (empty($return_line['items'])) continue;
+                $row_count++;
+        ?>
+            <tr style="color: #c00;">
+                <td style="border: 1px solid #000; padding: 2px 4px; text-align: center; font-size: 10px; font-weight: bold;">
+                    &nbsp;
+                </td>
+                <td style="border: 1px solid #000; padding: 2px 4px; font-size: 10px;">
+                    RETURN: <?php echo esc_html($return_line['items']); ?><?php if (!empty($return_line['reason'])): ?><br><span style="font-size: 9px;">Reason: <?php echo esc_html($return_line['reason']); ?></span><?php endif; ?>
+                </td>
+                <td style="border: 1px solid #000; padding: 2px 4px; text-align: right; font-size: 10px;">
+                    &nbsp;
+                </td>
+                <td style="border: 1px solid #000; padding: 2px 4px; text-align: right; font-size: 10px;">
+                    -$<?php echo esc_html(number_format($return_line['amount'], 2)); ?>
+                </td>
+            </tr>
+        <?php
+            endforeach;
+        endif;
+        ?>
+
+        <?php
         // Add empty rows to fill out the table
         $min_rows = 14;
         for ($i = $row_count; $i < $min_rows; $i++):
@@ -330,16 +356,10 @@ if ($has_returns) {
                 <?php endif; ?>
 
                 <?php if ($has_returns): ?>
-                <?php foreach ($return_lines as $return_line): ?>
                 <tr>
-                    <td style="border: 1px solid #000; padding: 2px 6px; text-align: right; font-weight: bold; color: #c00;">
-                        Less: Return<?php if (!empty($return_line['items'])): ?><br>
-                        <span style="font-size: 8px; font-weight: normal; color: #666;"><?php echo esc_html($return_line['items']); ?><?php if (!empty($return_line['reason'])): ?> — <?php echo esc_html($return_line['reason']); ?><?php endif; ?></span>
-                        <?php endif; ?>
-                    </td>
-                    <td style="border: 1px solid #000; padding: 2px 6px; text-align: right; color: #c00;">-$<?php echo esc_html(number_format($return_line['amount'], 2)); ?></td>
+                    <td style="border: 1px solid #000; padding: 2px 6px; text-align: right; font-weight: bold; color: #c00;">Less: Returns</td>
+                    <td style="border: 1px solid #000; padding: 2px 6px; text-align: right; color: #c00;">-$<?php echo esc_html(number_format($total_refunded, 2)); ?></td>
                 </tr>
-                <?php endforeach; ?>
                 <?php endif; ?>
 
                 <tr>
