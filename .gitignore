@@ -11,6 +11,7 @@ db_data/
 .credentials
 deploy-key
 deploy-key.pub
+.claude/.gitcredentials
 
 # OS files
 .DS_Store

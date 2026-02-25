@@ -1,6 +1,6 @@
 # Ah Ho Fruit - Complete System Documentation
 
-> Last updated: 2026-02-08
+> Last updated: 2026-02-14
 > WordPress on Vodien | Domain: ahhofruit.com (currently fruits.heymag.app)
 
 ---
@@ -35,7 +35,7 @@
 
 | Plugin | Version | Purpose |
 |--------|---------|---------|
-| **ah-ho-custom** | 1.5.0 | B2B roles, commissions, wholesale, delivery, catalog |
+| **ah-ho-custom** | 1.6.0 | B2B roles, commissions, wholesale, delivery, catalog, fulfillment |
 | **ah-ho-invoicing** | 1.4.1 | PDF invoices, packing slips, delivery orders |
 | **ah-ho-product-addons** | 1.0.0 | Product notes & gift messages |
 | **payment-gateway-fees** | 1.0.0 | Per-gateway processing fees |
@@ -71,12 +71,12 @@ ah-ho-fruits/
 
 ---
 
-### 2.1 Ah Ho Custom Plugin (v1.5.0)
+### 2.1 Ah Ho Custom Plugin (v1.6.0)
 
 **Path:** `/wp-content/plugins/ah-ho-custom/`
-**Files:** 11 PHP files across `includes/`
+**Files:** 12 PHP files across `includes/`
 
-This is the main business logic plugin. It contains 10 major features:
+This is the main business logic plugin. It contains 11 major features:
 
 #### Feature A: Custom Order Statuses
 **File:** `includes/custom-order-statuses.php`
@@ -231,6 +231,35 @@ Centralized settings at WooCommerce > Salesperson Settings:
 - Wholesale pricing fallback
 - B2B Payment Terms (configurable repeater table)
 - Salesperson overview stats
+
+#### Feature L: Order Fulfillment (Partial Deliveries & Item Returns)
+**File:** `includes/order-fulfillment.php`
+
+Tabbed meta box ("Deliveries & Returns") on order edit pages for tracking batch deliveries and processing item-level returns for B2B orders.
+
+**Deliveries Tab:**
+- Summary table per line item: Ordered | Returned | Effective | Delivered | Balance
+- Color-coded balance (green=complete, orange=partial, gray=not started)
+- Delivery history with date, notes, item quantities, who recorded it
+- Record Delivery form: date picker, notes, qty inputs per item (max = balance)
+- Admin-only delete for delivery records
+- Delivery status badge: `not_started` → `partial` → `complete`
+
+**Returns Tab:**
+- Uses WooCommerce's built-in refund system (`wc_create_refund()` with `refund_payment: false`)
+- Return history showing reason, amount, items, and COD refund flag
+- Process Return form: reason (required), qty inputs per item (max = available)
+- COD orders: flagged as "Refund Required" for manual processing
+- Credit terms: invoice reduced, customer pays reduced amount at period end
+- Returned items auto-restocked (`restock_items: true`)
+
+**Commission Integration:**
+- `woocommerce_refund_created` hook in `salesperson-attribution.php` auto-recalculates commission
+- Percentage commission recalculated from reduced order total
+- Per-carton commission adjusted by subtracting returned quantities
+- If commission already paid, adds warning note instead of recalculating
+
+**AJAX Endpoints:** `ah_ho_record_delivery`, `ah_ho_delete_delivery`, `ah_ho_process_return`
 
 ---
 
@@ -437,7 +466,19 @@ curl -s -o /dev/null -w "%{http_code}" "https://fruits.heymag.app/wp-admin/"  # 
 | `_delivery_time_slot` | string | ah-ho-custom (delivery date) |
 | `_ah_ho_invoice_number` | string | ah-ho-invoicing |
 | `_ah_ho_invoice_date` | datetime | ah-ho-invoicing |
+| `_partial_deliveries` | JSON array | ah-ho-custom (fulfillment) |
+| `_delivery_status` | string | ah-ho-custom (fulfillment) |
+| `_has_returns` | bool | ah-ho-custom (fulfillment) |
+| `_total_returned_quantity` | int | ah-ho-custom (fulfillment) |
 | `_po_number` | string | Manual entry |
+
+### Refund Meta Keys (on WC_Order_Refund objects)
+
+| Key | Type | Source |
+|-----|------|--------|
+| `_return_type` | "item_return" | ah-ho-custom (fulfillment) |
+| `_return_reason` | string | ah-ho-custom (fulfillment) |
+| `_refund_required` | bool | ah-ho-custom (fulfillment) |
 
 ### Order Item Meta Keys
 
@@ -566,6 +607,12 @@ curl -s -o /dev/null -w "%{http_code}" "https://fruits.heymag.app/wp-admin/"  # 
 - robots.txt with WooCommerce-specific rules
 - Legal pages (Terms & Conditions, Privacy Policy — PDPA-compliant)
 - Typography fix plugin for Avada theme readability
+
+### Phase 9: Order Fulfillment (Feb 2026)
+- Partial delivery tracking: tabbed meta box on order pages, record deliveries per line item, delivery history with audit trail, auto-calculated delivery status (not_started/partial/complete)
+- Item returns via WooCommerce refund system: `wc_create_refund()` with `refund_payment: false`, auto-restocking, COD/credit term awareness
+- Commission auto-recalculation on returns: adjusts both percentage (reduced total) and per-carton (reduced qty) commission models
+- COD return orders flagged for manual monetary refund; credit term orders simply reduce invoice amount
 
 ---
 
