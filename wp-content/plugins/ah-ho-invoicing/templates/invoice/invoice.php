@@ -66,6 +66,34 @@ $bill_email   = $order->get_billing_email();
 // Payment status
 $is_paid     = $order->is_paid();
 $order_total = $order->get_total();
+
+// Returns / refunds - calculate net total after returns
+$total_refunded = (float) $order->get_total_refunded();
+$net_total = (float) $order_total - $total_refunded;
+$has_returns = $total_refunded > 0;
+
+// Gather return line details for invoice display
+$return_lines = array();
+if ($has_returns) {
+    foreach ($order->get_refunds() as $refund) {
+        $refund_amount = (float) $refund->get_amount();
+        if ($refund_amount <= 0) continue;
+
+        $returned_items = array();
+        foreach ($refund->get_items() as $refund_item) {
+            $qty = abs($refund_item->get_quantity());
+            if ($qty > 0) {
+                $returned_items[] = $qty . 'x ' . $refund_item->get_name();
+            }
+        }
+
+        $return_lines[] = array(
+            'amount' => $refund_amount,
+            'reason' => $refund->get_reason(),
+            'items'  => implode(', ', $returned_items),
+        );
+    }
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -301,9 +329,22 @@ $order_total = $order->get_total();
                 </tr>
                 <?php endif; ?>
 
+                <?php if ($has_returns): ?>
+                <?php foreach ($return_lines as $return_line): ?>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 2px 6px; text-align: right; font-weight: bold; color: #c00;">
+                        Less: Return<?php if (!empty($return_line['items'])): ?><br>
+                        <span style="font-size: 8px; font-weight: normal; color: #666;"><?php echo esc_html($return_line['items']); ?><?php if (!empty($return_line['reason'])): ?> — <?php echo esc_html($return_line['reason']); ?><?php endif; ?></span>
+                        <?php endif; ?>
+                    </td>
+                    <td style="border: 1px solid #000; padding: 2px 6px; text-align: right; color: #c00;">-$<?php echo esc_html(number_format($return_line['amount'], 2)); ?></td>
+                </tr>
+                <?php endforeach; ?>
+                <?php endif; ?>
+
                 <tr>
                     <td style="border: 1px solid #000; padding: 3px 6px; text-align: right; font-weight: bold; font-size: 11px;">TOTAL</td>
-                    <td style="border: 1px solid #000; padding: 3px 6px; text-align: right; font-weight: bold; font-size: 11px;">$<?php echo esc_html(number_format($order_total, 2)); ?></td>
+                    <td style="border: 1px solid #000; padding: 3px 6px; text-align: right; font-weight: bold; font-size: 11px;">$<?php echo esc_html(number_format($net_total, 2)); ?></td>
                 </tr>
             </table>
         </td>
@@ -315,9 +356,13 @@ $order_total = $order->get_total();
 <div style="margin-top: 8px; padding: 3px 6px; border: 2px solid #000; font-size: 10px; text-align: center;">
     <strong>PAID</strong> - <?php echo esc_html($order->get_payment_method_title()); ?>
 </div>
+<?php elseif ($net_total <= 0): ?>
+<div style="margin-top: 8px; padding: 3px 6px; border: 2px solid #000; font-size: 10px; text-align: center;">
+    <strong>FULLY CREDITED</strong> - No payment required
+</div>
 <?php else: ?>
 <div style="margin-top: 8px; padding: 3px 6px; border: 2px solid #000; font-size: 10px; text-align: center;">
-    <strong>PAYMENT REQUIRED: $<?php echo esc_html(number_format($order_total, 2)); ?></strong>
+    <strong>PAYMENT REQUIRED: $<?php echo esc_html(number_format($net_total, 2)); ?></strong>
     <?php if ($payment_method === 'cod'): ?>
         - C.O.D.
     <?php else: ?>
