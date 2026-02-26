@@ -164,6 +164,7 @@ function ah_ho_render_fulfillment_meta_box($post_or_order) {
 
     $delivery_status = $order->get_meta('_delivery_status', true) ?: 'not_started';
     $has_returns = $order->get_meta('_has_returns', true);
+    $has_edits   = $order->get_meta('_has_edits', true);
     ?>
     <input type="hidden" id="ah-ho-fulfillment-order-id" value="<?php echo esc_attr($order_id); ?>">
 
@@ -178,6 +179,12 @@ function ah_ho_render_fulfillment_meta_box($post_or_order) {
                 <span class="ah-ho-badge ah-ho-badge-red">&bull;</span>
             <?php endif; ?>
         </button>
+        <button type="button" class="ah-ho-tab-btn" data-tab="edits">
+            <?php _e('Edit Items', 'ah-ho-custom'); ?>
+            <?php if ($has_edits) : ?>
+                <span class="ah-ho-badge" style="background:#2271b1;color:#fff;">&bull;</span>
+            <?php endif; ?>
+        </button>
     </div>
 
     <div id="ah-ho-tab-deliveries" class="ah-ho-tab-content ah-ho-tab-active">
@@ -186,6 +193,10 @@ function ah_ho_render_fulfillment_meta_box($post_or_order) {
 
     <div id="ah-ho-tab-returns" class="ah-ho-tab-content">
         <?php ah_ho_render_returns_tab($order); ?>
+    </div>
+
+    <div id="ah-ho-tab-edits" class="ah-ho-tab-content">
+        <?php ah_ho_render_edits_tab($order); ?>
     </div>
     <?php
 }

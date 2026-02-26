@@ -88,6 +88,9 @@ function ah_ho_custom_init() {
     // Include order fulfillment (partial deliveries & item returns)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/order-fulfillment.php';
 
+    // Include order editing (edit items with audit trail)
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/order-editing.php';
+
     // Include shop product ordering (pin Omakase Boxes first, B2C before B2B)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/shop-ordering.php';
 
