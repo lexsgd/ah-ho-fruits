@@ -319,21 +319,24 @@ class AH_HO_PDF_Generator {
      * @param string $filename Filename
      */
     public static function stream_pdf($pdf_path, $filename) {
+        // Clear all output buffers to prevent header interference
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        if (function_exists('apache_setenv')) {
+            apache_setenv('no-gzip', '1');
+        }
+        ini_set('zlib.output_compression', 'Off');
+
+        @header_remove('Content-Encoding');
+        @header_remove('Transfer-Encoding');
+        @header_remove('Content-Disposition');
+
+        $safe_filename = preg_replace('/[^a-zA-Z0-9._-]/', '_', $filename);
+
+        // Check if it's a file path or raw PDF data
         if (file_exists($pdf_path)) {
-            while (ob_get_level()) {
-                ob_end_clean();
-            }
-
-            if (function_exists('apache_setenv')) {
-                apache_setenv('no-gzip', '1');
-            }
-            ini_set('zlib.output_compression', 'Off');
-
-            @header_remove('Content-Encoding');
-            @header_remove('Transfer-Encoding');
-            @header_remove('Content-Disposition');
-
-            $safe_filename = preg_replace('/[^a-zA-Z0-9._-]/', '_', $filename);
             $size = filesize($pdf_path);
 
             header('Content-Type: application/pdf');
@@ -351,7 +354,26 @@ class AH_HO_PDF_Generator {
             }
 
             readfile($pdf_path);
-            exit;
+        } else {
+            // Raw PDF data (when caching is disabled, e.g. partial delivery orders)
+            $size = strlen($pdf_path);
+
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: inline; filename="' . $safe_filename . '"');
+            header('Content-Length: ' . $size);
+            header('Content-Transfer-Encoding: binary');
+            header('Accept-Ranges: none');
+            header('X-Content-Type-Options: nosniff');
+            header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+            header('Pragma: no-cache');
+            header('Expires: 0');
+
+            if (function_exists('flush')) {
+                flush();
+            }
+
+            echo $pdf_path;
         }
+        exit;
     }
 }
