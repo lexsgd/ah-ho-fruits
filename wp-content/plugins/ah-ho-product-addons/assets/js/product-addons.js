@@ -125,7 +125,7 @@ jQuery(document).ready(function($) {
         var alt = $(this).attr('alt') || '';
         $lightboxImg.attr('src', fullSrc).attr('alt', alt);
         $lightbox.fadeIn(200);
-        $('body').css('overflow', 'hidden');
+        $('body').addClass('ah-ho-lightbox-open').css('overflow', 'hidden');
     });
 
     // Close lightbox
@@ -133,7 +133,7 @@ jQuery(document).ready(function($) {
         $lightbox.fadeOut(200, function() {
             $lightboxImg.attr('src', '');
         });
-        $('body').css('overflow', '');
+        $('body').removeClass('ah-ho-lightbox-open').css('overflow', '');
     });
 
     // Close on Escape key
@@ -142,7 +142,7 @@ jQuery(document).ready(function($) {
             $lightbox.fadeOut(200, function() {
                 $lightboxImg.attr('src', '');
             });
-            $('body').css('overflow', '');
+            $('body').removeClass('ah-ho-lightbox-open').css('overflow', '');
         }
     });
 

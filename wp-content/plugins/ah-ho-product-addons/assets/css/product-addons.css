@@ -211,14 +211,14 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Addon Lightbox */
+/* Addon Lightbox - z-index must exceed Avada sticky header */
 .ah-ho-addon-lightbox {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 999999;
+    z-index: 2147483647;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -269,6 +269,18 @@
 
 .ah-ho-addon-lightbox-close:hover {
     background: #f5f5f5;
+}
+
+/* Hide Avada sticky header/elements when lightbox is open */
+body.ah-ho-lightbox-open .fusion-header-wrapper,
+body.ah-ho-lightbox-open .avada-header-wrapper,
+body.ah-ho-lightbox-open .fusion-sliding-bar-wrapper,
+body.ah-ho-lightbox-open #wrapper > .sticky-header,
+body.ah-ho-lightbox-open .fusion-footer-widget-area,
+body.ah-ho-lightbox-open .whatsapp-button,
+body.ah-ho-lightbox-open [class*="whatsapp"],
+body.ah-ho-lightbox-open .fusion-top-header {
+    z-index: 0 !important;
 }
 
 @keyframes ahhoLightboxIn {
