@@ -107,10 +107,21 @@ class AH_Ho_Addons_Cart_Handler {
     }
 
     /**
-     * Auto-add the linked addon product to cart after main product
+     * Auto-add the linked addon product to cart after main product.
+     *
+     * Uses a static re-entrancy guard to prevent infinite recursion:
+     * calling WC()->cart->add_to_cart() from within the woocommerce_add_to_cart
+     * hook fires the same hook again for the addon product. Without the guard
+     * that second call would try to add yet another addon, and so on.
      */
     public function maybe_add_addon_product( $cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data ) {
         if ( empty( $cart_item_data['product_addon_id'] ) ) {
+            return;
+        }
+
+        // Re-entrancy guard: do not process if we are already inside this method.
+        static $is_adding_addon = false;
+        if ( $is_adding_addon ) {
             return;
         }
 
@@ -121,12 +132,17 @@ class AH_Ho_Addons_Cart_Handler {
             return;
         }
 
-        // Add the addon product to cart (quantity matches main product)
+        // Set guard before adding the addon product to cart.
+        $is_adding_addon = true;
+
         WC()->cart->add_to_cart( $addon_product_id, $quantity, 0, [], [
             'addon_for_product' => $product_id,
             'addon_for_key'     => $cart_item_key,
             'unique_addon_key'  => md5( microtime() . rand() ),
         ] );
+
+        // Clear guard after the nested add_to_cart completes.
+        $is_adding_addon = false;
     }
 
     /**

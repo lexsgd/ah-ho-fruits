@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Ah Ho Fruit - Product Add-ons
  * Description: Gift messages and product notes/remarks for customer customization
- * Version: 1.1.0
+ * Version: 1.1.1
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * WC requires at least: 8.0
@@ -14,7 +14,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Define plugin constants
-define( 'AH_HO_ADDONS_VERSION', '1.1.0' );
+define( 'AH_HO_ADDONS_VERSION', '1.1.1' );
 define( 'AH_HO_ADDONS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'AH_HO_ADDONS_URL', plugin_dir_url( __FILE__ ) );
 
