@@ -135,6 +135,9 @@ class AH_Ho_Addons_Frontend_Display {
                     $addon_image_url = $addon_image_id
                         ? wp_get_attachment_image_url( $addon_image_id, 'thumbnail' )
                         : wc_placeholder_img_src( 'thumbnail' );
+                    $addon_image_full = $addon_image_id
+                        ? wp_get_attachment_image_url( $addon_image_id, 'large' )
+                        : $addon_image_url;
 
                     if ( ! $addon_label ) {
                         $addon_label = sprintf( __( 'Add %s', 'ah-ho-fruits' ), $addon_name );
@@ -156,6 +159,8 @@ class AH_Ho_Addons_Frontend_Display {
                                         src="<?php echo esc_url( $addon_image_url ); ?>"
                                         alt="<?php echo esc_attr( $addon_name ); ?>"
                                         class="ah-ho-addon-image"
+                                        data-full-src="<?php echo esc_url( $addon_image_full ); ?>"
+                                        title="<?php esc_attr_e( 'Click to enlarge', 'ah-ho-fruits' ); ?>"
                                     >
                                     <span class="ah-ho-addon-details">
                                         <span class="ah-ho-addon-name"><?php echo esc_html( $addon_label ); ?></span>
@@ -169,6 +174,15 @@ class AH_Ho_Addons_Frontend_Display {
                 }
             }
         }
+
+        // Lightbox overlay for addon image preview
+        echo '<div class="ah-ho-addon-lightbox" style="display:none;">';
+        echo '<div class="ah-ho-addon-lightbox-backdrop"></div>';
+        echo '<div class="ah-ho-addon-lightbox-content">';
+        echo '<img src="" alt="" class="ah-ho-addon-lightbox-img">';
+        echo '<button type="button" class="ah-ho-addon-lightbox-close" aria-label="' . esc_attr__( 'Close preview', 'ah-ho-fruits' ) . '">&times;</button>';
+        echo '</div>';
+        echo '</div>';
 
         echo '</div>';
     }

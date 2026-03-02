@@ -113,6 +113,39 @@ jQuery(document).ready(function($) {
         $(this).css('border-color', '');
     });
 
+    // ===== ADDON IMAGE LIGHTBOX =====
+    const $lightbox = $('.ah-ho-addon-lightbox');
+    const $lightboxImg = $lightbox.find('.ah-ho-addon-lightbox-img');
+
+    // Open lightbox on addon image click
+    $(document).on('click', '.ah-ho-addon-image[data-full-src]', function(e) {
+        e.preventDefault();
+        e.stopPropagation(); // Don't toggle the checkbox
+        var fullSrc = $(this).data('full-src');
+        var alt = $(this).attr('alt') || '';
+        $lightboxImg.attr('src', fullSrc).attr('alt', alt);
+        $lightbox.fadeIn(200);
+        $('body').css('overflow', 'hidden');
+    });
+
+    // Close lightbox
+    $lightbox.on('click', '.ah-ho-addon-lightbox-backdrop, .ah-ho-addon-lightbox-close', function() {
+        $lightbox.fadeOut(200, function() {
+            $lightboxImg.attr('src', '');
+        });
+        $('body').css('overflow', '');
+    });
+
+    // Close on Escape key
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape' && $lightbox.is(':visible')) {
+            $lightbox.fadeOut(200, function() {
+                $lightboxImg.attr('src', '');
+            });
+            $('body').css('overflow', '');
+        }
+    });
+
     // ===== ACCESSIBILITY ENHANCEMENTS =====
 
     // Add ARIA labels
