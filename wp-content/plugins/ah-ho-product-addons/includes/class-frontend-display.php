@@ -23,8 +23,9 @@ class AH_Ho_Addons_Frontend_Display {
         // Check if any addon is enabled
         $notes_enabled = get_post_meta( $product_id, '_enable_product_notes', true ) === 'yes';
         $gift_enabled = get_post_meta( $product_id, '_enable_gift_message', true ) === 'yes';
+        $product_addon_enabled = get_post_meta( $product_id, '_enable_product_addon', true ) === 'yes';
 
-        if ( ! $notes_enabled && ! $gift_enabled ) {
+        if ( ! $notes_enabled && ! $gift_enabled && ! $product_addon_enabled ) {
             return; // No addons enabled for this product
         }
 
@@ -115,6 +116,58 @@ class AH_Ho_Addons_Frontend_Display {
                 </div>
             </div>
             <?php
+        }
+
+        // ===== PRODUCT ADD-ON SECTION =====
+        if ( $product_addon_enabled ) {
+            $addon_product_id = absint( get_post_meta( $product_id, '_addon_product_id', true ) );
+            $addon_label = get_post_meta( $product_id, '_addon_product_label', true );
+            $addon_checked = isset( $_POST['add_product_addon'] ) ? 'checked' : '';
+
+            if ( $addon_product_id ) {
+                $addon_product = wc_get_product( $addon_product_id );
+
+                if ( $addon_product && $addon_product->is_in_stock() ) {
+                    $addon_name = $addon_product->get_name();
+                    $addon_price = $addon_product->get_price();
+                    $addon_price_html = $addon_product->get_price_html();
+                    $addon_image_id = $addon_product->get_image_id();
+                    $addon_image_url = $addon_image_id
+                        ? wp_get_attachment_image_url( $addon_image_id, 'thumbnail' )
+                        : wc_placeholder_img_src( 'thumbnail' );
+
+                    if ( ! $addon_label ) {
+                        $addon_label = sprintf( __( 'Add %s', 'ah-ho-fruits' ), $addon_name );
+                    }
+
+                    ?>
+                    <div class="ah-ho-product-addon-section">
+                        <div class="ah-ho-addon-checkbox-row">
+                            <label class="ah-ho-addon-checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    name="add_product_addon"
+                                    id="ah_ho_product_addon"
+                                    value="<?php echo esc_attr( $addon_product_id ); ?>"
+                                    <?php echo $addon_checked; ?>
+                                >
+                                <span class="ah-ho-addon-content">
+                                    <img
+                                        src="<?php echo esc_url( $addon_image_url ); ?>"
+                                        alt="<?php echo esc_attr( $addon_name ); ?>"
+                                        class="ah-ho-addon-image"
+                                    >
+                                    <span class="ah-ho-addon-details">
+                                        <span class="ah-ho-addon-name"><?php echo esc_html( $addon_label ); ?></span>
+                                        <span class="ah-ho-addon-price">+ <?php echo wp_kses_post( $addon_price_html ); ?></span>
+                                    </span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <?php
+                }
+            }
         }
 
         echo '</div>';

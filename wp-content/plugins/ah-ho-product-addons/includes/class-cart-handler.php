@@ -16,6 +16,9 @@ class AH_Ho_Addons_Cart_Handler {
 
         // Display in cart
         add_filter( 'woocommerce_get_item_data', [ $this, 'display_in_cart' ], 10, 2 );
+
+        // Auto-add linked product addon after main product is added to cart
+        add_action( 'woocommerce_add_to_cart', [ $this, 'maybe_add_addon_product' ], 10, 6 );
     }
 
     /**
@@ -86,15 +89,44 @@ class AH_Ho_Addons_Cart_Handler {
             }
         }
 
+        // Track if product addon was requested
+        if ( isset( $_POST['add_product_addon'] ) && absint( $_POST['add_product_addon'] ) > 0 ) {
+            $cart_item_data['product_addon_id'] = absint( $_POST['add_product_addon'] );
+        }
+
         // Add unique key if any custom data exists (prevent cart merging)
         if ( isset( $cart_item_data['product_notes'] )
             || isset( $cart_item_data['is_gift'] )
             || isset( $cart_item_data['gift_message'] )
+            || isset( $cart_item_data['product_addon_id'] )
         ) {
             $cart_item_data['unique_addon_key'] = md5( microtime() . rand() );
         }
 
         return $cart_item_data;
+    }
+
+    /**
+     * Auto-add the linked addon product to cart after main product
+     */
+    public function maybe_add_addon_product( $cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data ) {
+        if ( empty( $cart_item_data['product_addon_id'] ) ) {
+            return;
+        }
+
+        $addon_product_id = $cart_item_data['product_addon_id'];
+        $addon_product = wc_get_product( $addon_product_id );
+
+        if ( ! $addon_product || ! $addon_product->is_in_stock() ) {
+            return;
+        }
+
+        // Add the addon product to cart (quantity matches main product)
+        WC()->cart->add_to_cart( $addon_product_id, $quantity, 0, [], [
+            'addon_for_product' => $product_id,
+            'addon_for_key'     => $cart_item_key,
+            'unique_addon_key'  => md5( microtime() . rand() ),
+        ] );
     }
 
     /**
@@ -123,6 +155,17 @@ class AH_Ho_Addons_Cart_Handler {
                 'name'  => __( 'Gift Message', 'ah-ho-fruits' ),
                 'value' => nl2br( esc_html( $cart_item['gift_message'] ) ),
             ];
+        }
+
+        // Display addon-for indicator
+        if ( ! empty( $cart_item['addon_for_product'] ) ) {
+            $parent_product = wc_get_product( $cart_item['addon_for_product'] );
+            if ( $parent_product ) {
+                $item_data[] = [
+                    'name'  => __( 'Add-on for', 'ah-ho-fruits' ),
+                    'value' => esc_html( $parent_product->get_name() ),
+                ];
+            }
         }
 
         return $item_data;

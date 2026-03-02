@@ -119,6 +119,87 @@
     font-weight: 600;
 }
 
+/* Product Add-on Section */
+.ah-ho-product-addon-section {
+    margin-bottom: 20px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+    border: 2px solid #66bb6a;
+    border-radius: 8px;
+}
+
+.ah-ho-addon-checkbox-row {
+    margin: 0;
+}
+
+.ah-ho-addon-checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    gap: 12px;
+}
+
+.ah-ho-addon-checkbox-label input[type="checkbox"] {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    accent-color: #2E7D32;
+}
+
+.ah-ho-addon-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.ah-ho-addon-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #c8e6c9;
+    flex-shrink: 0;
+}
+
+.ah-ho-addon-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ah-ho-addon-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: #1b5e20;
+}
+
+.ah-ho-addon-price {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2E7D32;
+}
+
+.ah-ho-addon-price .woocommerce-Price-amount {
+    font-weight: 700;
+}
+
+/* Checked state highlight */
+.ah-ho-addon-checkbox-label input[type="checkbox"]:checked ~ .ah-ho-addon-content {
+    opacity: 1;
+}
+
+.ah-ho-addon-checkbox-label input[type="checkbox"]:not(:checked) ~ .ah-ho-addon-content {
+    opacity: 0.7;
+}
+
+.ah-ho-product-addon-section:has(input:checked) {
+    border-color: #2E7D32;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .ah-ho-addons-wrapper {
@@ -126,8 +207,14 @@
     }
 
     .ah-ho-notes-section,
-    .ah-ho-gift-section {
+    .ah-ho-gift-section,
+    .ah-ho-product-addon-section {
         padding: 15px;
+    }
+
+    .ah-ho-addon-image {
+        width: 50px;
+        height: 50px;
     }
 
     .ah-ho-textarea {

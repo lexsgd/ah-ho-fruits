@@ -122,6 +122,45 @@ class AH_Ho_Addons_Admin_Settings {
         ]);
 
         echo '</div>';
+
+        // ===== PRODUCT ADD-ON (LINKED PRODUCT) SECTION =====
+        echo '<div style="padding: 10px 12px; background: #e8f5e9; margin: 10px 0;">';
+        echo '<h5 style="margin: 0 0 10px 0; color: #1b5e20;">🌸 '
+            . __( 'Optional Product Add-on', 'ah-ho-fruits' )
+            . '</h5>';
+        echo '<p style="margin: 0 0 10px; font-size: 12px; color: #555;">'
+            . __( 'Link another product as an optional add-on. Customers see a checkbox to add it alongside this product.', 'ah-ho-fruits' )
+            . '</p>';
+
+        // Enable product add-on
+        woocommerce_wp_checkbox([
+            'id'          => '_enable_product_addon',
+            'label'       => __( 'Enable Product Add-on', 'ah-ho-fruits' ),
+            'description' => __( 'Show an optional add-on product checkbox on this product page', 'ah-ho-fruits' ),
+            'desc_tip'    => true,
+        ]);
+
+        // Linked product ID
+        woocommerce_wp_text_input([
+            'id'          => '_addon_product_id',
+            'label'       => __( 'Add-on Product ID', 'ah-ho-fruits' ),
+            'placeholder' => __( 'e.g. 4324', 'ah-ho-fruits' ),
+            'description' => __( 'WooCommerce product ID of the add-on product', 'ah-ho-fruits' ),
+            'type'        => 'number',
+            'custom_attributes' => [ 'min' => '1' ],
+            'desc_tip'    => true,
+        ]);
+
+        // Custom label (optional)
+        woocommerce_wp_text_input([
+            'id'          => '_addon_product_label',
+            'label'       => __( 'Custom Label', 'ah-ho-fruits' ),
+            'placeholder' => __( 'Add Fresh Flowers Bouquet', 'ah-ho-fruits' ),
+            'description' => __( 'Custom checkbox label (leave blank to auto-generate from product name)', 'ah-ho-fruits' ),
+            'desc_tip'    => true,
+        ]);
+
+        echo '</div>';
         echo '</div>';
     }
 
@@ -167,5 +206,19 @@ class AH_Ho_Addons_Admin_Settings {
 
         $gift_required = isset( $_POST['_gift_message_required'] ) ? 'yes' : 'no';
         update_post_meta( $post_id, '_gift_message_required', $gift_required );
+
+        // Save Product Add-on settings
+        $enable_addon = isset( $_POST['_enable_product_addon'] ) ? 'yes' : 'no';
+        update_post_meta( $post_id, '_enable_product_addon', $enable_addon );
+
+        $addon_product_id = isset( $_POST['_addon_product_id'] )
+            ? absint( $_POST['_addon_product_id'] )
+            : 0;
+        update_post_meta( $post_id, '_addon_product_id', $addon_product_id );
+
+        $addon_label = isset( $_POST['_addon_product_label'] )
+            ? sanitize_text_field( $_POST['_addon_product_label'] )
+            : '';
+        update_post_meta( $post_id, '_addon_product_label', $addon_label );
     }
 }

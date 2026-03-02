@@ -45,6 +45,18 @@ class AH_Ho_Addons_Order_Handler {
                 true
             );
         }
+
+        // Save addon-for relationship
+        if ( ! empty( $values['addon_for_product'] ) ) {
+            $parent_product = wc_get_product( $values['addon_for_product'] );
+            if ( $parent_product ) {
+                $item->add_meta_data(
+                    __( 'Add-on for', 'ah-ho-fruits' ),
+                    $parent_product->get_name(),
+                    true
+                );
+            }
+        }
     }
 
     /**
