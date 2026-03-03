@@ -63,6 +63,28 @@ $bill_postal  = $order->get_billing_postcode();
 $bill_phone   = $order->get_billing_phone();
 $bill_email   = $order->get_billing_email();
 
+// Shipping/Deliver To info
+$ship_name    = trim($order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name());
+$ship_company = $order->get_shipping_company();
+$ship_addr1   = $order->get_shipping_address_1();
+$ship_addr2   = $order->get_shipping_address_2();
+$ship_city    = $order->get_shipping_city();
+$ship_postal  = $order->get_shipping_postcode();
+$ship_phone   = $order->get_shipping_phone();
+if (empty($ship_phone)) {
+    $ship_phone = $bill_phone;
+}
+
+// If no shipping address, use billing
+if (empty($ship_name) || $ship_name === ' ') {
+    $ship_name    = $bill_name;
+    $ship_company = $bill_company;
+    $ship_addr1   = $bill_addr1;
+    $ship_addr2   = $bill_addr2;
+    $ship_city    = $bill_city;
+    $ship_postal  = $bill_postal;
+}
+
 // Payment status
 $is_paid     = $order->is_paid();
 $order_total = $order->get_total();
@@ -145,11 +167,11 @@ if ($has_returns) {
     </tr>
 </table>
 
-<!-- ===== BILL TO / INVOICE INFO ===== -->
+<!-- ===== BILL TO / DELIVER TO / INVOICE INFO ===== -->
 <table style="width: 100%; margin-bottom: 8px;" cellspacing="0" cellpadding="0">
     <tr>
         <!-- Bill To -->
-        <td style="width: 55%; vertical-align: top; padding-right: 10px;">
+        <td style="width: 30%; vertical-align: top; padding-right: 6px;">
             <div style="font-size: 10px; font-weight: bold; margin-bottom: 1px;">Bill To:</div>
             <div style="font-size: 10px; line-height: 1.5;">
                 <?php echo esc_html($bill_name); ?><br>
@@ -170,6 +192,29 @@ if ($has_returns) {
                 <?php endif; ?>
                 <?php if (!empty($bill_email)): ?>
                     Email: <?php echo esc_html($bill_email); ?>
+                <?php endif; ?>
+            </div>
+        </td>
+
+        <!-- Deliver To -->
+        <td style="width: 25%; vertical-align: top; padding-right: 6px;">
+            <div style="font-size: 10px; font-weight: bold; margin-bottom: 1px;">Deliver To:</div>
+            <div style="font-size: 10px; line-height: 1.5;">
+                <?php echo esc_html($ship_name); ?><br>
+                <?php if ($ship_company): ?>
+                    <?php echo esc_html($ship_company); ?><br>
+                <?php endif; ?>
+                <?php if ($ship_addr1): ?>
+                    <?php echo esc_html($ship_addr1); ?><br>
+                <?php endif; ?>
+                <?php if ($ship_addr2): ?>
+                    <?php echo esc_html($ship_addr2); ?><br>
+                <?php endif; ?>
+                <?php if ($ship_city || $ship_postal): ?>
+                    <?php echo esc_html(trim($ship_city . ' ' . $ship_postal)); ?><br>
+                <?php endif; ?>
+                <?php if (!empty($ship_phone)): ?>
+                    Tel: <?php echo esc_html($ship_phone); ?>
                 <?php endif; ?>
             </div>
         </td>
