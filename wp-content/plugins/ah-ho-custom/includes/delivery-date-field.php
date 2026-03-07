@@ -313,7 +313,7 @@ function ah_ho_blocks_checkout_inline_script() {
                     firstDayOfWeek: 1 // Start week on Monday
                 },
                 onChange: function(selectedDates, dateStr) {
-                    updateHiddenFields(dateStr);
+                    updateDeliveryDate(dateStr);
                 }
             });
 
@@ -341,30 +341,45 @@ function ah_ho_blocks_checkout_inline_script() {
                 });
             }
 
-            // Store values for WooCommerce Blocks
-            function updateHiddenFields(dateStr) {
-                if (window.wp && window.wp.data) {
-                    const { dispatch } = window.wp.data;
-                    const store = dispatch('wc/store/checkout');
-                    if (store && store.setExtensionData) {
-                        store.setExtensionData('ah-ho-delivery', {
-                            delivery_date: dateStr
-                        });
+            // Track selected delivery date for fetch interceptor
+            let selectedDeliveryDate = '';
+
+            // Store values for WooCommerce Blocks via Store API extension
+            function updateDeliveryDate(dateStr) {
+                selectedDeliveryDate = dateStr;
+
+                // Primary: Use WooCommerce Blocks setExtensionData
+                try {
+                    if (window.wp && window.wp.data) {
+                        const store = window.wp.data.dispatch('wc/store/checkout');
+                        if (store && store.setExtensionData) {
+                            store.setExtensionData('ah-ho-delivery', {
+                                delivery_date: dateStr
+                            });
+                        }
                     }
-                }
-                // Update hidden field
-                const hiddenDate = document.getElementById('delivery_date_hidden');
-                if (hiddenDate) {
-                    hiddenDate.value = dateStr;
+                } catch(e) {
+                    // Silently fall through to fetch interceptor
                 }
             }
 
-            // Create hidden form field as backup
-            const hiddenDate = document.createElement('input');
-            hiddenDate.type = 'hidden';
-            hiddenDate.name = 'delivery_date';
-            hiddenDate.id = 'delivery_date_hidden';
-            checkoutForm.appendChild(hiddenDate);
+            // Backup: Intercept fetch to inject delivery_date into Store API checkout request
+            const originalFetch = window.fetch;
+            window.fetch = function(url, options) {
+                if (selectedDeliveryDate && options && options.method === 'POST' &&
+                    typeof url === 'string' && url.includes('/wc/store/') && url.includes('checkout')) {
+                    try {
+                        const body = JSON.parse(options.body);
+                        if (!body.extensions) body.extensions = {};
+                        if (!body.extensions['ah-ho-delivery']) body.extensions['ah-ho-delivery'] = {};
+                        body.extensions['ah-ho-delivery'].delivery_date = selectedDeliveryDate;
+                        options.body = JSON.stringify(body);
+                    } catch(e) {
+                        // Not JSON or parse error, skip
+                    }
+                }
+                return originalFetch.call(this, url, options);
+            };
         }
 
         // Run on page load and observe DOM changes
@@ -410,41 +425,65 @@ function ah_ho_save_delivery_date_field($order_id) {
 }
 
 /**
- * Save delivery date from Blocks checkout (multiple fallback methods)
+ * ============================================================================
+ * SECTION 1C: WOOCOMMERCE BLOCKS - Store API Integration
+ * ============================================================================
+ * Registers the 'ah-ho-delivery' extension namespace with the Store API
+ * so that Blocks checkout includes delivery_date in the checkout request.
+ * Without this registration, setExtensionData() data is silently stripped.
  */
-add_action('woocommerce_checkout_order_created', 'ah_ho_save_delivery_date_blocks_fallback');
 
-function ah_ho_save_delivery_date_blocks_fallback($order) {
-    // Skip if already has delivery date
+/**
+ * Register delivery date extension with WooCommerce Store API
+ */
+add_action('woocommerce_blocks_loaded', 'ah_ho_register_delivery_date_store_api');
+
+function ah_ho_register_delivery_date_store_api() {
+    if (!function_exists('woocommerce_store_api_register_endpoint_data')) {
+        return;
+    }
+
+    woocommerce_store_api_register_endpoint_data(
+        array(
+            'endpoint'        => 'checkout',
+            'namespace'       => 'ah-ho-delivery',
+            'data_callback'   => function() {
+                return array(
+                    'delivery_date' => '',
+                );
+            },
+            'schema_callback' => function() {
+                return array(
+                    'delivery_date' => array(
+                        'description' => 'Preferred delivery date',
+                        'type'        => 'string',
+                        'context'     => array('view', 'edit'),
+                        'readonly'    => false,
+                    ),
+                );
+            },
+            'schema_type'     => ARRAY_A,
+        )
+    );
+}
+
+/**
+ * Save delivery date from WooCommerce Store API (Blocks checkout)
+ */
+add_action('woocommerce_store_api_checkout_update_order_from_request', 'ah_ho_save_delivery_date_from_store_api', 10, 2);
+
+function ah_ho_save_delivery_date_from_store_api($order, $request) {
+    // Skip if already has delivery date (saved by classic checkout hook)
     if ($order->get_meta('_delivery_date')) {
         return;
     }
 
-    // Try to get from POST data (hidden fields)
-    if (!empty($_POST['delivery_date'])) {
-        $order->update_meta_data('_delivery_date', sanitize_text_field($_POST['delivery_date']));
+    $extensions = $request->get_param('extensions');
+
+    if (!empty($extensions['ah-ho-delivery']['delivery_date'])) {
+        $delivery_date = sanitize_text_field($extensions['ah-ho-delivery']['delivery_date']);
+        $order->update_meta_data('_delivery_date', $delivery_date);
         $order->save();
-        return;
-    }
-
-    // Try to get from request body (Blocks checkout JSON)
-    $request_body = file_get_contents('php://input');
-    if ($request_body) {
-        $data = json_decode($request_body, true);
-        if ($data) {
-            // Check extensions
-            if (!empty($data['extensions']['ah-ho-delivery']['delivery_date'])) {
-                $order->update_meta_data('_delivery_date', sanitize_text_field($data['extensions']['ah-ho-delivery']['delivery_date']));
-                $order->save();
-                return;
-            }
-
-            // Check additional_fields (newer WooCommerce Blocks format)
-            if (!empty($data['additional_fields']['ah_ho/delivery_date'])) {
-                $order->update_meta_data('_delivery_date', sanitize_text_field($data['additional_fields']['ah_ho/delivery_date']));
-                $order->save();
-            }
-        }
     }
 }
 
