@@ -21,6 +21,9 @@ class Payment_Gateway_Fees {
         // Also support WooCommerce Blocks checkout
         add_action('wp_enqueue_scripts', [$this, 'blocks_checkout_js']);
 
+        // Safety net: apply fee during Blocks checkout order creation if missed
+        add_action('woocommerce_store_api_checkout_update_order_from_request', [$this, 'ensure_fee_on_blocks_order'], 10, 2);
+
         // Admin hooks
         add_action('admin_menu', [$this, 'add_admin_menu']);
         add_action('admin_init', [$this, 'register_settings']);
@@ -110,6 +113,57 @@ class Payment_Gateway_Fees {
         }
 
         return false;
+    }
+
+    /**
+     * Safety net for WooCommerce Blocks checkout:
+     * If the cart fee was not applied (session had no payment method),
+     * add the fee directly to the order during checkout.
+     */
+    public function ensure_fee_on_blocks_order($order, $request) {
+        $payment_method = $order->get_payment_method();
+        $fees = $this->get_fees();
+
+        if (empty($payment_method) || !isset($fees[$payment_method]) || empty($fees[$payment_method]['enabled'])) {
+            return;
+        }
+
+        $config = $fees[$payment_method];
+        $expected_label = $config['label'] ?? 'Processing Fee';
+
+        // Check if the fee was already applied during cart calculation
+        foreach ($order->get_fees() as $fee_item) {
+            if ($fee_item->get_name() === $expected_label) {
+                return; // Fee already exists, skip
+            }
+        }
+
+        // Fee is missing — calculate and add it
+        $subtotal = (float) $order->get_subtotal();
+        $shipping = (float) $order->get_shipping_total();
+        $base_total = $subtotal + $shipping;
+
+        $fee_amount = 0;
+        $fee_type = $config['type'] ?? 'percent';
+
+        if ($fee_type === 'fixed') {
+            $fee_amount = floatval($config['fixed'] ?? 0);
+        } elseif ($fee_type === 'percent') {
+            $fee_amount = ($base_total * floatval($config['percent'] ?? 0)) / 100;
+        } elseif ($fee_type === 'both') {
+            $fee_amount = ($base_total * floatval($config['percent'] ?? 0)) / 100 + floatval($config['fixed'] ?? 0);
+        }
+
+        if ($fee_amount > 0) {
+            $fee = new \WC_Order_Item_Fee();
+            $fee->set_name($expected_label);
+            $fee->set_amount($fee_amount);
+            $fee->set_total($fee_amount);
+            $fee->set_tax_status(!empty($config['taxable']) ? 'taxable' : 'none');
+            $order->add_item($fee);
+            $order->calculate_totals();
+            $order->save();
+        }
     }
 
     /**
