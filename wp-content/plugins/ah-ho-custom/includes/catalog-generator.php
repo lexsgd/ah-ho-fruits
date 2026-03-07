@@ -160,7 +160,7 @@ function ah_ho_generate_catalog_text() {
     // Exclude parent categories that duplicate subcategory products
     $excluded_slugs = array('fruits', 'uncategorized');
 
-    $output = "*AH HO FRUITS - WHOLESALE PRICE LIST*\n";
+    $output = "*AH HO FRUIT - WHOLESALE PRICE LIST*\n";
     $output .= "_Prices exclusive of GST_\n";
     $output .= "_B2B wholesale prices only_\n";
     $output .= "━━━━━━━━━━━━━━━━━━━━\n\n";
@@ -263,7 +263,7 @@ function ah_ho_generate_stock_catalog_text() {
     // Exclude parent categories that duplicate subcategory products
     $excluded_slugs = array('fruits', 'uncategorized');
 
-    $output = "*AH HO FRUITS - B2B STOCK LIST*\n";
+    $output = "*AH HO FRUIT - B2B STOCK LIST*\n";
     $output .= "_Internal use only - Do not share_\n";
     $output .= "━━━━━━━━━━━━━━━━━━━━\n\n";
 
