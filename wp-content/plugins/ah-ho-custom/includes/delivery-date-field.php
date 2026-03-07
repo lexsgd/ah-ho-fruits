@@ -49,34 +49,66 @@ function ah_ho_add_delivery_date_checkout_field($checkout) {
     ), $checkout->get_value('delivery_date'));
 
     echo '<p class="form-row form-row-wide"><small>';
-    echo __('Weekends not available. Earliest delivery: 3 business days.', 'ah-ho-custom');
+    echo __('Sundays &amp; Public Holidays not available. Earliest delivery: 3 working days.', 'ah-ho-custom');
     echo '</small></p>';
 
     echo '</div>';
 }
 
 /**
- * Get next available delivery date (business days only, skip weekends)
+ * Singapore Public Holidays (update annually)
+ * Includes observed holidays when PH falls on Sunday.
  *
- * @param int $business_days Number of business days from today
+ * @return array Dates in Y-m-d format
+ */
+function ah_ho_get_sg_public_holidays() {
+    return array(
+        // 2026
+        '2026-01-01', // New Year's Day
+        '2026-01-29', // Chinese New Year
+        '2026-01-30', // Chinese New Year
+        '2026-03-31', // Hari Raya Puasa
+        '2026-04-03', // Good Friday
+        '2026-05-01', // Labour Day
+        '2026-05-26', // Vesak Day
+        '2026-07-17', // Hari Raya Haji
+        '2026-08-09', // National Day (Sun)
+        '2026-08-10', // National Day observed (Mon)
+        '2026-11-08', // Deepavali (Sun)
+        '2026-11-09', // Deepavali observed (Mon)
+        '2026-12-25', // Christmas Day
+        // 2027 — update when official dates released
+        '2027-01-01', // New Year's Day
+        '2027-02-17', // Chinese New Year
+        '2027-02-18', // Chinese New Year
+        '2027-12-25', // Christmas Day
+    );
+}
+
+/**
+ * Get next available delivery date (skip Sundays and Public Holidays)
+ *
+ * @param int $business_days Number of working days from today
  * @return string Date in Y-m-d format
  */
 function ah_ho_get_next_delivery_date($business_days = 3) {
     $date = new DateTime(current_time('Y-m-d'));
+    $holidays = ah_ho_get_sg_public_holidays();
     $added_days = 0;
 
     while ($added_days < $business_days) {
         $date->modify('+1 day');
-        $day_of_week = (int) $date->format('N'); // 1 = Monday, 7 = Sunday
+        $day_of_week = (int) $date->format('N'); // 1=Mon, 7=Sun
 
-        // Skip weekends (6 = Saturday, 7 = Sunday)
-        if ($day_of_week < 6) {
-            $added_days++;
+        // Skip Sundays and Public Holidays
+        if ($day_of_week === 7 || in_array($date->format('Y-m-d'), $holidays)) {
+            continue;
         }
+        $added_days++;
     }
 
-    // If landed on weekend, move to Monday
-    while ((int) $date->format('N') >= 6) {
+    // If landed on Sunday or PH, move forward
+    while ((int) $date->format('N') === 7 || in_array($date->format('Y-m-d'), $holidays)) {
         $date->modify('+1 day');
     }
 
@@ -98,10 +130,16 @@ function ah_ho_validate_delivery_date_field() {
     if (!empty($_POST['delivery_date'])) {
         $delivery_date = sanitize_text_field($_POST['delivery_date']);
 
-        // Check if date is a weekend
+        // Check if date is a Sunday
         $day_of_week = date('N', strtotime($delivery_date));
-        if ($day_of_week >= 6) {
-            wc_add_notice(__('Weekend delivery is not available. Please select a weekday.', 'ah-ho-custom'), 'error');
+        if ($day_of_week == 7) {
+            wc_add_notice(__('Sunday delivery is not available. Please select another day.', 'ah-ho-custom'), 'error');
+        }
+
+        // Check if date is a Public Holiday
+        $holidays = ah_ho_get_sg_public_holidays();
+        if (in_array($delivery_date, $holidays)) {
+            wc_add_notice(__('Delivery is not available on Public Holidays. Please select another day.', 'ah-ho-custom'), 'error');
         }
     }
 }
@@ -171,38 +209,46 @@ function ah_ho_blocks_checkout_inline_script() {
 
         let flatpickrInstance = null;
 
+        // Singapore Public Holidays (update annually)
+        const sgPublicHolidays = <?php echo json_encode(ah_ho_get_sg_public_holidays()); ?>;
+
+        /**
+         * Check if a date is a Public Holiday
+         */
+        function isPublicHoliday(date) {
+            const dateStr = date.getFullYear() + '-' +
+                String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                String(date.getDate()).padStart(2, '0');
+            return sgPublicHolidays.includes(dateStr);
+        }
+
         /**
          * Calculate minimum delivery date based on shipping method
-         * - Standard Delivery / Self Pickup: 3 business days (skip weekends)
-         * - Express Same Day: Next business day
+         * - Standard Delivery / Self Pickup: 3 working days (skip Sundays + PH)
+         * - Express Same Day: Next working day
          */
         function getMinDeliveryDate(shippingMethod) {
             const today = new Date();
             let minDate = new Date(today);
             let daysToAdd = 0;
 
-            // Determine days to add based on shipping method
             if (shippingMethod && shippingMethod.toLowerCase().includes('express')) {
-                // Express: next business day
                 daysToAdd = 1;
             } else {
-                // Standard Delivery / Self Pickup: 3 business days
                 daysToAdd = 3;
             }
 
-            // Add business days (skip weekends)
+            // Add working days (skip Sundays and Public Holidays)
             let addedDays = 0;
             while (addedDays < daysToAdd) {
                 minDate.setDate(minDate.getDate() + 1);
-                const dayOfWeek = minDate.getDay();
-                // Skip Saturday (6) and Sunday (0)
-                if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                if (minDate.getDay() !== 0 && !isPublicHoliday(minDate)) {
                     addedDays++;
                 }
             }
 
-            // If landed on weekend, move to Monday
-            while (minDate.getDay() === 0 || minDate.getDay() === 6) {
+            // If landed on Sunday or PH, move forward
+            while (minDate.getDay() === 0 || isPublicHoliday(minDate)) {
                 minDate.setDate(minDate.getDate() + 1);
             }
 
@@ -279,7 +325,7 @@ function ah_ho_blocks_checkout_inline_script() {
                                readonly
                                style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; background: #fff; cursor: pointer;">
                         <p id="ah_ho_date_note" style="margin: 8px 0 0; font-size: 12px; color: #666;">
-                            Earliest available: <span id="ah_ho_earliest_date">${formatDateDisplay(initialMinDate)}</span>. Weekends greyed out.
+                            Earliest available: <span id="ah_ho_earliest_date">${formatDateDisplay(initialMinDate)}</span>. Sundays &amp; Public Holidays not available.
                         </p>
                     </div>
                 </div>
@@ -305,8 +351,8 @@ function ah_ho_blocks_checkout_inline_script() {
                 maxDate: '<?php echo esc_attr($max_date); ?>',
                 disable: [
                     function(date) {
-                        // Disable weekends (Saturday = 6, Sunday = 0)
-                        return (date.getDay() === 0 || date.getDay() === 6);
+                        // Disable Sundays and Public Holidays
+                        return (date.getDay() === 0 || isPublicHoliday(date));
                     }
                 ],
                 locale: {
@@ -540,7 +586,8 @@ add_action('woocommerce_admin_order_data_after_shipping_address', 'ah_ho_add_del
 
 function ah_ho_add_delivery_date_admin_field($order) {
     $delivery_date = $order->get_meta('_delivery_date');
-    $time_slot = $order->get_meta('_delivery_time_slot');
+    $order_id = $order->get_id();
+    $nonce = wp_create_nonce('ah_ho_delivery_nonce');
     ?>
     <div class="ah-ho-delivery-schedule" style="margin-top: 20px; padding: 12px; background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px;">
         <h3 style="margin: 0 0 10px 0;">
@@ -552,21 +599,10 @@ function ah_ho_add_delivery_date_admin_field($order) {
             <?php if ($delivery_date) : ?>
                 <p style="margin: 4px 0;">
                     <strong><?php _e('Delivery Date:', 'ah-ho-custom'); ?></strong><br>
-                    <?php echo esc_html(date('l, d F Y', strtotime($delivery_date))); ?>
+                    <span id="ah-ho-delivery-display"><?php echo esc_html(date('l, d F Y', strtotime($delivery_date))); ?></span>
                 </p>
-                <?php if ($time_slot) :
-                    $slots = array(
-                        'morning'   => __('Morning (6am - 12pm)', 'ah-ho-custom'),
-                        'afternoon' => __('Afternoon (12pm - 6pm)', 'ah-ho-custom'),
-                    );
-                    ?>
-                    <p style="margin: 4px 0;">
-                        <strong><?php _e('Time Slot:', 'ah-ho-custom'); ?></strong><br>
-                        <?php echo esc_html($slots[$time_slot] ?? $time_slot); ?>
-                    </p>
-                <?php endif; ?>
             <?php else : ?>
-                <p style="color: #b32d2e; font-style: italic; margin: 4px 0;">
+                <p style="color: #b32d2e; font-style: italic; margin: 4px 0;" id="ah-ho-no-date-msg">
                     <?php _e('No delivery date set', 'ah-ho-custom'); ?>
                 </p>
             <?php endif; ?>
@@ -579,23 +615,76 @@ function ah_ho_add_delivery_date_admin_field($order) {
                        value="<?php echo esc_attr($delivery_date); ?>"
                        style="width: 100%;">
             </p>
-            <p class="form-field form-field-wide">
-                <label for="_delivery_time_slot"><?php _e('Time Slot:', 'ah-ho-custom'); ?></label>
-                <select id="_delivery_time_slot" name="_delivery_time_slot" style="width: 100%;">
-                    <option value="" <?php selected($time_slot, ''); ?>><?php _e('Any time', 'ah-ho-custom'); ?></option>
-                    <option value="morning" <?php selected($time_slot, 'morning'); ?>><?php _e('Morning (6am - 12pm)', 'ah-ho-custom'); ?></option>
-                    <option value="afternoon" <?php selected($time_slot, 'afternoon'); ?>><?php _e('Afternoon (12pm - 6pm)', 'ah-ho-custom'); ?></option>
-                </select>
+            <p>
+                <button type="button" id="ah-ho-delivery-save-btn" class="button button-primary" style="margin-right: 8px;">
+                    <?php _e('Save', 'ah-ho-custom'); ?>
+                </button>
+                <button type="button" id="ah-ho-delivery-cancel-btn" class="button">
+                    <?php _e('Cancel', 'ah-ho-custom'); ?>
+                </button>
+                <span id="ah-ho-delivery-status" style="margin-left: 10px; font-size: 12px;"></span>
             </p>
         </div>
     </div>
     <script>
     jQuery(function($) {
+        // Toggle edit mode
         $('#ah-ho-delivery-edit-toggle').on('click', function(e) {
             e.preventDefault();
-            $('#ah-ho-delivery-view').toggle();
-            $('#ah-ho-delivery-edit').toggle();
-            $(this).text($(this).text() === 'Edit' ? 'Close' : 'Edit');
+            $('#ah-ho-delivery-view').hide();
+            $('#ah-ho-delivery-edit').show();
+            $(this).hide();
+        });
+
+        // Cancel — go back to view mode
+        $('#ah-ho-delivery-cancel-btn').on('click', function() {
+            $('#ah-ho-delivery-edit').hide();
+            $('#ah-ho-delivery-view').show();
+            $('#ah-ho-delivery-edit-toggle').show();
+            $('#ah-ho-delivery-status').text('');
+        });
+
+        // Save via AJAX
+        $('#ah-ho-delivery-save-btn').on('click', function() {
+            var btn = $(this);
+            var dateVal = $('#_delivery_date').val();
+            var statusEl = $('#ah-ho-delivery-status');
+
+            btn.prop('disabled', true);
+            statusEl.text('Saving...').css('color', '#666');
+
+            $.post(ajaxurl, {
+                action: 'ah_ho_save_delivery_date',
+                nonce: '<?php echo esc_js($nonce); ?>',
+                order_id: <?php echo (int) $order_id; ?>,
+                delivery_date: dateVal
+            }, function(response) {
+                btn.prop('disabled', false);
+                if (response.success) {
+                    statusEl.text('Saved!').css('color', '#46b450');
+
+                    // Update the view
+                    if (response.data.display) {
+                        var viewHtml = '<p style="margin: 4px 0;"><strong>Delivery Date:</strong><br><span id="ah-ho-delivery-display">' + response.data.display + '</span></p>';
+                        $('#ah-ho-delivery-view').html(viewHtml);
+                    } else {
+                        $('#ah-ho-delivery-view').html('<p style="color: #b32d2e; font-style: italic; margin: 4px 0;">No delivery date set</p>');
+                    }
+
+                    // Switch back to view after short delay
+                    setTimeout(function() {
+                        $('#ah-ho-delivery-edit').hide();
+                        $('#ah-ho-delivery-view').show();
+                        $('#ah-ho-delivery-edit-toggle').show();
+                        statusEl.text('');
+                    }, 800);
+                } else {
+                    statusEl.text('Error: ' + (response.data || 'Save failed')).css('color', '#dc3232');
+                }
+            }).fail(function() {
+                btn.prop('disabled', false);
+                statusEl.text('Error: Request failed').css('color', '#dc3232');
+            });
         });
     });
     </script>
@@ -615,12 +704,42 @@ function ah_ho_save_delivery_date_admin_field($order_id) {
         $order->update_meta_data('_delivery_date', $delivery_date);
     }
 
-    if (isset($_POST['_delivery_time_slot'])) {
-        $time_slot = sanitize_text_field($_POST['_delivery_time_slot']);
-        $order->update_meta_data('_delivery_time_slot', $time_slot);
+    $order->save();
+}
+
+/**
+ * AJAX handler for saving delivery date from admin order page
+ */
+add_action('wp_ajax_ah_ho_save_delivery_date', 'ah_ho_ajax_save_delivery_date');
+
+function ah_ho_ajax_save_delivery_date() {
+    check_ajax_referer('ah_ho_delivery_nonce', 'nonce');
+
+    if (!current_user_can('edit_shop_orders')) {
+        wp_send_json_error('Permission denied');
     }
 
+    $order_id = absint($_POST['order_id'] ?? 0);
+    $delivery_date = sanitize_text_field($_POST['delivery_date'] ?? '');
+
+    if (!$order_id) {
+        wp_send_json_error('Invalid order ID');
+    }
+
+    $order = wc_get_order($order_id);
+    if (!$order) {
+        wp_send_json_error('Order not found');
+    }
+
+    $order->update_meta_data('_delivery_date', $delivery_date);
     $order->save();
+
+    $display = $delivery_date ? date('l, d F Y', strtotime($delivery_date)) : '';
+
+    wp_send_json_success([
+        'message' => 'Delivery date saved',
+        'display' => $display,
+    ]);
 }
 
 
