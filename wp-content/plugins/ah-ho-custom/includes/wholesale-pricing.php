@@ -616,31 +616,76 @@ add_action('manage_shop_order_posts_custom_column', 'ah_ho_add_wholesale_order_i
 add_action('manage_woocommerce_page_wc-orders_custom_column', 'ah_ho_add_wholesale_order_indicator', 20, 2);
 
 /**
- * Show wholesale summary in order details
+ * Show wholesale summary and B2B GST toggle in order details
  */
 function ah_ho_show_wholesale_summary_in_order($order) {
-    if (!ah_ho_order_has_wholesale_pricing($order)) {
-        return;
+    $has_wholesale = ah_ho_order_has_wholesale_pricing($order);
+    $b2b_gst = $order->get_meta('_b2b_add_gst', true);
+
+    if ($has_wholesale) {
+        $savings = ah_ho_calculate_wholesale_savings($order);
+        ?>
+        <div class="ah-ho-wholesale-summary" style="background: #e7f5ff; border-left: 4px solid #007cba; padding: 10px 15px; margin: 15px 0;">
+            <h4 style="margin: 0 0 5px; color: #007cba;">
+                <?php esc_html_e('B2B Wholesale Order', 'ah-ho-custom'); ?>
+            </h4>
+            <p style="margin: 0; color: #666;">
+                <?php
+                printf(
+                    esc_html__('This order uses wholesale pricing. Total savings vs retail: %s', 'ah-ho-custom'),
+                    wc_price($savings)
+                );
+                ?>
+            </p>
+        </div>
+        <?php
     }
 
-    $savings = ah_ho_calculate_wholesale_savings($order);
+    // B2B GST toggle
     ?>
-    <div class="ah-ho-wholesale-summary" style="background: #e7f5ff; border-left: 4px solid #007cba; padding: 10px 15px; margin: 15px 0;">
-        <h4 style="margin: 0 0 5px; color: #007cba;">
-            <?php esc_html_e('B2B Wholesale Order', 'ah-ho-custom'); ?>
-        </h4>
-        <p style="margin: 0; color: #666;">
-            <?php
-            printf(
-                esc_html__('This order uses wholesale pricing. Total savings vs retail: %s', 'ah-ho-custom'),
-                wc_price($savings)
-            );
-            ?>
-        </p>
+    <div class="ah-ho-gst-toggle" style="margin: 10px 0; padding: 8px 12px; background: <?php echo $b2b_gst === 'yes' ? '#e8f5e9' : '#f5f5f5'; ?>; border-left: 4px solid <?php echo $b2b_gst === 'yes' ? '#4caf50' : '#ccc'; ?>;">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;">
+            <input type="checkbox" name="_b2b_add_gst" value="yes" <?php checked($b2b_gst, 'yes'); ?> style="margin: 0;" />
+            <strong><?php esc_html_e('B2B Order — Add 9% GST to invoice', 'ah-ho-custom'); ?></strong>
+        </label>
     </div>
     <?php
 }
 add_action('woocommerce_admin_order_data_after_order_details', 'ah_ho_show_wholesale_summary_in_order');
+
+/**
+ * Save B2B GST toggle when order is saved
+ */
+function ah_ho_save_b2b_gst_toggle($order_id, $order) {
+    if (!is_admin() || !current_user_can('edit_shop_orders')) {
+        return;
+    }
+
+    $gst_value = isset($_POST['_b2b_add_gst']) ? 'yes' : 'no';
+    $order->update_meta_data('_b2b_add_gst', $gst_value);
+    $order->save();
+}
+add_action('woocommerce_process_shop_order_meta', 'ah_ho_save_b2b_gst_toggle', 10, 2);
+
+/**
+ * Auto-enable GST toggle when wholesale pricing is applied to a new order
+ */
+function ah_ho_auto_enable_gst_for_wholesale($item_id, $item, $order_id) {
+    if (!is_admin() || !$item instanceof WC_Order_Item_Product) {
+        return;
+    }
+
+    if (!ah_ho_is_salesperson()) {
+        return;
+    }
+
+    $order = wc_get_order($order_id);
+    if ($order && $order->get_meta('_b2b_add_gst', true) !== 'yes') {
+        $order->update_meta_data('_b2b_add_gst', 'yes');
+        $order->save();
+    }
+}
+add_action('woocommerce_new_order_item', 'ah_ho_auto_enable_gst_for_wholesale', 20, 3);
 
 
 /**

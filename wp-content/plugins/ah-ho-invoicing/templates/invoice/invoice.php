@@ -92,11 +92,11 @@ if (empty($ship_name) || $ship_name === ' ') {
 $is_paid     = $order->is_paid();
 $order_total = $order->get_total();
 
-// B2B GST: If order has wholesale pricing, calculate 9% GST on top
-$is_b2b = function_exists('ah_ho_order_has_wholesale_pricing') && ah_ho_order_has_wholesale_pricing($order);
+// B2B GST: If order is flagged for GST, calculate 9% on top
+$is_b2b_gst = $order->get_meta('_b2b_add_gst', true) === 'yes';
 $gst_rate = 0.09;
 $b2b_gst_amount = 0;
-if ($is_b2b) {
+if ($is_b2b_gst) {
     $b2b_gst_amount = round((float) $order_total * $gst_rate, 2);
     $order_total_with_gst = (float) $order_total + $b2b_gst_amount;
 } else {
@@ -413,12 +413,12 @@ if ($has_returns) {
                 </tr>
                 <?php endforeach; ?>
 
-                <?php if ($is_b2b && $b2b_gst_amount > 0): ?>
+                <?php if ($is_b2b_gst && $b2b_gst_amount > 0): ?>
                 <tr>
                     <td style="border: 1px solid #000; padding: 2px 6px; text-align: right; font-weight: bold;">GST (9%)</td>
                     <td style="border: 1px solid #000; padding: 2px 6px; text-align: right;">$<?php echo esc_html(number_format($b2b_gst_amount, 2)); ?></td>
                 </tr>
-                <?php elseif (!$is_b2b && $order->get_total_tax() > 0): ?>
+                <?php elseif (!$is_b2b_gst && $order->get_total_tax() > 0): ?>
                 <tr>
                     <td style="border: 1px solid #000; padding: 2px 6px; text-align: right; font-weight: bold;">GST (9%)</td>
                     <td style="border: 1px solid #000; padding: 2px 6px; text-align: right;">$<?php echo esc_html(number_format($order->get_total_tax(), 2)); ?></td>
