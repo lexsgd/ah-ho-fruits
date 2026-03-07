@@ -34,6 +34,9 @@ if (empty($logo_url) && file_exists($logo_file) && filesize($logo_file) > 200) {
 // Invoice date formatted for the info table
 $invoice_date = $order->get_date_created()->format('j/n/Y');
 
+// Delivery date from order meta (auto-detect meta key)
+$delivery_date = AH_HO_Delivery_Date_Helper::get_delivery_date($order, 'j/n/Y');
+
 // Payment terms - read from customer profile, fallback to payment method
 $customer_id = $order->get_customer_id();
 $customer_terms = $customer_id ? get_user_meta($customer_id, '_payment_terms', true) : '';
@@ -231,6 +234,12 @@ if ($has_returns) {
                     <td style="border: 1px solid #000; padding: 2px 4px; font-weight: bold;">Date</td>
                     <td style="border: 1px solid #000; padding: 2px 4px;"><?php echo esc_html($invoice_date); ?></td>
                 </tr>
+                <?php if (!empty($delivery_date)): ?>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 2px 4px; font-weight: bold;">Delivery Date</td>
+                    <td style="border: 1px solid #000; padding: 2px 4px;"><?php echo esc_html($delivery_date); ?></td>
+                </tr>
+                <?php endif; ?>
                 <tr>
                     <td style="border: 1px solid #000; padding: 2px 4px; font-weight: bold;">PO No</td>
                     <td style="border: 1px solid #000; padding: 2px 4px;"><?php echo !empty($po_number) ? esc_html($po_number) : '&nbsp;'; ?></td>
