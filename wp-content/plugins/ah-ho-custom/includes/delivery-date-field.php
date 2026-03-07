@@ -542,15 +542,15 @@ function ah_ho_add_delivery_date_admin_field($order) {
     $delivery_date = $order->get_meta('_delivery_date');
     $time_slot = $order->get_meta('_delivery_time_slot');
     ?>
-    <div class="address" style="margin-top: 20px;">
-        <h3 style="margin-bottom: 10px;">
+    <div class="ah-ho-delivery-schedule" style="margin-top: 20px; padding: 12px; background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px;">
+        <h3 style="margin: 0 0 10px 0;">
             <?php _e('Delivery Schedule', 'ah-ho-custom'); ?>
-            <a href="#" class="edit_address" style="font-size: 12px;"><?php _e('Edit', 'ah-ho-custom'); ?></a>
+            <a href="#" id="ah-ho-delivery-edit-toggle" style="font-size: 12px; margin-left: 8px;"><?php _e('Edit', 'ah-ho-custom'); ?></a>
         </h3>
 
-        <div class="delivery-info-view">
+        <div id="ah-ho-delivery-view">
             <?php if ($delivery_date) : ?>
-                <p>
+                <p style="margin: 4px 0;">
                     <strong><?php _e('Delivery Date:', 'ah-ho-custom'); ?></strong><br>
                     <?php echo esc_html(date('l, d F Y', strtotime($delivery_date))); ?>
                 </p>
@@ -560,19 +560,19 @@ function ah_ho_add_delivery_date_admin_field($order) {
                         'afternoon' => __('Afternoon (12pm - 6pm)', 'ah-ho-custom'),
                     );
                     ?>
-                    <p>
+                    <p style="margin: 4px 0;">
                         <strong><?php _e('Time Slot:', 'ah-ho-custom'); ?></strong><br>
                         <?php echo esc_html($slots[$time_slot] ?? $time_slot); ?>
                     </p>
                 <?php endif; ?>
             <?php else : ?>
-                <p style="color: #b32d2e; font-style: italic;">
+                <p style="color: #b32d2e; font-style: italic; margin: 4px 0;">
                     <?php _e('No delivery date set', 'ah-ho-custom'); ?>
                 </p>
             <?php endif; ?>
         </div>
 
-        <div class="edit_address" style="display: none;">
+        <div id="ah-ho-delivery-edit" style="display: none;">
             <p class="form-field form-field-wide">
                 <label for="_delivery_date"><?php _e('Delivery Date:', 'ah-ho-custom'); ?></label>
                 <input type="date" id="_delivery_date" name="_delivery_date"
@@ -589,6 +589,16 @@ function ah_ho_add_delivery_date_admin_field($order) {
             </p>
         </div>
     </div>
+    <script>
+    jQuery(function($) {
+        $('#ah-ho-delivery-edit-toggle').on('click', function(e) {
+            e.preventDefault();
+            $('#ah-ho-delivery-view').toggle();
+            $('#ah-ho-delivery-edit').toggle();
+            $(this).text($(this).text() === 'Edit' ? 'Close' : 'Edit');
+        });
+    });
+    </script>
     <?php
 }
 
