@@ -141,20 +141,18 @@ function ah_ho_generate_catalog_text() {
         return __('No products available.', 'ah-ho-custom');
     }
 
-    // Category emoji mapping (customize as needed)
+    // Category emoji mapping: left emoji + right emoji for headings
     $category_emojis = array(
-        'fruits'     => '🍎',
-        'vegetables' => '🥬',
-        'citrus'     => '🍊',
-        'berries'    => '🍓',
-        'tropical'   => '🥭',
-        'apples'     => '🍏',
-        'bananas'    => '🍌',
-        'grapes'     => '🍇',
-        'melons'     => '🍈',
-        'stone'      => '🍑',
-        'imported'   => '✈️',
-        'local'      => '🇸🇬',
+        'apples'       => array('🍏', '🍎'),
+        'berries'      => array('🍓', '🫐'),
+        'citrus'       => array('🍊', '🍋'),
+        'grapes'       => array('🍇', '🍇'),
+        'kiwi'         => array('🥝', '🥝'),
+        'melons'       => array('🍈', '🍉'),
+        'others'       => array('🥕', '🌴'),
+        'pears'        => array('🍐', '🍐'),
+        'stone'        => array('🍑', '🍑'),
+        'tropical'     => array('🥭', '🍌'),
     );
 
     // Exclude parent categories that duplicate subcategory products
@@ -208,16 +206,18 @@ function ah_ho_generate_catalog_text() {
             continue;
         }
 
-        // Get emoji for category (check slug against mapping)
-        $emoji = '';
-        foreach ($category_emojis as $key => $icon) {
+        // Get emoji pair for category heading
+        $emoji_left = '';
+        $emoji_right = '';
+        foreach ($category_emojis as $key => $icons) {
             if (stripos($category->slug, $key) !== false || stripos($category->name, $key) !== false) {
-                $emoji = $icon . ' ';
+                $emoji_left = $icons[0] . ' ';
+                $emoji_right = ' ' . $icons[1];
                 break;
             }
         }
 
-        $output .= sprintf("*%s%s*\n", $emoji, strtoupper($category->name));
+        $output .= sprintf("*%s%s%s*\n", $emoji_left, strtoupper($category->name), $emoji_right);
         $output .= $lines;
         $output .= "\n";
     }
@@ -246,18 +246,16 @@ function ah_ho_generate_stock_catalog_text() {
     }
 
     $category_emojis = array(
-        'fruits'     => '🍎',
-        'vegetables' => '🥬',
-        'citrus'     => '🍊',
-        'berries'    => '🍓',
-        'tropical'   => '🥭',
-        'apples'     => '🍏',
-        'bananas'    => '🍌',
-        'grapes'     => '🍇',
-        'melons'     => '🍈',
-        'stone'      => '🍑',
-        'imported'   => '✈️',
-        'local'      => '🇸🇬',
+        'apples'       => array('🍏', '🍎'),
+        'berries'      => array('🍓', '🫐'),
+        'citrus'       => array('🍊', '🍋'),
+        'grapes'       => array('🍇', '🍇'),
+        'kiwi'         => array('🥝', '🥝'),
+        'melons'       => array('🍈', '🍉'),
+        'others'       => array('🥕', '🌴'),
+        'pears'        => array('🍐', '🍐'),
+        'stone'        => array('🍑', '🍑'),
+        'tropical'     => array('🥭', '🍌'),
     );
 
     // Exclude parent categories that duplicate subcategory products
@@ -295,15 +293,17 @@ function ah_ho_generate_stock_catalog_text() {
             continue;
         }
 
-        $emoji = '';
-        foreach ($category_emojis as $key => $icon) {
+        $emoji_left = '';
+        $emoji_right = '';
+        foreach ($category_emojis as $key => $icons) {
             if (stripos($category->slug, $key) !== false || stripos($category->name, $key) !== false) {
-                $emoji = $icon . ' ';
+                $emoji_left = $icons[0] . ' ';
+                $emoji_right = ' ' . $icons[1];
                 break;
             }
         }
 
-        $output .= sprintf("*%s%s*\n", $emoji, strtoupper($category->name));
+        $output .= sprintf("*%s%s%s*\n", $emoji_left, strtoupper($category->name), $emoji_right);
 
         foreach ($b2b_products as $product) {
             $wholesale_price = $product->get_meta('_wholesale_price');
