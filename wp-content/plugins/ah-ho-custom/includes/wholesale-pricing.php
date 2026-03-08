@@ -641,11 +641,11 @@ function ah_ho_show_wholesale_summary_in_order($order) {
         <?php
     }
 
-    // B2B GST toggle — styled like native WooCommerce order fields
+    // B2B GST toggle
     ?>
-    <p class="form-field form-field-wide">
-        <label for="_b2b_add_gst" style="display: inline;">
-            <input type="checkbox" id="_b2b_add_gst" name="_b2b_add_gst" value="yes" <?php checked($b2b_gst, 'yes'); ?> />
+    <p class="form-field form-field-wide" style="margin-top: 10px;">
+        <label for="_b2b_add_gst">
+            <input type="checkbox" id="_b2b_add_gst" name="_b2b_add_gst" value="yes" <?php checked($b2b_gst, 'yes'); ?> style="width: auto; min-width: 0; margin-right: 5px;" />
             <?php esc_html_e('B2B Order — Add 9% GST to invoice', 'ah-ho-custom'); ?>
         </label>
     </p>
