@@ -84,6 +84,14 @@ function ah_ho_bulk_update_stock_handler() {
 
         // Price updates (admin only)
         if (current_user_can('manage_options')) {
+            if (array_key_exists('regular_price', $update)) {
+                $regular_price = $update['regular_price'];
+                if ($regular_price === '' || $regular_price === null) {
+                    $product->set_regular_price('');
+                } else {
+                    $product->set_regular_price(wc_format_decimal($regular_price));
+                }
+            }
             if (array_key_exists('sale_price', $update)) {
                 $sale_price = $update['sale_price'];
                 if ($sale_price === '' || $sale_price === null) {
@@ -519,7 +527,9 @@ function ah_ho_render_quick_stock_page() {
                 .ah-ho-stock-table th:nth-child(6),
                 .ah-ho-stock-table td:nth-child(6),
                 .ah-ho-stock-table th:nth-child(7),
-                .ah-ho-stock-table td:nth-child(7) {
+                .ah-ho-stock-table td:nth-child(7),
+                .ah-ho-stock-table th:nth-child(8),
+                .ah-ho-stock-table td:nth-child(8) {
                     display: none;
                 }
 
@@ -651,14 +661,15 @@ function ah_ho_render_quick_stock_page() {
                         </th>
                         <th style="width: 140px; text-align: center;" class="no-sort">New Stock</th>
                         <?php if ($is_admin_user): ?>
-                        <th style="width: 90px; text-align: center;" class="no-sort">Sale Price</th>
-                        <th style="width: 90px; text-align: center;" class="no-sort">Wholesale</th>
+                        <th style="width: 90px; text-align: center;" class="no-sort">Regular $</th>
+                        <th style="width: 90px; text-align: center;" class="no-sort">Sale $</th>
+                        <th style="width: 90px; text-align: center;" class="no-sort">Wholesale $</th>
                         <?php endif; ?>
                     </tr>
                 </thead>
                 <tbody id="ah-ho-stock-tbody">
                     <?php if (empty($products_data)) : ?>
-                        <tr><td colspan="<?php echo $is_admin_user ? '7' : '5'; ?>" style="text-align: center; padding: 24px;">No products found.</td></tr>
+                        <tr><td colspan="<?php echo $is_admin_user ? '8' : '5'; ?>" style="text-align: center; padding: 24px;">No products found.</td></tr>
                     <?php else : ?>
                         <?php $tab_index = 1; foreach ($products_data as $p) : ?>
                             <tr data-product-id="<?php echo esc_attr($p['id']); ?>"
@@ -707,6 +718,17 @@ function ah_ho_render_quick_stock_page() {
                                     </div>
                                 </td>
                                 <?php if ($is_admin_user): ?>
+                                <td style="text-align: center;">
+                                    <input type="number"
+                                           class="price-input ah-ho-price-input"
+                                           name="regular_price_<?php echo esc_attr($p['id']); ?>"
+                                           data-field="regular_price"
+                                           value="<?php echo esc_attr($p['regular_price']); ?>"
+                                           data-original="<?php echo esc_attr($p['regular_price']); ?>"
+                                           min="0"
+                                           step="0.01"
+                                           placeholder="—">
+                                </td>
                                 <td style="text-align: center;">
                                     <input type="number"
                                            class="price-input ah-ho-price-input"
