@@ -45,7 +45,8 @@ function ah_ho_bulk_update_stock_handler() {
     }
 
     // Capability check - must be admin or storeman (not salesperson)
-    if (!current_user_can('edit_products') || (!current_user_can('manage_options') && !ah_ho_is_current_user_storeman())) {
+    $ajax_user_roles = (array) wp_get_current_user()->roles;
+    if (!current_user_can('edit_products') || (!current_user_can('manage_options') && !in_array('administrator', $ajax_user_roles) && !ah_ho_is_current_user_storeman())) {
         wp_send_json_error(array('message' => 'You do not have permission to update stock.'));
     }
 
@@ -83,7 +84,7 @@ function ah_ho_bulk_update_stock_handler() {
         }
 
         // Price updates (admin only)
-        if (current_user_can('manage_options')) {
+        if (current_user_can('manage_options') || in_array('administrator', (array) wp_get_current_user()->roles)) {
             if (array_key_exists('regular_price', $update)) {
                 $regular_price = $update['regular_price'];
                 if ($regular_price === '' || $regular_price === null) {
@@ -126,7 +127,8 @@ function ah_ho_bulk_update_stock_handler() {
  */
 function ah_ho_render_quick_stock_page() {
     // Block salesperson direct URL access - only admin and storeman allowed
-    if (!current_user_can('manage_options') && !ah_ho_is_current_user_storeman()) {
+    $user_roles = (array) wp_get_current_user()->roles;
+    if (!current_user_can('manage_options') && !in_array('administrator', $user_roles) && !ah_ho_is_current_user_storeman()) {
         wp_die(__('You do not have permission to access this page.', 'ah-ho-custom'), 403);
     }
 
@@ -200,7 +202,7 @@ function ah_ho_render_quick_stock_page() {
     ));
 
     $nonce = wp_create_nonce('ah_ho_stock_update_nonce');
-    $is_admin_user = current_user_can('manage_options');
+    $is_admin_user = current_user_can('manage_options') || in_array('administrator', (array) wp_get_current_user()->roles);
     ?>
     <div class="wrap" id="ah-ho-stock-wrap">
         <h1 style="margin-bottom: 4px;">Quick Stock Update</h1>
