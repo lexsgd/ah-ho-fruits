@@ -699,6 +699,66 @@ function ah_ho_auto_enable_gst_for_wholesale($item_id, $item, $order_id) {
 }
 add_action('woocommerce_new_order_item', 'ah_ho_auto_enable_gst_for_wholesale', 20, 3);
 
+/**
+ * Show GST (9%) row in order totals on admin order page
+ */
+function ah_ho_show_gst_in_order_totals($order_id) {
+    $order = wc_get_order($order_id);
+    if (!$order) return;
+
+    $b2b_gst = $order->get_meta('_b2b_add_gst', true);
+    $order_total = (float) $order->get_total();
+    $gst_amount = round($order_total * 0.09, 2);
+    $total_with_gst = $order_total + $gst_amount;
+    $is_active = ($b2b_gst === 'yes');
+    ?>
+    <tr class="ah-ho-gst-row" style="<?php echo $is_active ? '' : 'display:none;'; ?>">
+        <td class="label"><?php esc_html_e('GST (9%):', 'ah-ho-custom'); ?></td>
+        <td width="1%"></td>
+        <td class="total">
+            <span class="woocommerce-Price-amount amount" id="ah-ho-gst-amount">
+                <bdi><span class="woocommerce-Price-currencySymbol">$</span><?php echo esc_html(number_format($gst_amount, 2)); ?></bdi>
+            </span>
+        </td>
+    </tr>
+    <tr class="ah-ho-gst-total-row" style="<?php echo $is_active ? '' : 'display:none;'; ?>">
+        <td class="label"><?php esc_html_e('Total + GST:', 'ah-ho-custom'); ?></td>
+        <td width="1%"></td>
+        <td class="total">
+            <span class="woocommerce-Price-amount amount" id="ah-ho-total-with-gst" style="font-weight: bold;">
+                <bdi><span class="woocommerce-Price-currencySymbol">$</span><?php echo esc_html(number_format($total_with_gst, 2)); ?></bdi>
+            </span>
+        </td>
+    </tr>
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            function updateGstDisplay() {
+                var isChecked = $('#_b2b_add_gst').is(':checked');
+                if (isChecked) {
+                    // Recalculate from current order total
+                    var totalText = $('.order_total .woocommerce-Price-amount').first().text().replace(/[^0-9.]/g, '');
+                    var orderTotal = parseFloat(totalText) || 0;
+                    var gst = Math.round(orderTotal * 9) / 100;
+                    var totalWithGst = orderTotal + gst;
+
+                    $('#ah-ho-gst-amount bdi').html('<span class="woocommerce-Price-currencySymbol">$</span>' + gst.toFixed(2));
+                    $('#ah-ho-total-with-gst bdi').html('<span class="woocommerce-Price-currencySymbol">$</span>' + totalWithGst.toFixed(2));
+                    $('.ah-ho-gst-row, .ah-ho-gst-total-row').show();
+                } else {
+                    $('.ah-ho-gst-row, .ah-ho-gst-total-row').hide();
+                }
+            }
+
+            $('#_b2b_add_gst').on('change', updateGstDisplay);
+
+            // Also update when WooCommerce recalculates totals
+            $(document.body).on('order-totals-recalculate-complete', updateGstDisplay);
+        });
+    </script>
+    <?php
+}
+add_action('woocommerce_admin_order_totals_after_total', 'ah_ho_show_gst_in_order_totals');
+
 
 /**
  * ============================================================================
