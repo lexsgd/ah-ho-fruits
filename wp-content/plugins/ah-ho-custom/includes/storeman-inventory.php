@@ -62,11 +62,6 @@ function ah_ho_bulk_update_stock_handler() {
 
     foreach ($updates as $update) {
         $product_id = isset($update['product_id']) ? absint($update['product_id']) : 0;
-        $new_qty = isset($update['new_qty']) ? intval($update['new_qty']) : 0;
-
-        if ($new_qty < 0) {
-            $new_qty = 0;
-        }
 
         if (!$product_id) {
             $errors[] = 'Invalid product ID.';
@@ -79,9 +74,34 @@ function ah_ho_bulk_update_stock_handler() {
             continue;
         }
 
-        $product->set_stock_quantity($new_qty);
-        $product->set_manage_stock(true);
-        $product->set_stock_status($new_qty > 0 ? 'instock' : 'outofstock');
+        // Stock update
+        if (isset($update['new_qty'])) {
+            $new_qty = max(0, intval($update['new_qty']));
+            $product->set_stock_quantity($new_qty);
+            $product->set_manage_stock(true);
+            $product->set_stock_status($new_qty > 0 ? 'instock' : 'outofstock');
+        }
+
+        // Price updates (admin only)
+        if (current_user_can('manage_options')) {
+            if (array_key_exists('sale_price', $update)) {
+                $sale_price = $update['sale_price'];
+                if ($sale_price === '' || $sale_price === null) {
+                    $product->set_sale_price('');
+                } else {
+                    $product->set_sale_price(wc_format_decimal($sale_price));
+                }
+            }
+            if (array_key_exists('wholesale_price', $update)) {
+                $wholesale = $update['wholesale_price'];
+                if ($wholesale === '' || $wholesale === null) {
+                    update_post_meta($product_id, '_wholesale_price', '');
+                } else {
+                    update_post_meta($product_id, '_wholesale_price', wc_format_decimal($wholesale));
+                }
+            }
+        }
+
         $product->save();
         $success_count++;
     }
@@ -150,12 +170,15 @@ function ah_ho_render_quick_stock_page() {
             $thumb_url = $thumb_id ? wp_get_attachment_image_url($thumb_id, 'thumbnail') : '';
 
             $products_data[] = array(
-                'id'         => get_the_ID(),
-                'name'       => $product->get_name(),
-                'sku'        => $product->get_sku(),
-                'stock'      => $stock_qty,
-                'categories' => $cat_names,
-                'thumb'      => $thumb_url,
+                'id'              => get_the_ID(),
+                'name'            => $product->get_name(),
+                'sku'             => $product->get_sku(),
+                'stock'           => $stock_qty,
+                'categories'      => $cat_names,
+                'thumb'           => $thumb_url,
+                'regular_price'   => $product->get_regular_price(),
+                'sale_price'      => $product->get_sale_price(),
+                'wholesale_price' => get_post_meta(get_the_ID(), '_wholesale_price', true),
             );
         }
     }
@@ -169,6 +192,7 @@ function ah_ho_render_quick_stock_page() {
     ));
 
     $nonce = wp_create_nonce('ah_ho_stock_update_nonce');
+    $is_admin_user = current_user_can('manage_options');
     ?>
     <div class="wrap" id="ah-ho-stock-wrap">
         <h1 style="margin-bottom: 4px;">Quick Stock Update</h1>
@@ -363,6 +387,28 @@ function ah_ho_render_quick_stock_page() {
                 margin: 0;
             }
 
+            /* ===== Price Input (admin only) ===== */
+            .price-input {
+                width: 80px;
+                height: 28px;
+                padding: 2px 6px;
+                text-align: right;
+                font-size: 13px;
+                border: 1px solid #8c8f94;
+                border-radius: 3px;
+                -moz-appearance: textfield;
+            }
+            .price-input::-webkit-outer-spin-button,
+            .price-input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            .price-input:focus {
+                border-color: #2271b1;
+                box-shadow: 0 0 0 1px #2271b1;
+                outline: none;
+            }
+
             /* ===== Thumbnail ===== */
             .product-thumb {
                 width: 32px;
@@ -465,11 +511,15 @@ function ah_ho_render_quick_stock_page() {
                     font-size: 12px;
                 }
 
-                /* Table: hide thumbnail and category columns */
+                /* Table: hide thumbnail, category, and price columns on mobile */
                 .ah-ho-stock-table th:nth-child(1),
                 .ah-ho-stock-table td:nth-child(1),
                 .ah-ho-stock-table th:nth-child(3),
-                .ah-ho-stock-table td:nth-child(3) {
+                .ah-ho-stock-table td:nth-child(3),
+                .ah-ho-stock-table th:nth-child(6),
+                .ah-ho-stock-table td:nth-child(6),
+                .ah-ho-stock-table th:nth-child(7),
+                .ah-ho-stock-table td:nth-child(7) {
                     display: none;
                 }
 
@@ -600,11 +650,15 @@ function ah_ho_render_quick_stock_page() {
                             Stock <span class="sort-arrow">&#9650;</span>
                         </th>
                         <th style="width: 140px; text-align: center;" class="no-sort">New Stock</th>
+                        <?php if ($is_admin_user): ?>
+                        <th style="width: 90px; text-align: center;" class="no-sort">Sale Price</th>
+                        <th style="width: 90px; text-align: center;" class="no-sort">Wholesale</th>
+                        <?php endif; ?>
                     </tr>
                 </thead>
                 <tbody id="ah-ho-stock-tbody">
                     <?php if (empty($products_data)) : ?>
-                        <tr><td colspan="5" style="text-align: center; padding: 24px;">No products found.</td></tr>
+                        <tr><td colspan="<?php echo $is_admin_user ? '7' : '5'; ?>" style="text-align: center; padding: 24px;">No products found.</td></tr>
                     <?php else : ?>
                         <?php $tab_index = 1; foreach ($products_data as $p) : ?>
                             <tr data-product-id="<?php echo esc_attr($p['id']); ?>"
@@ -652,6 +706,30 @@ function ah_ho_render_quick_stock_page() {
                                         <button type="button" class="btn-plus" onclick="ahHoAdjustStock(this, 1)" tabindex="-1">&plus;</button>
                                     </div>
                                 </td>
+                                <?php if ($is_admin_user): ?>
+                                <td style="text-align: center;">
+                                    <input type="number"
+                                           class="price-input ah-ho-price-input"
+                                           name="sale_price_<?php echo esc_attr($p['id']); ?>"
+                                           data-field="sale_price"
+                                           value="<?php echo esc_attr($p['sale_price']); ?>"
+                                           data-original="<?php echo esc_attr($p['sale_price']); ?>"
+                                           min="0"
+                                           step="0.01"
+                                           placeholder="—">
+                                </td>
+                                <td style="text-align: center;">
+                                    <input type="number"
+                                           class="price-input ah-ho-price-input"
+                                           name="wholesale_<?php echo esc_attr($p['id']); ?>"
+                                           data-field="wholesale_price"
+                                           value="<?php echo esc_attr($p['wholesale_price']); ?>"
+                                           data-original="<?php echo esc_attr($p['wholesale_price']); ?>"
+                                           min="0"
+                                           step="0.01"
+                                           placeholder="—">
+                                </td>
+                                <?php endif; ?>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -663,7 +741,7 @@ function ah_ho_render_quick_stock_page() {
             <!-- Sticky Footer Action Bar -->
             <div class="ah-ho-sticky-footer">
                 <button type="button" id="ah-ho-update-btn" class="button button-primary" onclick="ahHoUpdateAllStock()">
-                    Update All Stock
+                    Update All
                 </button>
                 <span id="ah-ho-changed-count"></span>
                 <button type="button" class="ah-ho-reset-btn" id="ah-ho-reset-btn" onclick="ahHoResetAll()" style="display:none;">
@@ -695,7 +773,13 @@ function ah_ho_render_quick_stock_page() {
             inputs.forEach(function(input) {
                 input.addEventListener('input', function() {
                     var row = this.closest('tr');
-                    if (this.value !== this.getAttribute('data-original')) {
+                    // Check if any input in this row has changed
+                    var rowInputs = row.querySelectorAll('input[type="number"]');
+                    var rowChanged = false;
+                    rowInputs.forEach(function(ri) {
+                        if (ri.value !== ri.getAttribute('data-original')) rowChanged = true;
+                    });
+                    if (rowChanged) {
                         row.classList.add('ah-ho-changed');
                         row.classList.remove('ah-ho-saved');
                     } else {
@@ -712,7 +796,7 @@ function ah_ho_render_quick_stock_page() {
                 var countEl = document.getElementById('ah-ho-changed-count');
                 var resetBtn = document.getElementById('ah-ho-reset-btn');
                 if (btn) {
-                    btn.textContent = changed > 0 ? 'Update All Stock (' + changed + ')' : 'Update All Stock';
+                    btn.textContent = changed > 0 ? 'Update All (' + changed + ')' : 'Update All';
                 }
                 if (countEl) {
                     countEl.textContent = changed > 0 ? changed + ' unsaved change' + (changed > 1 ? 's' : '') : '';
@@ -888,18 +972,31 @@ function ah_ho_render_quick_stock_page() {
 
             // ===== BULK UPDATE VIA AJAX =====
             window.ahHoUpdateAllStock = function() {
-                var inputs = document.querySelectorAll('#ah-ho-stock-tbody input[type="number"]');
+                var rows = document.querySelectorAll('#ah-ho-stock-tbody tr.ah-ho-changed');
                 var updates = [];
 
-                inputs.forEach(function(input) {
-                    var original = input.getAttribute('data-original');
-                    if (input.value !== original) {
-                        var row = input.closest('tr');
-                        updates.push({
-                            product_id: parseInt(row.getAttribute('data-product-id')),
-                            new_qty: parseInt(input.value) || 0
-                        });
+                rows.forEach(function(row) {
+                    var productId = parseInt(row.getAttribute('data-product-id'));
+                    var update = { product_id: productId };
+                    var hasChange = false;
+
+                    // Stock
+                    var stockInput = row.querySelector('input[name^="stock_"]');
+                    if (stockInput && stockInput.value !== stockInput.getAttribute('data-original')) {
+                        update.new_qty = parseInt(stockInput.value) || 0;
+                        hasChange = true;
                     }
+
+                    // Price fields
+                    var priceInputs = row.querySelectorAll('.ah-ho-price-input');
+                    priceInputs.forEach(function(pi) {
+                        if (pi.value !== pi.getAttribute('data-original')) {
+                            update[pi.getAttribute('data-field')] = pi.value === '' ? '' : pi.value;
+                            hasChange = true;
+                        }
+                    });
+
+                    if (hasChange) updates.push(update);
                 });
 
                 if (updates.length === 0) {
@@ -942,24 +1039,29 @@ function ah_ho_render_quick_stock_page() {
                         statusEl.className = 'success';
 
                         // Update original values, current stock display, and flash green
-                        inputs.forEach(function(input) {
-                            var row = input.closest('tr');
-                            if (row.classList.contains('ah-ho-changed')) {
-                                var val = parseInt(input.value) || 0;
-                                input.setAttribute('data-original', val);
+                        var changedRows = document.querySelectorAll('#ah-ho-stock-tbody tr.ah-ho-changed');
+                        changedRows.forEach(function(row) {
+                            // Update stock
+                            var stockInput = row.querySelector('input[name^="stock_"]');
+                            if (stockInput) {
+                                var val = parseInt(stockInput.value) || 0;
+                                stockInput.setAttribute('data-original', val);
                                 row.setAttribute('data-stock', val);
-
-                                // Update current stock column
                                 var stockCell = row.querySelector('td:nth-child(4) span');
                                 if (stockCell) {
                                     stockCell.textContent = val;
                                     stockCell.className = val <= 0 ? 'stock-zero' : (val <= LOW_THRESHOLD ? 'stock-low' : 'stock-ok');
                                 }
-
-                                row.classList.remove('ah-ho-changed');
-                                row.classList.add('ah-ho-saved');
-                                setTimeout(function() { row.classList.remove('ah-ho-saved'); }, 2000);
                             }
+
+                            // Update price originals
+                            row.querySelectorAll('.ah-ho-price-input').forEach(function(pi) {
+                                pi.setAttribute('data-original', pi.value);
+                            });
+
+                            row.classList.remove('ah-ho-changed');
+                            row.classList.add('ah-ho-saved');
+                            setTimeout(function() { row.classList.remove('ah-ho-saved'); }, 2000);
                         });
 
                         updateChangedCount();
@@ -975,7 +1077,7 @@ function ah_ho_render_quick_stock_page() {
                     statusEl.className = 'error';
                 });
 
-                btn.textContent = 'Update All Stock';
+                btn.textContent = 'Update All';
             };
 
             // ===== UPDATE SUMMARY CARDS AFTER SAVE =====
