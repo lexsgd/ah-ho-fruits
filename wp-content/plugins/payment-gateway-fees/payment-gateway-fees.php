@@ -28,6 +28,9 @@ class Payment_Gateway_Fees {
         // so customers must go through checkout where the fee is visible
         add_action('wp', [$this, 'disable_express_checkout_on_cart']);
 
+        // Disable express checkout on product pages (PayNow is fee-free)
+        add_action('wp', [$this, 'disable_express_checkout_on_product']);
+
         // Safety net: ensure fee is applied on ALL Stripe orders (including express checkout)
         add_action('woocommerce_checkout_order_created', [$this, 'ensure_fee_on_any_stripe_order'], 10, 1);
 
@@ -203,6 +206,35 @@ class Payment_Gateway_Fees {
                 .woocommerce-cart #wc-stripe-payment-request-wrapper,
                 .woocommerce-cart .wcpay-payment-request-wrapper,
                 .wc-block-cart .wc-block-components-express-payment--cart {
+                    display: none !important;
+                }
+            </style>';
+        });
+    }
+
+    /**
+     * Disable express checkout buttons (Google Pay, Apple Pay, Link) on product pages.
+     * Customers should use the standard Add to Cart flow.
+     */
+    public function disable_express_checkout_on_product() {
+        if (!function_exists('is_product') || !is_product()) {
+            return;
+        }
+
+        // WooCommerce Stripe Gateway filters
+        add_filter('wc_stripe_show_payment_request_on_product', '__return_false');
+        add_filter('wc_stripe_show_express_checkout_on_product', '__return_false');
+
+        // Hide via CSS as a belt-and-suspenders approach
+        add_action('wp_head', function() {
+            echo '<style>
+                .woocommerce-product .wc-stripe-payment-request-wrapper,
+                .woocommerce-product .wc-stripe-express-checkout-element,
+                .single-product .wc-stripe-payment-request-wrapper,
+                .single-product .wc-stripe-express-checkout-element,
+                .single-product #wc-stripe-payment-request-wrapper,
+                .single-product .wcpay-payment-request-wrapper,
+                .single-product .wc-block-components-express-payment {
                     display: none !important;
                 }
             </style>';

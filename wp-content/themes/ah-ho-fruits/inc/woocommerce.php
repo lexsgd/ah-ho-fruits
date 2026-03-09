@@ -99,6 +99,20 @@ add_filter('woocommerce_sale_flash', function($html, $post, $product) {
 }, 10, 3);
 
 /**
+ * PayNow payment tip banner on cart and checkout pages
+ */
+function ah_ho_paynow_tip_banner() {
+    ?>
+    <div class="paynow-tip-banner">
+        <span class="paynow-tip-icon">&#10024;</span>
+        <span>Friendly tip! Credit card payments come with a 3.5% fee, so <strong>PayNow</strong> is the happiest (and fee-free) way to pay. Thank you!</span>
+    </div>
+    <?php
+}
+add_action('woocommerce_before_cart', 'ah_ho_paynow_tip_banner');
+add_action('woocommerce_before_checkout_form', 'ah_ho_paynow_tip_banner', 5);
+
+/**
  * Add Singapore-specific shipping notice
  */
 function ah_ho_shipping_notice() {
