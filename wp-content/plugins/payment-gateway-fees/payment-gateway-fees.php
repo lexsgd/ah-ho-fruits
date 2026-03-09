@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Payment Gateway Fees
  * Description: Add fees based on selected payment method at checkout
- * Version: 1.2.0
+ * Version: 1.3.0
  * Author: Ah Ho Fruit
  * Requires Plugins: woocommerce
  */
@@ -23,6 +23,13 @@ class Payment_Gateway_Fees {
 
         // Safety net: apply fee during Blocks checkout order creation if missed
         add_action('woocommerce_store_api_checkout_update_order_from_request', [$this, 'ensure_fee_on_blocks_order'], 10, 2);
+
+        // Disable express checkout (Apple Pay, Google Pay, Link) on the cart page
+        // so customers must go through checkout where the fee is visible
+        add_action('wp', [$this, 'disable_express_checkout_on_cart']);
+
+        // Safety net: ensure fee is applied on ALL Stripe orders (including express checkout)
+        add_action('woocommerce_checkout_order_created', [$this, 'ensure_fee_on_any_stripe_order'], 10, 1);
 
         // Admin hooks
         add_action('admin_menu', [$this, 'add_admin_menu']);
@@ -160,6 +167,95 @@ class Payment_Gateway_Fees {
             $fee->set_amount($fee_amount);
             $fee->set_total($fee_amount);
             $fee->set_tax_status(!empty($config['taxable']) ? 'taxable' : 'none');
+            $order->add_item($fee);
+            $order->calculate_totals();
+            $order->save();
+        }
+    }
+
+    /**
+     * Disable express checkout buttons (Apple Pay, Google Pay, Link) on the cart page.
+     * Customers must proceed to checkout where the processing fee is displayed.
+     */
+    public function disable_express_checkout_on_cart() {
+        if (!function_exists('is_cart') || !is_cart()) {
+            return;
+        }
+
+        // WooCommerce Stripe Gateway (newer versions) - express checkout element
+        add_filter('wc_stripe_show_payment_request_on_cart', '__return_false');
+        // Stripe express checkout element on cart
+        add_filter('wc_stripe_show_express_checkout_on_cart', '__return_false');
+
+        // Hide via CSS as a belt-and-suspenders approach
+        // Targets Stripe express checkout buttons rendered on cart page
+        add_action('wp_head', function() {
+            echo '<style>
+                .wc-block-cart .wc-block-components-express-payment,
+                .woocommerce-cart .wc-stripe-payment-request-wrapper,
+                .woocommerce-cart .wc-stripe-express-checkout-element,
+                .woocommerce-cart #wc-stripe-payment-request-wrapper,
+                .woocommerce-cart .wcpay-payment-request-wrapper,
+                .wc-block-cart .wc-block-components-express-payment--cart {
+                    display: none !important;
+                }
+            </style>';
+        });
+    }
+
+    /**
+     * Ensure fee is applied on ANY Stripe order, including express checkout
+     * (Apple Pay, Google Pay, Link) that bypasses normal cart fee calculation.
+     */
+    public function ensure_fee_on_any_stripe_order($order) {
+        $payment_method = $order->get_payment_method();
+        $fees = $this->get_fees();
+
+        // Check if this payment method has a configured fee
+        // Also check parent 'stripe' if using sub-methods like stripe_applepay
+        $fee_config = null;
+        if (isset($fees[$payment_method]) && !empty($fees[$payment_method]['enabled'])) {
+            $fee_config = $fees[$payment_method];
+        } elseif (strpos($payment_method, 'stripe') !== false && isset($fees['stripe']) && !empty($fees['stripe']['enabled'])) {
+            // Express checkout methods (Apple Pay, Google Pay) often use the base 'stripe' gateway
+            $fee_config = $fees['stripe'];
+        }
+
+        if (!$fee_config) {
+            return;
+        }
+
+        $expected_label = $fee_config['label'] ?? 'Processing Fee';
+
+        // Check if fee was already applied
+        foreach ($order->get_fees() as $fee_item) {
+            if ($fee_item->get_name() === $expected_label) {
+                return;
+            }
+        }
+
+        // Calculate and add the fee
+        $subtotal = (float) $order->get_subtotal();
+        $shipping = (float) $order->get_shipping_total();
+        $base_total = $subtotal + $shipping;
+
+        $fee_amount = 0;
+        $fee_type = $fee_config['type'] ?? 'percent';
+
+        if ($fee_type === 'fixed') {
+            $fee_amount = floatval($fee_config['fixed'] ?? 0);
+        } elseif ($fee_type === 'percent') {
+            $fee_amount = ($base_total * floatval($fee_config['percent'] ?? 0)) / 100;
+        } elseif ($fee_type === 'both') {
+            $fee_amount = ($base_total * floatval($fee_config['percent'] ?? 0)) / 100 + floatval($fee_config['fixed'] ?? 0);
+        }
+
+        if ($fee_amount > 0) {
+            $fee = new \WC_Order_Item_Fee();
+            $fee->set_name($expected_label);
+            $fee->set_amount($fee_amount);
+            $fee->set_total($fee_amount);
+            $fee->set_tax_status(!empty($fee_config['taxable']) ? 'taxable' : 'none');
             $order->add_item($fee);
             $order->calculate_totals();
             $order->save();
