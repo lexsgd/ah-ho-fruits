@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Payment Gateway Fees
  * Description: Add fees based on selected payment method at checkout
- * Version: 1.3.0
+ * Version: 1.4.0
  * Author: Ah Ho Fruit
  * Requires Plugins: woocommerce
  */
@@ -93,9 +93,15 @@ class Payment_Gateway_Fees {
     }
 
     /**
-     * Check if we're in a checkout context (works with blocks and classic)
+     * Check if we're in a cart or checkout context
+     * Now includes cart page so the fee is visible from the start
      */
     private function is_checkout_context() {
+        // Cart page — show fee here too so customers see it before paying
+        if (function_exists('is_cart') && is_cart()) {
+            return true;
+        }
+
         // Classic checkout
         if (function_exists('is_checkout') && is_checkout()) {
             return true;
@@ -111,10 +117,10 @@ class Payment_Gateway_Fees {
             return true;
         }
 
-        // Check if we're on a page with checkout block
+        // Check if we're on a page with checkout or cart block
         if (function_exists('has_block') && is_singular()) {
             global $post;
-            if ($post && has_block('woocommerce/checkout', $post)) {
+            if ($post && (has_block('woocommerce/checkout', $post) || has_block('woocommerce/cart', $post))) {
                 return true;
             }
         }

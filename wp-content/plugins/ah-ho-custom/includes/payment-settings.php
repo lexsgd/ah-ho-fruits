@@ -2,10 +2,12 @@
 /**
  * Payment Gateway Settings
  *
- * Custom payment gateway configurations for Ah Ho Fruit
- * Sets PayNow as the default payment method
+ * Custom payment gateway configurations for Ah Ho Fruit.
+ * Sets Stripe (Credit Card) as default so the 3.5% processing fee
+ * is visible from the start. Customers who select PayNow pay $0 fees.
  *
  * @since 1.5.0
+ * @modified 2026-03-10 - switch default from PayNow to Stripe credit card
  */
 
 if (!defined('ABSPATH')) {
@@ -13,63 +15,77 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Set PayNow as the default payment method (classic checkout)
+ * Set Stripe (Credit Card) as the default payment method
  */
 add_filter('woocommerce_default_gateway', 'ah_ho_set_default_payment_gateway');
 
 function ah_ho_set_default_payment_gateway($default_gateway) {
-    return 'stripe_paynow';
+    return 'stripe';
 }
 
 /**
- * Reorder available payment gateways - PayNow first
- * Works for both classic checkout and affects Store API
+ * Reorder available payment gateways - Stripe first, PayNow second
  */
 add_filter('woocommerce_available_payment_gateways', 'ah_ho_reorder_available_gateways', 9999);
 
 function ah_ho_reorder_available_gateways($gateways) {
-    if (empty($gateways) || !isset($gateways['stripe_paynow'])) {
+    if (empty($gateways)) {
         return $gateways;
     }
 
-    // Move PayNow to the beginning
-    $paynow = $gateways['stripe_paynow'];
-    unset($gateways['stripe_paynow']);
+    $ordered = [];
 
-    return array_merge(['stripe_paynow' => $paynow], $gateways);
+    // Stripe (credit card) first
+    if (isset($gateways['stripe'])) {
+        $ordered['stripe'] = $gateways['stripe'];
+        unset($gateways['stripe']);
+    }
+
+    // PayNow second
+    if (isset($gateways['stripe_paynow'])) {
+        $ordered['stripe_paynow'] = $gateways['stripe_paynow'];
+        unset($gateways['stripe_paynow']);
+    }
+
+    // Remaining gateways
+    return array_merge($ordered, $gateways);
 }
 
 /**
- * Force session payment method to PayNow
+ * Set Stripe as session default so the fee calculates immediately
+ * on both cart and checkout pages.
  */
 add_action('woocommerce_before_checkout_form', 'ah_ho_set_session_default_payment', 1);
 add_action('wp', 'ah_ho_set_session_default_payment_early', 1);
 
 function ah_ho_set_session_default_payment() {
-    ah_ho_force_paynow_session();
+    ah_ho_force_stripe_session();
 }
 
 function ah_ho_set_session_default_payment_early() {
     if (function_exists('is_checkout') && is_checkout()) {
-        ah_ho_force_paynow_session();
+        ah_ho_force_stripe_session();
+    }
+    // Also set on cart page so the fee shows in cart totals
+    if (function_exists('is_cart') && is_cart()) {
+        ah_ho_force_stripe_session();
     }
 }
 
-function ah_ho_force_paynow_session() {
+function ah_ho_force_stripe_session() {
     if (!function_exists('WC') || !WC()->session) {
         return;
     }
 
     $chosen = WC()->session->get('chosen_payment_method');
-    // Force PayNow unless user explicitly chose something else
-    if (empty($chosen) || $chosen === 'stripe') {
-        WC()->session->set('chosen_payment_method', 'stripe_paynow');
+    // Set Stripe as default if no method chosen yet
+    if (empty($chosen)) {
+        WC()->session->set('chosen_payment_method', 'stripe');
     }
 }
 
 /**
- * WooCommerce Blocks: Add inline JS to set PayNow as default
- * Uses polling to wait for payment methods to load
+ * WooCommerce Blocks: Add inline JS to set Stripe as default
  */
 add_action('wp_footer', 'ah_ho_blocks_default_payment_footer_js', 100);
 
@@ -81,14 +97,14 @@ function ah_ho_blocks_default_payment_footer_js() {
     <script type="text/javascript">
     (function() {
         var attempts = 0;
-        var maxAttempts = 60; // Try for 30 seconds (500ms intervals)
+        var maxAttempts = 60;
 
-        function setPayNowDefault() {
+        function setStripeDefault() {
             attempts++;
 
             if (typeof wp === 'undefined' || !wp.data) {
                 if (attempts < maxAttempts) {
-                    setTimeout(setPayNowDefault, 500);
+                    setTimeout(setStripeDefault, 500);
                 }
                 return;
             }
@@ -96,49 +112,45 @@ function ah_ho_blocks_default_payment_footer_js() {
             var paymentStore = wp.data.select('wc/store/payment');
             if (!paymentStore) {
                 if (attempts < maxAttempts) {
-                    setTimeout(setPayNowDefault, 500);
+                    setTimeout(setStripeDefault, 500);
                 }
                 return;
             }
 
-            // Check if payment methods are available
             var methods = paymentStore.getAvailablePaymentMethods ?
                           paymentStore.getAvailablePaymentMethods() : null;
 
             if (!methods || Object.keys(methods).length === 0) {
                 if (attempts < maxAttempts) {
-                    setTimeout(setPayNowDefault, 500);
+                    setTimeout(setStripeDefault, 500);
                 }
                 return;
             }
 
-            // Check if stripe_paynow exists
-            if (!methods['stripe_paynow']) {
+            if (!methods['stripe']) {
                 if (attempts < maxAttempts) {
-                    setTimeout(setPayNowDefault, 500);
+                    setTimeout(setStripeDefault, 500);
                 }
                 return;
             }
 
             var currentMethod = paymentStore.getActivePaymentMethod();
 
-            // Only change if current is stripe (credit card) or empty
-            if (!currentMethod || currentMethod === 'stripe') {
+            // Only set Stripe if nothing is selected yet
+            if (!currentMethod || currentMethod === 'stripe_paynow') {
                 var dispatch = wp.data.dispatch('wc/store/payment');
                 if (dispatch && dispatch.setActivePaymentMethod) {
-                    dispatch.setActivePaymentMethod('stripe_paynow');
-                    console.log('PayNow set as default payment method');
+                    dispatch.setActivePaymentMethod('stripe');
                 }
             }
         }
 
-        // Start checking after DOM is ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(setPayNowDefault, 1000);
+                setTimeout(setStripeDefault, 1000);
             });
         } else {
-            setTimeout(setPayNowDefault, 1000);
+            setTimeout(setStripeDefault, 1000);
         }
     })();
     </script>
