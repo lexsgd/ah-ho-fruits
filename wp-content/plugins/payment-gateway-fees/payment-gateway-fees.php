@@ -90,6 +90,16 @@ class Payment_Gateway_Fees {
 
         if ($fee_amount > 0) {
             $label = $fee_config['label'] ?? __('Processing Fee', 'pgf');
+
+            // Prevent duplicate fees (e.g., if Stripe plugin also adds a surcharge)
+            $existing_fees = $cart->get_fees();
+            foreach ($existing_fees as $existing_fee) {
+                // Skip if a fee with the same name OR same amount already exists
+                if ($existing_fee->name === $label || abs($existing_fee->amount - $fee_amount) < 0.01) {
+                    return;
+                }
+            }
+
             $taxable = !empty($fee_config['taxable']);
             $cart->add_fee($label, $fee_amount, $taxable);
         }
