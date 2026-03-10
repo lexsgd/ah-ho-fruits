@@ -155,13 +155,11 @@ class Payment_Gateway_Fees {
         }
 
         $config = $fees[$payment_method];
-        $expected_label = $config['label'] ?? 'Processing Fee';
 
-        // Check if the fee was already applied during cart calculation
-        foreach ($order->get_fees() as $fee_item) {
-            if ($fee_item->get_name() === $expected_label) {
-                return; // Fee already exists, skip
-            }
+        // Check if ANY processing fee already exists (by name OR amount)
+        // This prevents duplicates when session gateway ID differs from order gateway ID
+        if ($this->order_has_gateway_fee($order, $config)) {
+            return;
         }
 
         // Fee is missing — calculate and add it
@@ -169,20 +167,12 @@ class Payment_Gateway_Fees {
         $shipping = (float) $order->get_shipping_total();
         $base_total = $subtotal + $shipping;
 
-        $fee_amount = 0;
-        $fee_type = $config['type'] ?? 'percent';
-
-        if ($fee_type === 'fixed') {
-            $fee_amount = floatval($config['fixed'] ?? 0);
-        } elseif ($fee_type === 'percent') {
-            $fee_amount = ($base_total * floatval($config['percent'] ?? 0)) / 100;
-        } elseif ($fee_type === 'both') {
-            $fee_amount = ($base_total * floatval($config['percent'] ?? 0)) / 100 + floatval($config['fixed'] ?? 0);
-        }
+        $fee_amount = $this->calculate_fee_amount($base_total, $config);
 
         if ($fee_amount > 0) {
+            $label = $config['label'] ?? 'Processing Fee';
             $fee = new \WC_Order_Item_Fee();
-            $fee->set_name($expected_label);
+            $fee->set_name($label);
             $fee->set_amount($fee_amount);
             $fee->set_total($fee_amount);
             $fee->set_tax_status(!empty($config['taxable']) ? 'taxable' : 'none');
@@ -273,13 +263,9 @@ class Payment_Gateway_Fees {
             return;
         }
 
-        $expected_label = $fee_config['label'] ?? 'Processing Fee';
-
-        // Check if fee was already applied
-        foreach ($order->get_fees() as $fee_item) {
-            if ($fee_item->get_name() === $expected_label) {
-                return;
-            }
+        // Check if ANY processing fee already exists
+        if ($this->order_has_gateway_fee($order, $fee_config)) {
+            return;
         }
 
         // Calculate and add the fee
@@ -287,20 +273,12 @@ class Payment_Gateway_Fees {
         $shipping = (float) $order->get_shipping_total();
         $base_total = $subtotal + $shipping;
 
-        $fee_amount = 0;
-        $fee_type = $fee_config['type'] ?? 'percent';
-
-        if ($fee_type === 'fixed') {
-            $fee_amount = floatval($fee_config['fixed'] ?? 0);
-        } elseif ($fee_type === 'percent') {
-            $fee_amount = ($base_total * floatval($fee_config['percent'] ?? 0)) / 100;
-        } elseif ($fee_type === 'both') {
-            $fee_amount = ($base_total * floatval($fee_config['percent'] ?? 0)) / 100 + floatval($fee_config['fixed'] ?? 0);
-        }
+        $fee_amount = $this->calculate_fee_amount($base_total, $fee_config);
 
         if ($fee_amount > 0) {
+            $label = $fee_config['label'] ?? 'Processing Fee';
             $fee = new \WC_Order_Item_Fee();
-            $fee->set_name($expected_label);
+            $fee->set_name($label);
             $fee->set_amount($fee_amount);
             $fee->set_total($fee_amount);
             $fee->set_tax_status(!empty($fee_config['taxable']) ? 'taxable' : 'none');
@@ -308,6 +286,67 @@ class Payment_Gateway_Fees {
             $order->calculate_totals();
             $order->save();
         }
+    }
+
+    /**
+     * Check if an order already has a gateway fee (by label or amount match).
+     * Prevents duplicates when session gateway ID differs from order gateway ID.
+     */
+    private function order_has_gateway_fee($order, $config) {
+        $expected_label = $config['label'] ?? 'Processing Fee';
+
+        // Calculate what the fee amount would be
+        $subtotal = (float) $order->get_subtotal();
+        $shipping = (float) $order->get_shipping_total();
+        $base_total = $subtotal + $shipping;
+        $expected_amount = $this->calculate_fee_amount($base_total, $config);
+
+        // Also collect all configured fee labels for cross-checking
+        $all_labels = [];
+        foreach ($this->get_fees() as $gw_config) {
+            if (!empty($gw_config['enabled']) && !empty($gw_config['label'])) {
+                $all_labels[] = $gw_config['label'];
+            }
+        }
+
+        foreach ($order->get_fees() as $fee_item) {
+            $fee_name = $fee_item->get_name();
+            $fee_total = (float) $fee_item->get_total();
+
+            // Match by exact label
+            if ($fee_name === $expected_label) {
+                return true;
+            }
+
+            // Match by any configured gateway fee label
+            if (in_array($fee_name, $all_labels)) {
+                return true;
+            }
+
+            // Match by same amount (within 1 cent tolerance)
+            if ($expected_amount > 0 && abs($fee_total - $expected_amount) < 0.01) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Calculate fee amount from config and base total
+     */
+    private function calculate_fee_amount($base_total, $config) {
+        $fee_type = $config['type'] ?? 'percent';
+
+        if ($fee_type === 'fixed') {
+            return floatval($config['fixed'] ?? 0);
+        } elseif ($fee_type === 'percent') {
+            return ($base_total * floatval($config['percent'] ?? 0)) / 100;
+        } elseif ($fee_type === 'both') {
+            return ($base_total * floatval($config['percent'] ?? 0)) / 100 + floatval($config['fixed'] ?? 0);
+        }
+
+        return 0;
     }
 
     /**

@@ -29,8 +29,10 @@ if (!defined('ABSPATH')) {
 add_action('woocommerce_before_order_notes', 'ah_ho_add_delivery_date_checkout_field');
 
 function ah_ho_add_delivery_date_checkout_field($checkout) {
-    // Get minimum delivery date (next working day)
-    $min_date = ah_ho_get_next_delivery_date(1);
+    // Before 12pm: next working day. After 12pm: 2 working days.
+    $current_hour = (int) current_time('G'); // 0-23 in SG timezone
+    $working_days = ($current_hour < 12) ? 1 : 2;
+    $min_date = ah_ho_get_next_delivery_date($working_days);
     $max_date = date('Y-m-d', strtotime('+30 days'));
 
     echo '<div id="ah-ho-delivery-date-field" class="ah-ho-delivery-section">';
@@ -49,7 +51,7 @@ function ah_ho_add_delivery_date_checkout_field($checkout) {
     ), $checkout->get_value('delivery_date'));
 
     echo '<p class="form-row form-row-wide"><small>';
-    echo __('Sundays &amp; Public Holidays not available.', 'ah-ho-custom');
+    echo __('Order before 12pm for next-day delivery. Sundays &amp; Public Holidays not available.', 'ah-ho-custom');
     echo '</small></p>';
 
     echo '</div>';
@@ -223,12 +225,13 @@ function ah_ho_blocks_checkout_inline_script() {
         }
 
         /**
-         * Calculate minimum delivery date - next working day (skip Sundays + PH)
+         * Calculate minimum delivery date (skip Sundays + PH)
+         * Before 12pm: next working day. After 12pm: 2 working days.
          */
         function getMinDeliveryDate(shippingMethod) {
             const today = new Date();
             let minDate = new Date(today);
-            let daysToAdd = 1;
+            let daysToAdd = (today.getHours() < 12) ? 1 : 2;
 
             // Add working days (skip Sundays and Public Holidays)
             let addedDays = 0;
@@ -317,10 +320,7 @@ function ah_ho_blocks_checkout_inline_script() {
                                readonly
                                style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; background: #fff; cursor: pointer;">
                         <p id="ah_ho_date_note" style="margin: 8px 0 0; font-size: 12px; color: #666;">
-                            Earliest available: <span id="ah_ho_earliest_date">${formatDateDisplay(initialMinDate)}</span>. Sundays &amp; Public Holidays not available.
-                        </p>
-                        <p style="margin: 4px 0 0; font-size: 12px; color: #999;">
-                            Choose any working day (Mon-Sat).
+                            Earliest available: <span id="ah_ho_earliest_date">${formatDateDisplay(initialMinDate)}</span>. Order before 12pm for next-day delivery. Sundays &amp; Public Holidays not available.
                         </p>
                     </div>
                 </div>
