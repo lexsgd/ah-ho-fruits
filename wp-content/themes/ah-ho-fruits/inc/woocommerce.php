@@ -99,18 +99,66 @@ add_filter('woocommerce_sale_flash', function($html, $post, $product) {
 }, 10, 3);
 
 /**
- * PayNow payment tip banner on cart and checkout pages
+ * PayNow payment tip banner on cart and checkout pages.
+ * Uses JS injection because WooCommerce Blocks cart/checkout
+ * doesn't fire classic PHP hooks like woocommerce_before_cart.
  */
 function ah_ho_paynow_tip_banner() {
+    if (!is_cart() && !is_checkout()) {
+        return;
+    }
     ?>
-    <div class="paynow-tip-banner">
-        <span class="paynow-tip-icon">&#10024;</span>
-        <span>Friendly tip! Credit card payments come with a 3.5% fee, so <strong>PayNow</strong> is the happiest (and fee-free) way to pay. Thank you!</span>
-    </div>
+    <script>
+    (function() {
+        var bannerHTML = '<div class="paynow-tip-banner">' +
+            '<span class="paynow-tip-icon">&#10024;</span>' +
+            '<span>Friendly tip! Credit card payments come with a 3.5% fee, so <strong>PayNow</strong> is the happiest (and fee-free) way to pay. Thank you!</span>' +
+            '</div>';
+
+        function insertBanner() {
+            if (document.querySelector('.paynow-tip-banner')) return;
+
+            // WooCommerce Blocks cart
+            var blocksCart = document.querySelector('.wc-block-cart');
+            // WooCommerce Blocks checkout
+            var blocksCheckout = document.querySelector('.wc-block-checkout');
+            // Classic cart
+            var classicCart = document.querySelector('.woocommerce-cart-form');
+            // Classic checkout
+            var classicCheckout = document.querySelector('form.woocommerce-checkout');
+
+            var target = blocksCart || blocksCheckout || classicCart || classicCheckout;
+            if (target) {
+                target.insertAdjacentHTML('beforebegin', bannerHTML);
+                return true;
+            }
+            return false;
+        }
+
+        // Try immediately
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                if (!insertBanner()) {
+                    // Blocks may render after DOM ready, retry briefly
+                    var attempts = 0;
+                    var interval = setInterval(function() {
+                        if (insertBanner() || ++attempts > 20) clearInterval(interval);
+                    }, 200);
+                }
+            });
+        } else {
+            if (!insertBanner()) {
+                var attempts = 0;
+                var interval = setInterval(function() {
+                    if (insertBanner() || ++attempts > 20) clearInterval(interval);
+                }, 200);
+            }
+        }
+    })();
+    </script>
     <?php
 }
-add_action('woocommerce_before_cart', 'ah_ho_paynow_tip_banner');
-add_action('woocommerce_before_checkout_form', 'ah_ho_paynow_tip_banner', 5);
+add_action('wp_footer', 'ah_ho_paynow_tip_banner');
 
 /**
  * Add Singapore-specific shipping notice
