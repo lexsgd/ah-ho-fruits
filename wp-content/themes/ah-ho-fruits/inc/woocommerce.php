@@ -104,7 +104,10 @@ add_filter('woocommerce_sale_flash', function($html, $post, $product) {
  * doesn't fire classic PHP hooks like woocommerce_before_cart.
  */
 function ah_ho_paynow_tip_banner() {
-    if (!is_cart() && !is_checkout()) {
+    // is_cart()/is_checkout() don't work with WooCommerce Blocks — fall back to page slug
+    $is_cart_page = is_cart() || is_page('cart');
+    $is_checkout_page = is_checkout() || is_page('checkout');
+    if (!$is_cart_page && !$is_checkout_page) {
         return;
     }
     ?>
