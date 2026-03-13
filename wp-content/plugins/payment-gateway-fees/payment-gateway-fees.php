@@ -35,6 +35,9 @@ class Payment_Gateway_Fees {
         add_action('woocommerce_checkout_order_created', [$this, 'ensure_fee_on_any_stripe_order'], 10, 1);
 
         // Admin hooks
+        // PayNow tip banner on cart/checkout (JS handles page detection)
+        add_action('wp_footer', [$this, 'paynow_tip_banner']);
+
         add_action('admin_menu', [$this, 'add_admin_menu']);
         add_action('admin_init', [$this, 'register_settings']);
         add_action('admin_enqueue_scripts', [$this, 'admin_scripts']);
@@ -721,6 +724,42 @@ class Payment_Gateway_Fees {
                 </script>
             <?php endif; ?>
         </div>
+        <?php
+    }
+
+    /**
+     * PayNow tip banner on cart and checkout pages.
+     * JS handles page detection via DOM selectors since WooCommerce Blocks
+     * breaks is_cart()/is_checkout().
+     */
+    public function paynow_tip_banner() {
+        ?>
+        <script>
+        (function() {
+            var bannerHTML = '<div class="paynow-tip-banner" style="background:#fef9e7;border:1px solid #f9e79f;border-left:4px solid #f1c40f;color:#5d4e37;padding:12px 16px;border-radius:6px;margin-bottom:20px;font-size:14px;line-height:1.5;display:flex;align-items:flex-start;gap:8px">' +
+                '<span style="font-size:18px;flex-shrink:0;line-height:1.3">&#10024;</span>' +
+                '<span>Friendly tip! Credit card payments come with a <strong>3.5% fee</strong>, so <strong style="color:#7b2d8e">PayNow</strong> is the happiest (and fee-free) way to pay. Thank you!</span>' +
+                '</div>';
+
+            function insertBanner() {
+                if (document.querySelector('.paynow-tip-banner')) return true;
+                var target = document.querySelector('.wc-block-cart') ||
+                    document.querySelector('.wc-block-checkout') ||
+                    document.querySelector('.woocommerce-cart-form') ||
+                    document.querySelector('form.woocommerce-checkout');
+                if (target) {
+                    target.insertAdjacentHTML('beforebegin', bannerHTML);
+                    return true;
+                }
+                return false;
+            }
+
+            var attempts = 0;
+            var interval = setInterval(function() {
+                if (insertBanner() || ++attempts > 30) clearInterval(interval);
+            }, 200);
+        })();
+        </script>
         <?php
     }
 }
