@@ -478,7 +478,7 @@ function ah_ho_render_returns_tab($order) {
         <h4 style="margin:0 0 10px;"><?php _e('Process Return', 'ah-ho-custom'); ?></h4>
         <div style="margin-bottom:10px;">
             <label for="ah-ho-return-reason"><strong><?php _e('Reason:', 'ah-ho-custom'); ?></strong></label><br>
-            <input type="text" id="ah-ho-return-reason" placeholder="<?php esc_attr_e('e.g. Customer changed mind, damaged goods', 'ah-ho-custom'); ?>" style="width:100%;" required>
+            <input type="text" id="ah-ho-return-reason" placeholder="<?php esc_attr_e('e.g. Customer changed mind, damaged goods', 'ah-ho-custom'); ?>" style="width:100%;">
         </div>
         <table class="widefat ah-ho-return-input-table">
             <thead>
