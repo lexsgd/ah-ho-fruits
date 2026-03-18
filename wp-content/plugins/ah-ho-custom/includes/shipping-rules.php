@@ -2,11 +2,14 @@
 /**
  * Shipping Rules
  *
- * Automatically applies free shipping when cart subtotal >= $60.
+ * Automatically applies free shipping when:
+ * - Cart subtotal >= $60, OR
+ * - Cart contains any product with the "omakase" shipping class
+ *
  * Express shipping and self-pickup remain available as alternatives.
  *
  * @package AhHoCustom
- * @since 1.6.3
+ * @since 1.6.4
  */
 
 if (!defined('ABSPATH')) {
@@ -38,7 +41,17 @@ function ah_ho_auto_free_shipping($rates, $package) {
     $cart_subtotal = WC()->cart->get_subtotal();
     $free_shipping_threshold = 60; // SGD
 
-    if ($cart_subtotal >= $free_shipping_threshold) {
+    // Check if any cart item has the "omakase" shipping class
+    $has_omakase = false;
+    foreach (WC()->cart->get_cart() as $cart_item) {
+        $product = $cart_item['data'];
+        if ($product && $product->get_shipping_class() === 'omakase') {
+            $has_omakase = true;
+            break;
+        }
+    }
+
+    if ($has_omakase || $cart_subtotal >= $free_shipping_threshold) {
         $free_rates    = array();
         $other_rates   = array();
 
