@@ -29,3 +29,19 @@ Thumbs.db
 
 # Theme zip files (large binaries)
 *.zip
+
+# Generated product images (experiments)
+pomelo-*.png
+pomelo-*.jpg
+generate-pomelo*.mjs
+
+# Generated plugin guides (exports)
+docs/plugin-guides/*.html
+docs/plugin-guides/*.pdf
+docs/plugin-guides/*.md
+wp-content/plugins/*/docs/*.pdf
+
+# QuickBooks integration docs (client proposals)
+docs/QUICKBOOKS-*.md
+docs/QuickBooks-*.docx
+docs/generate_*.py
