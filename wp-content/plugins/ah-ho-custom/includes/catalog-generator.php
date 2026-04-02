@@ -156,7 +156,22 @@ function ah_ho_generate_catalog_text() {
     );
 
     // Exclude parent categories that duplicate subcategory products
-    $excluded_slugs = array('fruits', 'uncategorized');
+    $excluded_slugs = array('fruits', 'uncategorized', 'omakase-fruit-boxes');
+
+    // Custom category display order
+    $category_order = array(
+        'apples', 'citrus', 'pears', 'berries', 'grapes',
+        'melons', 'stone-fruits', 'kiwi', 'tropical', 'others',
+    );
+
+    // Sort categories by custom order
+    usort($categories, function($a, $b) use ($category_order) {
+        $pos_a = array_search($a->slug, $category_order);
+        $pos_b = array_search($b->slug, $category_order);
+        if ($pos_a === false) $pos_a = 999;
+        if ($pos_b === false) $pos_b = 999;
+        return $pos_a - $pos_b;
+    });
 
     $output = "*AH HO FRUIT - WHOLESALE PRICE LIST*\n";
     $output .= "_Prices exclusive of GST_\n";
@@ -259,7 +274,22 @@ function ah_ho_generate_stock_catalog_text() {
     );
 
     // Exclude parent categories that duplicate subcategory products
-    $excluded_slugs = array('fruits', 'uncategorized');
+    $excluded_slugs = array('fruits', 'uncategorized', 'omakase-fruit-boxes');
+
+    // Custom category display order
+    $category_order = array(
+        'apples', 'citrus', 'pears', 'berries', 'grapes',
+        'melons', 'stone-fruits', 'kiwi', 'tropical', 'others',
+    );
+
+    // Sort categories by custom order
+    usort($categories, function($a, $b) use ($category_order) {
+        $pos_a = array_search($a->slug, $category_order);
+        $pos_b = array_search($b->slug, $category_order);
+        if ($pos_a === false) $pos_a = 999;
+        if ($pos_b === false) $pos_b = 999;
+        return $pos_a - $pos_b;
+    });
 
     $output = "*AH HO FRUIT - B2B STOCK LIST*\n";
     $output .= "_Internal use only - Do not share_\n";
