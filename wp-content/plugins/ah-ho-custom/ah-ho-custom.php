@@ -3,7 +3,7 @@
  * Plugin Name: Ah Ho Fruit Custom
  * Plugin URI: https://heymag.app
  * Description: Custom functionality for Ah Ho Fruit - WooCommerce custom order statuses
- * Version: 1.6.3
+ * Version: 1.7.0
  * Author: Ah Ho Fruit
  * Author URI: https://heymag.app
  * Text Domain: ah-ho-custom
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AH_HO_CUSTOM_VERSION', '1.6.3');
+define('AH_HO_CUSTOM_VERSION', '1.7.0');
 define('AH_HO_CUSTOM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AH_HO_CUSTOM_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -78,6 +78,9 @@ function ah_ho_custom_init() {
 
     // Include payment gateway settings (default to PayNow)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/payment-settings.php';
+
+    // Safety net: reconcile stuck stripe_paynow orders when Stripe webhooks are missed
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/stripe-paynow-reconcile.php';
 
     // Include WhatsApp catalog generator
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/catalog-generator.php';
