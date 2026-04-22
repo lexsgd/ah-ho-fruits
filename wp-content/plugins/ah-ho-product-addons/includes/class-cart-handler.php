@@ -22,15 +22,24 @@ class AH_Ho_Addons_Cart_Handler {
     }
 
     /**
-     * Validate product notes and gift message
+     * Validate product notes and gift message.
+     *
+     * Reads `wc_ahho_*` POST keys (primary) with fallback to the legacy
+     * unprefixed keys. The `wc_` prefix is required so Stripe Express
+     * Checkout (Apple Pay / Google Pay) forwards these fields — its JS
+     * filters form inputs to names matching `^(addon-|wc_)`.
      */
     public function validate_addons( $passed, $product_id, $qty ) {
+        $posted_notes = $_POST['wc_ahho_product_notes'] ?? $_POST['product_notes'] ?? '';
+        $posted_is_gift = $_POST['wc_ahho_is_gift'] ?? $_POST['is_gift'] ?? '';
+        $posted_gift_message = $_POST['wc_ahho_gift_message'] ?? $_POST['gift_message'] ?? '';
+
         // Validate Product Notes
         $notes_enabled = get_post_meta( $product_id, '_enable_product_notes', true ) === 'yes';
         $notes_required = get_post_meta( $product_id, '_product_notes_required', true ) === 'yes';
 
         if ( $notes_enabled && $notes_required ) {
-            if ( empty( trim( $_POST['product_notes'] ?? '' ) ) ) {
+            if ( empty( trim( $posted_notes ) ) ) {
                 wc_add_notice(
                     __( 'Please enter your special requests, preferences, or allergies.', 'ah-ho-fruits' ),
                     'error'
@@ -40,10 +49,10 @@ class AH_Ho_Addons_Cart_Handler {
         }
 
         // Validate Gift Message
-        if ( isset( $_POST['is_gift'] ) && $_POST['is_gift'] === 'yes' ) {
+        if ( $posted_is_gift === 'yes' ) {
             $gift_required = get_post_meta( $product_id, '_gift_message_required', true ) === 'yes';
 
-            if ( $gift_required && empty( trim( $_POST['gift_message'] ?? '' ) ) ) {
+            if ( $gift_required && empty( trim( $posted_gift_message ) ) ) {
                 wc_add_notice(
                     __( 'Please enter a gift message.', 'ah-ho-fruits' ),
                     'error'
@@ -56,12 +65,20 @@ class AH_Ho_Addons_Cart_Handler {
     }
 
     /**
-     * Add addon data to cart item
+     * Add addon data to cart item.
+     *
+     * Reads `wc_ahho_*` POST keys (primary) with fallback to the legacy
+     * unprefixed keys. See validate_addons() for why the `wc_` prefix matters.
      */
     public function add_to_cart_data( $cart_item_data, $product_id ) {
+        $posted_notes = $_POST['wc_ahho_product_notes'] ?? $_POST['product_notes'] ?? '';
+        $posted_is_gift = $_POST['wc_ahho_is_gift'] ?? $_POST['is_gift'] ?? '';
+        $posted_gift_message = $_POST['wc_ahho_gift_message'] ?? $_POST['gift_message'] ?? '';
+        $posted_addon = $_POST['wc_ahho_add_product_addon'] ?? $_POST['add_product_addon'] ?? 0;
+
         // Add Product Notes
-        if ( ! empty( $_POST['product_notes'] ) ) {
-            $notes = sanitize_textarea_field( $_POST['product_notes'] );
+        if ( ! empty( $posted_notes ) ) {
+            $notes = sanitize_textarea_field( $posted_notes );
             $notes_char_limit = get_post_meta( $product_id, '_product_notes_char_limit', true ) ?: 300;
 
             // Truncate if exceeds limit
@@ -73,11 +90,11 @@ class AH_Ho_Addons_Cart_Handler {
         }
 
         // Add Gift Data
-        if ( isset( $_POST['is_gift'] ) && $_POST['is_gift'] === 'yes' ) {
+        if ( $posted_is_gift === 'yes' ) {
             $cart_item_data['is_gift'] = 'yes';
 
-            if ( ! empty( $_POST['gift_message'] ) ) {
-                $message = sanitize_textarea_field( $_POST['gift_message'] );
+            if ( ! empty( $posted_gift_message ) ) {
+                $message = sanitize_textarea_field( $posted_gift_message );
                 $gift_char_limit = get_post_meta( $product_id, '_gift_message_char_limit', true ) ?: 250;
 
                 // Truncate if exceeds limit
@@ -90,8 +107,8 @@ class AH_Ho_Addons_Cart_Handler {
         }
 
         // Track if product addon was requested
-        if ( isset( $_POST['add_product_addon'] ) && absint( $_POST['add_product_addon'] ) > 0 ) {
-            $cart_item_data['product_addon_id'] = absint( $_POST['add_product_addon'] );
+        if ( absint( $posted_addon ) > 0 ) {
+            $cart_item_data['product_addon_id'] = absint( $posted_addon );
         }
 
         // Add unique key if any custom data exists (prevent cart merging)

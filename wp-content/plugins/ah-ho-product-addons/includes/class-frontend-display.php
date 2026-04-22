@@ -29,10 +29,16 @@ class AH_Ho_Addons_Frontend_Display {
             return; // No addons enabled for this product
         }
 
-        // Preserve values if form was submitted with errors
-        $product_notes = isset( $_POST['product_notes'] ) ? sanitize_textarea_field( $_POST['product_notes'] ) : '';
-        $is_gift = isset( $_POST['is_gift'] ) ? 'checked' : '';
-        $gift_message = isset( $_POST['gift_message'] ) ? sanitize_textarea_field( $_POST['gift_message'] ) : '';
+        // Preserve values if form was submitted with errors.
+        // Field names prefixed with `wc_` so they survive Stripe Express Checkout
+        // (Apple Pay / Google Pay) — its JS only forwards form inputs whose
+        // name starts with `addon-` or `wc_`. Legacy names kept as fallback
+        // for any cached page load still posting the old keys.
+        $product_notes = isset( $_POST['wc_ahho_product_notes'] ) ? sanitize_textarea_field( $_POST['wc_ahho_product_notes'] )
+            : ( isset( $_POST['product_notes'] ) ? sanitize_textarea_field( $_POST['product_notes'] ) : '' );
+        $is_gift = ( isset( $_POST['wc_ahho_is_gift'] ) || isset( $_POST['is_gift'] ) ) ? 'checked' : '';
+        $gift_message = isset( $_POST['wc_ahho_gift_message'] ) ? sanitize_textarea_field( $_POST['wc_ahho_gift_message'] )
+            : ( isset( $_POST['gift_message'] ) ? sanitize_textarea_field( $_POST['gift_message'] ) : '' );
 
         echo '<div class="ah-ho-addons-wrapper">';
 
@@ -57,7 +63,7 @@ class AH_Ho_Addons_Frontend_Display {
                     <?php endif; ?>
                 </label>
                 <textarea
-                    name="product_notes"
+                    name="wc_ahho_product_notes"
                     id="ah_ho_product_notes"
                     rows="3"
                     maxlength="<?php echo esc_attr( $notes_char_limit ); ?>"
@@ -85,7 +91,7 @@ class AH_Ho_Addons_Frontend_Display {
                     <label class="ah-ho-gift-checkbox-label">
                         <input
                             type="checkbox"
-                            name="is_gift"
+                            name="wc_ahho_is_gift"
                             id="ah_ho_is_gift"
                             value="yes"
                             <?php echo $is_gift; ?>
@@ -102,7 +108,7 @@ class AH_Ho_Addons_Frontend_Display {
                         <?php endif; ?>
                     </label>
                     <textarea
-                        name="gift_message"
+                        name="wc_ahho_gift_message"
                         id="ah_ho_gift_message"
                         rows="3"
                         maxlength="<?php echo esc_attr( $gift_char_limit ); ?>"
@@ -122,7 +128,7 @@ class AH_Ho_Addons_Frontend_Display {
         if ( $product_addon_enabled ) {
             $addon_product_id = absint( get_post_meta( $product_id, '_addon_product_id', true ) );
             $addon_label = get_post_meta( $product_id, '_addon_product_label', true );
-            $addon_checked = isset( $_POST['add_product_addon'] ) ? 'checked' : '';
+            $addon_checked = ( isset( $_POST['wc_ahho_add_product_addon'] ) || isset( $_POST['add_product_addon'] ) ) ? 'checked' : '';
 
             if ( $addon_product_id ) {
                 $addon_product = wc_get_product( $addon_product_id );
@@ -149,7 +155,7 @@ class AH_Ho_Addons_Frontend_Display {
                             <label class="ah-ho-addon-checkbox-label">
                                 <input
                                     type="checkbox"
-                                    name="add_product_addon"
+                                    name="wc_ahho_add_product_addon"
                                     id="ah_ho_product_addon"
                                     value="<?php echo esc_attr( $addon_product_id ); ?>"
                                     <?php echo $addon_checked; ?>
