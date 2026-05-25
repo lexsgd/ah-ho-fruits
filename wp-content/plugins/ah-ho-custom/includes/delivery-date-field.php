@@ -65,21 +65,22 @@ function ah_ho_add_delivery_date_checkout_field($checkout) {
  */
 function ah_ho_get_sg_public_holidays() {
     return array(
-        // 2026
-        '2026-01-01', // New Year's Day
-        '2026-01-29', // Chinese New Year
-        '2026-01-30', // Chinese New Year
-        '2026-03-31', // Hari Raya Puasa
-        '2026-04-03', // Good Friday
-        '2026-05-01', // Labour Day
-        '2026-05-26', // Vesak Day
-        '2026-07-17', // Hari Raya Haji
+        // 2026 — per MOM (https://www.mom.gov.sg/newsroom/press-releases/2025/0616-public-holidays-for-2026)
+        '2026-01-01', // New Year's Day (Thu)
+        '2026-02-17', // Chinese New Year Day 1 (Tue)
+        '2026-02-18', // Chinese New Year Day 2 (Wed)
+        '2026-03-21', // Hari Raya Puasa (Sat) — provisional, subject to moon sighting
+        '2026-04-03', // Good Friday (Fri)
+        '2026-05-01', // Labour Day (Fri)
+        '2026-05-27', // Hari Raya Haji (Wed) — provisional, subject to moon sighting
+        '2026-05-31', // Vesak Day (Sun)
+        '2026-06-01', // Vesak Day observed (Mon)
         '2026-08-09', // National Day (Sun)
         '2026-08-10', // National Day observed (Mon)
         '2026-11-08', // Deepavali (Sun)
         '2026-11-09', // Deepavali observed (Mon)
-        '2026-12-25', // Christmas Day
-        // 2027 — update when official dates released
+        '2026-12-25', // Christmas Day (Fri)
+        // 2027 — update when MOM releases official dates
         '2027-01-01', // New Year's Day
         '2027-02-17', // Chinese New Year
         '2027-02-18', // Chinese New Year
