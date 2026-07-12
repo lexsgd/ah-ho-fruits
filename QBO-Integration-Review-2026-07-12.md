@@ -122,10 +122,21 @@ Applied to `b2c-qbo-salesreceipt-sync.py` and verified by dry-run over ~24 real 
 
 **Verified behaviour (dry-run, 2026-07-12):** fully-mapped orders report a total exactly equal to WooCommerce; every order containing an unmapped product is held. The sync can no longer post an under-stated or mis-reconciled receipt.
 
-### Still outstanding (not done — needs your go-ahead, involves live writes)
-- **The 20 unmapped products (§2 F1)** still need mapping before those orders can flow — 15 via a QBO SKU-write pass, 5 via adding a WC SKU first. Until then they're safely **blocked** (correct, but they won't sync).
+### Still outstanding
+- **The 20 unmapped products (§2 F1)** still need mapping before those orders can flow. They remain safely **blocked** (correct, but they won't sync).
 - **F3** (B2B SKU on B2C orders), **F6** (hardcoded IDs — documented), **F7** (deposit account vs Undeposited Funds) — bookkeeper decisions.
-- No `--execute` run, no messages to Michelle.
+- No `--execute` run.
+
+### Update — the 15 "SKU-writable" products are NOT SKU-writable (2026-07-12)
+Investigated all 15 against `QBO-WC-Crosswalk-FINAL-2026-06-16.csv`:
+- **All 13 with a crosswalk entry are many-to-one** — Ah Ho's QBO catalog is deliberately **coarser** than WooCommerce (e.g. 125g + 200g blueberry → one QBO item; M + L namshui → one item). A QBO item's `Sku` field holds only one value, so a SKU-write is **architecturally impossible** for these (this is why phase-1 deferred them). The original "15 via a QBO SKU-write pass" plan is dropped.
+- **2 have no crosswalk entry at all** (`B2B-MANGOTAIWAN`, `B2C-USAGREEN`).
+- **Chosen fix (not yet built):** wire the crosswalk into the sync as a **WC-SKU → QBO-item lookup** — handles many-to-one, **no writes to the live QBO catalog**.
+
+### Michelle handoff — IN PROGRESS (2026-07-12)
+- Produced a plain-English confirmation sheet: `AhHo-QBO-Mapping-Confirm-15-2026-07-12.md` / `.docx` (13 matches to confirm, 2 generic maps to sign off — HUNNYZ→APPLE(pcs), THAI HONEY MANGO→MANGO(pcs), 2 needing a QBO target).
+- **WhatsApp sent to Michelle 2026-07-12** (from Lex's personal number; Message ID `3EB043CFB70C31273D1A5B`). The `.docx` is attached manually by Lex. Draft on file: `~/Test/AhHo-Michelle-QBO-Mapping-Confirm-2026-07-12.md`.
+- **Waiting on:** Michelle's confirmed matches + a QBO target for the 2 unmapped. On receipt → build the crosswalk lookup, dry-run to penny-exact, then single-order `--execute` test.
 
 ## 6. What I did NOT do
 - No writes to QuickBooks (dry-run only, as agreed).
