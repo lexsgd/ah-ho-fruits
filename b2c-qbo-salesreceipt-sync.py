@@ -181,9 +181,10 @@ class QBO:
                 return d["Customer"]["Id"], None
         return None, f"create customer failed ({st}): {str(d)[:160]}"
 
-    def salesreceipt_exists(self, docnumber):
-        qr = self.query(f"select Id from SalesReceipt where DocNumber = '{docnumber}'")
-        return bool(qr.get("SalesReceipt"))
+    def txn_exists(self, entity, docnumber):
+        """entity: 'Invoice' or 'SalesReceipt'. Idempotency check by DocNumber."""
+        qr = self.query(f"select Id from {entity} where DocNumber = '{docnumber}'")
+        return bool(qr.get(entity))
 
 
 # ---------- WooCommerce ----------
@@ -262,7 +263,8 @@ def build_lines(order, qbo, execute):
     return lines, warn, unmapped, built_net
 
 
-def sync_order(order, qbo, execute):
+def sync_order(order, qbo, execute, doctype="invoice"):
+    ENTITY = "Invoice" if doctype == "invoice" else "SalesReceipt"
     num = order.get("number"); oid = order.get("id")
     doc = f"woo-{oid}"
     billing = order.get("billing") or {}
@@ -270,8 +272,8 @@ def sync_order(order, qbo, execute):
     email = billing.get("email", "")
     total = money(order.get("total", "0"))
 
-    print(f"--- Order #{num}  {name} <{email}>  WC ${total}  ({doc}) ---")
-    if execute and qbo.salesreceipt_exists(doc):
+    print(f"--- Order #{num}  {name} <{email}>  WC ${total}  ({doc}) [{ENTITY}] ---")
+    if execute and qbo.txn_exists(ENTITY, doc):
         print("    already in QBO (DocNumber exists) — skip"); return "skip"
 
     lines, warn, unmapped, built_net = build_lines(order, qbo, execute)
@@ -314,21 +316,27 @@ def sync_order(order, qbo, execute):
         "CustomerRef": {"value": cust_id} if cust_id else {"value": "__DRYRUN__"},
         "GlobalTaxCalculation": "TaxExcluded",   # line Amounts are NET; QBO adds 9% SR back to the gross the customer paid
         "TxnDate": (order.get("date_paid") or order.get("date_created") or "")[:10] or None,
-        "DepositToAccountRef": {"value": DEPOSIT_ACCOUNT_ID},
         "PrivateNote": f"WooCommerce B2C order #{num} ({order.get('payment_method_title')})",
         "Line": lines,
     }
+    if doctype == "salesreceipt":
+        # A paid receipt deposits the money into an account. Invoices stay UNPAID — Michelle
+        # receives payment against them and deducts the Stripe fee when she reconciles the
+        # monthly payout, so per-order gross doesn't get force-matched to the bank.
+        payload["DepositToAccountRef"] = {"value": DEPOSIT_ACCOUNT_ID}
     payload = {k: v for k, v in payload.items() if v is not None}
 
     if not execute:
-        print(f"    [dry-run] would POST SalesReceipt total=${expected} (net ${built_net} + 9% SR; WC paid ${total})"); return "dryrun"
+        kind = "paid receipt" if doctype == "salesreceipt" else "UNPAID invoice"
+        print(f"    [dry-run] would POST {ENTITY} ({kind}) total=${expected} (net ${built_net} + 9% SR; WC paid ${total})"); return "dryrun"
 
-    st, d = qbo.post("salesreceipt", payload)
+    st, d = qbo.post(doctype, payload)
     if st == 200:
-        sr = d["SalesReceipt"]
-        print(f"    ✅ SalesReceipt #{sr['Id']}  Total=${sr.get('TotalAmt')}  TaxBasis embedded")
+        obj = d[ENTITY]
+        tail = f"  Balance=${obj.get('Balance')} (unpaid)" if doctype == "invoice" else "  (paid)"
+        print(f"    ✅ {ENTITY} #{obj['Id']}  Total=${obj.get('TotalAmt')}{tail}")
         return "ok"
-    print(f"    [error] SalesReceipt POST failed ({st}): {str(d)[:220]}")
+    print(f"    [error] {ENTITY} POST failed ({st}): {str(d)[:220]}")
     return "error"
 
 
@@ -339,6 +347,8 @@ def main():
     ap.add_argument("--status", default="processing")
     ap.add_argument("--only", help="only this WC order id")
     ap.add_argument("--since", help="only orders paid/created on/after YYYY-MM-DD (today-onward go-live guard)")
+    ap.add_argument("--doctype", choices=["invoice", "salesreceipt"], default="invoice",
+                    help="QBO document to create (default: invoice — UNPAID, Michelle closes w/ Stripe fee)")
     args = ap.parse_args()
 
     if args.status in B2B_STATUSES:
@@ -346,7 +356,7 @@ def main():
 
     env = load_env()
     qbo = QBO(env)
-    print(f"[i] mode: {'EXECUTE (live)' if args.execute else 'DRY-RUN'}  status={args.status}")
+    print(f"[i] mode: {'EXECUTE (live)' if args.execute else 'DRY-RUN'}  status={args.status}  doctype={args.doctype}")
     orders = wc_orders(env, args.status, args.limit)
     if args.only:
         orders = [o for o in orders if str(o.get("id")) == str(args.only)]
@@ -358,7 +368,7 @@ def main():
 
     tally = {}
     for o in orders:
-        r = sync_order(o, qbo, args.execute)
+        r = sync_order(o, qbo, args.execute, args.doctype)
         tally[r] = tally.get(r, 0) + 1
         print()
     print("[i] summary:", tally)

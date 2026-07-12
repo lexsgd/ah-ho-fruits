@@ -135,6 +135,14 @@ Michelle reviewed the live #5134 receipt and raised valid accounting issues (esc
 
 **Do NOT `--execute`, change the deposit account, or switch doc type until the accountant decides Sat.** Reply sent to Michelle 2026-07-12 (msg 3EB0A6747E351A48598D30).
 
+### ✅ Resolved same day — Michelle chose UNPAID INVOICES (no accountant needed)
+Michelle: she closes the accounts herself, so she wants **open (unpaid) invoices** she can receive payment against and **deduct the Stripe fee** when reconciling the monthly payout. This fixes the reconciliation concern her way — no clearing-account/accountant dependency.
+- **Built `--doctype invoice|salesreceipt` (default `invoice`).** Invoices post **UNPAID** (no `DepositToAccountRef`, sits in Accounts Receivable), same net+9% SR totals, hard-block + reconciliation guard intact.
+- **Live test PASSED:** deleted the obsolete paid receipt #48855, re-posted order #5134 as **Invoice #48865 = $80.00, Balance $80.00 (unpaid)**.
+- Ongoing run (when go-live confirmed): `--status <s> --since 2026-07-12 --execute` (doctype defaults to invoice).
+- Cleanup note: 2 old **test sales receipts from 29-Jun** (old paid model) still exist — remove if Michelle wants a clean invoice-only slate.
+- Broader daily go-live still **held** until Michelle views the test invoice and gives the final nod.
+
 ### Still outstanding
 - **The 20 unmapped products (§2 F1)** still need mapping before those orders can flow. They remain safely **blocked** (correct, but they won't sync).
 - **F3** (B2B SKU on B2C orders), **F6** (hardcoded IDs — documented), **F7** (deposit account vs Undeposited Funds) — bookkeeper decisions.
