@@ -127,6 +127,14 @@ Applied to `b2c-qbo-salesreceipt-sync.py` and verified by dry-run over ~24 real 
 - **Decisions locked:** GST inclusive ✅, deposit = UOB ✅ (both confirmed by Michelle 06-30), **start point = today-onward** (added `--since YYYY-MM-DD` guard so wide/scheduled runs won't backfill history).
 - **Mode now:** the sync is proven live. Going forward, run `--since 2026-07-12 --execute` to post new fully-mapped orders; the ~75% with unmapped products stay hard-blocked and auto-backfill once Michelle's mapping is in.
 
+### ⛔ GO-LIVE ON HOLD — accountant decision Sat 2026-07-18
+Michelle reviewed the live #5134 receipt and raised valid accounting issues (escalating to her accountant Sat):
+1. **Stripe reconciliation.** The receipt posts gross $80 straight into **UOB**, but Stripe pays out **monthly, net of fees** — so per-order gross deposits will never reconcile against the single monthly net payout. **Fix (standard Stripe-in-QBO):** deposit online sales to a **Stripe clearing/holding account** (NOT UOB `12120`/id 31), then record the monthly Stripe payout into UOB **net of fees** (fees → expense); the clearing account nets to zero. → `DEPOSIT_ACCOUNT_ID=31` is likely wrong; change per accountant. (Note: this supersedes the earlier "UOB direct" call — Michelle's 06-30 sign-off predated seeing the reconciliation problem.)
+2. **Invoice vs Sales Receipt.** She expected an Invoice; a paid Sales Receipt marks it received. Either works technically once the clearing-account treatment is right — accountant's preference.
+3. **"In between not synced?"** Expected — only test orders posted (2 in late June + #5134 today); the full daily sync is intentionally not switched on yet.
+
+**Do NOT `--execute`, change the deposit account, or switch doc type until the accountant decides Sat.** Reply sent to Michelle 2026-07-12 (msg 3EB0A6747E351A48598D30).
+
 ### Still outstanding
 - **The 20 unmapped products (§2 F1)** still need mapping before those orders can flow. They remain safely **blocked** (correct, but they won't sync).
 - **F3** (B2B SKU on B2C orders), **F6** (hardcoded IDs — documented), **F7** (deposit account vs Undeposited Funds) — bookkeeper decisions.
