@@ -118,9 +118,14 @@ Applied to `b2c-qbo-salesreceipt-sync.py` and verified by dry-run over ~24 real 
 
 - **F1 — unmapped = hard stop.** Removed silent `create_item` on execute. Any line whose SKU isn't on a QBO item now **blocks the whole order** (`return "unmapped"`) with a per-product `[BLOCKED]` message. No partial receipts, no auto-created duplicate items.
 - **F2 — truthful total + reconciliation guard.** Dry-run now prints the **actual built total** (not `order.total`) and flags any `[MISMATCH]` vs what the customer paid; in execute mode a mismatch **holds** the order (`return "mismatch"`) to protect Stripe/bank reconciliation.
-- **F4 — TaxInclusive + gross amounts.** Switched `GlobalTaxCalculation` to `TaxInclusive` and send **gross** line amounts; QBO backs out the embedded 9% SR. Verified penny-exact, including a 5-line order ($187.50 = $187.50). Removed the now-dead `net_of_gst()`.
+- **F4 — GST handling.** ⚠️ First attempt (`GlobalTaxCalculation: TaxInclusive` + gross amounts) was **wrong for this QBO company**: the live single-order test posted **$87.20 instead of $80.00** — this realm's tax engine ignores `TaxInclusive` and taxes the line amount as net, adding 9% on top (confirmed on receipt woo-5134: `NetAmountTaxable=80, TotalTax=7.2`). **Reverted to `TaxExcluded` + net-of-GST line amounts** (the original, proven approach): net $73.39 + 9% SR = $80.00. Re-tested live → correct. Residual: GST rounding can leave the posted total **1 cent under** the paid gross on some multi-line orders ($149.99 vs $150.00); immaterial on a manually-reconciled account, and absorbed by the reconciliation guard's $0.05 tolerance.
 
 **Verified behaviour (dry-run, 2026-07-12):** fully-mapped orders report a total exactly equal to WooCommerce; every order containing an unmapped product is held. The sync can no longer post an under-stated or mis-reconciled receipt.
+
+### Go-live progress (2026-07-12)
+- **Live single-order test PASSED.** Order #5134 posted as SalesReceipt woo-5134 = **$80.00** (net $73.39 + $6.61 GST), penny-exact. First attempt hit the TaxInclusive bug (posted $87.20); that receipt was deleted and re-posted correctly after the F4 revert.
+- **Decisions locked:** GST inclusive ✅, deposit = UOB ✅ (both confirmed by Michelle 06-30), **start point = today-onward** (added `--since YYYY-MM-DD` guard so wide/scheduled runs won't backfill history).
+- **Mode now:** the sync is proven live. Going forward, run `--since 2026-07-12 --execute` to post new fully-mapped orders; the ~75% with unmapped products stay hard-blocked and auto-backfill once Michelle's mapping is in.
 
 ### Still outstanding
 - **The 20 unmapped products (§2 F1)** still need mapping before those orders can flow. They remain safely **blocked** (correct, but they won't sync).

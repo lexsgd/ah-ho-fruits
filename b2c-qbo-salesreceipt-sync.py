@@ -200,25 +200,33 @@ def wc_orders(env, status, limit):
 
 
 # ---------- build + sync ----------
-def build_lines(order, qbo, execute):
-    """Return (lines, warnings, unmapped, built).
+def net_of_gst(gross):
+    """WC prices are GST-inclusive; this QBO company taxes line amounts EXCLUSIVELY
+    (GlobalTaxCalculation=TaxInclusive is ignored by its tax engine — verified live
+    2026-07-12: receipt woo-5134 posted $87.20 instead of $80). So we send the NET;
+    QBO adds 9% SR back and the receipt total == the gross the customer paid."""
+    return money(gross / (Decimal("1") + GST_RATE))
 
-    Amounts are GST-INCLUSIVE (gross). The SalesReceipt posts with
-    GlobalTaxCalculation=TaxInclusive, so QBO backs the embedded 9% SR out of
-    each line and TotalAmt == the gross the customer actually paid — penny-exact,
-    with no per-line net-rounding drift.
+
+def build_lines(order, qbo, execute):
+    """Return (lines, warnings, unmapped, built_net).
+
+    Line Amount = NET (GST-excluded). The SalesReceipt posts with
+    GlobalTaxCalculation=TaxExcluded, so QBO adds 9% SR back and TotalAmt == the
+    GST-inclusive gross the customer paid.
 
     `unmapped` lists any order line whose product could not be matched to a QBO
-    item. Unmapped products are NEVER silently auto-created; the caller blocks
-    the whole order so we never post an under-stated receipt.
-    `built` is the Decimal sum of the gross line amounts (for reconciliation)."""
+    item. Unmapped products are NEVER silently auto-created; the caller blocks the
+    whole order so we never post an under-stated receipt.
+    `built_net` is the Decimal sum of the net line amounts (QBO's taxable base)."""
     lines, warn, unmapped = [], [], []
-    built = Decimal("0")
+    built_net = Decimal("0")
 
     def add(item_id, desc, gross, qty=None):
-        nonlocal built
-        built += gross
-        lines.append({"DetailType": "SalesItemLineDetail", "Amount": float(gross),
+        nonlocal built_net
+        net = net_of_gst(gross)
+        built_net += net
+        lines.append({"DetailType": "SalesItemLineDetail", "Amount": float(net),
                       "Description": desc,
                       "SalesItemLineDetail": {"ItemRef": {"value": item_id},
                                               **({"Qty": qty} if qty else {}),
@@ -251,7 +259,7 @@ def build_lines(order, qbo, execute):
                 add(fid, fee.get("name") or "Fee", amt)
             else:
                 warn.append(f"fee ${amt} not added")
-    return lines, warn, unmapped, built
+    return lines, warn, unmapped, built_net
 
 
 def sync_order(order, qbo, execute):
@@ -266,7 +274,7 @@ def sync_order(order, qbo, execute):
     if execute and qbo.salesreceipt_exists(doc):
         print("    already in QBO (DocNumber exists) — skip"); return "skip"
 
-    lines, warn, unmapped, built = build_lines(order, qbo, execute)
+    lines, warn, unmapped, built_net = build_lines(order, qbo, execute)
     for ln in lines:
         d = ln["SalesItemLineDetail"]
         print(f"    {ln['Description'][:42]:42} item={d['ItemRef']['value']} qty={d.get('Qty')} ${ln['Amount']:.2f} SR")
@@ -282,10 +290,13 @@ def sync_order(order, qbo, execute):
     if not lines:
         print("    no usable lines — skip"); return "skip"
 
-    # F2 — reconcile the receipt we actually built against what the customer paid.
-    delta = built - total
-    if delta != 0:
-        print(f"    [MISMATCH] built ${built} vs WC paid ${total} (Δ ${delta}) — likely a discount/fee not modelled")
+    # F2 — reconcile the receipt QBO will build (net + 9% SR) against what the customer paid.
+    # Tolerance $0.05 absorbs GST rounding on multi-line orders; larger gaps = a real
+    # discount/fee not modelled, so we hold rather than post a non-reconciling receipt.
+    expected = built_net + money(GST_RATE * built_net)
+    delta = total - expected
+    if abs(delta) > Decimal("0.05"):
+        print(f"    [MISMATCH] would post ${expected} vs WC paid ${total} (Δ ${delta}) — likely a discount/fee not modelled")
         if execute:
             print("    → held to protect reconciliation. NOT posted."); return "mismatch"
 
@@ -301,7 +312,7 @@ def sync_order(order, qbo, execute):
     payload = {
         "DocNumber": doc,
         "CustomerRef": {"value": cust_id} if cust_id else {"value": "__DRYRUN__"},
-        "GlobalTaxCalculation": "TaxInclusive",   # line Amounts are GST-inclusive; QBO backs out the embedded 9% SR
+        "GlobalTaxCalculation": "TaxExcluded",   # line Amounts are NET; QBO adds 9% SR back to the gross the customer paid
         "TxnDate": (order.get("date_paid") or order.get("date_created") or "")[:10] or None,
         "DepositToAccountRef": {"value": DEPOSIT_ACCOUNT_ID},
         "PrivateNote": f"WooCommerce B2C order #{num} ({order.get('payment_method_title')})",
@@ -310,7 +321,7 @@ def sync_order(order, qbo, execute):
     payload = {k: v for k, v in payload.items() if v is not None}
 
     if not execute:
-        print(f"    [dry-run] would POST SalesReceipt total=${built} (GST-inclusive; WC paid ${total})"); return "dryrun"
+        print(f"    [dry-run] would POST SalesReceipt total=${expected} (net ${built_net} + 9% SR; WC paid ${total})"); return "dryrun"
 
     st, d = qbo.post("salesreceipt", payload)
     if st == 200:
@@ -327,6 +338,7 @@ def main():
     ap.add_argument("--limit", type=int, default=5)
     ap.add_argument("--status", default="processing")
     ap.add_argument("--only", help="only this WC order id")
+    ap.add_argument("--since", help="only orders paid/created on/after YYYY-MM-DD (today-onward go-live guard)")
     args = ap.parse_args()
 
     if args.status in B2B_STATUSES:
@@ -338,6 +350,10 @@ def main():
     orders = wc_orders(env, args.status, args.limit)
     if args.only:
         orders = [o for o in orders if str(o.get("id")) == str(args.only)]
+    elif args.since:
+        before = len(orders)
+        orders = [o for o in orders if (o.get("date_paid") or o.get("date_created") or "")[:10] >= args.since]
+        print(f"[i] --since {args.since}: {len(orders)} of {before} fetched order(s) in window")
     print(f"[i] {len(orders)} order(s)\n")
 
     tally = {}
