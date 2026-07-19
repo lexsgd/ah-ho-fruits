@@ -15,11 +15,17 @@ never touches the B2B plugin's QuickBooks connection.
   Idempotent: skips orders whose SalesReceipt (DocNumber woo-<id>) already exists.
   Atomic token persistence (a refresh bug can never blank .env).
 """
-import os, sys, json, time, base64, argparse, tempfile, urllib.parse, urllib.request, urllib.error
+import os, sys, json, time, base64, argparse, csv, tempfile, urllib.parse, urllib.request, urllib.error
 from decimal import Decimal, ROUND_HALF_UP
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ENV_PATH = os.path.join(HERE, ".env")
+# WC-SKU -> QBO-item-code crosswalk. Ah Ho's QBO catalogue is deliberately coarser
+# than WooCommerce (many WC SKUs -> one QBO item, e.g. 125g + 200g blueberry), so a
+# QBO item's Sku field can only hold ONE code. A direct WC-SKU==QBO-Sku lookup misses
+# ~75% of B2C order lines; this file translates WC SKU -> the QBO item's code first.
+CROSSWALK_PATH = os.environ.get(
+    "AHHO_CROSSWALK", os.path.join(HERE, "QBO-WC-Crosswalk-FINAL-2026-06-16.csv"))
 
 GST_RATE = Decimal("0.09")
 SR_TAXCODE_ID = "45"               # QBO TaxCode "SR 9%" (rate SR-09; id 32 "9% SR"/SR-9 errors on calc)
@@ -56,6 +62,24 @@ def set_env_value(key, value, path=ENV_PATH):
     os.replace(tmp, path)
 
 
+def load_crosswalk(path=CROSSWALK_PATH):
+    """Return {WC SKU: QBO code}. QBO code is the value stored in the QBO item's
+    Sku field. Rows with a blank WC SKU or blank QBO code are skipped (a blank
+    mapping would be worse than none — it must fall through to a direct match /
+    hard-stop). Missing file -> empty map -> behaves exactly like before (direct
+    match only), so this is safe to ship even if the CSV isn't present."""
+    m = {}
+    if not os.path.exists(path):
+        return m
+    with open(path, newline="", encoding="utf-8-sig") as f:
+        for row in csv.DictReader(f):
+            wc = (row.get("WC SKU") or "").strip()
+            code = (row.get("QBO code") or "").strip()
+            if wc and code:
+                m[wc] = code
+    return m
+
+
 def money(x):
     return Decimal(str(x)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
@@ -75,7 +99,7 @@ def _req(url, method="GET", headers=None, data=None):
 
 
 class QBO:
-    def __init__(self, env):
+    def __init__(self, env, crosswalk=None):
         self.env = env
         self.realm = env["QBO_B2C_REALM_ID"]
         self.cid = env["QBO_B2C_CLIENT_ID"]
@@ -83,6 +107,7 @@ class QBO:
         self.refresh = env["QBO_B2C_REFRESH_TOKEN"]
         self.access = None
         self._item_cache = {}
+        self.crosswalk = crosswalk or {}
 
     def _refresh_token(self):
         auth = base64.b64encode(f"{self.cid}:{self.csec}".encode()).decode()
@@ -123,13 +148,27 @@ class QBO:
                 return a["Id"]
         return accts[0]["Id"] if accts else None
 
+    def _item_id_by_qbo_sku(self, code):
+        code_esc = code.replace("'", "\\'")
+        qr = self.query(f"select Id,Name from Item where Sku = '{code_esc}'")
+        items = qr.get("Item", [])
+        return items[0]["Id"] if items else None
+
     def item_by_sku(self, sku):
+        # DIRECT-FIRST, crosswalk-FALLBACK. Try the raw WC SKU against QBO's Sku
+        # field first (phase-1 one-to-one items were written this way). Only if
+        # that misses do we translate WC SKU -> QBO code via the crosswalk and try
+        # again. Direct-first guarantees this never breaks a match that works today;
+        # the crosswalk leg only ADDS matches once the coarse many-to-one QBO items
+        # actually carry their code in a queryable field (they do NOT yet — see
+        # AhHo-QBO-Mapping-Confirm doc; that is the remaining go-live blocker).
         if sku in self._item_cache:
             return self._item_cache[sku]
-        sku_esc = sku.replace("'", "\\'")
-        qr = self.query(f"select Id,Name from Item where Sku = '{sku_esc}'")
-        items = qr.get("Item", [])
-        rid = items[0]["Id"] if items else None
+        rid = self._item_id_by_qbo_sku(sku)
+        if not rid:
+            code = self.crosswalk.get(sku)
+            if code and code != sku:
+                rid = self._item_id_by_qbo_sku(code)
         self._item_cache[sku] = rid
         return rid
 
@@ -287,7 +326,7 @@ def sync_order(order, qbo, execute, doctype="invoice"):
     if unmapped:
         for u in unmapped:
             print(f"    [BLOCKED] unmapped product: {u}")
-        print("    → order held (add this SKU to the matching QBO item, then re-run). NOT posted.")
+        print("    → order held (add the WC SKU to the crosswalk, or set the QBO item's Sku, then re-run). NOT posted.")
         return "unmapped"
     if not lines:
         print("    no usable lines — skip"); return "skip"
@@ -355,8 +394,12 @@ def main():
         sys.exit(f"[!] {args.status} is B2B — handled by the plugin, not here.")
 
     env = load_env()
-    qbo = QBO(env)
+    crosswalk = load_crosswalk()
+    qbo = QBO(env, crosswalk)
+    xwalk_note = f"{len(crosswalk)} WC-SKU→QBO-code mappings" if crosswalk \
+        else f"MISSING ({CROSSWALK_PATH}) — direct SKU match only"
     print(f"[i] mode: {'EXECUTE (live)' if args.execute else 'DRY-RUN'}  status={args.status}  doctype={args.doctype}")
+    print(f"[i] crosswalk: {xwalk_note}")
     orders = wc_orders(env, args.status, args.limit)
     if args.only:
         orders = [o for o in orders if str(o.get("id")) == str(args.only)]

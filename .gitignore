@@ -45,3 +45,20 @@ wp-content/plugins/*/docs/*.pdf
 docs/QUICKBOOKS-*.md
 docs/QuickBooks-*.docx
 docs/generate_*.py
+
+# QBO data backups (financial data — never commit)
+qbo-backups/
+# WooCommerce backups (customer PII: names, emails, addresses — never commit)
+wc-backups/
+# Tax-code change rollback/plan files (contain QBO item ids)
+taxcode-change-*.json
+# Transaction retag plan/rollback files (contain txn ids)
+txn-retag-*.json
+# QBO item SKU-set rollback files
+qbo-item-sku-set-*.json
+# QBO apply/rollback files (contain QBO item ids) — never commit
+qbo-*.applied.json
+# Crosswalk CSV backups (per-run snapshots)
+*.csv.bak-*
+# Python bytecode cache
+__pycache__/
