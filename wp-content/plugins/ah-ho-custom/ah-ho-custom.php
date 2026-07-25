@@ -103,6 +103,13 @@ function ah_ho_custom_init() {
     // Include content fixes (text replacements for Avada builder content)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/content-fixes.php';
 
+    // Include checkout promo-code hint (points shoppers to the coupon box
+    // before they use the express/quick-pay buttons, which have no coupon field)
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/checkout-promo-hint.php';
+
+    // Include gift checkout address reminder (only shows when cart has a gift item)
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/gift-checkout-address-reminder.php';
+
 }
 add_action('plugins_loaded', 'ah_ho_custom_init');
 
