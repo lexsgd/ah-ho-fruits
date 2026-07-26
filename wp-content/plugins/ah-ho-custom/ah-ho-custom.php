@@ -110,6 +110,9 @@ function ah_ho_custom_init() {
     // Include gift checkout address reminder (only shows when cart has a gift item)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/gift-checkout-address-reminder.php';
 
+    // Include QuickBooks sync admin page ("Send orders to QuickBooks now" button)
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/qbo-sync-admin.php';
+
 }
 add_action('plugins_loaded', 'ah_ho_custom_init');
 
