@@ -21,10 +21,15 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Base directory of the sync install (sibling of public_html).
+ * Base directory of the sync install.
+ *
+ * Deliberately absolute, NOT derived from ABSPATH: this site lives at
+ * public_html/ah-ho-fruit/, so walking up from ABSPATH lands in public_html,
+ * not the account home where the sync actually lives. Override with the
+ * filter if the account is ever moved.
  */
 function ah_ho_qbo_dir() {
-    return apply_filters('ah_ho_qbo_dir', dirname(untrailingslashit(ABSPATH)) . '/ahho-qbo');
+    return apply_filters('ah_ho_qbo_dir', '/home2/contactl/ahho-qbo');
 }
 
 function ah_ho_qbo_state_dir() {
