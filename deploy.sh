@@ -6,7 +6,9 @@
 VODIEN_USER="contactl"
 VODIEN_HOST="sh00017.vodien.com"
 VODIEN_PORT="22"
-VODIEN_PATH="/home/contactl/public_html"
+# The live site is the ah-ho-fruit subdirectory. /home2/contactl/public_html is a
+# DIFFERENT, stale WordPress — deploying there silently does nothing to ahhofruit.com.
+VODIEN_PATH="/home2/contactl/public_html/ah-ho-fruit"
 
 # Colors for output
 RED='\033[0;31m'
@@ -18,6 +20,18 @@ echo -e "${YELLOW}========================================${NC}"
 echo -e "${YELLOW}Ah Ho Fruit - Manual Deployment Script${NC}"
 echo -e "${YELLOW}========================================${NC}"
 echo ""
+
+# SSH shell access is DISABLED on this cPanel account ("Shell access is not
+# enabled on your account"), so rsync-over-ssh cannot run. Deploys go through
+# GitHub Actions (.github/workflows/deploy.yml, which uses the VODIEN_* secrets);
+# for one-off files use tools/cpanel.py, which talks to the cPanel API instead.
+if [ "${I_KNOW_SHELL_IS_DISABLED:-}" != "1" ]; then
+    echo -e "${RED}This script cannot work: SSH shell access is disabled on the account.${NC}"
+    echo "  Deploy via:  git push origin main   (GitHub Actions)"
+    echo "  One-off file: python3 tools/cpanel.py put <local> <remote-dir>"
+    echo "  Override with I_KNOW_SHELL_IS_DISABLED=1 if shell has since been enabled."
+    exit 1
+fi
 
 # Check if rsync is installed
 if ! command -v rsync &> /dev/null; then

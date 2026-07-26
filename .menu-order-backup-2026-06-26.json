@@ -1,0 +1,1730 @@
+[
+{
+"id": 5039,
+"name": "[YELLOW] 9kg AUS ALLISON RED GRAPES 澳洲红葡萄",
+"menu_order": 255,
+"status": "publish"
+},
+{
+"id": 5038,
+"name": "45\" SA. NAVEL ORANGE 非洲肉橙",
+"menu_order": 159,
+"status": "publish"
+},
+{
+"id": 5037,
+"name": "28\" FUJI APPLE [BX] 中国双红富士苹果",
+"menu_order": 16,
+"status": "publish"
+},
+{
+"id": 5034,
+"name": "10kg MANGOSTEEN 山竹 (ctn)",
+"menu_order": 117,
+"status": "publish"
+},
+{
+"id": 5023,
+"name": "SUGAR PRUNE 美国蜜枣 (kg)",
+"menu_order": 84,
+"status": "publish"
+},
+{
+"id": 5020,
+"name": "[STY] 6\" AUS. ROCKMELON 澳洲蜜瓜",
+"menu_order": 192,
+"status": "publish"
+},
+{
+"id": 5018,
+"name": "10 x 454g USA BLACK CHERRY PLUM 美国黑樱桃李",
+"menu_order": 30,
+"status": "publish"
+},
+{
+"id": 5017,
+"name": "72\" USA. SUNKIST MIDNIGHT ORANGE 美国新奇士水橙",
+"menu_order": 213,
+"status": "publish"
+},
+{
+"id": 5016,
+"name": "56\" USA. SUNKIST MIDNIGHT ORANGE 美国新奇士水橙",
+"menu_order": 208,
+"status": "publish"
+},
+{
+"id": 5007,
+"name": "[TUMUT]113\" AUS. NAVEL ORANGE 澳洲肉橙",
+"menu_order": 217,
+"status": "publish"
+},
+{
+"id": 5006,
+"name": "[TUMUT] 72\" AUS. NAVEL ORANGE 澳洲肉橙",
+"menu_order": 216,
+"status": "publish"
+},
+{
+"id": 5005,
+"name": "[TUMUT] 56\" AUS. NAVEL ORANGE 澳洲肉橙",
+"menu_order": 215,
+"status": "publish"
+},
+{
+"id": 5000,
+"name": "MANGO - INDIA ICE CREAM 印度芒果 4kg",
+"menu_order": 48,
+"status": "publish"
+},
+{
+"id": 4995,
+"name": "9\" THAILAND RED POMELO 泰国红肉柚",
+"menu_order": 78,
+"status": "publish"
+},
+{
+"id": 4990,
+"name": "198\" SA. FUJI APPLE 非洲富士",
+"menu_order": 105,
+"status": "publish"
+},
+{
+"id": 4989,
+"name": "150\" SA. FUJI APPLE 非洲富士",
+"menu_order": 102,
+"status": "publish"
+},
+{
+"id": 4987,
+"name": "15\" NZ. PERSIMMON 纽西兰柿子",
+"menu_order": 119,
+"status": "publish"
+},
+{
+"id": 4986,
+"name": "[KS] FRAGRANT PEAR XXL (7kg) 大香梨",
+"menu_order": 168,
+"status": "publish"
+},
+{
+"id": 4981,
+"name": "15-18\" THAILAND CUSTARD APPLE 釋迦果",
+"menu_order": 44,
+"status": "publish"
+},
+{
+"id": 4978,
+"name": "9kg AUS. ADORA BLACK GRAPES 澳洲黑葡萄",
+"menu_order": 247,
+"status": "publish"
+},
+{
+"id": 4972,
+"name": "72\" USA. BEESWEET VALENCIA ORANGE 美国水橙",
+"menu_order": 302,
+"status": "publish"
+},
+{
+"id": 4971,
+"name": "14 x 4\" USA. JUMBO DONUT PEACH 美国特大扁桃",
+"menu_order": 113,
+"status": "publish"
+},
+{
+"id": 4970,
+"name": "12 X 500g TURKEY DONUT PEACH 土耳其扁桃",
+"menu_order": 112,
+"status": "publish"
+},
+{
+"id": 4968,
+"name": "THAI DUMPLING [RED BEAN YELLOWSTRING] 泰国红豆沙粽子",
+"menu_order": 180,
+"status": "publish"
+},
+{
+"id": 4967,
+"name": "THAI KOSONG DUMPLING [TAHO] 泰国粽子",
+"menu_order": 182,
+"status": "publish"
+},
+{
+"id": 4963,
+"name": "THAI KOSONG DUMPLING [REDSTRING] 泰国粽子",
+"menu_order": 181,
+"status": "publish"
+},
+{
+"id": 4962,
+"name": "80\" NZ. PACIFIC ROSE 纽西兰玫瑰苹果",
+"menu_order": 106,
+"status": "publish"
+},
+{
+"id": 4959,
+"name": "20\" DOG PEAR 狗梨",
+"menu_order": 114,
+"status": "publish"
+},
+{
+"id": 4958,
+"name": "5kg 8.5R\" US. CHERRY 美国车厘子",
+"menu_order": 274,
+"status": "publish"
+},
+{
+"id": 4957,
+"name": "5kg 9R\" US. CHERRY 美国车厘子",
+"menu_order": 277,
+"status": "publish"
+},
+{
+"id": 4953,
+"name": "113\" USA. BEESWEET VALENCIA ORANGE 美国水橙",
+"menu_order": 300,
+"status": "publish"
+},
+{
+"id": 4951,
+"name": "18 x 500g CHINA MINI PLUM 中国小李子",
+"menu_order": 35,
+"status": "publish"
+},
+{
+"id": 4946,
+"name": "18\" USA. WHITE PEACH 美国白桃",
+"menu_order": 114,
+"status": "publish"
+},
+{
+"id": 4945,
+"name": "36-40\" CHINA WOGAM 沃柑",
+"menu_order": 75,
+"status": "publish"
+},
+{
+"id": 4944,
+"name": "16\" NZ PERSIMMON 纽西兰柿子",
+"menu_order": 121,
+"status": "publish"
+},
+{
+"id": 4943,
+"name": "9\" BING TANG LI 冰糖梨",
+"menu_order": 114,
+"status": "publish"
+},
+{
+"id": 4942,
+"name": "4kg 9R RAINIER CHERRY 白车厘子",
+"menu_order": 272,
+"status": "publish"
+},
+{
+"id": 4940,
+"name": "30 x 350g CHINA PEANUT 陈皮花生",
+"menu_order": 176,
+"status": "publish"
+},
+{
+"id": 4938,
+"name": "40 x 500g CHINA DURIAN SWEET POTATO 榴莲番薯",
+"menu_order": 178,
+"status": "publish"
+},
+{
+"id": 4937,
+"name": "4kg 9.5R RAINIER CHERRY 白车厘子",
+"menu_order": 270,
+"status": "publish"
+},
+{
+"id": 4934,
+"name": "5kg 8R\" USA. CHERRY 美国车厘子",
+"menu_order": 275,
+"status": "publish"
+},
+{
+"id": 4930,
+"name": "48\" SA RED PEAR 非洲红耙",
+"menu_order": 105,
+"status": "publish"
+},
+{
+"id": 4913,
+"name": "5kg 30mm\" TUR. CHERRY 土耳其樱桃",
+"menu_order": 273,
+"status": "publish"
+},
+{
+"id": 4905,
+"name": "5kg CHINA MUSCAT 杨光葡萄",
+"menu_order": 8,
+"status": "publish"
+},
+{
+"id": 4904,
+"name": "7\" DOLE TAIWAN PINEAPPLE 台湾宾黄梨",
+"menu_order": 196,
+"status": "publish"
+},
+{
+"id": 4900,
+"name": "RAINIER CHERRY 白车厘子 (kg)",
+"menu_order": 278,
+"status": "publish"
+},
+{
+"id": 4899,
+"name": "100\" SA. LEMON 非洲柠檬",
+"menu_order": 241,
+"status": "publish"
+},
+{
+"id": 4886,
+"name": "10 x 454g USA RED CHERRY PLUM 美国红樱桃李",
+"menu_order": 31,
+"status": "publish"
+},
+{
+"id": 4883,
+"name": "8\" CHINA YELLOW DRAGONFRUIT 黄色龙珠果",
+"menu_order": 232,
+"status": "publish"
+},
+{
+"id": 4875,
+"name": "80\" NZ. ENVY APPLE 新西兰爱妃苹果",
+"menu_order": 138,
+"status": "publish"
+},
+{
+"id": 4868,
+"name": "30\" NZ. ENVY APPLE 新西兰爱妃苹果",
+"menu_order": 136,
+"status": "publish"
+},
+{
+"id": 4865,
+"name": "3kg NUO MI ZI LYCHEE 糯米糍荔枝",
+"menu_order": 37,
+"status": "publish"
+},
+{
+"id": 4864,
+"name": "[TRUCAPE] 120\" SA. FUJI APPLE 非洲富士",
+"menu_order": 108,
+"status": "publish"
+},
+{
+"id": 4863,
+"name": "GUAVA 番石榴 (pc)",
+"menu_order": 45,
+"status": "publish"
+},
+{
+"id": 4858,
+"name": "135\" SA. FUJI APPLE [DUT/WHITE 白箱]非洲富士",
+"menu_order": 101,
+"status": "publish"
+},
+{
+"id": 4854,
+"name": "60\" EGYPT HONEY MAN. ORANGE 埃及柑",
+"menu_order": 161,
+"status": "publish"
+},
+{
+"id": 4845,
+"name": "CHINA LYCHEE [FZX] 中国妃子笑荔枝 (kg)",
+"menu_order": 39,
+"status": "publish"
+},
+{
+"id": 4834,
+"name": "6\" SA. POMEGRANATE 石榴",
+"menu_order": 244,
+"status": "publish"
+},
+{
+"id": 4829,
+"name": "5\" CHINA MUSKMELON 中国香瓜",
+"menu_order": 189,
+"status": "publish"
+},
+{
+"id": 4827,
+"name": "5kg 9.5R\" US. CHERRY 美国车厘子",
+"menu_order": 276,
+"status": "publish"
+},
+{
+"id": 4823,
+"name": "4kg USA MIDNIGHT ROSE PLUM 美国黑红李子",
+"menu_order": 25,
+"status": "publish"
+},
+{
+"id": 4794,
+"name": "250g USA. STRAWBERRY 美国草莓 (pkt)",
+"menu_order": 3,
+"status": "publish"
+},
+{
+"id": 4791,
+"name": "COCONUT THUMB 椰子水 (pc)",
+"menu_order": 64,
+"status": "publish"
+},
+{
+"id": 4776,
+"name": "FRAGRANT PEAR XL (7kg) 小香梨",
+"menu_order": 168,
+"status": "publish"
+},
+{
+"id": 4766,
+"name": "MANGO - TAIWAN 台湾芒果",
+"menu_order": 51,
+"status": "publish"
+},
+{
+"id": 4760,
+"name": "9kg CHINA LYCHEE [FZX] 中国妃子笑荔枝",
+"menu_order": 38,
+"status": "publish"
+},
+{
+"id": 4740,
+"name": "2 x 250g JAPANESE STRAWBERRY 日本草莓",
+"menu_order": 4,
+"status": "publish"
+},
+{
+"id": 4737,
+"name": "EGY. MANDARIN ORANGE (pcs) 柑",
+"menu_order": 162,
+"status": "publish"
+},
+{
+"id": 4732,
+"name": "MANGO - IVORY/ELEPHANT HUSK 象牙 18kg",
+"menu_order": 50,
+"status": "publish"
+},
+{
+"id": 4731,
+"name": "NZ. DAZZLE APP 纽西兰DAZ苹果 (pc)",
+"menu_order": 92,
+"status": "publish"
+},
+{
+"id": 4728,
+"name": "80\" NZ. DAZZLE APP 纽西兰DAZ苹果",
+"menu_order": 90,
+"status": "publish"
+},
+{
+"id": 4727,
+"name": "30\" NZ. DAZZLE APP 纽西兰DAZ苹果",
+"menu_order": 86,
+"status": "publish"
+},
+{
+"id": 4726,
+"name": "70\" NZ. DAZZLE APP 纽西兰DAZ苹果",
+"menu_order": 88,
+"status": "publish"
+},
+{
+"id": 4723,
+"name": "YANG MEI 杨梅 (pkt)",
+"menu_order": 183,
+"status": "publish"
+},
+{
+"id": 4721,
+"name": "6 x 250g YANG MEI 杨梅",
+"menu_order": 179,
+"status": "publish"
+},
+{
+"id": 4720,
+"name": "AUS. ADORA BLACK GRAPES 澳洲黑葡萄 (kg)",
+"menu_order": 248,
+"status": "publish"
+},
+{
+"id": 4710,
+"name": "9kg AUS ALLISON RED GRAPES 澳洲红葡萄",
+"menu_order": 254,
+"status": "publish"
+},
+{
+"id": 4697,
+"name": "15kg RAMBUTAN 红毛丹",
+"menu_order": 120,
+"status": "publish"
+},
+{
+"id": 4692,
+"name": "67\" ZESPRI RED KIWI 红肉奇异果",
+"menu_order": 165,
+"status": "publish"
+},
+{
+"id": 4686,
+"name": "165\" SA. ROYAL BEAUTY 皇家美人苹果",
+"menu_order": 104,
+"status": "publish"
+},
+{
+"id": 4677,
+"name": "MANGO - THAI HONEY 4A 泰国芒果",
+"menu_order": 52,
+"status": "publish"
+},
+{
+"id": 4676,
+"name": "8kg 85/90mm CN. WOGAM 中国沃柑",
+"menu_order": 76,
+"status": "publish"
+},
+{
+"id": 4671,
+"name": "100\" FUJI APPLE [FC] 中国富士苹果",
+"menu_order": 15,
+"status": "publish"
+},
+{
+"id": 4669,
+"name": "80\" NZ. ROSE APPLE 纽西兰玫瑰苹果",
+"menu_order": 107,
+"status": "publish"
+},
+{
+"id": 4668,
+"name": "150\" SA GREEN APPLE 非洲青苹果",
+"menu_order": 67,
+"status": "publish"
+},
+{
+"id": 4666,
+"name": "AUS. AUTUMN CRISPS GRAPES 澳洲青葡萄 (kg)",
+"menu_order": 250,
+"status": "publish"
+},
+{
+"id": 4661,
+"name": "135\" NZ. GALA APPLE 嘎啦苹果",
+"menu_order": 100,
+"status": "publish"
+},
+{
+"id": 4660,
+"name": "120\" SA. ROYAL BEAUTY 皇家美人苹果",
+"menu_order": 99,
+"status": "publish"
+},
+{
+"id": 4651,
+"name": "1 X 16\" CHINA PIPA 中国琵琶",
+"menu_order": 219,
+"status": "publish"
+},
+{
+"id": 4650,
+"name": "[KS] 10 x 200g JUMBO BLUEBERRY 大蓝莓",
+"menu_order": 223,
+"status": "publish"
+},
+{
+"id": 4648,
+"name": "9kg CN. TANGERINE 中国王帝桔",
+"menu_order": 256,
+"status": "publish"
+},
+{
+"id": 4644,
+"name": "MANGO - THAI HONEY 6A 泰国芒果",
+"menu_order": 53,
+"status": "publish"
+},
+{
+"id": 4641,
+"name": "10kg 63mm OCTOBER SUN PLUM 澳洲青红李子",
+"menu_order": 172,
+"status": "publish"
+},
+{
+"id": 4633,
+"name": "18\" NZ PERSIMMON 纽西兰柿子",
+"menu_order": 123,
+"status": "publish"
+},
+{
+"id": 4622,
+"name": "72\" USA. SUNKIST NAVEL 美国肉橙",
+"menu_order": 214,
+"status": "publish"
+},
+{
+"id": 4612,
+"name": "6\" AUS. ROCKMELON 澳洲蜜瓜 [HP]",
+"menu_order": 190,
+"status": "publish"
+},
+{
+"id": 4611,
+"name": "88\" FUJI APPLE [BX] 中国富士苹果",
+"menu_order": 239,
+"status": "publish"
+},
+{
+"id": 4610,
+"name": "10 x 800g SA. RED PEAR 非洲红耙",
+"menu_order": 105,
+"status": "publish"
+},
+{
+"id": 4601,
+"name": "10kg SA/EGY. TANGERINE 桔子",
+"menu_order": 79,
+"status": "publish"
+},
+{
+"id": 4594,
+"name": "OMAKASE FRUIT BOX 水果礼盒 - REGULAR",
+"menu_order": 333,
+"status": "publish"
+},
+{
+"id": 4590,
+"name": "8kg VIETNAM JUMBU 越南水翁",
+"menu_order": 319,
+"status": "publish"
+},
+{
+"id": 4584,
+"name": "MANGO - INDIA 印度芒果 8kg",
+"menu_order": 49,
+"status": "publish"
+},
+{
+"id": 4574,
+"name": "120\" NZ. GALA APPLE 嘎啦苹果",
+"menu_order": 98,
+"status": "publish"
+},
+{
+"id": 4572,
+"name": "42\" SA. PEAR 非洲耙",
+"menu_order": 80,
+"status": "publish"
+},
+{
+"id": 4568,
+"name": "70\" NZ QUEEN APPLE 纽西兰皇后苹果",
+"menu_order": 87,
+"status": "publish"
+},
+{
+"id": 4563,
+"name": "JUMBU [THAI ROSE APPLES] 水蓊 (pc)",
+"menu_order": 320,
+"status": "publish"
+},
+{
+"id": 4562,
+"name": "10kg 5A JUMBU [THAI ROSE APPLES] 水蓊",
+"menu_order": 318,
+"status": "publish"
+},
+{
+"id": 4557,
+"name": "12.7kg 80mm USA SUGAR PRUNE 美国蜜枣",
+"menu_order": 82,
+"status": "publish"
+},
+{
+"id": 4556,
+"name": "SOUTH AFRICA PEAR 非洲耙 (S)",
+"menu_order": 216,
+"status": "publish"
+},
+{
+"id": 4551,
+"name": "8 x 250g KOR. STRAWBERRY 韩国草莓",
+"menu_order": 222,
+"status": "publish"
+},
+{
+"id": 4549,
+"name": "3kg CHERRY TOMATO ON VINE 樱桃番茄 [带藤]",
+"menu_order": 177,
+"status": "publish"
+},
+{
+"id": 4545,
+"name": "10kg 67mm OCTOBER SUN PLUM 澳洲青红李子",
+"menu_order": 174,
+"status": "publish"
+},
+{
+"id": 4533,
+"name": "12.5kg USA. 4040 BLACK PLUM 美国黑李子",
+"menu_order": 24,
+"status": "publish"
+},
+{
+"id": 4531,
+"name": "5/6\" FRENCH MELON 法国瓜",
+"menu_order": 187,
+"status": "publish"
+},
+{
+"id": 4530,
+"name": "USA. KISS MELON 美国亲亲瓜 (pc)",
+"menu_order": 188,
+"status": "publish"
+},
+{
+"id": 4528,
+"name": "12\" AUS. KISS MELON 美国亲亲瓜",
+"menu_order": 186,
+"status": "publish"
+},
+{
+"id": 4522,
+"name": "60\" SA. PEAR 非洲耙",
+"menu_order": 80,
+"status": "publish"
+},
+{
+"id": 4521,
+"name": "52\" SA. PEAR 非洲耙",
+"menu_order": 80,
+"status": "publish"
+},
+{
+"id": 4520,
+"name": "OMAKASE FRUIT BOX 水果礼盒 - LUXURY",
+"menu_order": 329,
+"status": "publish"
+},
+{
+"id": 4519,
+"name": "MANGO - 5A RAINBOW 彩虹芒果",
+"menu_order": 46,
+"status": "publish"
+},
+{
+"id": 4497,
+"name": "5\" CN HAMIGUA 哈密瓜",
+"menu_order": 167,
+"status": "publish"
+},
+{
+"id": 4495,
+"name": "45\" SA. PEAR 非洲耙",
+"menu_order": 80,
+"status": "publish"
+},
+{
+"id": 4490,
+"name": "5kg USA MEDJOOL DATES 马来枣",
+"menu_order": 185,
+"status": "publish"
+},
+{
+"id": 4485,
+"name": "10kg AUS CARROT 萝卜",
+"menu_order": 27,
+"status": "publish"
+},
+{
+"id": 4483,
+"name": "8 x 330g D/C CHINA STRAWBERRY 中国草莓",
+"menu_order": 5,
+"status": "publish"
+},
+{
+"id": 4481,
+"name": "USA NAVEL ORANGE 美国三级星 (M)",
+"menu_order": 353,
+"status": "publish"
+},
+{
+"id": 4480,
+"name": "113\" LOCSWEET ORANGE 澳洲橙",
+"menu_order": 57,
+"status": "publish"
+},
+{
+"id": 4469,
+"name": "40\" SA. NAVEL ORANGE 非洲肉橙",
+"menu_order": 158,
+"status": "publish"
+},
+{
+"id": 4466,
+"name": "500g SA/EGY GREEN GRAPES 非洲青葡萄",
+"menu_order": 168,
+"status": "publish"
+},
+{
+"id": 4465,
+"name": "6 x 650g CN. MUSCAT 杨光葡萄",
+"menu_order": 9,
+"status": "publish"
+},
+{
+"id": 4463,
+"name": "1kg ATAP SEEDS 亞答子",
+"menu_order": 126,
+"status": "publish"
+},
+{
+"id": 4454,
+"name": "10kg AUS BLACK PLUM 澳洲黑李子",
+"menu_order": 22,
+"status": "publish"
+},
+{
+"id": 4449,
+"name": "12 x 1kg INDONESIAN PRESERVED MANGO 水芒果",
+"menu_order": 60,
+"status": "publish"
+},
+{
+"id": 4446,
+"name": "24 packets/ctn CHESTNUT 开口栗子",
+"menu_order": 128,
+"status": "publish"
+},
+{
+"id": 4444,
+"name": "20\" BING TANG LI 冰糖梨",
+"menu_order": 114,
+"status": "publish"
+},
+{
+"id": 4443,
+"name": "15kg SA/EGY. TANGERINE 桔子",
+"menu_order": 80,
+"status": "publish"
+},
+{
+"id": 4442,
+"name": "6\" AUS. CANDY MELON 澳洲太阳瓜",
+"menu_order": 28,
+"status": "publish"
+},
+{
+"id": 4441,
+"name": "OCTOBER SUN PLUM 澳洲青红李子 (kg)",
+"menu_order": 328,
+"status": "publish"
+},
+{
+"id": 4440,
+"name": "10kg 51mm OCTOBER SUN PLUM 澳洲青红李子",
+"menu_order": 169,
+"status": "publish"
+},
+{
+"id": 4439,
+"name": "10kg 45/48mm OCTOBER SUN PLUM 澳洲青红李子",
+"menu_order": 153,
+"status": "publish"
+},
+{
+"id": 4435,
+"name": "18\" AUS HASS AVOCADO 澳洲粗皮牛油果",
+"menu_order": 111,
+"status": "publish"
+},
+{
+"id": 4434,
+"name": "15“ JELLY COCONUT 椰子果冻",
+"menu_order": 81,
+"status": "publish"
+},
+{
+"id": 4433,
+"name": "10kg THAI GUAVA (ctn) 番石榴",
+"menu_order": 43,
+"status": "publish"
+},
+{
+"id": 4428,
+"name": "30\" THAI COCONUT 椰子",
+"menu_order": 139,
+"status": "publish"
+},
+{
+"id": 4427,
+"name": "10KG ORGANIC LONGAN 有机龙眼",
+"menu_order": 41,
+"status": "publish"
+},
+{
+"id": 4425,
+"name": "14\" WHITE DRAGONFRUIT 白龙珠果",
+"menu_order": 125,
+"status": "publish"
+},
+{
+"id": 4422,
+"name": "28\" AUS SHEPARD AVOCADO 澳洲滑皮牛油果",
+"menu_order": 131,
+"status": "publish"
+},
+{
+"id": 4421,
+"name": "4 x 300g KOREAN WHITE STRAWBERRY 韩国白草莓",
+"menu_order": 145,
+"status": "publish"
+},
+{
+"id": 4417,
+"name": "16\" WHITE DRAGONFRUIT 白龙珠果",
+"menu_order": 97,
+"status": "publish"
+},
+{
+"id": 4413,
+"name": "7\" YELLOW DRAGONFRUIT 黄龙珠果",
+"menu_order": 198,
+"status": "publish"
+},
+{
+"id": 4412,
+"name": "6\" YELLOW DRAGONFRUIT 黄龙珠果",
+"menu_order": 194,
+"status": "publish"
+},
+{
+"id": 4411,
+"name": "7\" DOLE PINEAPPLE 菲力宾黄梨",
+"menu_order": 195,
+"status": "publish"
+},
+{
+"id": 4407,
+"name": "48\" CHINA ORANGE 中国肉橙",
+"menu_order": 154,
+"status": "publish"
+},
+{
+"id": 4405,
+"name": "SKYE 12 x 125g JUMBO BLUEBERRY 大蓝莓",
+"menu_order": 322,
+"status": "publish"
+},
+{
+"id": 4403,
+"name": "USA HUNNYZ APPLE 美国红苹果",
+"menu_order": 351,
+"status": "publish"
+},
+{
+"id": 4402,
+"name": "80\" USA HUNNYZ APPLE 美国红苹果",
+"menu_order": 236,
+"status": "publish"
+},
+{
+"id": 4398,
+"name": "138\" USA FUJI APPLE 美国富士苹果",
+"menu_order": 72,
+"status": "publish"
+},
+{
+"id": 4397,
+"name": "32\" FUJI APPLE [HH] 中国双红富士苹果",
+"menu_order": 140,
+"status": "publish"
+},
+{
+"id": 4396,
+"name": "135\" SA JOYA APPLE 非洲小苹果",
+"menu_order": 70,
+"status": "publish"
+},
+{
+"id": 4395,
+"name": "15\" SUNNY POMELO 柚子",
+"menu_order": 77,
+"status": "publish"
+},
+{
+"id": 4394,
+"name": "12\" SUNNY POMELO 柚子",
+"menu_order": 65,
+"status": "publish"
+},
+{
+"id": 4393,
+"name": "10\" SUNNY POMELO 柚子",
+"menu_order": 13,
+"status": "publish"
+},
+{
+"id": 4368,
+"name": "SUNNY POMELO 柚子 (XL) (pc)",
+"menu_order": 346,
+"status": "publish"
+},
+{
+"id": 4366,
+"name": "SUNNY POMELO 柚子 (L) (pc)",
+"menu_order": 343,
+"status": "publish"
+},
+{
+"id": 4364,
+"name": "SUNNY POMELO 柚子 (M) (pc)",
+"menu_order": 344,
+"status": "publish"
+},
+{
+"id": 4362,
+"name": "SUNNY POMELO 柚子 (S) (pc)",
+"menu_order": 345,
+"status": "publish"
+},
+{
+"id": 4360,
+"name": "6\" AUS. SPAIN MELON 澳洲西班牙瓜",
+"menu_order": 193,
+"status": "publish"
+},
+{
+"id": 4358,
+"name": "AUS. SPAIN MELON (pc)",
+"menu_order": 259,
+"status": "publish"
+},
+{
+"id": 4356,
+"name": "120\" SA JOYA APPLE 非洲小苹果",
+"menu_order": 68,
+"status": "publish"
+},
+{
+"id": 4352,
+"name": "36\" JAPANESE TOKI APPLE 日本王琳",
+"menu_order": 142,
+"status": "publish"
+},
+{
+"id": 4350,
+"name": "JAPANESE TOKI APPLE 日本王琳 (pc)",
+"menu_order": 314,
+"status": "publish"
+},
+{
+"id": 4346,
+"name": "SA RED PEAR 非洲红耙 (pc)",
+"menu_order": 211,
+"status": "publish"
+},
+{
+"id": 4344,
+"name": "8\" SUNNY POMELO 柚子",
+"menu_order": 231,
+"status": "publish"
+},
+{
+"id": 4326,
+"name": "PERSIMMON (pc)",
+"menu_order": 335,
+"status": "publish"
+},
+{
+"id": 4324,
+"name": "FLOWERS FOR ADD ON",
+"menu_order": 1,
+"status": "publish"
+},
+{
+"id": 4322,
+"name": "MANGO - THAI HONEY 7A 泰国芒果",
+"menu_order": 54,
+"status": "publish"
+},
+{
+"id": 4320,
+"name": "THAI HONEY MANGO (pc)",
+"menu_order": 347,
+"status": "publish"
+},
+{
+"id": 4310,
+"name": "FRUITICO 9kg AUS. A/CRISPS GRAPES 澳洲青葡萄",
+"menu_order": 251,
+"status": "publish"
+},
+{
+"id": 4308,
+"name": "AUS GREEN GRAPES 澳洲青葡萄 (kg)",
+"menu_order": 257,
+"status": "publish"
+},
+{
+"id": 4303,
+"name": "10 x 800g CN. WOGAM 中国沃柑",
+"menu_order": 74,
+"status": "publish"
+},
+{
+"id": 4302,
+"name": "38\" SA. PEAR 非洲耙",
+"menu_order": 74,
+"status": "publish"
+},
+{
+"id": 4300,
+"name": "120\" SA GREEN APPLE 非洲青苹果",
+"menu_order": 66,
+"status": "publish"
+},
+{
+"id": 4298,
+"name": "100\" FUJI APPLE [HH] 中国双红富士苹果",
+"menu_order": 17,
+"status": "publish"
+},
+{
+"id": 4297,
+"name": "72\" FUJI APPLE [HH] 中国双红富士苹果",
+"menu_order": 204,
+"status": "publish"
+},
+{
+"id": 4296,
+"name": "88\" FUJI APPLE [HH] 中国双红富士苹果",
+"menu_order": 240,
+"status": "publish"
+},
+{
+"id": 4083,
+"name": "LARGE FRAGRANT PEAR 香梨 (pc)",
+"menu_order": 169,
+"status": "publish"
+},
+{
+"id": 4079,
+"name": "MANGO - THAI KING 皇帝芒果",
+"menu_order": 55,
+"status": "publish"
+},
+{
+"id": 4078,
+"name": "10kg PINK GUAVA",
+"menu_order": 42,
+"status": "publish"
+},
+{
+"id": 4077,
+"name": "10kg 4A JUMBU [THAI ROSE APPLES] 水蓊",
+"menu_order": 317,
+"status": "publish"
+},
+{
+"id": 4076,
+"name": "WATERMELON (pc)",
+"menu_order": 356,
+"status": "publish"
+},
+{
+"id": 4073,
+"name": "USA CHERRY 美国车厘子 (kg)",
+"menu_order": 279,
+"status": "publish"
+},
+{
+"id": 4071,
+"name": "YOUNG COCONUT 椰子",
+"menu_order": 361,
+"status": "publish"
+},
+{
+"id": 4070,
+"name": "SOUTH AFRICAN POMEGRANATE 石榴",
+"menu_order": 304,
+"status": "publish"
+},
+{
+"id": 4069,
+"name": "PHILIPPINES SOLO PAPAYA 菲律宾木瓜",
+"menu_order": 336,
+"status": "publish"
+},
+{
+"id": 4068,
+"name": "USA. WHITE PEACH 美国白桃 (pc)",
+"menu_order": 267,
+"status": "publish"
+},
+{
+"id": 4066,
+"name": "YELLOW PASSIONFRUIT 百香果 (pc)",
+"menu_order": 359,
+"status": "publish"
+},
+{
+"id": 4065,
+"name": "YELLOW DRAGONFRUIT 黄色龙珠果 (pc)",
+"menu_order": 358,
+"status": "publish"
+},
+{
+"id": 4063,
+"name": "AUSTRALIA HASS AVOCADO 澳洲牛油果 (pc)",
+"menu_order": 261,
+"status": "publish"
+},
+{
+"id": 4062,
+"name": "ORGANIC LONGAN 有机龙眼 (1kg)",
+"menu_order": 334,
+"status": "publish"
+},
+{
+"id": 4061,
+"name": "LONGAN 龙眼 (1 kg)",
+"menu_order": 323,
+"status": "publish"
+},
+{
+"id": 4060,
+"name": "BANANA 香蕉 (per bunch)",
+"menu_order": 268,
+"status": "publish"
+},
+{
+"id": 4059,
+"name": "INDO. PINEAPPLE 印尼黄梨 (pc)",
+"menu_order": 313,
+"status": "publish"
+},
+{
+"id": 4058,
+"name": "GREEN KIWI 青奇异果",
+"menu_order": 310,
+"status": "publish"
+},
+{
+"id": 4057,
+"name": "GOLD KIWI JUMBO 特大金奇异果",
+"menu_order": 307,
+"status": "publish"
+},
+{
+"id": 4056,
+"name": "GOLD KIWI 金奇异果",
+"menu_order": 308,
+"status": "publish"
+},
+{
+"id": 4055,
+"name": "AUSTRALIA AMBER JEWEL PLUM 澳洲红宝石李子(kg)",
+"menu_order": 260,
+"status": "publish"
+},
+{
+"id": 4054,
+"name": "AUSTRALIA RED PLUM 澳洲红李子 (kg)",
+"menu_order": 264,
+"status": "publish"
+},
+{
+"id": 4053,
+"name": "12\" COCONUT THUMB 椰子水",
+"menu_order": 63,
+"status": "publish"
+},
+{
+"id": 4051,
+"name": "8\" SA. POMEGRANATE 石榴",
+"menu_order": 245,
+"status": "publish"
+},
+{
+"id": 4050,
+"name": "10\" SOLO PAPAYA 菲利宾木瓜",
+"menu_order": 12,
+"status": "publish"
+},
+{
+"id": 4049,
+"name": "8\" SOLO PAPAYA 菲利宾木瓜",
+"menu_order": 230,
+"status": "publish"
+},
+{
+"id": 4048,
+"name": "20\" USA. WHITE PEACH 美国白桃",
+"menu_order": 115,
+"status": "publish"
+},
+{
+"id": 4047,
+"name": "11kg USA. WHITE NECTARINE 美国桃李",
+"menu_order": 40,
+"status": "publish"
+},
+{
+"id": 4046,
+"name": "YELLOW PASSIONFRUIT 百香果 (Carton)",
+"menu_order": 360,
+"status": "publish"
+},
+{
+"id": 4045,
+"name": "8\" YELLOW DRAGONFRUIT 黄色龙珠果",
+"menu_order": 233,
+"status": "publish"
+},
+{
+"id": 4042,
+"name": "28\" AUS HASS AVOCADO 澳洲粗皮牛油果",
+"menu_order": 130,
+"status": "publish"
+},
+{
+"id": 4041,
+"name": "70\" MEXICO AVOCADO 粗皮牛油果",
+"menu_order": 110,
+"status": "publish"
+},
+{
+"id": 4040,
+"name": "11kg LONGAN 龙眼",
+"menu_order": 58,
+"status": "publish"
+},
+{
+"id": 4039,
+"name": "12 x 1kg LONGAN 有机龙眼",
+"menu_order": 62,
+"status": "publish"
+},
+{
+"id": 4038,
+"name": "DEL MONTE / ALOHA BANANA (18kg)",
+"menu_order": 298,
+"status": "publish"
+},
+{
+"id": 4037,
+"name": "9\" THAI. GOLDEN PINEAPPLE 泰国黄梨",
+"menu_order": 229,
+"status": "publish"
+},
+{
+"id": 4036,
+"name": "7\" IND PINEAPPLE 印尼黄梨",
+"menu_order": 197,
+"status": "publish"
+},
+{
+"id": 4035,
+"name": "78” ZESPRI GREEN KIWI 青奇异果",
+"menu_order": 218,
+"status": "publish"
+},
+{
+"id": 4034,
+"name": "31\" ZESPRI JUMBO GOLD KIWI 特大金奇异果",
+"menu_order": 362,
+"status": "publish"
+},
+{
+"id": 4033,
+"name": "44“ ZESPRI GOLD KIWI 金奇异果",
+"menu_order": 163,
+"status": "publish"
+},
+{
+"id": 4032,
+"name": "10kg AUS AMBER JEWEL PLUM 澳洲红宝石李子",
+"menu_order": 20,
+"status": "publish"
+},
+{
+"id": 4031,
+"name": "12.7kg USA YELLOW PLUM 美国黄李子",
+"menu_order": 29,
+"status": "publish"
+},
+{
+"id": 4030,
+"name": "KOREAN STRAWBERRY 韩国草莓 (330g)",
+"menu_order": 321,
+"status": "publish"
+},
+{
+"id": 4029,
+"name": "EGYPT STRAWBERRY 埃及草莓 (250g)",
+"menu_order": 305,
+"status": "publish"
+},
+{
+"id": 4028,
+"name": "JUMBO BLUEBERRY 大蓝莓 (200g)",
+"menu_order": 316,
+"status": "publish"
+},
+{
+"id": 4027,
+"name": "JUMBO BLUEBERRY 大蓝莓 (125g)",
+"menu_order": 315,
+"status": "publish"
+},
+{
+"id": 4026,
+"name": "BLUEBERRY 蓝莓 (125g)",
+"menu_order": 269,
+"status": "publish"
+},
+{
+"id": 4025,
+"name": "4 x 330g KOREAN STRAWBERRY 韩国草莓",
+"menu_order": 146,
+"status": "publish"
+},
+{
+"id": 4024,
+"name": "12 x 250g USA. STRAWBERRY 美国草莓",
+"menu_order": 2,
+"status": "publish"
+},
+{
+"id": 4023,
+"name": "D/C 10 x 200g JUMBO BLUEBERRY 大蓝莓",
+"menu_order": 295,
+"status": "publish"
+},
+{
+"id": 4022,
+"name": "D/C 12 x 125g JUMBO BLUEBERRY 大蓝莓",
+"menu_order": 296,
+"status": "publish"
+},
+{
+"id": 4021,
+"name": "18mm 8 x 200g JUMBO BLUEBERRY 大蓝莓",
+"menu_order": 297,
+"status": "publish"
+},
+{
+"id": 4020,
+"name": "HAMIGUA 中国哈密瓜 (pcs)",
+"menu_order": 284,
+"status": "publish"
+},
+{
+"id": 4019,
+"name": "ROCKMELON 澳洲蜜瓜 (pcs)",
+"menu_order": 265,
+"status": "publish"
+},
+{
+"id": 4018,
+"name": "4\" CN HAMIGUA 哈密瓜",
+"menu_order": 147,
+"status": "publish"
+},
+{
+"id": 4017,
+"name": "6\" AUS. ROCKMELON 澳洲蜜瓜 [LP]",
+"menu_order": 191,
+"status": "publish"
+},
+{
+"id": 4014,
+"name": "CHINA EMPEROR TANGERINE 王帝桔 (kg)",
+"menu_order": 280,
+"status": "publish"
+},
+{
+"id": 4013,
+"name": "SA. NAVEL ORANGE 非洲肉橙 (L)",
+"menu_order": 355,
+"status": "publish"
+},
+{
+"id": 4012,
+"name": "USA NAVEL ORANGE 美国肉橙 (L)",
+"menu_order": 354,
+"status": "publish"
+},
+{
+"id": 4011,
+"name": "SA./EGY. LEMON 埃及柠檬",
+"menu_order": 299,
+"status": "publish"
+},
+{
+"id": 4009,
+"name": "EGYPT VALENCIA ORANGE 埃及水橙 (pc)",
+"menu_order": 303,
+"status": "publish"
+},
+{
+"id": 4008,
+"name": "72\" LOCSWEET ORANGE 澳洲橙",
+"menu_order": 287,
+"status": "publish"
+},
+{
+"id": 4007,
+"name": "CHINA ORANGE 中国肉橙 (L)",
+"menu_order": 286,
+"status": "publish"
+},
+{
+"id": 4001,
+"name": "10kg CHINA FRAGRANT LIME 香水柠檬",
+"menu_order": 19,
+"status": "publish"
+},
+{
+"id": 4000,
+"name": "88\" SA. LEMON 非洲柠檬",
+"menu_order": 242,
+"status": "publish"
+},
+{
+"id": 3999,
+"name": "72\" EGYPT ORANGE 埃及橙",
+"menu_order": 205,
+"status": "publish"
+},
+{
+"id": 3997,
+"name": "40\" CHINA ORANGE 中国肉橙",
+"menu_order": 148,
+"status": "publish"
+},
+{
+"id": 3996,
+"name": "AUSTRALIA RED GRAPES 澳洲红葡萄 (kg)",
+"menu_order": 263,
+"status": "publish"
+},
+{
+"id": 3994,
+"name": "SOUTH AFRICA BLACK GRAPES 非洲黑葡萄 (500g)",
+"menu_order": 339,
+"status": "publish"
+},
+{
+"id": 3993,
+"name": "CHINA MUSCAT GRAPES 中国阳光玫瑰 (650g)",
+"menu_order": 285,
+"status": "publish"
+},
+{
+"id": 3992,
+"name": "SA/EGYPT RED GRAPES 埃及红葡萄 (500g)",
+"menu_order": 338,
+"status": "publish"
+},
+{
+"id": 3989,
+"name": "10 x 500g CN. BLACK GRAPES 中国黑葡萄",
+"menu_order": 6,
+"status": "publish"
+},
+{
+"id": 3988,
+"name": "10 x 500g CN MUSCAT GRAPES 中国阳光玫瑰",
+"menu_order": 7,
+"status": "publish"
+},
+{
+"id": 3987,
+"name": "10 x 500g SA/EGY RED GRAPES 非洲/埃及红葡萄",
+"menu_order": 10,
+"status": "publish"
+},
+{
+"id": 3986,
+"name": "NETHERLANDS CONFERENCE PEAR 荷兰耙",
+"menu_order": 200,
+"status": "publish"
+},
+{
+"id": 3985,
+"name": "SOUTH AFRICA PEAR 非洲耙 (L)",
+"menu_order": 216,
+"status": "publish"
+},
+{
+"id": 3984,
+"name": "YALI PEAR 鸭梨",
+"menu_order": 233,
+"status": "publish"
+},
+{
+"id": 3983,
+"name": "GOLDEN PEAR 黄金梨",
+"menu_order": 184,
+"status": "publish"
+},
+{
+"id": 3982,
+"name": "NAMSHUI PEAR 南水梨 (M)",
+"menu_order": 199,
+"status": "publish"
+},
+{
+"id": 3981,
+"name": "NAMSHUI PEAR 南水梨 (L)",
+"menu_order": 198,
+"status": "publish"
+},
+{
+"id": 3978,
+"name": "70\" SA. PEAR 非洲耙",
+"menu_order": 104,
+"status": "publish"
+},
+{
+"id": 3977,
+"name": "80\" YALI PEAR 鸭梨",
+"menu_order": 125,
+"status": "publish"
+},
+{
+"id": 3976,
+"name": "36\" GOLDEN PEAR 黄金梨",
+"menu_order": 72,
+"status": "publish"
+},
+{
+"id": 3975,
+"name": "28\" NAMSHUI PEAR 南水梨",
+"menu_order": 68,
+"status": "publish"
+},
+{
+"id": 3974,
+"name": "24\" NAMSHUI PEAR 南水梨",
+"menu_order": 63,
+"status": "publish"
+},
+{
+"id": 3973,
+"name": "HW FRAGRANT PEAR XXL (7kg) 大香梨",
+"menu_order": 168,
+"status": "publish"
+},
+{
+"id": 3972,
+"name": "NEW ZEALAND ROCKIT APPLE 纽西兰小苹果 (5pcs)",
+"menu_order": 327,
+"status": "publish"
+},
+{
+"id": 3971,
+"name": "SOUTH AFRICA GREEN APPLE 青苹果",
+"menu_order": 340,
+"status": "publish"
+},
+{
+"id": 3969,
+"name": "NZ. ENVY APPLE 新西兰爱妃苹果 (M)",
+"menu_order": 349,
+"status": "publish"
+},
+{
+"id": 3968,
+"name": "NZ. ENVY APPLE 新西兰爱妃苹果 (XXL)",
+"menu_order": 350,
+"status": "publish"
+},
+{
+"id": 3966,
+"name": "CHINA FUJI APPLE 中国双红富士苹果 (S)",
+"menu_order": 282,
+"status": "publish"
+},
+{
+"id": 3965,
+"name": "CHINA FUJI APPLE 中国双红富士苹果 (M)",
+"menu_order": 281,
+"status": "publish"
+},
+{
+"id": 3964,
+"name": "CHINA FUJI APPLE 中国双红富士苹果 (XL)",
+"menu_order": 283,
+"status": "publish"
+},
+{
+"id": 3963,
+"name": "16 X 5\" ROCKIT APPLE 纽西兰小苹果",
+"menu_order": 85,
+"status": "publish"
+},
+{
+"id": 3962,
+"name": "135\" SA GREEN APPLE 青苹果",
+"menu_order": 69,
+"status": "publish"
+},
+{
+"id": 3960,
+"name": "70\" NZ. ENVY APPLE 新西兰爱妃苹果",
+"menu_order": 206,
+"status": "publish"
+},
+{
+"id": 3957,
+"name": "28\" FUJI APPLE [HH] 中国双红富士苹果",
+"menu_order": 133,
+"status": "publish"
+},
+{
+"id": 3956,
+"name": "100\" FUJI APPLE [BX] 中国双红富士苹果",
+"menu_order": 14,
+"status": "publish"
+},
+{
+"id": 3955,
+"name": "80\" FUJI APPLE [HH] 中国双红富士苹果",
+"menu_order": 234,
+"status": "publish"
+},
+{
+"id": 3954,
+"name": "72\" FUJI APPLE [BX] 中国双红富士苹果",
+"menu_order": 203,
+"status": "publish"
+},
+{
+"id": 3526,
+"name": "OMAKASE FRUIT BOX 水果礼盒 - PREMIUM",
+"menu_order": 330,
+"status": "publish"
+},
+{
+"id": 3523,
+"name": "OMAKASE FRUIT BOX 水果礼盒 - SIGNATURE",
+"menu_order": 331,
+"status": "publish"
+},
+{
+"id": 3520,
+"name": "OMAKASE FRUIT BOX 水果礼盒 - CLASSIC",
+"menu_order": 332,
+"status": "publish"
+}
+]

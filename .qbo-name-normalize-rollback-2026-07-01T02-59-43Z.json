@@ -1,0 +1,5332 @@
+[
+  {
+    "Id": "5",
+    "old_name": "0001 MANGO - THAILAND 泰国芒果",
+    "new_name": "0001 MANGO THAILAND 泰国芒果"
+  },
+  {
+    "Id": "1223",
+    "old_name": "0001.1 - copy MANGO - THAI HONEY 5A 泰国芒果",
+    "new_name": "0001.1 - copy MANGO THAI HONEY 5A 泰国芒果"
+  },
+  {
+    "Id": "6",
+    "old_name": "0001.1 MANGO - THAI HONEY 4A 泰国芒果",
+    "new_name": "0001.1 MANGO THAI HONEY 4A 泰国芒果"
+  },
+  {
+    "Id": "1191",
+    "old_name": "0001.10 MANGO - IVORY/ELEPHANT HUSK 象牙",
+    "new_name": "0001.10 MANGO IVORY ELEPHANT HUSK 象牙"
+  },
+  {
+    "Id": "7",
+    "old_name": "0001.11 MANGO - ARUMANIS 印尼芒果",
+    "new_name": "0001.11 MANGO ARUMANIS 印尼芒果"
+  },
+  {
+    "Id": "1173",
+    "old_name": "0001.15 MANGO - THAI HONEY 3A 泰国芒果",
+    "new_name": "0001.15 MANGO THAI HONEY 3A 泰国芒果"
+  },
+  {
+    "Id": "1245",
+    "old_name": "0001.18 MANGO - THAI HONEY 7A 泰国芒果",
+    "new_name": "0001.18 MANGO THAI HONEY 7A 泰国芒果"
+  },
+  {
+    "Id": "8",
+    "old_name": "0001.2 MANGO - SUSU 黑金芒果",
+    "new_name": "0001.2 MANGO SUSU 黑金芒果"
+  },
+  {
+    "Id": "882",
+    "old_name": "0001.20 MANGO - THAI WHITE FLOWER 百花芒果",
+    "new_name": "0001.20 MANGO THAI WHITE FLOWER 百花芒果"
+  },
+  {
+    "Id": "1211",
+    "old_name": "0001.25 MANGO - THAI HONEY 6A 泰国芒果",
+    "new_name": "0001.25 MANGO THAI HONEY 6A 泰国芒果"
+  },
+  {
+    "Id": "1254",
+    "old_name": "0001.26 MANGO - IVORY/ELEPHANT HUSK 象牙 18kg",
+    "new_name": "0001.26 MANGO IVORY ELEPHANT HUSK 象牙 18kg"
+  },
+  {
+    "Id": "1230",
+    "old_name": "0001.27 MANGO - THAI RAINBOW 20kg 泰国彩虹芒果",
+    "new_name": "0001.27 MANGO THAI RAINBOW 20kg 泰国彩虹芒果"
+  },
+  {
+    "Id": "9",
+    "old_name": "0001.3 MANGO - AUS. R2E2 澳洲芒果",
+    "new_name": "0001.3 MANGO AUS R2E2 澳洲芒果"
+  },
+  {
+    "Id": "10",
+    "old_name": "0001.5 MANGO - AUS. KEIT 澳洲芒果",
+    "new_name": "0001.5 MANGO AUS KEIT 澳洲芒果"
+  },
+  {
+    "Id": "11",
+    "old_name": "0001.6 MANGO - THAI HONEY 20kg 泰国芒果",
+    "new_name": "0001.6 MANGO THAI HONEY 20kg 泰国芒果"
+  },
+  {
+    "Id": "12",
+    "old_name": "0001.7 MANGO - KIDNEY 腰芒果",
+    "new_name": "0001.7 MANGO KIDNEY 腰芒果"
+  },
+  {
+    "Id": "13",
+    "old_name": "0001.8 MANGO - INDIA ICE CREAM 印度芒果 4kg",
+    "new_name": "0001.8 MANGO INDIA ICE CREAM 印度芒果 4kg"
+  },
+  {
+    "Id": "14",
+    "old_name": "0001.9 MANGO - 5A RAINBOW 彩虹芒果",
+    "new_name": "0001.9 MANGO 5A RAINBOW 彩虹芒果"
+  },
+  {
+    "Id": "15",
+    "old_name": "0002 78\" ZESPRI GREEN KIWI 青奇异果",
+    "new_name": "0002 78 ZESPRI GREEN KIWI 青奇异果"
+  },
+  {
+    "Id": "883",
+    "old_name": "0002-20 50/51\" ZESPRI GREEN KIWI 青奇异果",
+    "new_name": "0002-20 50 51 ZESPRI GREEN KIWI 青奇异果"
+  },
+  {
+    "Id": "17",
+    "old_name": "0003 28\" AUS. HASS AVOCADO 粗皮牛油果",
+    "new_name": "0003 28 AUS HASS AVOCADO 粗皮牛油果"
+  },
+  {
+    "Id": "1204",
+    "old_name": "0003-R 30\" AUS. AVOCADO - RETURN",
+    "new_name": "0003-R 30 AUS AVOCADO RETURN"
+  },
+  {
+    "Id": "884",
+    "old_name": "0003.10 18\" AUS. HASS AVOCADO 牛油果",
+    "new_name": "0003.10 18 AUS HASS AVOCADO 牛油果"
+  },
+  {
+    "Id": "18",
+    "old_name": "0003.2 28\" AUS. AVOCADO 牛油果",
+    "new_name": "0003.2 28 AUS AVOCADO 牛油果"
+  },
+  {
+    "Id": "19",
+    "old_name": "0003.3 28\" AUS. SHEPARD AVOCADO 滑皮牛油果",
+    "new_name": "0003.3 28 AUS SHEPARD AVOCADO 滑皮牛油果"
+  },
+  {
+    "Id": "20",
+    "old_name": "0003.4 18\" AUS. SHEPARD AVOCADO 牛油果",
+    "new_name": "0003.4 18 AUS SHEPARD AVOCADO 牛油果"
+  },
+  {
+    "Id": "21",
+    "old_name": "0003.5 20\" AUS. AVOCADO 牛油果",
+    "new_name": "0003.5 20 AUS AVOCADO 牛油果"
+  },
+  {
+    "Id": "23",
+    "old_name": "0004 MANGO - MYANMAR 缅甸芒果",
+    "new_name": "0004 MANGO MYANMAR 缅甸芒果"
+  },
+  {
+    "Id": "885",
+    "old_name": "0004-R MANGO - TAIWAN 台湾芒果",
+    "new_name": "0004-R MANGO TAIWAN 台湾芒果"
+  },
+  {
+    "Id": "24",
+    "old_name": "0004.1 MANGO - CHINA 中国芒果 2kg",
+    "new_name": "0004.1 MANGO CHINA 中国芒果 2kg"
+  },
+  {
+    "Id": "26",
+    "old_name": "0004.3 MANGO - VIETNAM 越南芒果",
+    "new_name": "0004.3 MANGO VIETNAM 越南芒果"
+  },
+  {
+    "Id": "28",
+    "old_name": "0006 CARROT (10kg) 萝卜",
+    "new_name": "0006 CARROT 10kg 萝卜"
+  },
+  {
+    "Id": "886",
+    "old_name": "0006-R CARROT (10kg) - RETURN",
+    "new_name": "0006-R CARROT 10kg RETURN"
+  },
+  {
+    "Id": "29",
+    "old_name": "0007 44\" ZESPRI GOLD KIWI 金奇异果",
+    "new_name": "0007 44 ZESPRI GOLD KIWI 金奇异果"
+  },
+  {
+    "Id": "30",
+    "old_name": "0007.2 31\" ZESPRI JUMBO GOLD KIWI 特大金奇异果",
+    "new_name": "0007.2 31 ZESPRI JUMBO GOLD KIWI 特大金奇异果"
+  },
+  {
+    "Id": "31",
+    "old_name": "0007.3 59\" ZESPRI RED KIWI 红肉奇异果",
+    "new_name": "0007.3 59 ZESPRI RED KIWI 红肉奇异果"
+  },
+  {
+    "Id": "1190",
+    "old_name": "0007.4 5kg AUS. GOLD KIWI 澳洲金奇异果",
+    "new_name": "0007.4 5kg AUS GOLD KIWI 澳洲金奇异果"
+  },
+  {
+    "Id": "35",
+    "old_name": "0009 48\" SA. RED PEAR 非洲红耙",
+    "new_name": "0009 48 SA RED PEAR 非洲红耙"
+  },
+  {
+    "Id": "36",
+    "old_name": "0010 22\" CN. POMEGRANATE (ctn) 中国石榴",
+    "new_name": "0010 22 CN POMEGRANATE ctn 中国石榴"
+  },
+  {
+    "Id": "37",
+    "old_name": "0010.1 3kg IND/PERU POMEGRANATE 石榴",
+    "new_name": "0010.1 3kg IND PERU POMEGRANATE 石榴"
+  },
+  {
+    "Id": "39",
+    "old_name": "0012 70\" MEXICO AVOCADO 墨西科牛油果",
+    "new_name": "0012 70 MEXICO AVOCADO 墨西科牛油果"
+  },
+  {
+    "Id": "40",
+    "old_name": "0012.3 SOLO PAPAYA 菲力宾小木瓜 (pcs)",
+    "new_name": "0012.3 SOLO PAPAYA 菲力宾小木瓜 pcs"
+  },
+  {
+    "Id": "41",
+    "old_name": "0013 CHIKU 奇库果 (ctn)",
+    "new_name": "0013 CHIKU 奇库果 ctn"
+  },
+  {
+    "Id": "1236",
+    "old_name": "0014.30 MANGO - THAI. R2E2 泰国芒果 20kg",
+    "new_name": "0014.30 MANGO THAI R2E2 泰国芒果 20kg"
+  },
+  {
+    "Id": "42",
+    "old_name": "0014.9 MANGO - THAI. R2E2 泰国芒果",
+    "new_name": "0014.9 MANGO THAI R2E2 泰国芒果"
+  },
+  {
+    "Id": "888",
+    "old_name": "0014.9R 12\" R2E2 AUS. MANGO 澳洲芒果",
+    "new_name": "0014.9R 12 R2E2 AUS MANGO 澳洲芒果"
+  },
+  {
+    "Id": "44",
+    "old_name": "0015.1 6\" SA. POMEGRANATE 石榴",
+    "new_name": "0015.1 6 SA POMEGRANATE 石榴"
+  },
+  {
+    "Id": "45",
+    "old_name": "0018 ITALY. GREEN KIWI (ctn)",
+    "new_name": "0018 ITALY GREEN KIWI ctn"
+  },
+  {
+    "Id": "46",
+    "old_name": "0019 35\" MEXICO. AVOCADO",
+    "new_name": "0019 35 MEXICO AVOCADO"
+  },
+  {
+    "Id": "47",
+    "old_name": "0019.4 30\" MEXICO. AVOCADO",
+    "new_name": "0019.4 30 MEXICO AVOCADO"
+  },
+  {
+    "Id": "48",
+    "old_name": "0019.5 60\" MEXICO. AVOCADO",
+    "new_name": "0019.5 60 MEXICO AVOCADO"
+  },
+  {
+    "Id": "49",
+    "old_name": "0021 10\" SOLO' PAPAYA 菲力宾小木瓜",
+    "new_name": "0021 10 SOLO PAPAYA 菲力宾小木瓜"
+  },
+  {
+    "Id": "50",
+    "old_name": "0021.2 8\" SOLO PAPAYA 菲力宾小木瓜",
+    "new_name": "0021.2 8 SOLO PAPAYA 菲力宾小木瓜"
+  },
+  {
+    "Id": "51",
+    "old_name": "0022 MANGO - THAI KING 皇帝芒果",
+    "new_name": "0022 MANGO THAI KING 皇帝芒果"
+  },
+  {
+    "Id": "53",
+    "old_name": "0090 7\" DOG PEAR 狗梨",
+    "new_name": "0090 7 DOG PEAR 狗梨"
+  },
+  {
+    "Id": "54",
+    "old_name": "0090.1 8\" DOG PEAR 狗梨",
+    "new_name": "0090.1 8 DOG PEAR 狗梨"
+  },
+  {
+    "Id": "890",
+    "old_name": "1 X 10 10x700g CN NAN FENG JU ÄÏ·áéÙ",
+    "new_name": "1 X 10 10x700g CN NAN FENG JU ÄÏ áéÙ"
+  },
+  {
+    "Id": "891",
+    "old_name": "1 X 10-1 1 X 10\" PEACH ÌÒ",
+    "new_name": "1 X 10-1 1 X 10 PEACH ÌÒ"
+  },
+  {
+    "Id": "892",
+    "old_name": "1 X 12 12x800g CN TANGERINE ÖÐ¹ú¸Ì½Û",
+    "new_name": "1 X 12 12x800g CN TANGERINE ÖÐ¹ú Ì½Û"
+  },
+  {
+    "Id": "893",
+    "old_name": "1 X 3 JG 3 X 12\" (36) JIAOGAN ½¹¸Ì",
+    "new_name": "1 X 3 JG 3 X 12 36 JIAOGAN ½¹ Ì"
+  },
+  {
+    "Id": "894",
+    "old_name": "1 X 3.1 3 X 15\" (45) JIAOGAN ½¹¸Ì",
+    "new_name": "1 X 3.1 3 X 15 45 JIAOGAN ½¹ Ì"
+  },
+  {
+    "Id": "895",
+    "old_name": "1 X 3.2 3 X 18\" (54) JIAOGAN ½¹¸Ì",
+    "new_name": "1 X 3.2 3 X 18 54 JIAOGAN ½¹ Ì"
+  },
+  {
+    "Id": "897",
+    "old_name": "1 X 6 XXXL10kg SA. M. ORANGE ·ÇÖÞ¸Ì",
+    "new_name": "1 X 6 XXXL10kg SA M ORANGE ÇÖÞ Ì"
+  },
+  {
+    "Id": "66",
+    "old_name": "1001 1 x 8\" USA. STRAWBERRY 美国草莓",
+    "new_name": "1001 1 x 8 USA STRAWBERRY 美国草莓"
+  },
+  {
+    "Id": "69",
+    "old_name": "1001.3 15 x 250g AUS. STRAWBERRY 澳洲草莓",
+    "new_name": "1001.3 15 x 250g AUS STRAWBERRY 澳洲草莓"
+  },
+  {
+    "Id": "72",
+    "old_name": "1001.6 10 X 250g EGY. STRAWBERRY 埃及草莓",
+    "new_name": "1001.6 10 X 250g EGY STRAWBERRY 埃及草莓"
+  },
+  {
+    "Id": "73",
+    "old_name": "1001.8 12 x 250g USA. STRAWBERRY 美国草莓",
+    "new_name": "1001.8 12 x 250g USA STRAWBERRY 美国草莓"
+  },
+  {
+    "Id": "898",
+    "old_name": "1001.R 1 x 8\" US. STRAWBERRY - RETURN",
+    "new_name": "1001.R 1 x 8 US STRAWBERRY RETURN"
+  },
+  {
+    "Id": "74",
+    "old_name": "1002 4 x 445g USA. L/S STRAWBERRY 长茎草莓",
+    "new_name": "1002 4 x 445g USA L S STRAWBERRY 长茎草莓"
+  },
+  {
+    "Id": "75",
+    "old_name": "1003 1 X 12\" BLUEBERRY 蓝莓",
+    "new_name": "1003 1 X 12 BLUEBERRY 蓝莓"
+  },
+  {
+    "Id": "899",
+    "old_name": "1003-R 1 x 12\" BLUEBERRY - RETURN",
+    "new_name": "1003-R 1 x 12 BLUEBERRY RETURN"
+  },
+  {
+    "Id": "76",
+    "old_name": "1003.1 D/C 10 X 200g JUMBO BLUEBERRY 大蓝莓",
+    "new_name": "1003.1 D C 10 X 200g JUMBO BLUEBERRY 大蓝莓"
+  },
+  {
+    "Id": "77",
+    "old_name": "1003.12 [KS] 10 x 200g JUMBO BLUEBERRY 大蓝莓",
+    "new_name": "1003.12 KS 10 x 200g JUMBO BLUEBERRY 大蓝莓"
+  },
+  {
+    "Id": "78",
+    "old_name": "1003.2 D/C 8 X 300g S/JUM BLUE 特大蓝莓",
+    "new_name": "1003.2 D C 8 X 300g S JUM BLUE 特大蓝莓"
+  },
+  {
+    "Id": "79",
+    "old_name": "1003.4 D/C 12 x 125g JUMBO BLUEBERRY 大蓝莓",
+    "new_name": "1003.4 D C 12 x 125g JUMBO BLUEBERRY 大蓝莓"
+  },
+  {
+    "Id": "81",
+    "old_name": "1003.6 1 X 12\" SUPER JUMBO BLUEBERRY 特大蓝莓",
+    "new_name": "1003.6 1 X 12 SUPER JUMBO BLUEBERRY 特大蓝莓"
+  },
+  {
+    "Id": "82",
+    "old_name": "1003.7 D/C S 1 X 12\" BLUEBERRY 小蓝莓",
+    "new_name": "1003.7 D C S 1 X 12 BLUEBERRY 小蓝莓"
+  },
+  {
+    "Id": "83",
+    "old_name": "1004 RASPBERRY (pkt) 红莓",
+    "new_name": "1004 RASPBERRY pkt 红莓"
+  },
+  {
+    "Id": "900",
+    "old_name": "1004-R RASPBERRY (pkt) - RETURN",
+    "new_name": "1004-R RASPBERRY pkt RETURN"
+  },
+  {
+    "Id": "84",
+    "old_name": "1005 BLACKBERRY (pkt) 黑莓",
+    "new_name": "1005 BLACKBERRY pkt 黑莓"
+  },
+  {
+    "Id": "901",
+    "old_name": "1005-R BLACKBERRY (pkt) - RETURN",
+    "new_name": "1005-R BLACKBERRY pkt RETURN"
+  },
+  {
+    "Id": "1194",
+    "old_name": "1005.1 MEXICO. BLACKBERRY (170g)",
+    "new_name": "1005.1 MEXICO BLACKBERRY 170g"
+  },
+  {
+    "Id": "86",
+    "old_name": "1006 5kg 8.5R\" USA. CHERRY 美国车厘子",
+    "new_name": "1006 5kg 8 5R USA CHERRY 美国车厘子"
+  },
+  {
+    "Id": "87",
+    "old_name": "1006.1 5kg 8.5R\" CAN. CHERRY 加拿大车厘子",
+    "new_name": "1006.1 5kg 8 5R CAN CHERRY 加拿大车厘子"
+  },
+  {
+    "Id": "88",
+    "old_name": "1007 5kg 9R\" US. CHERRY 美国车厘子",
+    "new_name": "1007 5kg 9R US CHERRY 美国车厘子"
+  },
+  {
+    "Id": "89",
+    "old_name": "1008 5kg 9.5R\" US. CHERRY 美国车厘子",
+    "new_name": "1008 5kg 9 5R US CHERRY 美国车厘子"
+  },
+  {
+    "Id": "90",
+    "old_name": "1009 4KG 10R\" RAINIER CHERRY 白车厘子",
+    "new_name": "1009 4KG 10R RAINIER CHERRY 白车厘子"
+  },
+  {
+    "Id": "91",
+    "old_name": "1010 4KG 9.5R\" RAINIER CHERRY 白车厘子",
+    "new_name": "1010 4KG 9 5R RAINIER CHERRY 白车厘子"
+  },
+  {
+    "Id": "1244",
+    "old_name": "1010.05 4KG 9R\" RAINIER CHERRY 白车厘子",
+    "new_name": "1010.05 4KG 9R RAINIER CHERRY 白车厘子"
+  },
+  {
+    "Id": "95",
+    "old_name": "1011.1 16 X 500g AUS. APRICOT 杏仁",
+    "new_name": "1011.1 16 X 500g AUS APRICOT 杏仁"
+  },
+  {
+    "Id": "99",
+    "old_name": "1015 65mm\" OCT SUN PLUM 青李子",
+    "new_name": "1015 65mm OCT SUN PLUM 青李子"
+  },
+  {
+    "Id": "100",
+    "old_name": "1015.1 56\" USA. YELLOW PLUM 美国黄李子",
+    "new_name": "1015.1 56 USA YELLOW PLUM 美国黄李子"
+  },
+  {
+    "Id": "101",
+    "old_name": "1015.11 12.7kg USA YELLOW PLUM 美国黄李子",
+    "new_name": "1015.11 12 7kg USA YELLOW PLUM 美国黄李子"
+  },
+  {
+    "Id": "102",
+    "old_name": "1015.12 54mm\" OCT SUN PLUM 青李子",
+    "new_name": "1015.12 54mm OCT SUN PLUM 青李子"
+  },
+  {
+    "Id": "1210",
+    "old_name": "1015.20 68mm\" OCT SUN PLUM 澳洲青李子",
+    "new_name": "1015.20 68mm OCT SUN PLUM 澳洲青李子"
+  },
+  {
+    "Id": "105",
+    "old_name": "1015.21 10kg AUS.CROCODILE PLUM 鳄鱼蛋",
+    "new_name": "1015.21 10kg AUS CROCODILE PLUM 鳄鱼蛋"
+  },
+  {
+    "Id": "1222",
+    "old_name": "1015.22 67mm\" OCT SUN PLUM 澳洲青李子",
+    "new_name": "1015.22 67mm OCT SUN PLUM 澳洲青李子"
+  },
+  {
+    "Id": "1224",
+    "old_name": "1015.3 - copy 10kg 70mm AUS S/CANDY PLUM 澳洲红宝石李子",
+    "new_name": "1015.3 - copy 10kg 70mm AUS S CANDY PLUM 澳洲红宝石李子"
+  },
+  {
+    "Id": "106",
+    "old_name": "1015.3 10kg 60mm AUS. RED CANDY PLUM 澳洲红李子",
+    "new_name": "1015.3 10kg 60mm AUS RED CANDY PLUM 澳洲红李子"
+  },
+  {
+    "Id": "107",
+    "old_name": "1015.4 45/48mm\" OCT SUN PLUM 澳洲青李子",
+    "new_name": "1015.4 45 48mm OCT SUN PLUM 澳洲青李子"
+  },
+  {
+    "Id": "108",
+    "old_name": "1015.5 60mm\" OCT SUN PLUM 澳洲青李子",
+    "new_name": "1015.5 60mm OCT SUN PLUM 澳洲青李子"
+  },
+  {
+    "Id": "109",
+    "old_name": "1015.6 51mm\" OCT SUN PLUM 澳洲青李子",
+    "new_name": "1015.6 51mm OCT SUN PLUM 澳洲青李子"
+  },
+  {
+    "Id": "110",
+    "old_name": "1015.7 63mm\" OCT SUN PLUM 澳洲青李子",
+    "new_name": "1015.7 63mm OCT SUN PLUM 澳洲青李子"
+  },
+  {
+    "Id": "111",
+    "old_name": "1015.8 5kg TURTLE EGG PLUM (ctn)",
+    "new_name": "1015.8 5kg TURTLE EGG PLUM ctn"
+  },
+  {
+    "Id": "112",
+    "old_name": "1015.9 12.5kg USA. 4040 BLACK PLUM 美国黑李子",
+    "new_name": "1015.9 12 5kg USA 4040 BLACK PLUM 美国黑李子"
+  },
+  {
+    "Id": "113",
+    "old_name": "1016 BLACK RASIN 黑葡萄干 (ctn)",
+    "new_name": "1016 BLACK RASIN 黑葡萄干 ctn"
+  },
+  {
+    "Id": "114",
+    "old_name": "1017 CHERRY TOMATO ON VINE 樱桃番茄 [带藤]",
+    "new_name": "1017 CHERRY TOMATO ON VINE 樱桃番茄 带藤"
+  },
+  {
+    "Id": "118",
+    "old_name": "1018 28\" AUS. EMERALD PLUM 澳洲青李子",
+    "new_name": "1018 28 AUS EMERALD PLUM 澳洲青李子"
+  },
+  {
+    "Id": "120",
+    "old_name": "1019.1 10kg AUS. RED PLUM 澳洲红李子",
+    "new_name": "1019.1 10kg AUS RED PLUM 澳洲红李子"
+  },
+  {
+    "Id": "121",
+    "old_name": "1019.2 28\" USA. GREEN FLAVOR QUEEN 美国青李子",
+    "new_name": "1019.2 28 USA GREEN FLAVOR QUEEN 美国青李子"
+  },
+  {
+    "Id": "122",
+    "old_name": "1019.3 32\" USA. GREEN FLAVOR QUEEN 美国青李子",
+    "new_name": "1019.3 32 USA GREEN FLAVOR QUEEN 美国青李子"
+  },
+  {
+    "Id": "123",
+    "old_name": "1019.4 36\" USA. EMERALD PLUM 翡翠李子",
+    "new_name": "1019.4 36 USA EMERALD PLUM 翡翠李子"
+  },
+  {
+    "Id": "124",
+    "old_name": "1020 BLACK PLUM 李子 (ctn)",
+    "new_name": "1020 BLACK PLUM 李子 ctn"
+  },
+  {
+    "Id": "125",
+    "old_name": "1020.1 5kg 63mm AUS. BLACK PLUM 黑李子",
+    "new_name": "1020.1 5kg 63mm AUS BLACK PLUM 黑李子"
+  },
+  {
+    "Id": "127",
+    "old_name": "1021 RED RASIN 红葡萄干 (ctn)",
+    "new_name": "1021 RED RASIN 红葡萄干 ctn"
+  },
+  {
+    "Id": "902",
+    "old_name": "1021-1 RED KIWI 红奇异果 (ctn)",
+    "new_name": "1021-1 RED KIWI 红奇异果 ctn"
+  },
+  {
+    "Id": "129",
+    "old_name": "1023 10 X 500g SA. PERSIMMON 南非柿子",
+    "new_name": "1023 10 X 500g SA PERSIMMON 南非柿子"
+  },
+  {
+    "Id": "131",
+    "old_name": "1025 1 x 4\" KOR. WHITE STRAWBERRY 韩国白草莓",
+    "new_name": "1025 1 x 4 KOR WHITE STRAWBERRY 韩国白草莓"
+  },
+  {
+    "Id": "132",
+    "old_name": "1026 GREEN RAISIN 青葡萄干 (ctn)",
+    "new_name": "1026 GREEN RAISIN 青葡萄干 ctn"
+  },
+  {
+    "Id": "133",
+    "old_name": "1027 4 x 330g KOR. STRAWBERRY 韩国草莓",
+    "new_name": "1027 4 x 330g KOR STRAWBERRY 韩国草莓"
+  },
+  {
+    "Id": "903",
+    "old_name": "1027-R 4 X 330g KOREA STRAWBERRY - RETURN",
+    "new_name": "1027-R 4 X 330g KOREA STRAWBERRY RETURN"
+  },
+  {
+    "Id": "1239",
+    "old_name": "1027.10 10 x 330g KOR. STRAWBERRY 韩国草莓",
+    "new_name": "1027.10 10 x 330g KOR STRAWBERRY 韩国草莓"
+  },
+  {
+    "Id": "135",
+    "old_name": "1028 8 x 250g KOR. STRAWBERRY 韩国草莓",
+    "new_name": "1028 8 x 250g KOR STRAWBERRY 韩国草莓"
+  },
+  {
+    "Id": "136",
+    "old_name": "1029 10kg 60mm AUS. ANGELINO PLUM 澳洲黑红李子",
+    "new_name": "1029 10kg 60mm AUS ANGELINO PLUM 澳洲黑红李子"
+  },
+  {
+    "Id": "141",
+    "old_name": "1033 2.5KG 32mm+ PATAGONIA CHERRY 巴塔哥尼亚樱桃",
+    "new_name": "1033 2 5KG 32mm PATAGONIA CHERRY 巴塔哥尼亚樱桃"
+  },
+  {
+    "Id": "142",
+    "old_name": "1033.3 2.5KG 30mm+ ARGENTINA CHERRY 阿根廷樱桃",
+    "new_name": "1033.3 2 5KG 30mm ARGENTINA CHERRY 阿根廷樱桃"
+  },
+  {
+    "Id": "143",
+    "old_name": "1033.33 2.5KG 32mm+ ARGENTINA CHERRY 阿根廷樱桃",
+    "new_name": "1033.33 2 5KG 32mm ARGENTINA CHERRY 阿根廷樱桃"
+  },
+  {
+    "Id": "144",
+    "old_name": "1034 5KG 28-30mm PATAGONIA CHERRY 巴塔哥尼亚樱桃",
+    "new_name": "1034 5KG 28 30mm PATAGONIA CHERRY 巴塔哥尼亚樱桃"
+  },
+  {
+    "Id": "145",
+    "old_name": "1034.2 2.5kg 3J CHILE CHERRY 智利樱桃",
+    "new_name": "1034.2 2 5kg 3J CHILE CHERRY 智利樱桃"
+  },
+  {
+    "Id": "146",
+    "old_name": "1034.5 2.5kg 4J CHILE CHERRY 智利樱桃",
+    "new_name": "1034.5 2 5kg 4J CHILE CHERRY 智利樱桃"
+  },
+  {
+    "Id": "148",
+    "old_name": "1036 2kg 32mm+ NZ.CHERRY 新西兰樱桃",
+    "new_name": "1036 2kg 32mm NZ CHERRY 新西兰樱桃"
+  },
+  {
+    "Id": "149",
+    "old_name": "1037 1 x 2\" JAP. W.STRAWBERRY 日本白草莓",
+    "new_name": "1037 1 x 2 JAP W STRAWBERRY 日本白草莓"
+  },
+  {
+    "Id": "150",
+    "old_name": "1038 2kg 34-36mm NZ CHERRY 新西兰樱桃",
+    "new_name": "1038 2kg 34 36mm NZ CHERRY 新西兰樱桃"
+  },
+  {
+    "Id": "151",
+    "old_name": "1039 2kg 30-32mm NZ. CHERRY 新西兰樱桃",
+    "new_name": "1039 2kg 30 32mm NZ CHERRY 新西兰樱桃"
+  },
+  {
+    "Id": "152",
+    "old_name": "1040 30\" AUS. YELLOW PEACH °ÄÖÞ»ÆÌÒ",
+    "new_name": "1040 30 AUS YELLOW PEACH ÄÖÞ ÆÌÒ"
+  },
+  {
+    "Id": "153",
+    "old_name": "1040.1 20\" USA. WHITE PEACH 美国白桃",
+    "new_name": "1040.1 20 USA WHITE PEACH 美国白桃"
+  },
+  {
+    "Id": "154",
+    "old_name": "1040.2 16\" AUS. WHITE PEACH 澳洲白桃",
+    "new_name": "1040.2 16 AUS WHITE PEACH 澳洲白桃"
+  },
+  {
+    "Id": "155",
+    "old_name": "1040.3 20\" FONG SUI LI ·áË®Àæ",
+    "new_name": "1040.3 20 FONG SUI LI áË Àæ"
+  },
+  {
+    "Id": "156",
+    "old_name": "1040.5 10X800g EGY. Y.PEACH °£¼°»ÆÌÒ",
+    "new_name": "1040.5 10X800g EGY Y PEACH ¼ ÆÌÒ"
+  },
+  {
+    "Id": "157",
+    "old_name": "1041 TAIWAN GN DATES (9kg) Ì¨ÍåÇàÔæ",
+    "new_name": "1041 TAIWAN GN DATES 9kg Ì ÍåÇàÔæ"
+  },
+  {
+    "Id": "904",
+    "old_name": "1041-1 TW. MANDERIN ORANGE Ì¨Íå¸Ì",
+    "new_name": "1041-1 TW MANDERIN ORANGE Ì Íå Ì"
+  },
+  {
+    "Id": "1207",
+    "old_name": "1041-10 6A JUMBU 水蓊 (ctn)",
+    "new_name": "1041-10 6A JUMBU 水蓊 ctn"
+  },
+  {
+    "Id": "905",
+    "old_name": "1041-2 5A JUMBU 水蓊 (ctn)",
+    "new_name": "1041-2 5A JUMBU 水蓊 ctn"
+  },
+  {
+    "Id": "158",
+    "old_name": "1042 10kg AUS. NECTARINE 澳洲桃李",
+    "new_name": "1042 10kg AUS NECTARINE 澳洲桃李"
+  },
+  {
+    "Id": "159",
+    "old_name": "1042.2 12kg USA. WHITE NECTARINE 美国桃李",
+    "new_name": "1042.2 11kg USA WHITE NECTARINE 美国桃李"
+  },
+  {
+    "Id": "161",
+    "old_name": "1043 110\" FORTUNE PLUM",
+    "new_name": "1043 110 FORTUNE PLUM"
+  },
+  {
+    "Id": "163",
+    "old_name": "1043.5 AUS. YELLOW NECTARINE 澳洲黄桃李",
+    "new_name": "1043.5 AUS YELLOW NECTARINE 澳洲黄桃李"
+  },
+  {
+    "Id": "164",
+    "old_name": "1044 1 x 16\" GREECE STRAWBERRY 希腊草莓",
+    "new_name": "1044 1 x 16 GREECE STRAWBERRY 希腊草莓"
+  },
+  {
+    "Id": "165",
+    "old_name": "1044.2 1 X 16\" SA. STRAWBERRY 非洲草莓",
+    "new_name": "1044.2 1 X 16 SA STRAWBERRY 非洲草莓"
+  },
+  {
+    "Id": "166",
+    "old_name": "1045 16 x 315g SA. SUGAR PRUNE 非洲蜜枣",
+    "new_name": "1045 16 x 315g SA SUGAR PRUNE 非洲蜜枣"
+  },
+  {
+    "Id": "167",
+    "old_name": "1045.1 9kg CN. SUGAR PRUNE 中国蜜枣",
+    "new_name": "1045.1 9kg CN SUGAR PRUNE 中国蜜枣"
+  },
+  {
+    "Id": "168",
+    "old_name": "1045.2 12 X 350g CN. SUGAR PRUNE 中国蜜枣",
+    "new_name": "1045.2 12 X 350g CN SUGAR PRUNE 中国蜜枣"
+  },
+  {
+    "Id": "171",
+    "old_name": "1045.5 SUGAR PRUNE 蜜枣 (pkt)",
+    "new_name": "1045.5 SUGAR PRUNE 蜜枣 pkt"
+  },
+  {
+    "Id": "172",
+    "old_name": "1045.6 2kg 32mm+ TAZ. CHERRY 塔斯马尼亚车厘子",
+    "new_name": "1045.6 2kg 32mm TAZ CHERRY 塔斯马尼亚车厘子"
+  },
+  {
+    "Id": "1218",
+    "old_name": "1045.9 2kg 30mm+ TAZ.CHERRYËþË¹ÂíÄáÑÇ",
+    "new_name": "1045.9 2kg 30mm TAZ CHERRYËþË¹ÂíÄáÑÇ"
+  },
+  {
+    "Id": "173",
+    "old_name": "1046 16 X 500g CN MINI PLUM ÖÐ¹úÀî×Ó",
+    "new_name": "1046 16 X 500g CN MINI PLUM ÖÐ¹úÀî Ó"
+  },
+  {
+    "Id": "174",
+    "old_name": "1046.1 TEGAN BLUE PLUM (ctn) ×ÏÀî×Ó",
+    "new_name": "1046.1 TEGAN BLUE PLUM ctn ÏÀî Ó"
+  },
+  {
+    "Id": "175",
+    "old_name": "1047 1 x 12\" RASPBERRY 红莓",
+    "new_name": "1047 1 x 12 RASPBERRY 红莓"
+  },
+  {
+    "Id": "176",
+    "old_name": "1048 1 x 12\" NZ KIWI BERRY ÆæÒìÝ®",
+    "new_name": "1048 1 x 12 NZ KIWI BERRY ÆæÒìÝ"
+  },
+  {
+    "Id": "177",
+    "old_name": "1049 NZ. KIWI BERRY (pkt)",
+    "new_name": "1049 NZ KIWI BERRY pkt"
+  },
+  {
+    "Id": "178",
+    "old_name": "1050 1 X 12\" BLACKBERRY 黑莓",
+    "new_name": "1050 1 X 12 BLACKBERRY 黑莓"
+  },
+  {
+    "Id": "179",
+    "old_name": "1050.1 1 X 12\" US. BLACKBERRY",
+    "new_name": "1050.1 1 X 12 US BLACKBERRY"
+  },
+  {
+    "Id": "180",
+    "old_name": "1051 2.5kg PASSIONFRUIT 百香果",
+    "new_name": "1051 2 5kg PASSIONFRUIT 百香果"
+  },
+  {
+    "Id": "181",
+    "old_name": "1051.1 PASSIONFRUIT 百香果 (kg)",
+    "new_name": "1051.1 PASSIONFRUIT 百香果 kg"
+  },
+  {
+    "Id": "184",
+    "old_name": "1053 5kg 30mm\" TUR. CHERRY 土耳其樱桃",
+    "new_name": "1053 5kg 30mm TUR CHERRY 土耳其樱桃"
+  },
+  {
+    "Id": "185",
+    "old_name": "1054 9R\" CANADIAN CHERRY 加拿大樱桃",
+    "new_name": "1054 9R CANADIAN CHERRY 加拿大樱桃"
+  },
+  {
+    "Id": "186",
+    "old_name": "1054.5 4KG 8.5R\" RAINIER CHERRY 白车厘子",
+    "new_name": "1054.5 4KG 8 5R RAINIER CHERRY 白车厘子"
+  },
+  {
+    "Id": "187",
+    "old_name": "1055 900gm SP. PERSIMMON ÊÁ×Ó",
+    "new_name": "1055 900gm SP PERSIMMON ÊÁ Ó"
+  },
+  {
+    "Id": "188",
+    "old_name": "1056 54\" US. ORGANIC GOLD PLUM",
+    "new_name": "1056 54 US ORGANIC GOLD PLUM"
+  },
+  {
+    "Id": "189",
+    "old_name": "1057 57mm\" OCT SUN PLUM 澳洲青李子",
+    "new_name": "1057 57mm OCT SUN PLUM 澳洲青李子"
+  },
+  {
+    "Id": "191",
+    "old_name": "1058 GOOSEBERRY (pkt)",
+    "new_name": "1058 GOOSEBERRY pkt"
+  },
+  {
+    "Id": "192",
+    "old_name": "1059 55mm\" FLAVOR RICH PLUM (10kg)",
+    "new_name": "1059 55mm FLAVOR RICH PLUM 10kg"
+  },
+  {
+    "Id": "906",
+    "old_name": "1060-1 10kg A/JEWEL PLUM 红李子",
+    "new_name": "1060-1 10kg A JEWEL PLUM 红李子"
+  },
+  {
+    "Id": "194",
+    "old_name": "1060.1 70mm\" FAVOR FALL PLUM",
+    "new_name": "1060.1 70mm FAVOR FALL PLUM"
+  },
+  {
+    "Id": "197",
+    "old_name": "1060.5 FAVOURFALL PLUM(ctn) ÃÀ¹úºìÀî×Ó",
+    "new_name": "1060.5 FAVOURFALL PLUM ctn ÃÀ¹úºìÀî Ó"
+  },
+  {
+    "Id": "198",
+    "old_name": "1061 STRAWBERRY (250g) 草莓",
+    "new_name": "1061 STRAWBERRY 250g 草莓"
+  },
+  {
+    "Id": "199",
+    "old_name": "1062 57\" AUS. AMBER JEWEL PLUM",
+    "new_name": "1062 57 AUS AMBER JEWEL PLUM"
+  },
+  {
+    "Id": "200",
+    "old_name": "1063 1 X 16\" CHINA PIPA 中国琵琶",
+    "new_name": "1063 1 X 16 CHINA PIPA 中国琵琶"
+  },
+  {
+    "Id": "202",
+    "old_name": "1106.12 5kg 8R\" USA. CHERRY 美国车厘子",
+    "new_name": "1106.12 5kg 8R USA CHERRY 美国车厘子"
+  },
+  {
+    "Id": "55",
+    "old_name": "113 163\" USA. GREEN APP ÃÀ¹úÇàÆ»¹û",
+    "new_name": "113 163 USA GREEN APP ÃÀ¹úÇàÆ ¹û"
+  },
+  {
+    "Id": "56",
+    "old_name": "123 10kg SA. TANGERINE 非洲柑仔",
+    "new_name": "123 10kg SA TANGERINE 非洲柑仔"
+  },
+  {
+    "Id": "57",
+    "old_name": "123.1 20\" CN. WHITE PEACH ÖÐ¹ú°×ÌÒ",
+    "new_name": "123.1 20 CN WHITE PEACH ÖÐ¹ú ÌÒ"
+  },
+  {
+    "Id": "58",
+    "old_name": "123.2 40\" CN YELLOW PEACH ÖÐ¹ú»ÆÌÒ",
+    "new_name": "123.2 40 CN YELLOW PEACH ÖÐ¹ú ÆÌÒ"
+  },
+  {
+    "Id": "59",
+    "old_name": "123.3 2.5kg 12/15\" CHINA WHITE PEACH 中国白桃",
+    "new_name": "123.3 2 5kg 12 15 CHINA WHITE PEACH 中国白桃"
+  },
+  {
+    "Id": "60",
+    "old_name": "123.4 15\" CN WHITE PEACH ÖÐ¹úÌÒ",
+    "new_name": "123.4 15 CN WHITE PEACH ÖÐ¹úÌÒ"
+  },
+  {
+    "Id": "61",
+    "old_name": "123.5 36\" CN. WHITE PEACH ÖÐ¹ú°×ÌÒ",
+    "new_name": "123.5 36 CN WHITE PEACH ÖÐ¹ú ÌÒ"
+  },
+  {
+    "Id": "62",
+    "old_name": "132.1 CHINA HONG JIANG ORANGE ºì½­³È",
+    "new_name": "132.1 CHINA HONG JIANG ORANGE ºì½ ³È"
+  },
+  {
+    "Id": "1233",
+    "old_name": "15 CHINA 15\" CHINA WHITE PEACH 中国白桃",
+    "new_name": "15 CHINA 15 CHINA WHITE PEACH 中国白桃"
+  },
+  {
+    "Id": "907",
+    "old_name": "1X12.1 12 x 600g CN. SUGAR TANG 中国砂糖桔",
+    "new_name": "1X12.1 12 x 600g CN SUGAR TANG 中国砂糖桔"
+  },
+  {
+    "Id": "909",
+    "old_name": "1X17 15 x 800g CN. WOGAM 中国沃柑",
+    "new_name": "1X17 15 x 800g CN WOGAM 中国沃柑"
+  },
+  {
+    "Id": "910",
+    "old_name": "20 PEACH 21\" USA. WHITE PEACH 美国白桃",
+    "new_name": "20 PEACH 21 USA WHITE PEACH 美国白桃"
+  },
+  {
+    "Id": "203",
+    "old_name": "2001 [DUT/WHITE] 135\" SA. FUJI APPLE [白箱]非洲富士",
+    "new_name": "2001 DUT WHITE 135 SA FUJI APPLE 白箱 非洲富士"
+  },
+  {
+    "Id": "204",
+    "old_name": "2001.1 150\" SA. FUJI APPLE 非洲富士",
+    "new_name": "2001.1 150 SA FUJI APPLE 非洲富士"
+  },
+  {
+    "Id": "205",
+    "old_name": "2001.8 [TRUCAPE] 135\" SA. FUJI APPLE 非洲富士",
+    "new_name": "2001.8 TRUCAPE 135 SA FUJI APPLE 非洲富士"
+  },
+  {
+    "Id": "206",
+    "old_name": "2002 135\" NZ. GALA APPLE 嘎啦苹果",
+    "new_name": "2002 135 NZ GALA APPLE 嘎啦苹果"
+  },
+  {
+    "Id": "207",
+    "old_name": "2003 135\" SA. GREEN APPLE 非洲青苹果",
+    "new_name": "2003 135 SA GREEN APPLE 非洲青苹果"
+  },
+  {
+    "Id": "911",
+    "old_name": "2003-1 120\" SA GREEN APPLE 非洲青苹果",
+    "new_name": "2003-1 120 SA GREEN APPLE 非洲青苹果"
+  },
+  {
+    "Id": "912",
+    "old_name": "2003-3 165\" SA. GREEN APPLE 非洲青苹果",
+    "new_name": "2003-3 165 SA GREEN APPLE 非洲青苹果"
+  },
+  {
+    "Id": "208",
+    "old_name": "2003.1 135\" TUR. GN APP ÍÁ¶úÆäÇàÆ»¹û",
+    "new_name": "2003.1 135 TUR GN APP ÍÁ úÆäÇàÆ ¹û"
+  },
+  {
+    "Id": "1177",
+    "old_name": "2003.10 135\" TUR. GN APP ÍÁ¶úÆäÇàÆ»¹û",
+    "new_name": "2003.10 135 TUR GN APP ÍÁ úÆäÇàÆ ¹û"
+  },
+  {
+    "Id": "209",
+    "old_name": "2003.15 198\" USA. GREEN APP ÃÀ¹úÇàÆ»¹û",
+    "new_name": "2003.15 198 USA GREEN APP ÃÀ¹úÇàÆ ¹û"
+  },
+  {
+    "Id": "210",
+    "old_name": "2003.2 150\" TUR GN. APPLE ÍÁ¶úÆäÇàÆ»¹û",
+    "new_name": "2003.2 150 TUR GN APPLE ÍÁ úÆäÇàÆ ¹û"
+  },
+  {
+    "Id": "211",
+    "old_name": "2003.3 198\" SA. GREEN APPLE 非洲青苹果",
+    "new_name": "2003.3 198 SA GREEN APPLE 非洲青苹果"
+  },
+  {
+    "Id": "212",
+    "old_name": "2003.4 180\" SA. GREEN APPLE 非洲青苹果",
+    "new_name": "2003.4 180 SA GREEN APPLE 非洲青苹果"
+  },
+  {
+    "Id": "213",
+    "old_name": "2003.5 135\" NZ. GREEN APPÅ¦Î÷À¼ÇàÆ»¹û",
+    "new_name": "2003.5 135 NZ GREEN APPÅ Î À¼ÇàÆ ¹û"
+  },
+  {
+    "Id": "214",
+    "old_name": "2003.6 120\" NZ. GREEN APP Å¦Î÷À¼ÇàÆ»¹û",
+    "new_name": "2003.6 120 NZ GREEN APP Å Î À¼ÇàÆ ¹û"
+  },
+  {
+    "Id": "215",
+    "old_name": "2003.7 138\" ITA GN APPLE Òâ´óÀûÇàÆ»¹û",
+    "new_name": "2003.7 138 ITA GN APPLE Òâ óÀûÇàÆ ¹û"
+  },
+  {
+    "Id": "216",
+    "old_name": "2003.74 165\" NZ. GREEN AP Å¦Î÷À¼ÇàÆ»¹û",
+    "new_name": "2003.74 165 NZ GREEN AP Å Î À¼ÇàÆ ¹û"
+  },
+  {
+    "Id": "217",
+    "old_name": "2003.8 125\" ITA GN APPLE Òâ´óÀûÇàÆ»¹û",
+    "new_name": "2003.8 125 ITA GN APPLE Òâ óÀûÇàÆ ¹û"
+  },
+  {
+    "Id": "218",
+    "old_name": "2003.9 198\" ITA GN APPLE Òâ´óÀûÇàÆ»¹û",
+    "new_name": "2003.9 198 ITA GN APPLE Òâ óÀûÇàÆ ¹û"
+  },
+  {
+    "Id": "219",
+    "old_name": "2004 80\" NZ. ROSE APPLE 纽西兰玫瑰苹果",
+    "new_name": "2004 80 NZ ROSE APPLE 纽西兰玫瑰苹果"
+  },
+  {
+    "Id": "220",
+    "old_name": "2005 80\" NZ A1 APPLE 纽西兰苹果",
+    "new_name": "2005 80 NZ A1 APPLE 纽西兰苹果"
+  },
+  {
+    "Id": "221",
+    "old_name": "2006 NZ. DAZZLE APP 纽西兰DAZ苹果 (pc)",
+    "new_name": "2006 NZ DAZZLE APP 纽西兰DAZ苹果 pc"
+  },
+  {
+    "Id": "222",
+    "old_name": "2006.1 120\" ROSE APPLE Ãµ¹åÆ»¹û",
+    "new_name": "2006.1 120 ROSE APPLE Ãµ¹åÆ ¹û"
+  },
+  {
+    "Id": "223",
+    "old_name": "2007 28\" FUJI APPLE [HH] 中国双红富士苹果",
+    "new_name": "2007 28 FUJI APPLE HH 中国双红富士苹果"
+  },
+  {
+    "Id": "224",
+    "old_name": "2007.1 28\" FUJI APPLE [BX] 中国双红富士苹果",
+    "new_name": "2007.1 28 FUJI APPLE BX 中国双红富士苹果"
+  },
+  {
+    "Id": "1195",
+    "old_name": "2007.10 32\" FUJI APPLE [BX] 中国双红富士苹果",
+    "new_name": "2007.10 32 FUJI APPLE BX 中国双红富士苹果"
+  },
+  {
+    "Id": "1263",
+    "old_name": "2007.18 28\" FUJI APPLE [SM] 中国双红富士苹果",
+    "new_name": "2007.18 28 FUJI APPLE SM 中国双红富士苹果"
+  },
+  {
+    "Id": "225",
+    "old_name": "2008 32\" FUJI APPLE 中国双红富士苹果",
+    "new_name": "2008 32 FUJI APPLE 中国双红富士苹果"
+  },
+  {
+    "Id": "913",
+    "old_name": "2008-1 24\" FUJI APPLE [HH] 中国双红富士苹果",
+    "new_name": "2008-1 24 FUJI APPLE HH 中国双红富士苹果"
+  },
+  {
+    "Id": "226",
+    "old_name": "2008.2 16\" CN. WHITE PEACH ÖÐ¹úÌÒ",
+    "new_name": "2008.2 16 CN WHITE PEACH ÖÐ¹úÌÒ"
+  },
+  {
+    "Id": "227",
+    "old_name": "2008.3 6\" CHINA WHITE PEACH 中国白桃",
+    "new_name": "2008.3 6 CHINA WHITE PEACH 中国白桃"
+  },
+  {
+    "Id": "228",
+    "old_name": "2009 80\" FUJI APPLE [HH] 中国双红富士苹果",
+    "new_name": "2009 80 FUJI APPLE HH 中国双红富士苹果"
+  },
+  {
+    "Id": "1183",
+    "old_name": "2009.1 135\" SA. FUJI APPLE 非洲富士",
+    "new_name": "2009.1 135 SA FUJI APPLE 非洲富士"
+  },
+  {
+    "Id": "230",
+    "old_name": "2009.2 88\" FUJI APPLE [HH] 中国双红富士苹果",
+    "new_name": "2009.2 88 FUJI APPLE HH 中国双红富士苹果"
+  },
+  {
+    "Id": "231",
+    "old_name": "2009.3 10\" CN. FUJI APPLE 中国富士苹果",
+    "new_name": "2009.3 10 CN FUJI APPLE 中国富士苹果"
+  },
+  {
+    "Id": "1181",
+    "old_name": "2010 100\" FUJI APPLE [FC] 中国富士苹果",
+    "new_name": "2010 100 FUJI APPLE FC 中国富士苹果"
+  },
+  {
+    "Id": "915",
+    "old_name": "2010-R 100\" FUJI APPLE [JOY] 中国富士苹果",
+    "new_name": "2010-R 100 FUJI APPLE JOY 中国富士苹果"
+  },
+  {
+    "Id": "233",
+    "old_name": "2010.1 64\" FUJI APPLE 中国双红富士苹果",
+    "new_name": "2010.1 64 FUJI APPLE 中国双红富士苹果"
+  },
+  {
+    "Id": "235",
+    "old_name": "2010.3 138\" CN FJ APPLE ÖÐ¹ú¸»Ê¿Æ»¹û",
+    "new_name": "2010.3 138 CN FJ APPLE ÖÐ¹ú Ê Æ ¹û"
+  },
+  {
+    "Id": "236",
+    "old_name": "2011 150\" NZ. GALA APPLE 嘎啦苹果",
+    "new_name": "2011 150 NZ GALA APPLE 嘎啦苹果"
+  },
+  {
+    "Id": "237",
+    "old_name": "2011.5 150\" NZ. A1 APPLE Å¦Î÷À¼Æ»¹û",
+    "new_name": "2011.5 150 NZ A1 APPLE Å Î À¼Æ ¹û"
+  },
+  {
+    "Id": "238",
+    "old_name": "2011.6 165\" NZ. A1 APPLE Å¦Î÷À¼Æ»¹û",
+    "new_name": "2011.6 165 NZ A1 APPLE Å Î À¼Æ ¹û"
+  },
+  {
+    "Id": "239",
+    "old_name": "2012 165\" SA. FUJI APPLE ·ÇÖÞ¸»Ê¿",
+    "new_name": "2012 165 SA FUJI APPLE ÇÖÞ Ê"
+  },
+  {
+    "Id": "240",
+    "old_name": "2012.1 198\" SA. FUJI APPLE 非洲富士",
+    "new_name": "2012.1 198 SA FUJI APPLE 非洲富士"
+  },
+  {
+    "Id": "241",
+    "old_name": "2012.2 [TRUCAPE] 120\" SA. FUJI APPLE 非洲富士",
+    "new_name": "2012.2 TRUCAPE 120 SA FUJI APPLE 非洲富士"
+  },
+  {
+    "Id": "242",
+    "old_name": "2012.3 80\" CN. FUJI APPLES ÖÐ¸»Ê¿Æ»¹û",
+    "new_name": "2012.3 80 CN FUJI APPLES ÖÐ Ê Æ ¹û"
+  },
+  {
+    "Id": "243",
+    "old_name": "2012.4 180\" SA. FUJI APPLES ·ÇÖÞ¸»Ê¿",
+    "new_name": "2012.4 180 SA FUJI APPLES ÇÖÞ Ê"
+  },
+  {
+    "Id": "244",
+    "old_name": "2012.5 216\" SA. FUJI APPLES ·ÇÖÞ¸»Ê¿",
+    "new_name": "2012.5 216 SA FUJI APPLES ÇÖÞ Ê"
+  },
+  {
+    "Id": "245",
+    "old_name": "2013 150\" SA. GREEN APPLE 非洲青苹果",
+    "new_name": "2013 150 SA GREEN APPLE 非洲青苹果"
+  },
+  {
+    "Id": "246",
+    "old_name": "2014 35\" NZ. QUEEN APPLE »ÊºóÆ»¹û",
+    "new_name": "2014 35 NZ QUEEN APPLE ÊºóÆ ¹û"
+  },
+  {
+    "Id": "916",
+    "old_name": "2014-1 180\" NZ. QUEEN APPLE »ÊºóÆ»¹û",
+    "new_name": "2014-1 180 NZ QUEEN APPLE ÊºóÆ ¹û"
+  },
+  {
+    "Id": "247",
+    "old_name": "2014.1 100\" NZ. QUEEN APPLE »ÊºóÆ»¹û",
+    "new_name": "2014.1 100 NZ QUEEN APPLE ÊºóÆ ¹û"
+  },
+  {
+    "Id": "248",
+    "old_name": "2014.2 135\" NZ. QUEEN APPLE »ÊºóÆ»¹û",
+    "new_name": "2014.2 135 NZ QUEEN APPLE ÊºóÆ ¹û"
+  },
+  {
+    "Id": "249",
+    "old_name": "2014.3 150\" SA. ROYAL BEAUTY »Ê¼ÒÃÀÈË",
+    "new_name": "2014.3 150 SA ROYAL BEAUTY Ê¼ÒÃÀÈË"
+  },
+  {
+    "Id": "250",
+    "old_name": "2014.5 165\" NZ. QUEEN APPLE »ÊºóÆ»¹û",
+    "new_name": "2014.5 165 NZ QUEEN APPLE ÊºóÆ ¹û"
+  },
+  {
+    "Id": "251",
+    "old_name": "2014.6 110\" SA. FUJI APPLE ·ÇÖÞ¸»Ê¿",
+    "new_name": "2014.6 110 SA FUJI APPLE ÇÖÞ Ê"
+  },
+  {
+    "Id": "252",
+    "old_name": "2015 135\" SA. FLASH GALA 非洲嘎啦苹果",
+    "new_name": "2015 135 SA FLASH GALA 非洲嘎啦苹果"
+  },
+  {
+    "Id": "1238",
+    "old_name": "2015.10 165\" SA. FLASH GALA 非洲嘎啦苹果",
+    "new_name": "2015.10 165 SA FLASH GALA 非洲嘎啦苹果"
+  },
+  {
+    "Id": "253",
+    "old_name": "2015.2 120\" NZ. GALA APPLE 嘎啦苹果",
+    "new_name": "2015.2 120 NZ GALA APPLE 嘎啦苹果"
+  },
+  {
+    "Id": "254",
+    "old_name": "2016 90\" SA. FUJI APPLE ·ÇÖÞ¸»Ê¿",
+    "new_name": "2016 90 SA FUJI APPLE ÇÖÞ Ê"
+  },
+  {
+    "Id": "255",
+    "old_name": "2016.1 70\" SA. FUJI APPLE ·ÇÖÞ¸»Ê¿",
+    "new_name": "2016.1 70 SA FUJI APPLE ÇÖÞ Ê"
+  },
+  {
+    "Id": "256",
+    "old_name": "2016.6 234\" SA. FUJI APPLE ·ÇÖÞ¸»Ê¿",
+    "new_name": "2016.6 234 SA FUJI APPLE ÇÖÞ Ê"
+  },
+  {
+    "Id": "257",
+    "old_name": "2017 72\" FUJI APPLE [HH] 中国双红富士苹果",
+    "new_name": "2017 72 FUJI APPLE HH 中国双红富士苹果"
+  },
+  {
+    "Id": "258",
+    "old_name": "2017.1 88\" FUJI APPLE [BX] 中国富士苹果",
+    "new_name": "2017.1 88 FUJI APPLE BX 中国富士苹果"
+  },
+  {
+    "Id": "259",
+    "old_name": "2017.11 100\" FUJI APPLE [BX] 中国双红富士苹果",
+    "new_name": "2017.11 100 FUJI APPLE BX 中国双红富士苹果"
+  },
+  {
+    "Id": "260",
+    "old_name": "2017.2 72\" FUJI APPLE [BX] 中国双红富士苹果",
+    "new_name": "2017.2 72 FUJI APPLE BX 中国双红富士苹果"
+  },
+  {
+    "Id": "1264",
+    "old_name": "2017.20 72\" FUJI APPLE [SM] 中国双红富士苹果",
+    "new_name": "2017.20 72 FUJI APPLE SM 中国双红富士苹果"
+  },
+  {
+    "Id": "261",
+    "old_name": "2017.3 CSH 72\" FUJI APPLE ÖÐ¹ú¸»Ê¿",
+    "new_name": "2017.3 CSH 72 FUJI APPLE ÖÐ¹ú Ê"
+  },
+  {
+    "Id": "262",
+    "old_name": "2017.4 100\" FUJI APPLE [HH] 中国双红富士苹果",
+    "new_name": "2017.4 100 FUJI APPLE HH 中国双红富士苹果"
+  },
+  {
+    "Id": "264",
+    "old_name": "2017.8 72\" FUJI APPLE [JOY] 中国富士",
+    "new_name": "2017.8 72 FUJI APPLE JOY 中国富士"
+  },
+  {
+    "Id": "265",
+    "old_name": "2017.9 72\" FUJI APP -PINGAN ÖÐ¹ú¸»Æ½°²",
+    "new_name": "2017.9 72 FUJI APP PINGAN ÖÐ¹ú Æ½ ²"
+  },
+  {
+    "Id": "266",
+    "old_name": "2018 100\" NZ. ROSE APPLE Ãµ¹åÆ»¹û",
+    "new_name": "2018 100 NZ ROSE APPLE Ãµ¹åÆ ¹û"
+  },
+  {
+    "Id": "267",
+    "old_name": "2018.1 113\" ROSE APPLE Ãµ¹åÆ»¹û",
+    "new_name": "2018.1 113 ROSE APPLE Ãµ¹åÆ ¹û"
+  },
+  {
+    "Id": "268",
+    "old_name": "2019 150\" RED DELI. APPLE",
+    "new_name": "2019 150 RED DELI APPLE"
+  },
+  {
+    "Id": "269",
+    "old_name": "2020 150\" SA. CR APPLE ·ÇÖÞ´äºì",
+    "new_name": "2020 150 SA CR APPLE ÇÖÞ äºì"
+  },
+  {
+    "Id": "270",
+    "old_name": "2020.1 120\" SA. CR APPLE ·ÇÖÞ´äºì",
+    "new_name": "2020.1 120 SA CR APPLE ÇÖÞ äºì"
+  },
+  {
+    "Id": "271",
+    "old_name": "2020.2 135\" SA. CR APPLE ·ÇÖÞ´äºì",
+    "new_name": "2020.2 135 SA CR APPLE ÇÖÞ äºì"
+  },
+  {
+    "Id": "272",
+    "old_name": "2020.3 80\" SA. JOYA APPLE ·ÇÖÞ´äºì",
+    "new_name": "2020.3 80 SA JOYA APPLE ÇÖÞ äºì"
+  },
+  {
+    "Id": "273",
+    "old_name": "2020.4 180\" SA. CR APPLE ·ÇÖÞ´äºì",
+    "new_name": "2020.4 180 SA CR APPLE ÇÖÞ äºì"
+  },
+  {
+    "Id": "274",
+    "old_name": "2020.5 80\" SA. CR APPLE ·ÇÖÞ´äºì",
+    "new_name": "2020.5 80 SA CR APPLE ÇÖÞ äºì"
+  },
+  {
+    "Id": "275",
+    "old_name": "2021 72\" USA ENVY APPLE 美国爱妃苹果",
+    "new_name": "2021 72 USA ENVY APPLE 美国爱妃苹果"
+  },
+  {
+    "Id": "276",
+    "old_name": "2021.1 28\" ROSE APPLE Ãµ¹åÆ»¹û",
+    "new_name": "2021.1 28 ROSE APPLE Ãµ¹åÆ ¹û"
+  },
+  {
+    "Id": "277",
+    "old_name": "2021.2 70\" NZ. ENVY APPLE 新西兰爱妃苹果",
+    "new_name": "2021.2 70 NZ ENVY APPLE 新西兰爱妃苹果"
+  },
+  {
+    "Id": "278",
+    "old_name": "2021.3 90\" NZ. ENVY APPLE 新西兰爱妃苹果",
+    "new_name": "2021.3 90 NZ ENVY APPLE 新西兰爱妃苹果"
+  },
+  {
+    "Id": "279",
+    "old_name": "2021.4 30\" NZ. ENVY APPLE 新西兰爱妃苹果",
+    "new_name": "2021.4 30 NZ ENVY APPLE 新西兰爱妃苹果"
+  },
+  {
+    "Id": "280",
+    "old_name": "2021.5 35\" NZ. ENVY APPLE 新西兰爱妃苹果",
+    "new_name": "2021.5 35 NZ ENVY APPLE 新西兰爱妃苹果"
+  },
+  {
+    "Id": "281",
+    "old_name": "2021.8 80\" USA ENVY APPLE 美国爱妃苹果",
+    "new_name": "2021.8 80 USA ENVY APPLE 美国爱妃苹果"
+  },
+  {
+    "Id": "282",
+    "old_name": "2022 163\" USA GALA ÃÀ¹ú¸ÂÀ²",
+    "new_name": "2022 163 USA GALA ÃÀ¹ú ÂÀ²"
+  },
+  {
+    "Id": "283",
+    "old_name": "2022.1 180\" SA. GALA APPLE·ÇÖÞ¸ÂÀ²",
+    "new_name": "2022.1 180 SA GALA APPLE ÇÖÞ ÂÀ²"
+  },
+  {
+    "Id": "284",
+    "old_name": "2022.2 138\" US GALA ÃÀ¹ú¸ÂÀ²",
+    "new_name": "2022.2 138 US GALA ÃÀ¹ú ÂÀ²"
+  },
+  {
+    "Id": "286",
+    "old_name": "2023 24\" ROSE APPLE Ãµ¹åÆ»¹û",
+    "new_name": "2023 24 ROSE APPLE Ãµ¹åÆ ¹û"
+  },
+  {
+    "Id": "287",
+    "old_name": "2024 80\" FUJI APPLE [BX] 中国双红富士苹果",
+    "new_name": "2024 80 FUJI APPLE BX 中国双红富士苹果"
+  },
+  {
+    "Id": "288",
+    "old_name": "2024.1 113\" FUJI APPLE [GN BOX] 中国富士苹果",
+    "new_name": "2024.1 113 FUJI APPLE GN BOX 中国富士苹果"
+  },
+  {
+    "Id": "289",
+    "old_name": "2024.2 113\" FUJI APPLE [WW] 中国双红富士苹果",
+    "new_name": "2024.2 113 FUJI APPLE WW 中国双红富士苹果"
+  },
+  {
+    "Id": "290",
+    "old_name": "2024.3 150\" CN FUJI APPLE ÖÐ¹ú¸»Ê¿",
+    "new_name": "2024.3 150 CN FUJI APPLE ÖÐ¹ú Ê"
+  },
+  {
+    "Id": "291",
+    "old_name": "2024.5 56\" FUJI APPLE MS ¸»Ê¿Æ»¹û",
+    "new_name": "2024.5 56 FUJI APPLE MS Ê Æ ¹û"
+  },
+  {
+    "Id": "292",
+    "old_name": "2024.6 48\" FUJI APPLE MS ¸»Ê¿Æ»¹û",
+    "new_name": "2024.6 48 FUJI APPLE MS Ê Æ ¹û"
+  },
+  {
+    "Id": "293",
+    "old_name": "2025 138\" USA. FUJI APPLE 美国富士",
+    "new_name": "2025 138 USA FUJI APPLE 美国富士"
+  },
+  {
+    "Id": "294",
+    "old_name": "2026 32/40\" JAP. FUJI APPLE ÈÕ±¾¸»Ê¿",
+    "new_name": "2026 32 40 JAP FUJI APPLE ÈÕ ¾ Ê"
+  },
+  {
+    "Id": "295",
+    "old_name": "2027 15-18\" THAILAND CUSTARD APPLE 釋迦果",
+    "new_name": "2027 15 18 THAILAND CUSTARD APPLE 釋迦果"
+  },
+  {
+    "Id": "296",
+    "old_name": "2027.1 STRAWBERRY APPLE 草莓苹果 (ctn)",
+    "new_name": "2027.1 STRAWBERRY APPLE 草莓苹果 ctn"
+  },
+  {
+    "Id": "1225",
+    "old_name": "2027.23 11\" AUS. CUSTARD APPLE 釋迦果",
+    "new_name": "2027.23 11 AUS CUSTARD APPLE 釋迦果"
+  },
+  {
+    "Id": "298",
+    "old_name": "2028.1 48\" ROSE APPLE Ãµ¹åÆ»¹û",
+    "new_name": "2028.1 48 ROSE APPLE Ãµ¹åÆ ¹û"
+  },
+  {
+    "Id": "299",
+    "old_name": "2028.2 90\" NZ. ROSE APPLE Ãµ¹åÆ»¹û",
+    "new_name": "2028.2 90 NZ ROSE APPLE Ãµ¹åÆ ¹û"
+  },
+  {
+    "Id": "300",
+    "old_name": "2028.3 80\" PRINCE APPLE Ì«×ÓÆ»¹û",
+    "new_name": "2028.3 80 PRINCE APPLE Ì ÓÆ ¹û"
+  },
+  {
+    "Id": "917",
+    "old_name": "2028A 30/35\" ROSE APPLE Ãµ¹åÆ»¹û",
+    "new_name": "2028A 30 35 ROSE APPLE Ãµ¹åÆ ¹û"
+  },
+  {
+    "Id": "301",
+    "old_name": "2029 80\" NZ. PACIFIC ROSE 纽西兰玫瑰苹果",
+    "new_name": "2029 80 NZ PACIFIC ROSE 纽西兰玫瑰苹果"
+  },
+  {
+    "Id": "302",
+    "old_name": "2029.1 72\" PAC. ROSE APPLE Ãµ¹åÆ»¹û",
+    "new_name": "2029.1 72 PAC ROSE APPLE Ãµ¹åÆ ¹û"
+  },
+  {
+    "Id": "303",
+    "old_name": "2030 150\" USA. GALA ÃÀ¹ú¸ÂÀ²",
+    "new_name": "2030 150 USA GALA ÃÀ¹ú ÂÀ²"
+  },
+  {
+    "Id": "304",
+    "old_name": "2030.1 150\" TUR ROSE APPLE ÍÁ¶úÆäÃµ¹å",
+    "new_name": "2030.1 150 TUR ROSE APPLE ÍÁ úÆäÃµ¹å"
+  },
+  {
+    "Id": "305",
+    "old_name": "2030.2 150\" TURKISH GALA ÍÁ¶úÆä¸ÂÀ²",
+    "new_name": "2030.2 150 TURKISH GALA ÍÁ úÆä ÂÀ²"
+  },
+  {
+    "Id": "306",
+    "old_name": "2031 135\" FRANCE GN APPLE ·¨¹úÇàÆ»¹û",
+    "new_name": "2031 135 FRANCE GN APPLE ¹úÇàÆ ¹û"
+  },
+  {
+    "Id": "307",
+    "old_name": "2031.2 138\" FR. GALA APPLE ·¨¹ú¸Â",
+    "new_name": "2031.2 138 FR GALA APPLE ¹ú Â"
+  },
+  {
+    "Id": "308",
+    "old_name": "2031.3 150\" FRANCE. GN APPLE ·¨¹úÇàÆ»",
+    "new_name": "2031.3 150 FRANCE GN APPLE ¹úÇàÆ"
+  },
+  {
+    "Id": "309",
+    "old_name": "2032 24/28\" PAC. ROSE APPLE Ãµ¹åÆ»¹û",
+    "new_name": "2032 24 28 PAC ROSE APPLE Ãµ¹åÆ ¹û"
+  },
+  {
+    "Id": "310",
+    "old_name": "2032.1 35\" PAC. ROSE APPLE Ãµ¹åÆ»¹û",
+    "new_name": "2032.1 35 PAC ROSE APPLE Ãµ¹åÆ ¹û"
+  },
+  {
+    "Id": "311",
+    "old_name": "2033 28\" USA. ENVY APPLE 美国爱妃苹果",
+    "new_name": "2033 28 USA ENVY APPLE 美国爱妃苹果"
+  },
+  {
+    "Id": "1242",
+    "old_name": "2034 - copy 135\" SA. GALA APPLE 非洲嘎啦苹果",
+    "new_name": "2034 - copy 135 SA GALA APPLE 非洲嘎啦苹果"
+  },
+  {
+    "Id": "312",
+    "old_name": "2034 T/C 135\" SA. GALA APPLE 非洲嘎啦苹果",
+    "new_name": "2034 T C 135 SA GALA APPLE 非洲嘎啦苹果"
+  },
+  {
+    "Id": "918",
+    "old_name": "2034-1 138\" USA. GALA ÃÀ¹ú¸ÂÀ²",
+    "new_name": "2034-1 138 USA GALA ÃÀ¹ú ÂÀ²"
+  },
+  {
+    "Id": "919",
+    "old_name": "2034-R 135\" SA. GALA - RETURN",
+    "new_name": "2034-R 135 SA GALA RETURN"
+  },
+  {
+    "Id": "313",
+    "old_name": "2034.1 150\" SA. GALA ·ÇÖÞ¸ÂÀ²",
+    "new_name": "2034.1 150 SA GALA ÇÖÞ ÂÀ²"
+  },
+  {
+    "Id": "314",
+    "old_name": "2034.2 120\" SA. GALA ·ÇÖÞ¸ÂÀ²",
+    "new_name": "2034.2 120 SA GALA ÇÖÞ ÂÀ²"
+  },
+  {
+    "Id": "315",
+    "old_name": "2035 80\" SA. FUJI APPLE ·ÇÖÞ¸»Ê¿",
+    "new_name": "2035 80 SA FUJI APPLE ÇÖÞ Ê"
+  },
+  {
+    "Id": "316",
+    "old_name": "2036 [TRUCAPE] 45\" SA. PEAR 非洲耙",
+    "new_name": "2036 TRUCAPE 45 SA PEAR 非洲耙"
+  },
+  {
+    "Id": "1241",
+    "old_name": "2036.13 [TRUCAPE] 52\" SA. PEAR 非洲耙",
+    "new_name": "2036.13 TRUCAPE 52 SA PEAR 非洲耙"
+  },
+  {
+    "Id": "317",
+    "old_name": "2037 135\" SA. QUEEN APPLE »ÊºóÆ»¹û",
+    "new_name": "2037 135 SA QUEEN APPLE ÊºóÆ ¹û"
+  },
+  {
+    "Id": "318",
+    "old_name": "2037.1 150\" SA. QUEEN APPLE »ÊºóÆ»¹û",
+    "new_name": "2037.1 150 SA QUEEN APPLE ÊºóÆ ¹û"
+  },
+  {
+    "Id": "319",
+    "old_name": "2038 80\" NZ QUEEN APPLE 纽西兰皇后苹果",
+    "new_name": "2038 80 NZ QUEEN APPLE 纽西兰皇后苹果"
+  },
+  {
+    "Id": "920",
+    "old_name": "2038-1 80\" NZ. ENVY APPLE 新西兰爱妃苹果",
+    "new_name": "2038-1 80 NZ ENVY APPLE 新西兰爱妃苹果"
+  },
+  {
+    "Id": "320",
+    "old_name": "2038.1 90\" NZ. QUEEN APPLE »ÊºóÆ»¹û",
+    "new_name": "2038.1 90 NZ QUEEN APPLE ÊºóÆ ¹û"
+  },
+  {
+    "Id": "321",
+    "old_name": "2038.5 70\" NZ. QUEEN APPLE 纽西兰皇后苹果",
+    "new_name": "2038.5 70 NZ QUEEN APPLE 纽西兰皇后苹果"
+  },
+  {
+    "Id": "322",
+    "old_name": "2039 80\" USA. PINK LADY APPLE 美国粉红女士",
+    "new_name": "2039 80 USA PINK LADY APPLE 美国粉红女士"
+  },
+  {
+    "Id": "323",
+    "old_name": "2039.1 180\" SA PINKLADY APPLE ·ÖºìÅ®Ê¿",
+    "new_name": "2039.1 180 SA PINKLADY APPLE ÖºìÅ Ê"
+  },
+  {
+    "Id": "324",
+    "old_name": "2039.2 165\" SA PINKLADY APPLE·ÖºìÅ®Ê¿",
+    "new_name": "2039.2 165 SA PINKLADY APPLE ÖºìÅ Ê"
+  },
+  {
+    "Id": "325",
+    "old_name": "2039.3 150\" SA PINKLADY APPLE ·ÖºìÅ®Ê¿",
+    "new_name": "2039.3 150 SA PINKLADY APPLE ÖºìÅ Ê"
+  },
+  {
+    "Id": "326",
+    "old_name": "2039.4 135\" SA PINKLADY APPLE·ÖºìÅ®Ê¿",
+    "new_name": "2039.4 135 SA PINKLADY APPLE ÖºìÅ Ê"
+  },
+  {
+    "Id": "327",
+    "old_name": "2039.5 216\" SA PINKLADY APPLE ·ÖºìÅ®Ê¿",
+    "new_name": "2039.5 216 SA PINKLADY APPLE ÖºìÅ Ê"
+  },
+  {
+    "Id": "328",
+    "old_name": "2040 138\" CAN. AMBROSIA APPLE",
+    "new_name": "2040 138 CAN AMBROSIA APPLE"
+  },
+  {
+    "Id": "921",
+    "old_name": "2040-1 138\" LOCSWEET ORANGE 澳洲橙",
+    "new_name": "2040-1 138 LOCSWEET ORANGE 澳洲橙"
+  },
+  {
+    "Id": "329",
+    "old_name": "2041 135\" SA. ROYAL BEAUTY 皇家美人苹果",
+    "new_name": "2041 135 SA ROYAL BEAUTY 皇家美人苹果"
+  },
+  {
+    "Id": "330",
+    "old_name": "2041.1 120\" SA. ROYAL BEAUTY 皇家美人苹果",
+    "new_name": "2041.1 120 SA ROYAL BEAUTY 皇家美人苹果"
+  },
+  {
+    "Id": "331",
+    "old_name": "2041.2 165\" SA. ROYAL BEAUTY 皇家美人苹果",
+    "new_name": "2041.2 165 SA ROYAL BEAUTY 皇家美人苹果"
+  },
+  {
+    "Id": "332",
+    "old_name": "2042 135\" NZ. BEAUTY APPLE ÃÀÈËÆ»¹û",
+    "new_name": "2042 135 NZ BEAUTY APPLE ÃÀÈËÆ ¹û"
+  },
+  {
+    "Id": "333",
+    "old_name": "2042.1 100\" NZ. BEAUTY APPLE ÃÀÈËÆ»¹û",
+    "new_name": "2042.1 100 NZ BEAUTY APPLE ÃÀÈËÆ ¹û"
+  },
+  {
+    "Id": "334",
+    "old_name": "2042.2 90\" NZ. BEAUTY APPLE ÃÀÈËÆ»¹û",
+    "new_name": "2042.2 90 NZ BEAUTY APPLE ÃÀÈËÆ ¹û"
+  },
+  {
+    "Id": "64",
+    "old_name": "300.3 55\" SA. ORANGE ·ÇÖÞ³È",
+    "new_name": "300.3 55 SA ORANGE ÇÖÞ³È"
+  },
+  {
+    "Id": "335",
+    "old_name": "3000 40\" SA. NAVEL ORANGE 非洲肉橙",
+    "new_name": "3000 40 SA NAVEL ORANGE 非洲肉橙"
+  },
+  {
+    "Id": "336",
+    "old_name": "3000.1 56\" SA. ORANGE ·ÇÖÞ³È",
+    "new_name": "3000.1 56 SA ORANGE ÇÖÞ³È"
+  },
+  {
+    "Id": "1261",
+    "old_name": "3000.12 45\" SA. NAVEL ORANGE 非洲肉橙",
+    "new_name": "3000.12 45 SA NAVEL ORANGE 非洲肉橙"
+  },
+  {
+    "Id": "337",
+    "old_name": "3000.13 48\" AUS. SUNKIST NAVEL 澳洲三级星橙",
+    "new_name": "3000.13 48 AUS SUNKIST NAVEL 澳洲三级星橙"
+  },
+  {
+    "Id": "338",
+    "old_name": "3000.2 56\" AUS. SUNKIST NAVEL 澳洲三级星橙",
+    "new_name": "3000.2 56 AUS SUNKIST NAVEL 澳洲三级星橙"
+  },
+  {
+    "Id": "339",
+    "old_name": "3000.3 56\" SPAIN ORANGE Î÷°àÑÀ³È",
+    "new_name": "3000.3 56 SPAIN ORANGE Î àÑÀ³È"
+  },
+  {
+    "Id": "340",
+    "old_name": "3000.5 40\" SPAIN ORANGE Î÷°àÑÀ³È",
+    "new_name": "3000.5 40 SPAIN ORANGE Î àÑÀ³È"
+  },
+  {
+    "Id": "922",
+    "old_name": "3000/2 50\" SA. ORANGE ·ÇÖÞ³È",
+    "new_name": "3000/2 50 SA ORANGE ÇÖÞ³È"
+  },
+  {
+    "Id": "341",
+    "old_name": "3001 56\" USA. SUNKIST NAVEL 美国三级星橙",
+    "new_name": "3001 56 USA SUNKIST NAVEL 美国三级星橙"
+  },
+  {
+    "Id": "923",
+    "old_name": "3001-R 56\" SUNKIST NAVEL - RETURN",
+    "new_name": "3001-R 56 SUNKIST NAVEL RETURN"
+  },
+  {
+    "Id": "342",
+    "old_name": "3001.1 64\" AUS. SUNKIST NAVEL 澳洲三级星橙",
+    "new_name": "3001.1 64 AUS SUNKIST NAVEL 澳洲三级星橙"
+  },
+  {
+    "Id": "343",
+    "old_name": "3001.2 56\" USA. PROSPECT NAVEL 美国肉橙",
+    "new_name": "3001.2 56 USA PROSPECT NAVEL 美国肉橙"
+  },
+  {
+    "Id": "344",
+    "old_name": "3001.3 72\" USA. PROSPECT NAVEL 美国肉橙",
+    "new_name": "3001.3 72 USA PROSPECT NAVEL 美国肉橙"
+  },
+  {
+    "Id": "345",
+    "old_name": "3001.5 56\" USA. SUNKIST MIDNIGHT ORANGE 美国新奇士水橙",
+    "new_name": "3001.5 56 USA SUNKIST MIDNIGHT ORANGE 美国新奇士水橙"
+  },
+  {
+    "Id": "346",
+    "old_name": "3002 72\" USA. SUNKIST NAVEL 美国三级星橙",
+    "new_name": "3002 72 USA SUNKIST NAVEL 美国三级星橙"
+  },
+  {
+    "Id": "924",
+    "old_name": "3002-R 72\" SUNKIST NAVEL - RETURN",
+    "new_name": "3002-R 72 SUNKIST NAVEL RETURN"
+  },
+  {
+    "Id": "347",
+    "old_name": "3002.1 88\" SUNKIST NAVEL (ctn) Ë«Ææ³È",
+    "new_name": "3002.1 88 SUNKIST NAVEL ctn Ë Ææ³È"
+  },
+  {
+    "Id": "348",
+    "old_name": "3002.2 72\" SUNKIST NAVEL (BF) Ë«Ææ³È",
+    "new_name": "3002.2 72 SUNKIST NAVEL BF Ë Ææ³È"
+  },
+  {
+    "Id": "349",
+    "old_name": "3002.3 [TUMUT] 72\" AUS. NAVEL ORANGE 澳洲肉橙",
+    "new_name": "3002.3 TUMUT 72 AUS NAVEL ORANGE 澳洲肉橙"
+  },
+  {
+    "Id": "350",
+    "old_name": "3002.4 72\" AUS.SUNKIST °ÄÖÞË«Ææ³È",
+    "new_name": "3002.4 72 AUS SUNKIST ÄÖÞË Ææ³È"
+  },
+  {
+    "Id": "351",
+    "old_name": "3002.5 72\" USA. SUNKIST MIDNIGHT ORANGE 美国新奇士水橙",
+    "new_name": "3002.5 72 USA SUNKIST MIDNIGHT ORANGE 美国新奇士水橙"
+  },
+  {
+    "Id": "352",
+    "old_name": "3003 113\" USA. SUNKIST NAVEL 美国三级星橙",
+    "new_name": "3003 113 USA SUNKIST NAVEL 美国三级星橙"
+  },
+  {
+    "Id": "925",
+    "old_name": "3003-R 113\" SUNKIST NAVEL - RETURN",
+    "new_name": "3003-R 113 SUNKIST NAVEL RETURN"
+  },
+  {
+    "Id": "353",
+    "old_name": "3003.1 113\" SUNKIST NAVEL (BF) Ë«Ææ³È",
+    "new_name": "3003.1 113 SUNKIST NAVEL BF Ë Ææ³È"
+  },
+  {
+    "Id": "354",
+    "old_name": "3003.15 113\" AUS. SUNKIST VAL Ë«Ææ³È",
+    "new_name": "3003.15 113 AUS SUNKIST VAL Ë Ææ³È"
+  },
+  {
+    "Id": "1198",
+    "old_name": "3003.2 113\" AUS. SUNKIST NAVEL 澳洲三级星橙",
+    "new_name": "3003.2 113 AUS SUNKIST NAVEL 澳洲三级星橙"
+  },
+  {
+    "Id": "357",
+    "old_name": "3003.22 113\" USA. PROSPECT NAVEL 美国肉橙",
+    "new_name": "3003.22 113 USA PROSPECT NAVEL 美国肉橙"
+  },
+  {
+    "Id": "358",
+    "old_name": "3003.5 88\" USA. SUNKIST NAVEL 美国三级星橙",
+    "new_name": "3003.5 88 USA SUNKIST NAVEL 美国三级星橙"
+  },
+  {
+    "Id": "359",
+    "old_name": "3004 56\" BLUEJAY NAVEL",
+    "new_name": "3004 56 BLUEJAY NAVEL"
+  },
+  {
+    "Id": "926",
+    "old_name": "3004-1 138\" SUNKIST VALENCIA Ë«ÆæË®³È",
+    "new_name": "3004-1 138 SUNKIST VALENCIA Ë ÆæË ³È"
+  },
+  {
+    "Id": "927",
+    "old_name": "3004-R 113\" USA. BEESWEET VALENCIA ORANGE 美国水橙",
+    "new_name": "3004-R 113 USA BEESWEET VALENCIA ORANGE 美国水橙"
+  },
+  {
+    "Id": "360",
+    "old_name": "3004.2 72\" USA. BLUEJAY NAVEL ORANGE 美国橙",
+    "new_name": "3004.2 72 USA BLUEJAY NAVEL ORANGE 美国橙"
+  },
+  {
+    "Id": "361",
+    "old_name": "3004.3 113\" BLUEJAY NAVEL",
+    "new_name": "3004.3 113 BLUEJAY NAVEL"
+  },
+  {
+    "Id": "362",
+    "old_name": "3005 40\" EGYPT NAVEL ORANGE 埃及肉橙",
+    "new_name": "3005 40 EGYPT NAVEL ORANGE 埃及肉橙"
+  },
+  {
+    "Id": "363",
+    "old_name": "3005.1 48\" EGYPT VALENCIA ORANGE 埃及水橙",
+    "new_name": "3005.1 48 EGYPT VALENCIA ORANGE 埃及水橙"
+  },
+  {
+    "Id": "364",
+    "old_name": "3005.2 52\" P ORANGE °Í»ùË¹Ì¹³È",
+    "new_name": "3005.2 52 P ORANGE Í ùË¹Ì¹³È"
+  },
+  {
+    "Id": "365",
+    "old_name": "3006 88\" EGYPT ORANGE 埃及橙",
+    "new_name": "3006 88 EGYPT ORANGE 埃及橙"
+  },
+  {
+    "Id": "366",
+    "old_name": "3007 113\" SK NAVEL",
+    "new_name": "3007 113 SK NAVEL"
+  },
+  {
+    "Id": "367",
+    "old_name": "3008 GRAPEFRUIT (ctn) Ð¡èÖ×Ó",
+    "new_name": "3008 GRAPEFRUIT ctn Ð èÖ Ó"
+  },
+  {
+    "Id": "928",
+    "old_name": "3008-R GRAPEFRUIT - RETURN",
+    "new_name": "3008-R GRAPEFRUIT RETURN"
+  },
+  {
+    "Id": "368",
+    "old_name": "3008.1 10\" CHINA GRAPEFRUIT ÆÏÌÑèÖ",
+    "new_name": "3008.1 10 CHINA GRAPEFRUIT ÆÏÌÑèÖ"
+  },
+  {
+    "Id": "369",
+    "old_name": "3010 100\" SA. LEMON 非洲柠檬",
+    "new_name": "3010 100 SA LEMON 非洲柠檬"
+  },
+  {
+    "Id": "370",
+    "old_name": "3011 72\" SA. SUNKIST NAVEL ·ÇÖÞË«Ææ",
+    "new_name": "3011 72 SA SUNKIST NAVEL ÇÖÞË Ææ"
+  },
+  {
+    "Id": "929",
+    "old_name": "3011-1 72\" SA. ORANGE 非洲橙",
+    "new_name": "3011-1 72 SA ORANGE 非洲橙"
+  },
+  {
+    "Id": "371",
+    "old_name": "3011.1 45\" SA. SUNKIST NAVEL ·ÇÖÞË«Ææ",
+    "new_name": "3011.1 45 SA SUNKIST NAVEL ÇÖÞË Ææ"
+  },
+  {
+    "Id": "372",
+    "old_name": "3012 SUNKIST 10kg SA. TANG ·ÇÖÞ¸Ì×Ð",
+    "new_name": "3012 SUNKIST 10kg SA TANG ÇÖÞ Ì Ð"
+  },
+  {
+    "Id": "373",
+    "old_name": "3012.1 18kg SA/EGY. TANGERINE 非洲柑仔",
+    "new_name": "3012.1 18kg SA EGY TANGERINE 非洲柑仔"
+  },
+  {
+    "Id": "374",
+    "old_name": "3012.2 9kg PRAYER TANGERINE ´ó½Û",
+    "new_name": "3012.2 9kg PRAYER TANGERINE ó½Û"
+  },
+  {
+    "Id": "375",
+    "old_name": "3012.3 9kg CN. TANGERINE 中国柑仔",
+    "new_name": "3012.3 9kg CN TANGERINE 中国柑仔"
+  },
+  {
+    "Id": "376",
+    "old_name": "3012.4 15kg SA/EGY. TANGERINE 非洲柑仔",
+    "new_name": "3012.4 15kg SA EGY TANGERINE 非洲柑仔"
+  },
+  {
+    "Id": "378",
+    "old_name": "3012.6 72\" SUNKIST AUS.TANG °ÄÖÞ¸Ì×Ð",
+    "new_name": "3012.6 72 SUNKIST AUS TANG ÄÖÞ Ì Ð"
+  },
+  {
+    "Id": "379",
+    "old_name": "3012.7 6kg CN. TANGERINE 中国柑仔",
+    "new_name": "3012.7 6kg CN TANGERINE 中国柑仔"
+  },
+  {
+    "Id": "380",
+    "old_name": "3013 88\" SUNGARDEN ORANGE",
+    "new_name": "3013 88 SUNGARDEN ORANGE"
+  },
+  {
+    "Id": "381",
+    "old_name": "3013.1 9kg AUS. SK TANGERINE °ÄÖÞ¸Ì×Ð",
+    "new_name": "3013.1 9kg AUS SK TANGERINE ÄÖÞ Ì Ð"
+  },
+  {
+    "Id": "383",
+    "old_name": "3013.6 20x550g CN. HONEY TANG ½Û",
+    "new_name": "3013.6 20x550g CN HONEY TANG ½Û"
+  },
+  {
+    "Id": "384",
+    "old_name": "3014 138\" SA LEMON (10kg) ·ÇÖÞÄûÃÊ",
+    "new_name": "3014 138 SA LEMON 10kg ÇÖÞÄûÃÊ"
+  },
+  {
+    "Id": "385",
+    "old_name": "3014.1 80\" AUS. LEMON °ÄÖÞÄûÃÊ",
+    "new_name": "3014.1 80 AUS LEMON ÄÖÞÄûÃÊ"
+  },
+  {
+    "Id": "386",
+    "old_name": "3015 54\" PAKISTAN. M. ORA °Í»ùË¹Ì¹¸Ì",
+    "new_name": "3015 54 PAKISTAN M ORA Í ùË¹Ì¹ Ì"
+  },
+  {
+    "Id": "387",
+    "old_name": "3015.1 2kg EHIME JELLY ORA °®æÂ³È",
+    "new_name": "3015.1 2kg EHIME JELLY ORA æÂ³È"
+  },
+  {
+    "Id": "388",
+    "old_name": "3015.2 40\" EGY. HONEY M. ORANGE ÃÛ¸Ì",
+    "new_name": "3015.2 40 EGY HONEY M ORANGE ÃÛ Ì"
+  },
+  {
+    "Id": "389",
+    "old_name": "3015.3 48/56\" AUS. M ORANGE °ÄÖÞ¸Ì",
+    "new_name": "3015.3 48 56 AUS M ORANGE ÄÖÞ Ì"
+  },
+  {
+    "Id": "390",
+    "old_name": "3015.5 50\" EGY. HONEY M. ORANGE ÃÛ¸Ì",
+    "new_name": "3015.5 50 EGY HONEY M ORANGE ÃÛ Ì"
+  },
+  {
+    "Id": "391",
+    "old_name": "3016 56\" LOCSWEET ORANGE °ÄÖÞLOC",
+    "new_name": "3016 56 LOCSWEET ORANGE ÄÖÞLOC"
+  },
+  {
+    "Id": "392",
+    "old_name": "3017 113\" LOCSWEET ORANGE 澳洲橙",
+    "new_name": "3017 113 LOCSWEET ORANGE 澳洲橙"
+  },
+  {
+    "Id": "930",
+    "old_name": "3017-R 113\" LOCSWEET ORANGE - RETURN",
+    "new_name": "3017-R 113 LOCSWEET ORANGE RETURN"
+  },
+  {
+    "Id": "393",
+    "old_name": "3017.1 [TUMUT] 113\" AUS. NAVEL ORANGE 澳洲肉橙",
+    "new_name": "3017.1 TUMUT 113 AUS NAVEL ORANGE 澳洲肉橙"
+  },
+  {
+    "Id": "394",
+    "old_name": "3018 48\" SA NAVELATES",
+    "new_name": "3018 48 SA NAVELATES"
+  },
+  {
+    "Id": "396",
+    "old_name": "3019.1 72\" CHINA ORANGE 中国橙",
+    "new_name": "3019.1 72 CHINA ORANGE 中国橙"
+  },
+  {
+    "Id": "397",
+    "old_name": "3019.2 CSH 91 72\" SA. ORANGE ·ÇÖÞ³È",
+    "new_name": "3019.2 CSH 91 72 SA ORANGE ÇÖÞ³È"
+  },
+  {
+    "Id": "398",
+    "old_name": "3019.5 P/MORE 72\" SA. ORANGE ·ÇÖÞ³È",
+    "new_name": "3019.5 P MORE 72 SA ORANGE ÇÖÞ³È"
+  },
+  {
+    "Id": "399",
+    "old_name": "3020 72\" LOCSWEET ORANGE 澳洲橙",
+    "new_name": "3020 72 LOCSWEET ORANGE 澳洲橙"
+  },
+  {
+    "Id": "400",
+    "old_name": "3021 88\" SA. ORANGE ·ÇÖÞ³È",
+    "new_name": "3021 88 SA ORANGE ÇÖÞ³È"
+  },
+  {
+    "Id": "401",
+    "old_name": "3022 113\" NIPPY AUST. NAVEL",
+    "new_name": "3022 113 NIPPY AUST NAVEL"
+  },
+  {
+    "Id": "402",
+    "old_name": "3023 72\" USA. BEESWEET VALENCIA ORANGE 美国水橙",
+    "new_name": "3023 72 USA BEESWEET VALENCIA ORANGE 美国水橙"
+  },
+  {
+    "Id": "403",
+    "old_name": "3023.5 10kg 60\" AUS. PERSIMMON 澳洲柿子",
+    "new_name": "3023.5 10kg 60 AUS PERSIMMON 澳洲柿子"
+  },
+  {
+    "Id": "1255",
+    "old_name": "3023.51 56\" USA. BEESWEET NAVEL ORANGE 美国肉橙",
+    "new_name": "3023.51 56 USA BEESWEET NAVEL ORANGE 美国肉橙"
+  },
+  {
+    "Id": "404",
+    "old_name": "3024 GREEN LEMON (ctn) ÇàÄûÃÊ",
+    "new_name": "3024 GREEN LEMON ctn ÇàÄûÃÊ"
+  },
+  {
+    "Id": "405",
+    "old_name": "3025 88\" SA. LEMON 非洲柠檬",
+    "new_name": "3025 88 SA LEMON 非洲柠檬"
+  },
+  {
+    "Id": "406",
+    "old_name": "3025.1 88\" EGY. LEMON 柠檬",
+    "new_name": "3025.1 88 EGY LEMON 柠檬"
+  },
+  {
+    "Id": "407",
+    "old_name": "3026 72\" LATE LANE NAVEL",
+    "new_name": "3026 72 LATE LANE NAVEL"
+  },
+  {
+    "Id": "408",
+    "old_name": "3027 56\" LATE LANE NAVEL",
+    "new_name": "3027 56 LATE LANE NAVEL"
+  },
+  {
+    "Id": "409",
+    "old_name": "3028 113\" LATE LANE NAVEL",
+    "new_name": "3028 113 LATE LANE NAVEL"
+  },
+  {
+    "Id": "410",
+    "old_name": "3029 100\" CHINA. LEMON ÖÐ¹úÄûÃÊ",
+    "new_name": "3029 100 CHINA LEMON ÖÐ¹úÄûÃÊ"
+  },
+  {
+    "Id": "411",
+    "old_name": "3029.1 80\" CHINA LEMON ÖÐ¹úÄûÃÊ",
+    "new_name": "3029.1 80 CHINA LEMON ÖÐ¹úÄûÃÊ"
+  },
+  {
+    "Id": "412",
+    "old_name": "3030 100\" TURKEY. LEMON ÍÁ¶úÆäÄûÃÊ",
+    "new_name": "3030 100 TURKEY LEMON ÍÁ úÆäÄûÃÊ"
+  },
+  {
+    "Id": "413",
+    "old_name": "3031 113\" VALENCIA (SG)",
+    "new_name": "3031 113 VALENCIA SG"
+  },
+  {
+    "Id": "414",
+    "old_name": "3032 75\" TURKEY NAVEL ÍÁ¶úÆä³È",
+    "new_name": "3032 75 TURKEY NAVEL ÍÁ úÆä³È"
+  },
+  {
+    "Id": "415",
+    "old_name": "3033 100\" AUS. ORANGE °ÄÖÞ³È",
+    "new_name": "3033 100 AUS ORANGE ÄÖÞ³È"
+  },
+  {
+    "Id": "416",
+    "old_name": "3033.1 80\" AUS. ORANGE °ÄÖÞ³È",
+    "new_name": "3033.1 80 AUS ORANGE ÄÖÞ³È"
+  },
+  {
+    "Id": "417",
+    "old_name": "3033.12 72\" AUS. BARNFIELD BENE °ÄÖÞ³È",
+    "new_name": "3033.12 72 AUS BARNFIELD BENE ÄÖÞ³È"
+  },
+  {
+    "Id": "418",
+    "old_name": "3033.13 [VENUS] 56\" AUS. NAVEL ORANGE 澳洲橙",
+    "new_name": "3033.13 VENUS 56 AUS NAVEL ORANGE 澳洲橙"
+  },
+  {
+    "Id": "1265",
+    "old_name": "3033.14 [VENUS] 72\" AUS. NAVEL ORANGE 澳洲橙",
+    "new_name": "3033.14 VENUS 72 AUS NAVEL ORANGE 澳洲橙"
+  },
+  {
+    "Id": "419",
+    "old_name": "3033.15 56\" AUS. ORANGE °ÄÖÞ³È BENE",
+    "new_name": "3033.15 56 AUS ORANGE ÄÖÞ³È BENE"
+  },
+  {
+    "Id": "1228",
+    "old_name": "3033.16 8kg CN. TANGERINE 中国王帝桔",
+    "new_name": "3033.16 8kg CN TANGERINE 中国王帝桔"
+  },
+  {
+    "Id": "1266",
+    "old_name": "3033.18 [VENUS] 113\" AUS. NAVEL ORANGE 澳洲橙",
+    "new_name": "3033.18 VENUS 113 AUS NAVEL ORANGE 澳洲橙"
+  },
+  {
+    "Id": "420",
+    "old_name": "3033.2 40\" EGYPT ORANGE °£¼°³È",
+    "new_name": "3033.2 40 EGYPT ORANGE ¼ ³È"
+  },
+  {
+    "Id": "423",
+    "old_name": "3034.1 40\" CHINA ORANGE 中国橙",
+    "new_name": "3034.1 40 CHINA ORANGE 中国橙"
+  },
+  {
+    "Id": "424",
+    "old_name": "3035 CHINA SWEETIE (ctn) ÇàèÖ×Ó",
+    "new_name": "3035 CHINA SWEETIE ctn ÇàèÖ Ó"
+  },
+  {
+    "Id": "425",
+    "old_name": "3036 70\" EGYPT ORANGE °£¼°³È",
+    "new_name": "3036 70 EGYPT ORANGE ¼ ³È"
+  },
+  {
+    "Id": "426",
+    "old_name": "3037 MAFA 72\" EGYPT. ORANGE °£¼°³È",
+    "new_name": "3037 MAFA 72 EGYPT ORANGE ¼ ³È"
+  },
+  {
+    "Id": "932",
+    "old_name": "3037-13 72\" EGYPT. ORANGE 埃及橙",
+    "new_name": "3037-13 72 EGYPT ORANGE 埃及橙"
+  },
+  {
+    "Id": "427",
+    "old_name": "3037.1 CSH BGP 72\" EGY. ORANGE°£¼°³È",
+    "new_name": "3037.1 CSH BGP 72 EGY ORANGE ¼ ³È"
+  },
+  {
+    "Id": "428",
+    "old_name": "3037.2 48\" EGYPT NAVEL ORANGE 埃及肉橙",
+    "new_name": "3037.2 48 EGYPT NAVEL ORANGE 埃及肉橙"
+  },
+  {
+    "Id": "1188",
+    "old_name": "3037.3 KS 72\" EGY. ORANGE °£¼°³È",
+    "new_name": "3037.3 KS 72 EGY ORANGE ¼ ³È"
+  },
+  {
+    "Id": "430",
+    "old_name": "3038 48\" SA. M. ORANGE ·ÇÖÞ¸Ì",
+    "new_name": "3038 48 SA M ORANGE ÇÖÞ Ì"
+  },
+  {
+    "Id": "431",
+    "old_name": "3038.1 42\" EGYPT. M. ORANGE 埃及柑",
+    "new_name": "3038.1 42 EGYPT M ORANGE 埃及柑"
+  },
+  {
+    "Id": "432",
+    "old_name": "3038.2 36\" EGY. HONEY M. ORANGE ÃÛ¸Ì",
+    "new_name": "3038.2 36 EGY HONEY M ORANGE ÃÛ Ì"
+  },
+  {
+    "Id": "933",
+    "old_name": "3038.2.1 60\" EGYPT HONEY MAN. ORANGE 埃及柑",
+    "new_name": "3038.2.1 60 EGYPT HONEY MAN ORANGE 埃及柑"
+  },
+  {
+    "Id": "433",
+    "old_name": "3038.3 45\" EGYPT. M. ORANGE 埃及柑",
+    "new_name": "3038.3 45 EGYPT M ORANGE 埃及柑"
+  },
+  {
+    "Id": "434",
+    "old_name": "3038.4 32\" AUS. M. ORANGE °ÄÖÞ¸Ì",
+    "new_name": "3038.4 32 AUS M ORANGE ÄÖÞ Ì"
+  },
+  {
+    "Id": "435",
+    "old_name": "3038.5 52/54\" EGYPT. M. ORANGE 埃及柑",
+    "new_name": "3038.5 52 54 EGYPT M ORANGE 埃及柑"
+  },
+  {
+    "Id": "436",
+    "old_name": "3038.6 60\" AUS. M. ORANGE °ÄÖÞ¸Ì",
+    "new_name": "3038.6 60 AUS M ORANGE ÄÖÞ Ì"
+  },
+  {
+    "Id": "437",
+    "old_name": "3039 100\" ARG. LEMON °¢¸ùÍ¢ÄûÃÊ",
+    "new_name": "3039 100 ARG LEMON ùÍ ÄûÃÊ"
+  },
+  {
+    "Id": "438",
+    "old_name": "3039.1 100\" EGYPT. LEMON 柠檬",
+    "new_name": "3039.1 100 EGYPT LEMON 柠檬"
+  },
+  {
+    "Id": "439",
+    "old_name": "3039.2 140\" USA SUNKIST LEMON 美国柠檬",
+    "new_name": "3039.2 140 USA SUNKIST LEMON 美国柠檬"
+  },
+  {
+    "Id": "934",
+    "old_name": "3039.2.1 75\" SA. LEMON ·ÇÖÞÄûÃÊ",
+    "new_name": "3039.2.1 75 SA LEMON ÇÖÞÄûÃÊ"
+  },
+  {
+    "Id": "440",
+    "old_name": "3040 42\" EGYPT ORANGE °£¼°³È",
+    "new_name": "3040 42 EGYPT ORANGE ¼ ³È"
+  },
+  {
+    "Id": "441",
+    "old_name": "3041 54\" SA. M. ORANGE ·ÇÖÞ¸Ì",
+    "new_name": "3041 54 SA M ORANGE ÇÖÞ Ì"
+  },
+  {
+    "Id": "442",
+    "old_name": "3042 48\" AUS. VALENCIA °ÄÖÞË®³È",
+    "new_name": "3042 48 AUS VALENCIA ÄÖÞË ³È"
+  },
+  {
+    "Id": "935",
+    "old_name": "3042-1 60\" SA. M.ORANGE ·ÇÖÞ¸Ì",
+    "new_name": "3042-1 60 SA M ORANGE ÇÖÞ Ì"
+  },
+  {
+    "Id": "443",
+    "old_name": "3042.2 60\" PAK. M. ORA °Í»ùË¹Ì¹¸Ì",
+    "new_name": "3042.2 60 PAK M ORA Í ùË¹Ì¹ Ì"
+  },
+  {
+    "Id": "444",
+    "old_name": "3043 80\" CHINA. ORANGE ÖÐ¹ú³È",
+    "new_name": "3043 80 CHINA ORANGE ÖÐ¹ú³È"
+  },
+  {
+    "Id": "445",
+    "old_name": "3043.2 64\" CHINA ORANGE ÖÐ¹ú³È",
+    "new_name": "3043.2 64 CHINA ORANGE ÖÐ¹ú³È"
+  },
+  {
+    "Id": "446",
+    "old_name": "3044 SWEETIE (ctn) ÇàèÖ×Ó",
+    "new_name": "3044 SWEETIE ctn ÇàèÖ Ó"
+  },
+  {
+    "Id": "447",
+    "old_name": "3045 34/35\" CHINA CARA CARA ORANGES 中国红肉橙",
+    "new_name": "3045 34 35 CHINA CARA CARA ORANGES 中国红肉橙"
+  },
+  {
+    "Id": "448",
+    "old_name": "3045.1 113\" AUS. CARA CARA ¿¨À­³È",
+    "new_name": "3045.1 113 AUS CARA CARA À ³È"
+  },
+  {
+    "Id": "449",
+    "old_name": "3045.2 56\" USA. SUNKIST CARA CARA 美国红肉橙",
+    "new_name": "3045.2 56 USA SUNKIST CARA CARA 美国红肉橙"
+  },
+  {
+    "Id": "450",
+    "old_name": "3045.3 72\" AUS. CARA CARA ¿¨À­³È",
+    "new_name": "3045.3 72 AUS CARA CARA À ³È"
+  },
+  {
+    "Id": "451",
+    "old_name": "3045.5 72\" SA. CARA CARA ¿¨À­³È",
+    "new_name": "3045.5 72 SA CARA CARA À ³È"
+  },
+  {
+    "Id": "452",
+    "old_name": "3045.6 56\" AUS. CARA CARA ¿¨À­³È",
+    "new_name": "3045.6 56 AUS CARA CARA À ³È"
+  },
+  {
+    "Id": "453",
+    "old_name": "3046 8\" KOREA. M. ORANGE º«¹ú¸Ì",
+    "new_name": "3046 8 KOREA M ORANGE º ¹ú Ì"
+  },
+  {
+    "Id": "454",
+    "old_name": "3307.1 80\" NZ. AMBROSIA APPLE 纽西兰苹果",
+    "new_name": "3307.1 80 NZ AMBROSIA APPLE 纽西兰苹果"
+  },
+  {
+    "Id": "455",
+    "old_name": "3900 58\" LUKAN (10kg) Â«¸Ì",
+    "new_name": "3900 58 LUKAN 10kg Â Ì"
+  },
+  {
+    "Id": "456",
+    "old_name": "3900.1 48\" LUGAN 芦柑",
+    "new_name": "3900.1 48 LUGAN 芦柑"
+  },
+  {
+    "Id": "1174",
+    "old_name": "3900.10 10\" IND. PINEAPPLE 印尼黄梨",
+    "new_name": "3900.10 10 IND PINEAPPLE 印尼黄梨"
+  },
+  {
+    "Id": "457",
+    "old_name": "3901 9kg CN. ROYAL TANGERINE 皇帝橘子",
+    "new_name": "3901 9kg CN ROYAL TANGERINE 皇帝橘子"
+  },
+  {
+    "Id": "458",
+    "old_name": "3902 20\" LUGAN [DIAMOND] 芦柑",
+    "new_name": "3902 20 LUGAN DIAMOND 芦柑"
+  },
+  {
+    "Id": "459",
+    "old_name": "3902.6 12\" LUGAN KING [MS] 芦柑",
+    "new_name": "3902.6 12 LUGAN KING MS 芦柑"
+  },
+  {
+    "Id": "460",
+    "old_name": "3903 40\" LUGAN [BENE] XL",
+    "new_name": "3903 40 LUGAN BENE XL"
+  },
+  {
+    "Id": "461",
+    "old_name": "3903.1 12\" GOLDEN MEI REN ½ðÃÀÈË",
+    "new_name": "3903.1 12 GOLDEN MEI REN ½ðÃÀÈË"
+  },
+  {
+    "Id": "462",
+    "old_name": "3903.34 40\" LUGAN [DIAMOND] XL",
+    "new_name": "3903.34 40 LUGAN DIAMOND XL"
+  },
+  {
+    "Id": "463",
+    "old_name": "3903.35 40\" LUGAN [JQ5] 芦柑",
+    "new_name": "3903.35 40 LUGAN JQ5 芦柑"
+  },
+  {
+    "Id": "464",
+    "old_name": "3903.36 40\" LUGAN TDG [MS]",
+    "new_name": "3903.36 40 LUGAN TDG MS"
+  },
+  {
+    "Id": "465",
+    "old_name": "3904 4 X 18\" LUGAN HANDHELD芦柑",
+    "new_name": "3904 4 X 18 LUGAN HANDHELD芦柑"
+  },
+  {
+    "Id": "466",
+    "old_name": "3904.1 6 X 12\" LUGAN 芦柑",
+    "new_name": "3904.1 6 X 12 LUGAN 芦柑"
+  },
+  {
+    "Id": "467",
+    "old_name": "3905 HONEY MANDARIN - MTG ÃÛ¸Ì",
+    "new_name": "3905 HONEY MANDARIN MTG ÃÛ Ì"
+  },
+  {
+    "Id": "468",
+    "old_name": "3906 4 X 15\" LUGAN HANDHELD 芦柑",
+    "new_name": "3906 4 X 15 LUGAN HANDHELD 芦柑"
+  },
+  {
+    "Id": "470",
+    "old_name": "3907.1 15\" LUGAN GIFTBOX 芦柑",
+    "new_name": "3907.1 15 LUGAN GIFTBOX 芦柑"
+  },
+  {
+    "Id": "471",
+    "old_name": "3908 20\" PONGAN [GOLD] Åö¸Ì",
+    "new_name": "3908 20 PONGAN GOLD Åö Ì"
+  },
+  {
+    "Id": "1184",
+    "old_name": "3908.1 5 X 15\" LUGAN GIFTBOX ÀñºÐÂ«¸Ì",
+    "new_name": "3908.1 5 X 15 LUGAN GIFTBOX ÀñºÐÂ Ì"
+  },
+  {
+    "Id": "473",
+    "old_name": "3909 38\" JIAOGAN ½¹¸Ì",
+    "new_name": "3909 38 JIAOGAN ½¹ Ì"
+  },
+  {
+    "Id": "474",
+    "old_name": "3910 15\" LUGAN 芦柑",
+    "new_name": "3910 15 LUGAN 芦柑"
+  },
+  {
+    "Id": "475",
+    "old_name": "3910.1 3kg XIAN JIN FENG LYCHEE 仙进奉荔枝",
+    "new_name": "3910.1 3kg CHUANJIN M ORANGE ÖÐ¹ú Ì"
+  },
+  {
+    "Id": "476",
+    "old_name": "3911 HONEY MANDARIN (7kg) ÃÛ¸Ì",
+    "new_name": "3911 HONEY MANDARIN 7kg ÃÛ Ì"
+  },
+  {
+    "Id": "477",
+    "old_name": "3912 32\" JIAOGAN 焦柑",
+    "new_name": "3912 32 JIAOGAN 焦柑"
+  },
+  {
+    "Id": "478",
+    "old_name": "3912.1 20\" JIAOGAN ½¹¸Ì [SAT]",
+    "new_name": "3912.1 20 JIAOGAN ½¹ Ì SAT"
+  },
+  {
+    "Id": "479",
+    "old_name": "3912.15 20\" JIAOGAN ½¹¸Ì [KS]",
+    "new_name": "3912.15 20 JIAOGAN ½¹ Ì KS"
+  },
+  {
+    "Id": "480",
+    "old_name": "3912.2 25\" JIAOGAN ½¹¸Ì",
+    "new_name": "3912.2 25 JIAOGAN ½¹ Ì"
+  },
+  {
+    "Id": "481",
+    "old_name": "3912.5 18\" JIAOGAN ½¹¸Ì",
+    "new_name": "3912.5 18 JIAOGAN ½¹ Ì"
+  },
+  {
+    "Id": "482",
+    "old_name": "3913 20\" LUGAN [JQ5] 芦柑",
+    "new_name": "3913 20 LUGAN JQ5 芦柑"
+  },
+  {
+    "Id": "484",
+    "old_name": "3913.5 12\" LUGAN 芦柑",
+    "new_name": "3913.5 12 LUGAN 芦柑"
+  },
+  {
+    "Id": "485",
+    "old_name": "3914 28\" JIAOGAN [SAT] ½¹¸Ì",
+    "new_name": "3914 28 JIAOGAN SAT ½¹ Ì"
+  },
+  {
+    "Id": "486",
+    "old_name": "3915 36\" JIAOGAN [KS] ½¹¸Ì",
+    "new_name": "3915 36 JIAOGAN KS ½¹ Ì"
+  },
+  {
+    "Id": "487",
+    "old_name": "3916 2kg 6\" HONG MEI REN ºìÃÀÈË",
+    "new_name": "3916 2kg 6 HONG MEI REN ºìÃÀÈË"
+  },
+  {
+    "Id": "488",
+    "old_name": "3916.1 10\" HONG MEI REN ºìÃÀÈË",
+    "new_name": "3916.1 10 HONG MEI REN ºìÃÀÈË"
+  },
+  {
+    "Id": "489",
+    "old_name": "3916.2 2.5kg 8\" HONG MEI REN ºìÃÀÈË",
+    "new_name": "3916.2 2 5kg 8 HONG MEI REN ºìÃÀÈË"
+  },
+  {
+    "Id": "490",
+    "old_name": "3916.3 3kg 9\" HONG MEI REN ºìÃÀÈË",
+    "new_name": "3916.3 3kg 9 HONG MEI REN ºìÃÀÈË"
+  },
+  {
+    "Id": "491",
+    "old_name": "3916.4 6\" HUANG YELLOW MEI REN »ÆÃÀÈË",
+    "new_name": "3916.4 6 HUANG YELLOW MEI REN ÆÃÀÈË"
+  },
+  {
+    "Id": "492",
+    "old_name": "3916.5 H/C 2.5kg 9\" HONGMEIREN ºìÃÀÈË",
+    "new_name": "3916.5 H C 2 5kg 9 HONGMEIREN ºìÃÀÈË"
+  },
+  {
+    "Id": "493",
+    "old_name": "3917 48\" JIAOGAN ½¹¸Ì",
+    "new_name": "3917 48 JIAOGAN ½¹ Ì"
+  },
+  {
+    "Id": "494",
+    "old_name": "3918 16\" PONGAN [GOLD] Åö¸Ì",
+    "new_name": "3918 16 PONGAN GOLD Åö Ì"
+  },
+  {
+    "Id": "495",
+    "old_name": "3919 HONEY MANDARIN (14kg) ÃÛ¸Ì",
+    "new_name": "3919 HONEY MANDARIN 14kg ÃÛ Ì"
+  },
+  {
+    "Id": "936",
+    "old_name": "3919-R HONEY MANDARIN (14kg) - RETURN",
+    "new_name": "3919-R HONEY MANDARIN 14kg RETURN"
+  },
+  {
+    "Id": "496",
+    "old_name": "3919.5 HONEY MANDARIN (15kg) ÃÛ¸Ì",
+    "new_name": "3919.5 HONEY MANDARIN 15kg ÃÛ Ì"
+  },
+  {
+    "Id": "497",
+    "old_name": "3919.6 HONEY MANDARIN - THAI Ì©¹úÃÛ¸Ì",
+    "new_name": "3919.6 HONEY MANDARIN THAI Ì ¹úÃÛ Ì"
+  },
+  {
+    "Id": "498",
+    "old_name": "3919.7 GREEN MANDARIN ORANGE ÇàÃÛ¸Ì",
+    "new_name": "3919.7 GREEN MANDARIN ORANGE ÇàÃÛ Ì"
+  },
+  {
+    "Id": "499",
+    "old_name": "3920 46\" LUGAN L 芦柑",
+    "new_name": "3920 46 LUGAN L 芦柑"
+  },
+  {
+    "Id": "500",
+    "old_name": "3921 36\" JIAOGAN ½¹¸Ì [SAT]",
+    "new_name": "3921 36 JIAOGAN ½¹ Ì SAT"
+  },
+  {
+    "Id": "501",
+    "old_name": "3921.1 28\" JIAOGAN ½¹¸Ì [SAT]",
+    "new_name": "3921.1 28 JIAOGAN ½¹ Ì SAT"
+  },
+  {
+    "Id": "502",
+    "old_name": "3922 12\" PONGAN [ABC] Åö¸Ì",
+    "new_name": "3922 12 PONGAN ABC Åö Ì"
+  },
+  {
+    "Id": "503",
+    "old_name": "3923 32\" LUGAN 芦柑 XXL",
+    "new_name": "3923 32 LUGAN 芦柑 XXL"
+  },
+  {
+    "Id": "504",
+    "old_name": "3924 24\" JIAOGAN (1x3) ½¹¸Ì",
+    "new_name": "3924 24 JIAOGAN 1x3 ½¹ Ì"
+  },
+  {
+    "Id": "505",
+    "old_name": "3925 28\" JIAOGAN [BEN] ½¹¸Ì",
+    "new_name": "3925 28 JIAOGAN BEN ½¹ Ì"
+  },
+  {
+    "Id": "506",
+    "old_name": "3926 42\" JIAOGAN (TASTY) ½¹¸Ì",
+    "new_name": "3926 42 JIAOGAN TASTY ½¹ Ì"
+  },
+  {
+    "Id": "507",
+    "old_name": "3927 32\" LUGAN KING [MS] 芦柑",
+    "new_name": "3927 32 LUGAN KING MS 芦柑"
+  },
+  {
+    "Id": "508",
+    "old_name": "3928 20\" PONGAN (FA) Åö¸Ì",
+    "new_name": "3928 20 PONGAN FA Åö Ì"
+  },
+  {
+    "Id": "509",
+    "old_name": "3928.1 16\" PONGAN [FA] Åö¸Ì",
+    "new_name": "3928.1 16 PONGAN FA Åö Ì"
+  },
+  {
+    "Id": "510",
+    "old_name": "3929 30\" LUGAN 芦柑",
+    "new_name": "3929 30 LUGAN 芦柑"
+  },
+  {
+    "Id": "513",
+    "old_name": "3931 6x12\" LUGAN (GIFTBOX) 芦柑",
+    "new_name": "3931 6x12 LUGAN GIFTBOX 芦柑"
+  },
+  {
+    "Id": "514",
+    "old_name": "3932 5 x 15\" LUGAN (GIFTBOX) 芦柑",
+    "new_name": "3932 5 x 15 LUGAN GIFTBOX 芦柑"
+  },
+  {
+    "Id": "515",
+    "old_name": "3933 DA JI (12kg) ´óéÙ",
+    "new_name": "3933 DA JI 12kg óéÙ"
+  },
+  {
+    "Id": "516",
+    "old_name": "3933.1 DA JI (8kg) ´óéÙ",
+    "new_name": "3933.1 DA JI 8kg óéÙ"
+  },
+  {
+    "Id": "517",
+    "old_name": "3933.3 [TUMUT] 56\" AUS. NAVEL ORANGE 澳洲肉橙",
+    "new_name": "3933.3 TUMUT 56 AUS NAVEL ORANGE 澳洲肉橙"
+  },
+  {
+    "Id": "518",
+    "old_name": "3934 JI WANG (12kg) éÙÍõ",
+    "new_name": "3934 JI WANG 12kg éÙÍõ"
+  },
+  {
+    "Id": "519",
+    "old_name": "3935 36\" PAK. M.ORANGE °Í»ùË¹Ì¹¸Ì",
+    "new_name": "3935 36 PAK M ORANGE Í ùË¹Ì¹ Ì"
+  },
+  {
+    "Id": "520",
+    "old_name": "3936 48\" PAK. M. ORANGE 巴基斯坦柑",
+    "new_name": "3936 48 PAK M ORANGE 巴基斯坦柑"
+  },
+  {
+    "Id": "521",
+    "old_name": "3937 42\" PAK. M. ORANGE 巴基斯坦柑",
+    "new_name": "3937 42 PAK M ORANGE 巴基斯坦柑"
+  },
+  {
+    "Id": "522",
+    "old_name": "3937.1 GREEN LEMON 青柠檬 (pcs)",
+    "new_name": "3937.1 GREEN LEMON 青柠檬 pcs"
+  },
+  {
+    "Id": "1203",
+    "old_name": "3A JU 3A JUMBU 水蓊 (ctn)",
+    "new_name": "3A JU 3A JUMBU 水蓊 ctn"
+  },
+  {
+    "Id": "523",
+    "old_name": "4000.4 38\" SA. PEAR 非洲耙",
+    "new_name": "4000.4 38 SA PEAR 非洲耙"
+  },
+  {
+    "Id": "524",
+    "old_name": "4001 45\" SA. PEAR 非洲耙",
+    "new_name": "4001 45 SA PEAR 非洲耙"
+  },
+  {
+    "Id": "525",
+    "old_name": "4001.1 48\" SA. PEAR 非洲耙",
+    "new_name": "4001.1 48 SA PEAR 非洲耙"
+  },
+  {
+    "Id": "526",
+    "old_name": "4001.2 52\" SA. PEAR 非洲耙",
+    "new_name": "4001.2 52 SA PEAR 非洲耙"
+  },
+  {
+    "Id": "527",
+    "old_name": "4001.3 42\" SA. PEAR 非洲耙",
+    "new_name": "4001.3 42 SA PEAR 非洲耙"
+  },
+  {
+    "Id": "528",
+    "old_name": "4002 70\" SA. PEAR 非洲耙",
+    "new_name": "4002 70 SA PEAR 非洲耙"
+  },
+  {
+    "Id": "529",
+    "old_name": "4002.1 90\" SA. PEAR ·ÇÖÞ°Ò",
+    "new_name": "4002.1 90 SA PEAR ÇÖÞ Ò"
+  },
+  {
+    "Id": "530",
+    "old_name": "4002.2 80\" SA. PEAR ·ÇÖÞ°Ò",
+    "new_name": "4002.2 80 SA PEAR ÇÖÞ Ò"
+  },
+  {
+    "Id": "531",
+    "old_name": "4003 60\" SA. RED PEAR 非洲红耙",
+    "new_name": "4003 60 SA RED PEAR 非洲红耙"
+  },
+  {
+    "Id": "532",
+    "old_name": "4003.1 80\" SA. RED PEAR ·ÇÖÞºì°Ò",
+    "new_name": "4003.1 80 SA RED PEAR ÇÖÞºì Ò"
+  },
+  {
+    "Id": "533",
+    "old_name": "4003.2 70\" SA. RED PEAR 非洲红耙",
+    "new_name": "4003.2 70 SA RED PEAR 非洲红耙"
+  },
+  {
+    "Id": "534",
+    "old_name": "4003.3 100\" SA. RED PEAR ·ÇÖÞºì°Ò",
+    "new_name": "4003.3 100 SA RED PEAR ÇÖÞºì Ò"
+  },
+  {
+    "Id": "535",
+    "old_name": "4003.4 52\" SA. RED PEAR 非洲红耙",
+    "new_name": "4003.4 52 SA RED PEAR 非洲红耙"
+  },
+  {
+    "Id": "536",
+    "old_name": "4003.5 45\" SA. RED PEAR ·ÇÖÞºì°Ò",
+    "new_name": "4003.5 45 SA RED PEAR ÇÖÞºì Ò"
+  },
+  {
+    "Id": "537",
+    "old_name": "4003.6 10 x 800g SA. RED PEAR 非洲红耙",
+    "new_name": "4003.6 10 x 800g SA RED PEAR 非洲红耙"
+  },
+  {
+    "Id": "539",
+    "old_name": "4005 80\" YA LI 鸭梨",
+    "new_name": "4005 80 YA LI 鸭梨"
+  },
+  {
+    "Id": "938",
+    "old_name": "4005-R 80\" YA LI - RETURN",
+    "new_name": "4005-R 80 YA LI RETURN"
+  },
+  {
+    "Id": "540",
+    "old_name": "4006 36\" GOLDEN PEAR 黄金梨",
+    "new_name": "4006 36 GOLDEN PEAR 黄金梨"
+  },
+  {
+    "Id": "541",
+    "old_name": "4006.1 33\" SINGO PEAR 新高梨",
+    "new_name": "4006.1 33 SINGO PEAR 新高梨"
+  },
+  {
+    "Id": "1200",
+    "old_name": "4006.10 33\" SINGO PEAR ÐÂ¸ßÀæ",
+    "new_name": "4006.10 33 SINGO PEAR ÐÂ ßÀæ"
+  },
+  {
+    "Id": "542",
+    "old_name": "4006.2 48\" GOLDEN PEAR 黄金梨",
+    "new_name": "4006.2 48 GOLDEN PEAR 黄金梨"
+  },
+  {
+    "Id": "543",
+    "old_name": "4006.3 42\" CENTURY PEAR 皇冠梨",
+    "new_name": "4006.3 42 CENTURY PEAR 皇冠梨"
+  },
+  {
+    "Id": "544",
+    "old_name": "4006.4 24\" GOLDEN PEAR »Æ½ðÀæ",
+    "new_name": "4006.4 24 GOLDEN PEAR Æ½ðÀæ"
+  },
+  {
+    "Id": "545",
+    "old_name": "4006.5 30\" GOLDEN PEAR »Æ½ðÀæ",
+    "new_name": "4006.5 30 GOLDEN PEAR Æ½ðÀæ"
+  },
+  {
+    "Id": "546",
+    "old_name": "4006.6 36\" ASIAN PEAR ÑÇÖÞÀæ",
+    "new_name": "4006.6 36 ASIAN PEAR ÑÇÖÞÀæ"
+  },
+  {
+    "Id": "547",
+    "old_name": "4006.9 16\" SINGO PEAR 新高梨",
+    "new_name": "4006.9 16 SINGO PEAR 新高梨"
+  },
+  {
+    "Id": "548",
+    "old_name": "4007 [KS] FRAGRANT PEAR XXL (7kg) 大香梨",
+    "new_name": "4007 KS FRAGRANT PEAR XXL 7kg 大香梨"
+  },
+  {
+    "Id": "549",
+    "old_name": "4007.1 FRAGRANT PEAR XL (7kg) 小香梨",
+    "new_name": "4007.1 FRAGRANT PEAR XL 7kg 小香梨"
+  },
+  {
+    "Id": "550",
+    "old_name": "4007.2 FRAGRANT PEAR XXL (7kg) 大香梨",
+    "new_name": "4007.2 FRAGRANT PEAR XXL 7kg 大香梨"
+  },
+  {
+    "Id": "551",
+    "old_name": "4007.3 [HW] FRAGRANT PEAR XXL (7kg) 大香梨",
+    "new_name": "4007.3 HW FRAGRANT PEAR XXL 7kg 大香梨"
+  },
+  {
+    "Id": "552",
+    "old_name": "4008 27/30\" KOREA PEAR º«¹úÀæ",
+    "new_name": "4008 27 30 KOREA PEAR º ¹úÀæ"
+  },
+  {
+    "Id": "554",
+    "old_name": "4008.2 8/9\" QIU YUE LI ÇïÔÂÀæ",
+    "new_name": "4008.2 8 9 QIU YUE LI ÇïÔÂÀæ"
+  },
+  {
+    "Id": "555",
+    "old_name": "4008.6 27\" QIU YUE LI ÇïÔÂÀæ",
+    "new_name": "4008.6 27 QIU YUE LI ÇïÔÂÀæ"
+  },
+  {
+    "Id": "556",
+    "old_name": "4009 70\" AUS. PEAR °ÄÖÞ°Ò",
+    "new_name": "4009 70 AUS PEAR ÄÖÞ Ò"
+  },
+  {
+    "Id": "557",
+    "old_name": "4009.1 70\" US. PEAR ÃÀ¹ú°Ò",
+    "new_name": "4009.1 70 US PEAR ÃÀ¹ú Ò"
+  },
+  {
+    "Id": "558",
+    "old_name": "4009.2 80\" AUS. PEAR °ÄÖÞ°Ò",
+    "new_name": "4009.2 80 AUS PEAR ÄÖÞ Ò"
+  },
+  {
+    "Id": "559",
+    "old_name": "4009.3 64\" AUS. PEAR °ÄÖÞ°Ò",
+    "new_name": "4009.3 64 AUS PEAR ÄÖÞ Ò"
+  },
+  {
+    "Id": "560",
+    "old_name": "4010 60\" SA. PEAR 非洲耙",
+    "new_name": "4010 60 SA PEAR 非洲耙"
+  },
+  {
+    "Id": "561",
+    "old_name": "4011 70\" ARG. PEAR °¢¸ùÍ¢°Ò",
+    "new_name": "4011 70 ARG PEAR ùÍ Ò"
+  },
+  {
+    "Id": "562",
+    "old_name": "4011.1 64\" ARG. PEAR °¢¸ùÍ¢°Ò",
+    "new_name": "4011.1 64 ARG PEAR ùÍ Ò"
+  },
+  {
+    "Id": "563",
+    "old_name": "4011.2 80\" ARG. PEAR °¢¸ùÍ¢°Ò",
+    "new_name": "4011.2 80 ARG PEAR ùÍ Ò"
+  },
+  {
+    "Id": "564",
+    "old_name": "4011.3 90\" ARG. PEAR °¢¸ùÍ¢°Ò",
+    "new_name": "4011.3 90 ARG PEAR ùÍ Ò"
+  },
+  {
+    "Id": "565",
+    "old_name": "4012 80\" YALI (LYH) Ñ¼Àæ",
+    "new_name": "4012 80 YALI LYH Ñ¼Àæ"
+  },
+  {
+    "Id": "566",
+    "old_name": "4013 HOLLAND CONFERENCE PEAR 荷兰耙 (pc)",
+    "new_name": "4013 HOLLAND CONFERENCE PEAR 荷兰耙 pc"
+  },
+  {
+    "Id": "567",
+    "old_name": "4014 42\" LU W. PEAR",
+    "new_name": "4014 42 LU W PEAR"
+  },
+  {
+    "Id": "568",
+    "old_name": "4015 120\" AUS. PEAR °ÄÖÞ°Ò",
+    "new_name": "4015 120 AUS PEAR ÄÖÞ Ò"
+  },
+  {
+    "Id": "569",
+    "old_name": "4016 56\" AUS. PEAR °ÄÖÞ°Ò",
+    "new_name": "4016 56 AUS PEAR ÄÖÞ Ò"
+  },
+  {
+    "Id": "570",
+    "old_name": "4016.1 50\" AUS PEAR °ÄÖÞ°Ò",
+    "new_name": "4016.1 50 AUS PEAR ÄÖÞ Ò"
+  },
+  {
+    "Id": "571",
+    "old_name": "4017 ASIAN PEAR (ctn)",
+    "new_name": "4017 ASIAN PEAR ctn"
+  },
+  {
+    "Id": "572",
+    "old_name": "4018 SPAIN. SMALL PEAR (10 x 500g)",
+    "new_name": "4018 SPAIN SMALL PEAR 10 x 500g"
+  },
+  {
+    "Id": "573",
+    "old_name": "4019 28\" NAMSHUI PEAR 南水梨",
+    "new_name": "4019 28 NAMSHUI PEAR 南水梨"
+  },
+  {
+    "Id": "939",
+    "old_name": "4019-3 36\" FONG SUI LI ·áË®Àæ",
+    "new_name": "4019-3 36 FONG SUI LI áË Àæ"
+  },
+  {
+    "Id": "574",
+    "old_name": "4019.1 70\" NZ. DAZZLE APP 纽西兰DAZ苹果",
+    "new_name": "4019.1 70 NZ DAZZLE APP 纽西兰DAZ苹果"
+  },
+  {
+    "Id": "575",
+    "old_name": "4019.2 12 x 2\" NAMSHUI PEAR 南水梨",
+    "new_name": "4019.2 12 x 2 NAMSHUI PEAR 南水梨"
+  },
+  {
+    "Id": "576",
+    "old_name": "4019.3 30\" NZ. DAZZLE APP 纽西兰DAZ苹果",
+    "new_name": "4019.3 30 NZ DAZZLE APP 纽西兰DAZ苹果"
+  },
+  {
+    "Id": "577",
+    "old_name": "4019.4 80\" NZ. DAZZLE APP 纽西兰DAZ苹果",
+    "new_name": "4019.4 80 NZ DAZZLE APP 纽西兰DAZ苹果"
+  },
+  {
+    "Id": "578",
+    "old_name": "4019.5 18\" DOG PEAR 狗梨",
+    "new_name": "4019.5 18 DOG PEAR 狗梨"
+  },
+  {
+    "Id": "580",
+    "old_name": "4019.7 70\" NZ. REGAL APP Å¦Î÷À¼Æ»¹û",
+    "new_name": "4019.7 70 NZ REGAL APP Å Î À¼Æ ¹û"
+  },
+  {
+    "Id": "581",
+    "old_name": "4020 100/120\" ARG PEAR °¢¸ùÍ¢°Ò",
+    "new_name": "4020 100 120 ARG PEAR ùÍ Ò"
+  },
+  {
+    "Id": "583",
+    "old_name": "4021.1 55-59mm\" NZ. HONEYBELLE PEAR",
+    "new_name": "4021.1 55 59mm NZ HONEYBELLE PEAR"
+  },
+  {
+    "Id": "584",
+    "old_name": "4022 30\" ARG. PEAR °¢¸ùÍ¢°Ò",
+    "new_name": "4022 30 ARG PEAR ùÍ Ò"
+  },
+  {
+    "Id": "1253",
+    "old_name": "48AP 48\" AUS. PEAR 澳洲青耙",
+    "new_name": "48AP 48 AUS PEAR 澳洲青耙"
+  },
+  {
+    "Id": "585",
+    "old_name": "5001 DEL MONTE BANANA (18kg) 菲力宾香蕉",
+    "new_name": "5001 DEL MONTE BANANA 18kg 菲力宾香蕉"
+  },
+  {
+    "Id": "940",
+    "old_name": "5001-R DEL MONTE' BANANA (18kg) - RET",
+    "new_name": "5001-R DEL MONTE BANANA 18kg RET"
+  },
+  {
+    "Id": "586",
+    "old_name": "5001.5 DEL MONTE' BANANA 菲力宾香蕉",
+    "new_name": "5001.5 DEL MONTE BANANA 菲力宾香蕉"
+  },
+  {
+    "Id": "587",
+    "old_name": "5002 FD DEL' MONTE BANANA (18kg) 菲力宾香蕉",
+    "new_name": "5002 FD DEL MONTE BANANA 18kg 菲力宾香蕉"
+  },
+  {
+    "Id": "588",
+    "old_name": "5002.1 DEL MONTE\" TIAN BANANA",
+    "new_name": "5002.1 DEL MONTE TIAN BANANA"
+  },
+  {
+    "Id": "1185",
+    "old_name": "5002.2 TROPIX BANANA 菲力宾香蕉 (13kg)",
+    "new_name": "5002.2 TROPIX BANANA 菲力宾香蕉 13kg"
+  },
+  {
+    "Id": "592",
+    "old_name": "5004 5\" HAMIGUA 中国哈密瓜",
+    "new_name": "5004 5 HAMIGUA 中国哈密瓜"
+  },
+  {
+    "Id": "593",
+    "old_name": "5005 JELLY COCONUT 椰果 (15s/ctn)",
+    "new_name": "5005 JELLY COCONUT 椰果 15s ctn"
+  },
+  {
+    "Id": "941",
+    "old_name": "5005-R JELLY COCONUT (15s/ctn) - RET",
+    "new_name": "5005-R JELLY COCONUT 15s ctn RET"
+  },
+  {
+    "Id": "594",
+    "old_name": "5005.5 JELLY COCONUT 椰果 (pcs)",
+    "new_name": "5005.5 JELLY COCONUT 椰果 pcs"
+  },
+  {
+    "Id": "595",
+    "old_name": "5006 30\" COCONUT 椰子",
+    "new_name": "5006 30 COCONUT 椰子"
+  },
+  {
+    "Id": "942",
+    "old_name": "5006-R COCONUT (ctn) - RETURN",
+    "new_name": "5006-R COCONUT ctn RETURN"
+  },
+  {
+    "Id": "596",
+    "old_name": "5006.1 12\" COCONUT THUMB 椰水",
+    "new_name": "5006.1 12 COCONUT THUMB 椰水"
+  },
+  {
+    "Id": "597",
+    "old_name": "5006.3 12\" VIETNAM COCONUT Ò¬×Ó",
+    "new_name": "5006.3 12 VIETNAM COCONUT Ò Ó"
+  },
+  {
+    "Id": "598",
+    "old_name": "5007 SOURSOP (kg)",
+    "new_name": "5007 SOURSOP kg"
+  },
+  {
+    "Id": "599",
+    "old_name": "5008 20kg MANGOSTEEN 山竹 (ctn)",
+    "new_name": "5008 20kg MANGOSTEEN 山竹 ctn"
+  },
+  {
+    "Id": "600",
+    "old_name": "5009 14\" DRAGONFRUIT 白龙珠果",
+    "new_name": "5009 14 DRAGONFRUIT 白龙珠果"
+  },
+  {
+    "Id": "1189",
+    "old_name": "5009.1 [KS] 14\" DRAGONFRUIT 白龙珠果",
+    "new_name": "5009.1 KS 14 DRAGONFRUIT 白龙珠果"
+  },
+  {
+    "Id": "602",
+    "old_name": "5010 2.5kg SEEDLESS LYCHEE 无子荔枝",
+    "new_name": "5010 2 5kg SEEDLESS LYCHEE 无子荔枝"
+  },
+  {
+    "Id": "605",
+    "old_name": "5010.4 1.8kg SEEDLESS LYCHEE 无子荔枝",
+    "new_name": "5010.4 1 8kg SEEDLESS LYCHEE 无子荔枝"
+  },
+  {
+    "Id": "607",
+    "old_name": "5011 12\" SUNNY POMELO 柚子",
+    "new_name": "5011 12 SUNNY POMELO 柚子"
+  },
+  {
+    "Id": "608",
+    "old_name": "5011.1 5\" CHINA MUSKMELON 中国香瓜",
+    "new_name": "5011.1 5 CHINA MUSKMELON 中国香瓜"
+  },
+  {
+    "Id": "609",
+    "old_name": "5011.2 5\" CN. SNOW MELON ÖÐ¹ú¹Ï",
+    "new_name": "5011.2 5 CN SNOW MELON ÖÐ¹ú¹Ï"
+  },
+  {
+    "Id": "610",
+    "old_name": "5011.3 8\" SUNNY POMELO 柚子",
+    "new_name": "5011.3 8 SUNNY POMELO 柚子"
+  },
+  {
+    "Id": "611",
+    "old_name": "5011.4 10\" SUNNY POMELO 柚子",
+    "new_name": "5011.4 10 SUNNY POMELO 柚子"
+  },
+  {
+    "Id": "612",
+    "old_name": "5011.5 15\" SUNNY POMELO 柚子",
+    "new_name": "5011.5 15 SUNNY POMELO 柚子"
+  },
+  {
+    "Id": "613",
+    "old_name": "5012 GUAVA 番石榴 (ctn)",
+    "new_name": "5012 GUAVA 番石榴 ctn"
+  },
+  {
+    "Id": "614",
+    "old_name": "5012.3 PINK GUAVA 粉红番石榴 (ctn)",
+    "new_name": "5012.3 PINK GUAVA 粉红番石榴 ctn"
+  },
+  {
+    "Id": "615",
+    "old_name": "5013 ALOHA BANANA (18kg) 菲力宾香蕉",
+    "new_name": "5013 ALOHA BANANA 18kg 菲力宾香蕉"
+  },
+  {
+    "Id": "618",
+    "old_name": "5014 DOLE BANANA (13kg) 菲力宾香蕉",
+    "new_name": "5014 DOLE BANANA 13kg 菲力宾香蕉"
+  },
+  {
+    "Id": "619",
+    "old_name": "5014.5 2.5kg CHINA VOLCANO LYCHEE 中国荔枝",
+    "new_name": "5014.5 2 5kg CHINA VOLCANO LYCHEE 中国荔枝"
+  },
+  {
+    "Id": "620",
+    "old_name": "5014.6 2 x 2.5kg S/L LYCHEE ÎÞ×ÓÀóÖ¦",
+    "new_name": "5014.6 2 x 2 5kg S L LYCHEE ÎÞ ÓÀóÖ"
+  },
+  {
+    "Id": "621",
+    "old_name": "5015 13kg VN BANANA TF Ô½ÄÏÏã½¶",
+    "new_name": "5015 13kg VN BANANA TF Ô½ÄÏÏã½"
+  },
+  {
+    "Id": "622",
+    "old_name": "5015.1 6 x 1.8kg LMZ KING Å´Ã××ÌÍõ",
+    "new_name": "5015.1 6 x 1 8kg LMZ KING Å Ã ÌÍõ"
+  },
+  {
+    "Id": "1199",
+    "old_name": "5015.10 6 x 1.8kg LMZ KING Å´Ã××ÌÍõ",
+    "new_name": "5015.10 6 x 1 8kg LMZ KING Å Ã ÌÍõ"
+  },
+  {
+    "Id": "623",
+    "old_name": "5015.12 9kg CN. LUO MI ZI Å´Ã××Ì",
+    "new_name": "5015.12 9kg CN LUO MI ZI Å Ã Ì"
+  },
+  {
+    "Id": "624",
+    "old_name": "5015.13 6 x 1kg CN. LUO MI ZI Å´Ã××Ì",
+    "new_name": "5015.13 6 x 1kg CN LUO MI ZI Å Ã Ì"
+  },
+  {
+    "Id": "625",
+    "old_name": "5015.14 6 x 1.8kg LYCHEE KING ÀóÖ¦Íõ",
+    "new_name": "5015.14 6 x 1 8kg LYCHEE KING ÀóÖ Íõ"
+  },
+  {
+    "Id": "627",
+    "old_name": "5015.6 LYCHEE 荔枝 (kg)",
+    "new_name": "5015.6 LYCHEE 荔枝 kg"
+  },
+  {
+    "Id": "628",
+    "old_name": "5015.7 9kg CHINA LYCHEE [FZX] 中国妃子笑荔枝",
+    "new_name": "5015.7 9kg CHINA LYCHEE FZX 中国妃子笑荔枝"
+  },
+  {
+    "Id": "629",
+    "old_name": "5015.8 6 x 1.8kg CN. LUO MI ZI Å´Ã××Ì",
+    "new_name": "5015.8 6 x 1 8kg CN LUO MI ZI Å Ã Ì"
+  },
+  {
+    "Id": "630",
+    "old_name": "5015.9 6 x 1kg S/LESS LYCHEE ÎÞ×ÓÀóÖ¦",
+    "new_name": "5015.9 6 x 1kg S LESS LYCHEE ÎÞ ÓÀóÖ"
+  },
+  {
+    "Id": "631",
+    "old_name": "5016 11kg LONGAN 龙眼 (ctn)",
+    "new_name": "5016 11kg LONGAN 龙眼 ctn"
+  },
+  {
+    "Id": "632",
+    "old_name": "5016.1 1 X 12\" LONGAN 龙眼",
+    "new_name": "5016.1 1 X 12 LONGAN 龙眼"
+  },
+  {
+    "Id": "633",
+    "old_name": "5016.2 LONGAN 龙眼 (ctn)",
+    "new_name": "5016.2 LONGAN 龙眼 ctn"
+  },
+  {
+    "Id": "635",
+    "old_name": "5018 LUKU (ctn)",
+    "new_name": "5018 LUKU ctn"
+  },
+  {
+    "Id": "636",
+    "old_name": "5019 6/7/8\" YELLOW DRAGON FRUIT 黄龙珠果",
+    "new_name": "5019 6 7 8 YELLOW DRAGON FRUIT 黄龙珠果"
+  },
+  {
+    "Id": "1237",
+    "old_name": "5019.10 6\" YELLOW DRAGON FRUIT 黄龙珠果",
+    "new_name": "5019.10 6 YELLOW DRAGON FRUIT 黄龙珠果"
+  },
+  {
+    "Id": "637",
+    "old_name": "5020 4\" HAMIGUA 中国哈密瓜",
+    "new_name": "5020 4 HAMIGUA 中国哈密瓜"
+  },
+  {
+    "Id": "639",
+    "old_name": "5021 1 7 IND PINEAPPLE 印尼黄梨",
+    "new_name": "5021.1 7 IND PINEAPPLE 印尼黄梨"
+  },
+  {
+    "Id": "638",
+    "old_name": "5021 7\" DOLE PINEAPPLE 菲力宾黄梨",
+    "new_name": "5021 7 DOLE PINEAPPLE 菲力宾黄梨"
+  },
+  {
+    "Id": "640",
+    "old_name": "5021.2 8\" IND. PINEAPPLE 印尼黄梨",
+    "new_name": "5021.2 8 IND PINEAPPLE 印尼黄梨"
+  },
+  {
+    "Id": "641",
+    "old_name": "5021.4 8\" DOLE TAIWAN PINEAPPLE 台湾宾黄梨",
+    "new_name": "5021.4 8 DOLE TAIWAN PINEAPPLE 台湾宾黄梨"
+  },
+  {
+    "Id": "642",
+    "old_name": "5022 LONG KONG 龙宫果 (ctn)",
+    "new_name": "5022 LONG KONG 龙宫果 ctn"
+  },
+  {
+    "Id": "643",
+    "old_name": "5023 14\" RED DRAGONFRUIT 红龙珠果",
+    "new_name": "5023 14 RED DRAGONFRUIT 红龙珠果"
+  },
+  {
+    "Id": "644",
+    "old_name": "5023.1 RED DRAGON FRUIT(ctn) ºìÁúÖé",
+    "new_name": "5023.1 RED DRAGON FRUIT ctn ºìÁúÖé"
+  },
+  {
+    "Id": "645",
+    "old_name": "5024 LONGAN - ORGANIC 有机龙眼 (ctn)",
+    "new_name": "5024 LONGAN ORGANIC 有机龙眼 ctn"
+  },
+  {
+    "Id": "646",
+    "old_name": "5025 18\" DRAGONFRUIT 白龙珠果",
+    "new_name": "5025 18 DRAGONFRUIT 白龙珠果"
+  },
+  {
+    "Id": "647",
+    "old_name": "5025.1 16\" DRAGONFRUIT 白龙珠果",
+    "new_name": "5025.1 16 DRAGONFRUIT 白龙珠果"
+  },
+  {
+    "Id": "648",
+    "old_name": "5026 MA PANG 迷你芒果 (ctn)",
+    "new_name": "5026 MA PANG 迷你芒果 ctn"
+  },
+  {
+    "Id": "649",
+    "old_name": "5027 9\" THAILAND RED POMELO 泰国红肉柚",
+    "new_name": "5027 9 THAILAND RED POMELO 泰国红肉柚"
+  },
+  {
+    "Id": "650",
+    "old_name": "5027.1 IPOH. POMELO âù±£èÖ",
+    "new_name": "5027.1 IPOH POMELO âù èÖ"
+  },
+  {
+    "Id": "651",
+    "old_name": "5027.2 TAIWAN POMELO (ctn) Ì¨ÍåèÖ",
+    "new_name": "5027.2 TAIWAN POMELO ctn Ì ÍåèÖ"
+  },
+  {
+    "Id": "1208",
+    "old_name": "5028 PRIME\" BANANA (18kg)",
+    "new_name": "5028 PRIME BANANA 18kg"
+  },
+  {
+    "Id": "654",
+    "old_name": "5029 15kg INDONESIAN BANANA Ïã½¶",
+    "new_name": "5029 15kg INDONESIAN BANANA Ïã½"
+  },
+  {
+    "Id": "656",
+    "old_name": "5030 DOLE TIAN BANANA Ìì¹¬½¶",
+    "new_name": "5030 DOLE TIAN BANANA Ìì¹ ½"
+  },
+  {
+    "Id": "657",
+    "old_name": "5031 9\" THAI. GOLDEN PINEAPPLE 泰国黄梨",
+    "new_name": "5031 9 THAI GOLDEN PINEAPPLE 泰国黄梨"
+  },
+  {
+    "Id": "658",
+    "old_name": "6001 6\" AUS. ROCKMELON 澳洲蜜瓜 [HP]",
+    "new_name": "6001 6 AUS ROCKMELON 澳洲蜜瓜 HP"
+  },
+  {
+    "Id": "1217",
+    "old_name": "6001-R 6/7/8\" AUS. ROCK MELON - retur",
+    "new_name": "6001-R 6 7 8 AUS ROCK MELON retur"
+  },
+  {
+    "Id": "1209",
+    "old_name": "6001.1 6\" AUS. ROCKMELON 澳洲蜜瓜 [LP]",
+    "new_name": "6001.1 6 AUS ROCKMELON 澳洲蜜瓜 LP"
+  },
+  {
+    "Id": "660",
+    "old_name": "6001.2 1 x 8\" CHINA GINSENG MELON 人参瓜",
+    "new_name": "6001.2 1 x 8 CHINA GINSENG MELON 人参瓜"
+  },
+  {
+    "Id": "661",
+    "old_name": "6001.3 6\" AUS. ROCKMELON STRIPE 有线澳洲蜜瓜",
+    "new_name": "6001.3 6 AUS ROCKMELON STRIPE 有线澳洲蜜瓜"
+  },
+  {
+    "Id": "663",
+    "old_name": "6003 3kg 12\" HONG MEI REN ºìÃÀÈË",
+    "new_name": "6003 3kg 12 HONG MEI REN ºìÃÀÈË"
+  },
+  {
+    "Id": "664",
+    "old_name": "6004 JELLY - PEACH",
+    "new_name": "6004 JELLY PEACH"
+  },
+  {
+    "Id": "665",
+    "old_name": "6020 ARUMANIS (ctn)",
+    "new_name": "6020 ARUMANIS ctn"
+  },
+  {
+    "Id": "666",
+    "old_name": "6021 18\" NZ PERSIMMON 纽西兰柿子",
+    "new_name": "6021 18 NZ PERSIMMON 纽西兰柿子"
+  },
+  {
+    "Id": "667",
+    "old_name": "6022 8\" HORNED MELON 火参果",
+    "new_name": "6022 8 HORNED MELON 火参果"
+  },
+  {
+    "Id": "668",
+    "old_name": "6022.1 7\" SPAIN. MELON Î÷°àÑÀ¹Ï",
+    "new_name": "6022.1 7 SPAIN MELON Î àÑÀ¹Ï"
+  },
+  {
+    "Id": "669",
+    "old_name": "6022.2 6\" AUS. SPAIN MELON 澳洲西班牙瓜",
+    "new_name": "6022.2 6 AUS SPAIN MELON 澳洲西班牙瓜"
+  },
+  {
+    "Id": "670",
+    "old_name": "6022.3 6\" AUS. CANDY MELON 澳洲太阳瓜",
+    "new_name": "6022.3 6 AUS CANDY MELON 澳洲太阳瓜"
+  },
+  {
+    "Id": "1251",
+    "old_name": "6022.5 AUS. SPAIN MELON 澳洲西班牙瓜 (pc)",
+    "new_name": "6022.5 AUS SPAIN MELON 澳洲西班牙瓜 pc"
+  },
+  {
+    "Id": "671",
+    "old_name": "6023 14\" SPAIN. PERSIMMON Î÷°àÑÀÊÁ×Ó",
+    "new_name": "6023 14 SPAIN PERSIMMON Î àÑÀÊÁ Ó"
+  },
+  {
+    "Id": "944",
+    "old_name": "6023-R 15\" SPAIN. PERSIMMON Î÷°àÑÀÊÁ×Ó",
+    "new_name": "6023-R 15 SPAIN PERSIMMON Î àÑÀÊÁ Ó"
+  },
+  {
+    "Id": "672",
+    "old_name": "6023.1 H/C 18\" SPAIN PER Î÷°àÑÀÊÁ×Ó",
+    "new_name": "6023.1 H C 18 SPAIN PER Î àÑÀÊÁ Ó"
+  },
+  {
+    "Id": "1206",
+    "old_name": "6023.10 H/C 18\" SPAIN PER Î÷°àÑÀÊÁ×Ó",
+    "new_name": "6023.10 H C 18 SPAIN PER Î àÑÀÊÁ Ó"
+  },
+  {
+    "Id": "673",
+    "old_name": "6023.2 18\" SPAIN PERSIMMON Î÷°àÑÀÊÁ×Ó",
+    "new_name": "6023.2 18 SPAIN PERSIMMON Î àÑÀÊÁ Ó"
+  },
+  {
+    "Id": "674",
+    "old_name": "6023.3 10 x 500g SA. ANGELINO PLUM 非洲黑李子",
+    "new_name": "6023.3 10 x 500g SA ANGELINO PLUM 非洲黑李子"
+  },
+  {
+    "Id": "675",
+    "old_name": "6023.4 15\" NZ PERSIMMON 纽西兰柿子",
+    "new_name": "6023.4 15 NZ PERSIMMON 纽西兰柿子"
+  },
+  {
+    "Id": "676",
+    "old_name": "6023.5 20\" NZ. PERSIMMON 纽西兰柿子",
+    "new_name": "6023.5 20 NZ PERSIMMON 纽西兰柿子"
+  },
+  {
+    "Id": "677",
+    "old_name": "6023.6 50\" NZ. PERSIMMON 纽西兰柿子",
+    "new_name": "6023.6 50 NZ PERSIMMON 纽西兰柿子"
+  },
+  {
+    "Id": "678",
+    "old_name": "6023.7 20\" SPAIN PERSIMMON Î÷°àÑÀÊÁ×Ó",
+    "new_name": "6023.7 20 SPAIN PERSIMMON Î àÑÀÊÁ Ó"
+  },
+  {
+    "Id": "679",
+    "old_name": "6024 4A JUMBU 水蓊 (ctn)",
+    "new_name": "6024 4A JUMBU 水蓊 ctn"
+  },
+  {
+    "Id": "680",
+    "old_name": "6025 6\" JAP. MELON ÈÕ±¾¹Ï",
+    "new_name": "6025 6 JAP MELON ÈÕ ¾¹Ï"
+  },
+  {
+    "Id": "681",
+    "old_name": "6026 16\" NZ. PERSIMMON 纽西兰柿子",
+    "new_name": "6026 16 NZ PERSIMMON 纽西兰柿子"
+  },
+  {
+    "Id": "682",
+    "old_name": "6026.1 16\" AUS. PERSIMMON 澳洲柿子",
+    "new_name": "6026.1 16 AUS PERSIMMON 澳洲柿子"
+  },
+  {
+    "Id": "683",
+    "old_name": "6026.2 18\" AUS. PERSIMMON 澳洲柿子",
+    "new_name": "6026.2 18 AUS PERSIMMON 澳洲柿子"
+  },
+  {
+    "Id": "684",
+    "old_name": "6026.3 20\" AUS. PERSIMMON 澳洲柿子",
+    "new_name": "6026.3 20 AUS PERSIMMON 澳洲柿子"
+  },
+  {
+    "Id": "685",
+    "old_name": "6027 5/6\" FRENCH MELON 法国瓜",
+    "new_name": "6027 5 6 FRENCH MELON 法国瓜"
+  },
+  {
+    "Id": "686",
+    "old_name": "6028 10-12\" KOREA. MELON º«¹ú¹Ï",
+    "new_name": "6028 10 12 KOREA MELON º ¹ú¹Ï"
+  },
+  {
+    "Id": "687",
+    "old_name": "6029 SPAIN. TOMATO PERSIMMON (1x6p)",
+    "new_name": "6029 SPAIN TOMATO PERSIMMON 1x6p"
+  },
+  {
+    "Id": "689",
+    "old_name": "7001.2 10 x 500g SA. RED GRAPES 非洲红葡萄",
+    "new_name": "7001.2 10 x 500g SA RED GRAPES 非洲红葡萄"
+  },
+  {
+    "Id": "690",
+    "old_name": "7001.3 9kg AUS. ADORA BLACK GRAPES 澳洲黑葡萄",
+    "new_name": "7001.3 9kg AUS ADORA BLACK GRAPES 澳洲黑葡萄"
+  },
+  {
+    "Id": "1232",
+    "old_name": "7001.33 CORDOMA 9kg AUS. ADORA GRAPES 澳洲黑葡萄",
+    "new_name": "7001.33 CORDOMA 9kg AUS ADORA GRAPES 澳洲黑葡萄"
+  },
+  {
+    "Id": "945",
+    "old_name": "7001.4-R 4.5kg SA. GREEN GRAPES 非洲青葡萄",
+    "new_name": "7001.4-R 4 5kg SA GREEN GRAPES 非洲青葡萄"
+  },
+  {
+    "Id": "692",
+    "old_name": "7001.5 4.5kg SA. RED GRAPES 非洲红葡萄",
+    "new_name": "7001.5 4 5kg SA RED GRAPES 非洲红葡萄"
+  },
+  {
+    "Id": "693",
+    "old_name": "7001.6 RED GRAPES - SA. CRIMS (4.5kg)",
+    "new_name": "7001.6 RED GRAPES SA CRIMS 4 5kg"
+  },
+  {
+    "Id": "694",
+    "old_name": "7001.7 9kg AUS. RALLI RED GPAPES 澳洲红葡萄",
+    "new_name": "7001.7 9kg AUS RALLI RED GPAPES 澳洲红葡萄"
+  },
+  {
+    "Id": "695",
+    "old_name": "7001.8 11 x 500g SA. RED GRAPES 非洲红葡萄",
+    "new_name": "7001.8 11 x 500g SA RED GRAPES 非洲红葡萄"
+  },
+  {
+    "Id": "697",
+    "old_name": "7002 BLUEBOX 9kg A/CRISPS GREEN GRAPES 澳洲青葡萄",
+    "new_name": "7002 BLUEBOX 9kg A CRISPS GREEN GRAPES 澳洲青葡萄"
+  },
+  {
+    "Id": "698",
+    "old_name": "7002.1 10 x 500g SA. BLACK GRAPES 非洲黑葡萄",
+    "new_name": "7002.1 10 x 500g SA BLACK GRAPES 非洲黑葡萄"
+  },
+  {
+    "Id": "699",
+    "old_name": "7002.11 4.5kg EGY. GN GRAPES ÇàÆÏÌÑ",
+    "new_name": "7002.11 4 5kg EGY GN GRAPES ÇàÆÏÌÑ"
+  },
+  {
+    "Id": "700",
+    "old_name": "7002.12 4kg 4J PERU A/CRISPS GRAPES 秘鲁青葡萄",
+    "new_name": "7002.12 4kg 4J PERU A CRISPS GRAPES 秘鲁青葡萄"
+  },
+  {
+    "Id": "701",
+    "old_name": "7002.13 4.5kg AUS. A/CRISPS GRAPES 澳洲青葡萄",
+    "new_name": "7002.13 4 5kg AUS A CRISPS GRAPES 澳洲青葡萄"
+  },
+  {
+    "Id": "702",
+    "old_name": "7002.14 8.6kg USA. GREEN GRAPES (H/P) 美国青葡萄",
+    "new_name": "7002.14 8 6kg USA GREEN GRAPES H P 美国青葡萄"
+  },
+  {
+    "Id": "703",
+    "old_name": "7002.15 USA GN GRAPES - P/L ÃÀ¹úÇàÆÏÌÑ",
+    "new_name": "7002.15 USA GN GRAPES P L ÃÀ¹úÇàÆÏÌÑ"
+  },
+  {
+    "Id": "704",
+    "old_name": "7002.16 USA GN GRAPES - S/C ÃÀ¹úÇàÆÏÌÑ",
+    "new_name": "7002.16 USA GN GRAPES S C ÃÀ¹úÇàÆÏÌÑ"
+  },
+  {
+    "Id": "705",
+    "old_name": "7002.18 REDLAND 9kg A/CRISPS GRAPES 澳洲青葡萄",
+    "new_name": "7002.18 REDLAND 9kg A CRISPS GRAPES 澳洲青葡萄"
+  },
+  {
+    "Id": "708",
+    "old_name": "7002.22 8.2kg CHILIE BLACK GRAPES ÆÏÌÑ",
+    "new_name": "7002.22 8 2kg CHILIE BLACK GRAPES ÆÏÌÑ"
+  },
+  {
+    "Id": "709",
+    "old_name": "7002.23 10 x 500g EGY. GREEN GRAPES 埃及青葡萄",
+    "new_name": "7002.23 10 x 500g EGY GREEN GRAPES 埃及青葡萄"
+  },
+  {
+    "Id": "710",
+    "old_name": "7002.24 10 x 500g EGY. RED GRAPES 埃及红葡萄",
+    "new_name": "7002.24 10 x 500g EGY RED GRAPES 埃及红葡萄"
+  },
+  {
+    "Id": "711",
+    "old_name": "7002.25 10 x 500g EGY. BLACK GRAPES 埃及黑葡萄",
+    "new_name": "7002.25 10 x 500g EGY BLACK GRAPES 埃及黑葡萄"
+  },
+  {
+    "Id": "712",
+    "old_name": "7002.26 9kg FRUITICO A/CRISPS GRAPES 澳洲青葡萄",
+    "new_name": "7002.26 9kg FRUITICO A CRISPS GRAPES 澳洲青葡萄"
+  },
+  {
+    "Id": "1272",
+    "old_name": "7002.27 10 x 500g CN. RED GRAPES 中国红葡萄",
+    "new_name": "7002.27 10 x 500g CN RED GRAPES 中国红葡萄"
+  },
+  {
+    "Id": "1221",
+    "old_name": "7002.28 CORDOMA 9kg AUS. A/CRISPS GRAPES 澳洲青葡萄",
+    "new_name": "7002.28 CORDOMA 9kg AUS A CRISPS GRAPES 澳洲青葡萄"
+  },
+  {
+    "Id": "714",
+    "old_name": "7002.3 G/LAND 9kg A/CRISPS GREEN GRAPES 澳洲青葡萄",
+    "new_name": "7002.3 G LAND 9kg A CRISPS GREEN GRAPES 澳洲青葡萄"
+  },
+  {
+    "Id": "715",
+    "old_name": "7002.31 6 x 650g CN. MUSCAT 杨光葡萄",
+    "new_name": "7002.31 6 x 650g CN MUSCAT 杨光葡萄"
+  },
+  {
+    "Id": "1231",
+    "old_name": "7002.36 PALMS 9kg A/CRISPS GRAPES 澳洲青葡萄",
+    "new_name": "7002.36 PALMS 9kg A CRISPS GRAPES 澳洲青葡萄"
+  },
+  {
+    "Id": "716",
+    "old_name": "7002.4 USA GN GRAPES - C/A ÃÀ¹úÇàÆÏÌÑ",
+    "new_name": "7002.4 USA GN GRAPES C A ÃÀ¹úÇàÆÏÌÑ"
+  },
+  {
+    "Id": "1234",
+    "old_name": "7002.51 KOALA 9kg A/CRISPS GREEN GRAPES 澳洲青葡萄",
+    "new_name": "7002.51 KOALA 9kg A CRISPS GREEN GRAPES 澳洲青葡萄"
+  },
+  {
+    "Id": "718",
+    "old_name": "7002.6 4.5kg PERU BLK GRAPES 秘鲁黑葡萄",
+    "new_name": "7002.6 4 5kg PERU BLK GRAPES 秘鲁黑葡萄"
+  },
+  {
+    "Id": "719",
+    "old_name": "7002.7 SA. GN GRAPES- 1X10 ·ÇÖÞÇàÆÏÌÑ",
+    "new_name": "7002.7 SA GN GRAPES 1X10 ÇÖÞÇàÆÏÌÑ"
+  },
+  {
+    "Id": "720",
+    "old_name": "7002.8 GREEN GRAPES - INDIA Ó¡¶ÈÇàÆÏÌÑ",
+    "new_name": "7002.8 GREEN GRAPES INDIA Ó ÈÇàÆÏÌÑ"
+  },
+  {
+    "Id": "721",
+    "old_name": "7002.9 10 x 500g CN. BLACK GRAPES 中国黑葡萄",
+    "new_name": "7002.9 10 x 500g CN BLACK GRAPES 中国黑葡萄"
+  },
+  {
+    "Id": "722",
+    "old_name": "7003 KOALA AUS. BLK GRAPES ºÚÆÏÌÑ",
+    "new_name": "7003 KOALA AUS BLK GRAPES ºÚÆÏÌÑ"
+  },
+  {
+    "Id": "723",
+    "old_name": "7003.1 8.6kg USA. SOLBIO BLACK GRAPES 美国黑葡萄",
+    "new_name": "7003.1 8 6kg USA SOLBIO BLACK GRAPES 美国黑葡萄"
+  },
+  {
+    "Id": "724",
+    "old_name": "7003.11 USA BLK GRAPES - A/D ÃÀ¹úºÚÆÏÌÑ",
+    "new_name": "7003.11 USA BLK GRAPES A D ÃÀ¹úºÚÆÏÌÑ"
+  },
+  {
+    "Id": "725",
+    "old_name": "7003.2 USA BLK GRAPE - M/K ÃÀ¹úºÚÆÏÌÑ",
+    "new_name": "7003.2 USA BLK GRAPE M K ÃÀ¹úºÚÆÏÌÑ"
+  },
+  {
+    "Id": "726",
+    "old_name": "7003.3 SA.BLACK GRAPES - LONG (4.5kg)",
+    "new_name": "7003.3 SA BLACK GRAPES LONG 4 5kg"
+  },
+  {
+    "Id": "727",
+    "old_name": "7003.4 SAPPHIRE AUS. BLKGRAPES ºÚÆÏÌÑ",
+    "new_name": "7003.4 SAPPHIRE AUS BLKGRAPES ºÚÆÏÌÑ"
+  },
+  {
+    "Id": "728",
+    "old_name": "7003.5 BLACK GRAPES -1 X 10 °£¼°ºÚÆÏÌÑ",
+    "new_name": "7003.5 BLACK GRAPES 1 X 10 ¼ ºÚÆÏÌÑ"
+  },
+  {
+    "Id": "730",
+    "old_name": "7003.7 SA. BLK GRAPE -1 X 10\" ºÚÆÏÌÑ",
+    "new_name": "7003.7 SA BLK GRAPE 1 X 10 ºÚÆÏÌÑ"
+  },
+  {
+    "Id": "732",
+    "old_name": "7004 14\" AUS. WHITE PEACH 澳洲白桃",
+    "new_name": "7004 14 AUS WHITE PEACH 澳洲白桃"
+  },
+  {
+    "Id": "733",
+    "old_name": "7005 SIERRA SWEET PLUM (10kg) ºìÀî×Ó",
+    "new_name": "7005 SIERRA SWEET PLUM 10kg ºìÀî Ó"
+  },
+  {
+    "Id": "734",
+    "old_name": "7006 22\" AUS. WHITE PEACH 澳洲白桃",
+    "new_name": "7006 22 AUS WHITE PEACH 澳洲白桃"
+  },
+  {
+    "Id": "735",
+    "old_name": "7006.1 18\" AUS. WHITE PEACH 澳洲白桃",
+    "new_name": "7006.1 18 AUS WHITE PEACH 澳洲白桃"
+  },
+  {
+    "Id": "736",
+    "old_name": "7006.2 18\" AUS. YELLOW PEACH 澳洲黄桃",
+    "new_name": "7006.2 18 AUS YELLOW PEACH 澳洲黄桃"
+  },
+  {
+    "Id": "737",
+    "old_name": "7006.3 28\" AUS. WHITE PEACH °ÄÖÞ°×ÌÒ",
+    "new_name": "7006.3 28 AUS WHITE PEACH ÄÖÞ ÌÒ"
+  },
+  {
+    "Id": "738",
+    "old_name": "7006.4 20\" AUS. WHITE PEACH 澳洲白桃",
+    "new_name": "7006.4 20 AUS WHITE PEACH 澳洲白桃"
+  },
+  {
+    "Id": "739",
+    "old_name": "7007 JAP. CHAMPAGNE GRAPES (1x4pkt)",
+    "new_name": "7007 JAP CHAMPAGNE GRAPES 1x4pkt"
+  },
+  {
+    "Id": "740",
+    "old_name": "7007.1 36\" JAPANESE TOKI APPLE 日本王琳",
+    "new_name": "7007.1 36 JAPANESE TOKI APPLE 日本王琳"
+  },
+  {
+    "Id": "741",
+    "old_name": "7008 18\" USA. WHITE PEACH 美国白桃",
+    "new_name": "7008 18 USA WHITE PEACH 美国白桃"
+  },
+  {
+    "Id": "742",
+    "old_name": "7008.1 34/36\" USA WHITE PEACH 美国白桃",
+    "new_name": "7008.1 34 36 USA WHITE PEACH 美国白桃"
+  },
+  {
+    "Id": "743",
+    "old_name": "7008.2 44\" USA. WHITE PEACH 美国白桃",
+    "new_name": "7008.2 44 USA WHITE PEACH 美国白桃"
+  },
+  {
+    "Id": "744",
+    "old_name": "7016.23 SOLAR 9kg AUS. GREEN GRAPES 澳洲青葡萄",
+    "new_name": "7016.23 SOLAR 9kg AUS GREEN GRAPES 澳洲青葡萄"
+  },
+  {
+    "Id": "745",
+    "old_name": "7023 CN DRIED PERSIMMON ÖÐ¹úÊÁ±ý",
+    "new_name": "7023 CN DRIED PERSIMMON ÖÐ¹úÊÁ ý"
+  },
+  {
+    "Id": "746",
+    "old_name": "7023.1 KOREAN DRIED PERSIMMON º«¹úÊÁ±ý",
+    "new_name": "7023.1 KOREAN DRIED PERSIMMON º ¹úÊÁ ý"
+  },
+  {
+    "Id": "747",
+    "old_name": "7100 9kg AUS. RED GRAPE 澳洲红葡萄",
+    "new_name": "7100 9kg AUS RED GRAPE 澳洲红葡萄"
+  },
+  {
+    "Id": "748",
+    "old_name": "7100.2 11 x 500g SA. BLACK GRAPES 非洲黑葡萄",
+    "new_name": "7100.2 11 x 500g SA BLACK GRAPES 非洲黑葡萄"
+  },
+  {
+    "Id": "749",
+    "old_name": "8001 DURIAN - XIAO FENG (kg)",
+    "new_name": "8001 DURIAN XIAO FENG kg"
+  },
+  {
+    "Id": "750",
+    "old_name": "8002 DURIAN - D101 (kg)",
+    "new_name": "8002 DURIAN D101 kg"
+  },
+  {
+    "Id": "751",
+    "old_name": "8003 DURIAN - SUPER D24 (kg)",
+    "new_name": "8003 DURIAN SUPER D24 kg"
+  },
+  {
+    "Id": "752",
+    "old_name": "8004 DURIAN - MAOSHANGWANG (kg)",
+    "new_name": "8004 DURIAN MAOSHANGWANG kg"
+  },
+  {
+    "Id": "946",
+    "old_name": "8PG 8\" PONGAN Åö¸Ì",
+    "new_name": "8PG 8 PONGAN Åö Ì"
+  },
+  {
+    "Id": "1201",
+    "old_name": "90 20\" DOG PEAR 狗梨",
+    "new_name": "90 20 DOG PEAR 狗梨"
+  },
+  {
+    "Id": "1196",
+    "old_name": "90.1 8\" DOG PEAR ¹·Àæ",
+    "new_name": "90.1 8 DOG PEAR ¹ Àæ"
+  },
+  {
+    "Id": "881",
+    "old_name": "90000 TOMATOES ·¬ÇÑ",
+    "new_name": "90000 TOMATOES ÇÑ"
+  },
+  {
+    "Id": "753",
+    "old_name": "9001 WATERMELON - RED (pcs) 西瓜",
+    "new_name": "9001 WATERMELON RED pcs 西瓜"
+  },
+  {
+    "Id": "947",
+    "old_name": "9001-R WATERMELON - RED (pcs) - RET",
+    "new_name": "9001-R WATERMELON RED pcs RET"
+  },
+  {
+    "Id": "754",
+    "old_name": "9002 WATERMELON - RED (kg) 西瓜",
+    "new_name": "9002 WATERMELON RED kg 西瓜"
+  },
+  {
+    "Id": "948",
+    "old_name": "9002-R WATERMELON - RED (kg) - RETURN",
+    "new_name": "9002-R WATERMELON RED kg RETURN"
+  },
+  {
+    "Id": "755",
+    "old_name": "9002.2 WATERMELON RED (slice)",
+    "new_name": "9002.2 WATERMELON RED slice"
+  },
+  {
+    "Id": "756",
+    "old_name": "9003 HONEYDEW 蜜瓜 (pcs)",
+    "new_name": "9003 HONEYDEW 蜜瓜 pcs"
+  },
+  {
+    "Id": "949",
+    "old_name": "9003-R HONEYDEW (pcs) - RETURN",
+    "new_name": "9003-R HONEYDEW pcs RETURN"
+  },
+  {
+    "Id": "757",
+    "old_name": "9004 HONEYDEW 蜜瓜 (kg)",
+    "new_name": "9004 HONEYDEW 蜜瓜 kg"
+  },
+  {
+    "Id": "759",
+    "old_name": "9005 ROCKMELON 澳洲蜜瓜 (pcs)",
+    "new_name": "9005 ROCKMELON 澳洲蜜瓜 pcs"
+  },
+  {
+    "Id": "760",
+    "old_name": "9006 [STY] 6\" AUS. ROCKMELON 澳洲蜜瓜",
+    "new_name": "9006 STY 6 AUS ROCKMELON 澳洲蜜瓜"
+  },
+  {
+    "Id": "761",
+    "old_name": "9006.1 ROCKMELON (slice)",
+    "new_name": "9006.1 ROCKMELON slice"
+  },
+  {
+    "Id": "762",
+    "old_name": "9007 PINEAPPLE 马来西亚黄梨 (pcs)",
+    "new_name": "9007 PINEAPPLE 马来西亚黄梨 pcs"
+  },
+  {
+    "Id": "764",
+    "old_name": "9007.2 INDO. PINEAPPLE 印尼黄梨 (pc)",
+    "new_name": "9007.2 INDO PINEAPPLE 印尼黄梨 pc"
+  },
+  {
+    "Id": "765",
+    "old_name": "9007.3 PINEAPPLE FLOWER 黄梨花(pc)",
+    "new_name": "9007.3 PINEAPPLE FLOWER 黄梨花 pc"
+  },
+  {
+    "Id": "766",
+    "old_name": "9007.4 PINEAPPLE 切片黄梨 (slice)",
+    "new_name": "9007.4 PINEAPPLE 切片黄梨 slice"
+  },
+  {
+    "Id": "950",
+    "old_name": "9007.R PINEAPPLE (pcs) - RETURN",
+    "new_name": "9007.R PINEAPPLE pcs RETURN"
+  },
+  {
+    "Id": "767",
+    "old_name": "9008 RED DRAGONFRUIT 红龙珠果 (pc)",
+    "new_name": "9008 RED DRAGONFRUIT 红龙珠果 pc"
+  },
+  {
+    "Id": "770",
+    "old_name": "9011 GREEN APPLE (pcs) 青苹果",
+    "new_name": "9011 GREEN APPLE pcs 青苹果"
+  },
+  {
+    "Id": "951",
+    "old_name": "9011-R GREEN APPLE (pcs) - RETURN",
+    "new_name": "9011-R GREEN APPLE pcs RETURN"
+  },
+  {
+    "Id": "771",
+    "old_name": "9012 SUNKIST NAVEL 新奇士脐橙 (pcs)",
+    "new_name": "9012 SUNKIST NAVEL 新奇士脐橙 pcs"
+  },
+  {
+    "Id": "772",
+    "old_name": "9013 LEMON (pcs) 柠檬",
+    "new_name": "9013 LEMON pcs 柠檬"
+  },
+  {
+    "Id": "952",
+    "old_name": "9013-R LEMON (pcs) - RETURN",
+    "new_name": "9013-R LEMON pcs RETURN"
+  },
+  {
+    "Id": "773",
+    "old_name": "9013.1 LEMON - XL (pcs)",
+    "new_name": "9013.1 LEMON XL pcs"
+  },
+  {
+    "Id": "774",
+    "old_name": "9013.2 LEMON (kg)",
+    "new_name": "9013.2 LEMON kg"
+  },
+  {
+    "Id": "775",
+    "old_name": "9014 CHERVIL (pkt)",
+    "new_name": "9014 CHERVIL pkt"
+  },
+  {
+    "Id": "953",
+    "old_name": "9014-R CHERVIL (pkt) - RETURN",
+    "new_name": "9014-R CHERVIL pkt RETURN"
+  },
+  {
+    "Id": "776",
+    "old_name": "9015 MANGO (kg) Ã¢¹û ¹«½ï",
+    "new_name": "9015 MANGO kg Ã ¹û ¹ ½ï"
+  },
+  {
+    "Id": "777",
+    "old_name": "9016 ORANGE (kg)",
+    "new_name": "9016 ORANGE kg"
+  },
+  {
+    "Id": "778",
+    "old_name": "9017 APPLE (pcs) 苹果",
+    "new_name": "9017 APPLE pcs 苹果"
+  },
+  {
+    "Id": "954",
+    "old_name": "9017-R APPLE (pcs) - RETURN",
+    "new_name": "9017-R APPLE pcs RETURN"
+  },
+  {
+    "Id": "779",
+    "old_name": "9018 BANANA 香蕉 (kg)",
+    "new_name": "9018 BANANA 香蕉 kg"
+  },
+  {
+    "Id": "955",
+    "old_name": "9018-1 PRAYER BANANA 青蕉 (kg)",
+    "new_name": "9018-1 PRAYER BANANA 青蕉 kg"
+  },
+  {
+    "Id": "1187",
+    "old_name": "9018-R BANANA (kg) - RETURN",
+    "new_name": "9018-R BANANA kg RETURN"
+  },
+  {
+    "Id": "780",
+    "old_name": "9019 PAPAYA (pcs) 木瓜",
+    "new_name": "9019 PAPAYA pcs 木瓜"
+  },
+  {
+    "Id": "781",
+    "old_name": "9019.1 PAPAYA (kg) 木瓜",
+    "new_name": "9019.1 PAPAYA kg 木瓜"
+  },
+  {
+    "Id": "782",
+    "old_name": "9019.2 PAPAYA (slice)",
+    "new_name": "9019.2 PAPAYA slice"
+  },
+  {
+    "Id": "783",
+    "old_name": "9020 GREEN GRAPES (1kg/pkt) 青葡萄",
+    "new_name": "9020 GREEN GRAPES 1kg pkt 青葡萄"
+  },
+  {
+    "Id": "956",
+    "old_name": "9020-R GREEN GRAPES (1kgpkt) - RETURN",
+    "new_name": "9020-R GREEN GRAPES 1kgpkt RETURN"
+  },
+  {
+    "Id": "1250",
+    "old_name": "9020.2 GREEN GRAPES (500g/pkt) 青葡萄",
+    "new_name": "9020.2 GREEN GRAPES 500g pkt 青葡萄"
+  },
+  {
+    "Id": "784",
+    "old_name": "9021 RED GRAPES (1kg/pkt) 红葡萄",
+    "new_name": "9021 RED GRAPES 1kg pkt 红葡萄"
+  },
+  {
+    "Id": "957",
+    "old_name": "9021-R RED GRAPES (pkt) - RETURN",
+    "new_name": "9021-R RED GRAPES pkt RETURN"
+  },
+  {
+    "Id": "1252",
+    "old_name": "9021.2 RED GRAPES 红葡萄 (500g/pkt)",
+    "new_name": "9021.2 RED GRAPES 红葡萄 500g pkt"
+  },
+  {
+    "Id": "785",
+    "old_name": "9022 AVOCADO (pcs) 牛油果",
+    "new_name": "9022 AVOCADO pcs 牛油果"
+  },
+  {
+    "Id": "958",
+    "old_name": "9022-1 AVOCADO (kg) Å£ÓÍ¹û ¹«½ï",
+    "new_name": "9022-1 AVOCADO kg Å ÓÍ¹û ¹ ½ï"
+  },
+  {
+    "Id": "959",
+    "old_name": "9022-R AVOCADO (pcs) - RETURN",
+    "new_name": "9022-R AVOCADO pcs RETURN"
+  },
+  {
+    "Id": "786",
+    "old_name": "9023 BLACK GRAPES (1kg/pkt) 黑葡萄",
+    "new_name": "9023 BLACK GRAPES 1kg pkt 黑葡萄"
+  },
+  {
+    "Id": "960",
+    "old_name": "9023-R BLACK GRAPES (pkt) - RETURN",
+    "new_name": "9023-R BLACK GRAPES pkt RETURN"
+  },
+  {
+    "Id": "787",
+    "old_name": "9024 GRAPEFRUIT (pcs) 小柚子",
+    "new_name": "9024 GRAPEFRUIT pcs 小柚子"
+  },
+  {
+    "Id": "788",
+    "old_name": "9025 GUAVA 番石榴 (pcs)",
+    "new_name": "9025 GUAVA 番石榴 pcs"
+  },
+  {
+    "Id": "789",
+    "old_name": "9026 18kg MANGOSTEEN 山竹 (ctn)",
+    "new_name": "9026 18kg MANGOSTEEN 山竹 ctn"
+  },
+  {
+    "Id": "790",
+    "old_name": "9026.3 8/10\" SA. POMEGRANATE 石榴",
+    "new_name": "9026.3 8 10 SA POMEGRANATE 石榴"
+  },
+  {
+    "Id": "791",
+    "old_name": "9026.4 10kg CN POMEGRANATE ÖÐ¹úÊ¯Áñ",
+    "new_name": "9026.4 10kg CN POMEGRANATE ÖÐ¹úÊ Áñ"
+  },
+  {
+    "Id": "792",
+    "old_name": "9027 GREEN KIWI (pcs) 青奇异果",
+    "new_name": "9027 GREEN KIWI pcs 青奇异果"
+  },
+  {
+    "Id": "961",
+    "old_name": "9027-R GREEN KIWI (pcs) - RETURN",
+    "new_name": "9027-R GREEN KIWI pcs RETURN"
+  },
+  {
+    "Id": "793",
+    "old_name": "9028 MANGO (pcs) 芒果",
+    "new_name": "9028 MANGO pcs 芒果"
+  },
+  {
+    "Id": "962",
+    "old_name": "9028-R MANGO (pcs) - RETURN",
+    "new_name": "9028-R MANGO pcs RETURN"
+  },
+  {
+    "Id": "963",
+    "old_name": "9029-R GREEN LIME (kg) - RETURN",
+    "new_name": "9029-R GREEN LIME kg RETURN"
+  },
+  {
+    "Id": "795",
+    "old_name": "9029.1 GREEN LIME (pcs) ÇàËáôû Á£",
+    "new_name": "9029.1 GREEN LIME pcs ÇàËáôû Á"
+  },
+  {
+    "Id": "796",
+    "old_name": "9030 MINT LEAVES (kg)",
+    "new_name": "9030 MINT LEAVES kg"
+  },
+  {
+    "Id": "797",
+    "old_name": "9030.1 MINT LEAVES (pkt)",
+    "new_name": "9030.1 MINT LEAVES pkt"
+  },
+  {
+    "Id": "798",
+    "old_name": "9030.2 LIME LEAVES (500g/pkt)",
+    "new_name": "9030.2 LIME LEAVES 500g pkt"
+  },
+  {
+    "Id": "799",
+    "old_name": "9031 RED PEAR 非洲红耙 (pcs)",
+    "new_name": "9031 RED PEAR 非洲红耙 pcs"
+  },
+  {
+    "Id": "800",
+    "old_name": "9032 CHERRY 樱桃 (kg)",
+    "new_name": "9032 CHERRY 樱桃 kg"
+  },
+  {
+    "Id": "801",
+    "old_name": "9033 RAINIER CHERRY 白樱桃 (kg)",
+    "new_name": "9033 RAINIER CHERRY 白樱桃 kg"
+  },
+  {
+    "Id": "802",
+    "old_name": "9034 US STRAWBERRY 美国草莓 (454g)",
+    "new_name": "9034 US STRAWBERRY 美国草莓 454g"
+  },
+  {
+    "Id": "964",
+    "old_name": "9034-R KOR. STRAWBERRY (330g) 韩国草莓",
+    "new_name": "9034-R KOR STRAWBERRY 330g 韩国草莓"
+  },
+  {
+    "Id": "803",
+    "old_name": "9035 BLUEBERRY (pkt) 蓝莓",
+    "new_name": "9035 BLUEBERRY pkt 蓝莓"
+  },
+  {
+    "Id": "965",
+    "old_name": "9035-R BLUEBERRY (pkt) - RETURN",
+    "new_name": "9035-R BLUEBERRY pkt RETURN"
+  },
+  {
+    "Id": "804",
+    "old_name": "9036 PEAR (pcs) 耙/梨",
+    "new_name": "9036 PEAR pcs 耙 梨"
+  },
+  {
+    "Id": "805",
+    "old_name": "9037 KIWI - GREEN (kg)",
+    "new_name": "9037 KIWI GREEN kg"
+  },
+  {
+    "Id": "807",
+    "old_name": "9039 YA LI (pcs) 鸭梨",
+    "new_name": "9039 YA LI pcs 鸭梨"
+  },
+  {
+    "Id": "808",
+    "old_name": "9041 ROSE APPLE 纽西兰玫瑰苹果 (pc)",
+    "new_name": "9041 ROSE APPLE 纽西兰玫瑰苹果 pc"
+  },
+  {
+    "Id": "809",
+    "old_name": "9041.1 ENVY APPLE 爱妃苹果 (pcs)",
+    "new_name": "9041.1 ENVY APPLE 爱妃苹果 pcs"
+  },
+  {
+    "Id": "810",
+    "old_name": "9041.2 ROCKIT APP 乐淇苹果 (TUBE)",
+    "new_name": "9041.2 ROCKIT APP 乐淇苹果 TUBE"
+  },
+  {
+    "Id": "811",
+    "old_name": "9042 RED DRAGONFRUIT 红龙珠果 (kg)",
+    "new_name": "9042 RED DRAGONFRUIT 红龙珠果 kg"
+  },
+  {
+    "Id": "812",
+    "old_name": "9042.1 YELLOW DRAGONFRUIT (pcs) 黄龙珠果",
+    "new_name": "9042.1 YELLOW DRAGONFRUIT pcs 黄龙珠果"
+  },
+  {
+    "Id": "813",
+    "old_name": "9043 FRAGRANT PEAR (pcs) 香梨",
+    "new_name": "9043 FRAGRANT PEAR pcs 香梨"
+  },
+  {
+    "Id": "814",
+    "old_name": "9044 56\" EGYPT ORANGE °£¼°³È",
+    "new_name": "9044 56 EGYPT ORANGE ¼ ³È"
+  },
+  {
+    "Id": "815",
+    "old_name": "9044.1 72\" ORANGE (pcs)",
+    "new_name": "9044.1 72 ORANGE pcs"
+  },
+  {
+    "Id": "816",
+    "old_name": "9045 FUJI APPLE 富士苹果 (pcs)",
+    "new_name": "9045 FUJI APPLE 富士苹果 pcs"
+  },
+  {
+    "Id": "817",
+    "old_name": "9045.1 1 X 10\" SA. FUJI APPLE ·ÇÖÞ¸»Ê¿",
+    "new_name": "9045.1 1 X 10 SA FUJI APPLE ÇÖÞ Ê"
+  },
+  {
+    "Id": "818",
+    "old_name": "9046 GOLD PEAR (pcs) 黄金梨",
+    "new_name": "9046 GOLD PEAR pcs 黄金梨"
+  },
+  {
+    "Id": "820",
+    "old_name": "9048 C61 CHILLI (ctn)",
+    "new_name": "9048 C61 CHILLI ctn"
+  },
+  {
+    "Id": "821",
+    "old_name": "9048.1 4kg 5J PERU A/CRISPS GRAPES 秘鲁青葡萄",
+    "new_name": "9048.1 4kg 5J PERU A CRISPS GRAPES 秘鲁青葡萄"
+  },
+  {
+    "Id": "822",
+    "old_name": "9049 GOLD KIWI (pcs) 金奇异果",
+    "new_name": "9049 GOLD KIWI pcs 金奇异果"
+  },
+  {
+    "Id": "823",
+    "old_name": "9050 BROWN PEAR (pcs)",
+    "new_name": "9050 BROWN PEAR pcs"
+  },
+  {
+    "Id": "824",
+    "old_name": "9051 SUGAR PRUNE 美国蜜枣 (kg)",
+    "new_name": "9051 SUGAR PRUNE 美国蜜枣 kg"
+  },
+  {
+    "Id": "825",
+    "old_name": "9052 HAMIGUA 中国哈密瓜 (pcs)",
+    "new_name": "9052 HAMIGUA 中国哈密瓜 pcs"
+  },
+  {
+    "Id": "826",
+    "old_name": "9053 PEACH 白桃 (pcs)",
+    "new_name": "9053 PEACH 白桃 pcs"
+  },
+  {
+    "Id": "967",
+    "old_name": "9053-1 QUEEN APPLE »ÊºóÆ»¹û",
+    "new_name": "9053-1 QUEEN APPLE ÊºóÆ ¹û"
+  },
+  {
+    "Id": "827",
+    "old_name": "9054 SARA SWEET (kg)",
+    "new_name": "9054 SARA SWEET kg"
+  },
+  {
+    "Id": "828",
+    "old_name": "9055 APRICOT (350g) ÐÓ",
+    "new_name": "9055 APRICOT 350g ÐÓ"
+  },
+  {
+    "Id": "829",
+    "old_name": "9056 POMEGRANATE 石榴 (pcs)",
+    "new_name": "9056 POMEGRANATE 石榴 pcs"
+  },
+  {
+    "Id": "830",
+    "old_name": "9057 POMELO 柚子 (pcs)",
+    "new_name": "9057 POMELO 柚子 pcs"
+  },
+  {
+    "Id": "831",
+    "old_name": "9058 NAMSHUI PEAR (pcs) 南水梨",
+    "new_name": "9058 NAMSHUI PEAR pcs 南水梨"
+  },
+  {
+    "Id": "832",
+    "old_name": "9059 COCONUT 椰子 (pcs)",
+    "new_name": "9059 COCONUT 椰子 pcs"
+  },
+  {
+    "Id": "833",
+    "old_name": "9060 PLUM 李子 (kg)",
+    "new_name": "9060 PLUM 李子 kg"
+  },
+  {
+    "Id": "834",
+    "old_name": "9061 PERSIMMON 柿子 (pcs)",
+    "new_name": "9061 PERSIMMON 柿子 pcs"
+  },
+  {
+    "Id": "835",
+    "old_name": "9061.1 9 X 8\" CN SOFT PERS ÈíÊÁ×Ó",
+    "new_name": "9061.1 9 X 8 CN SOFT PERS ÈíÊÁ Ó"
+  },
+  {
+    "Id": "836",
+    "old_name": "9062 6 x 4\" CN PERSIMMON ÖÐ¹úÊÁ×Ó",
+    "new_name": "9062 6 x 4 CN PERSIMMON ÖÐ¹úÊÁ Ó"
+  },
+  {
+    "Id": "837",
+    "old_name": "9062.1 1 X 16\" CN TANGERINE É³ÌÇ½Û",
+    "new_name": "9062.1 1 X 16 CN TANGERINE É³ÌÇ½Û"
+  },
+  {
+    "Id": "838",
+    "old_name": "9062.2 10kg 60mm AUS. ANGELINO PLUM 澳洲黑红李子",
+    "new_name": "9062.2 10kg 60mm AUS ANGELINO PLUM 澳洲黑红李子"
+  },
+  {
+    "Id": "840",
+    "old_name": "9062.4 1.5kg CN GREEN PLUM",
+    "new_name": "9062.4 1 5kg CN GREEN PLUM"
+  },
+  {
+    "Id": "842",
+    "old_name": "9064 JUMBU 水蓊 (pcs)",
+    "new_name": "9064 JUMBU 水蓊 pcs"
+  },
+  {
+    "Id": "843",
+    "old_name": "9065 ARUMANIS (pcs) Ó¡ÄáÃ¢¹û Á£",
+    "new_name": "9065 ARUMANIS pcs Ó ÄáÃ ¹û Á"
+  },
+  {
+    "Id": "844",
+    "old_name": "9066 NECTARINE 澳洲桃李 (pcs)",
+    "new_name": "9066 NECTARINE 澳洲桃李 pcs"
+  },
+  {
+    "Id": "845",
+    "old_name": "9067 ORANGE (pcs) 橙子",
+    "new_name": "9067 ORANGE pcs 橙子"
+  },
+  {
+    "Id": "846",
+    "old_name": "9068 RED APPLE (kg)",
+    "new_name": "9068 RED APPLE kg"
+  },
+  {
+    "Id": "847",
+    "old_name": "9069 AUS. STRAWBERRY 草莓 (250G)",
+    "new_name": "9069 AUS STRAWBERRY 草莓 250G"
+  },
+  {
+    "Id": "848",
+    "old_name": "9069.1 EUTHOPIA STRAWBERRY 草莓 (250g)",
+    "new_name": "9069.1 EUTHOPIA STRAWBERRY 草莓 250g"
+  },
+  {
+    "Id": "849",
+    "old_name": "9069.2 EGYPT STRAWBERRY 草莓 (250g)",
+    "new_name": "9069.2 EGYPT STRAWBERRY 草莓 250g"
+  },
+  {
+    "Id": "850",
+    "old_name": "9070 MANDARIN ORANGE (pcs) 柑",
+    "new_name": "9070 MANDARIN ORANGE pcs 柑"
+  },
+  {
+    "Id": "851",
+    "old_name": "9071 TANGERINE 柑仔 (kg)",
+    "new_name": "9071 TANGERINE 柑仔 kg"
+  },
+  {
+    "Id": "852",
+    "old_name": "9072 BANANA 香蕉 (pcs)",
+    "new_name": "9072 BANANA 香蕉 pcs"
+  },
+  {
+    "Id": "853",
+    "old_name": "9072.1 BANANA (Bunch) 香蕉",
+    "new_name": "9072.1 BANANA Bunch 香蕉"
+  },
+  {
+    "Id": "854",
+    "old_name": "9073 JAP. PIPA (pkt)",
+    "new_name": "9073 JAP PIPA pkt"
+  },
+  {
+    "Id": "855",
+    "old_name": "9074 KIWI-BERRY (pkt)",
+    "new_name": "9074 KIWI BERRY pkt"
+  },
+  {
+    "Id": "856",
+    "old_name": "9075 YANG MEI (pkt)",
+    "new_name": "9075 YANG MEI pkt"
+  },
+  {
+    "Id": "857",
+    "old_name": "9076 JACKFRUIT (kg)",
+    "new_name": "9076 JACKFRUIT kg"
+  },
+  {
+    "Id": "858",
+    "old_name": "9076.1 JACKFRUIT (pkt)",
+    "new_name": "9076.1 JACKFRUIT pkt"
+  },
+  {
+    "Id": "859",
+    "old_name": "9077 SPAIN. MELON (pcs) Î÷°àÑÀ¹Ï Á£",
+    "new_name": "9077 SPAIN MELON pcs Î àÑÀ¹Ï Á"
+  },
+  {
+    "Id": "860",
+    "old_name": "9078 STARFRUIT (kg)",
+    "new_name": "9078 STARFRUIT kg"
+  },
+  {
+    "Id": "861",
+    "old_name": "9079 FRENCH MELON (pcs) ·¨¹ú¹Ï Á£",
+    "new_name": "9079 FRENCH MELON pcs ¹ú¹Ï Á"
+  },
+  {
+    "Id": "862",
+    "old_name": "9080 CHESTNUT 栗子 (pkt)",
+    "new_name": "9080 CHESTNUT 栗子 pkt"
+  },
+  {
+    "Id": "863",
+    "old_name": "9080.1 CHESTNUT 栗子 (24 packs/ctn)",
+    "new_name": "9080.1 CHESTNUT 栗子 24 packs ctn"
+  },
+  {
+    "Id": "864",
+    "old_name": "9081 GINGER (kg)",
+    "new_name": "9081 GINGER kg"
+  },
+  {
+    "Id": "865",
+    "old_name": "9082 SWEETIE (pcs) ÇàèÖ×Ð Á£",
+    "new_name": "9082 SWEETIE pcs ÇàèÖ Ð Á"
+  },
+  {
+    "Id": "866",
+    "old_name": "9083 SUGAR CANE 甘蔗 (stick)",
+    "new_name": "9083 SUGAR CANE 甘蔗 stick"
+  },
+  {
+    "Id": "968",
+    "old_name": "9091.1-R PAPAYA (kg) - RETURN (FOC)",
+    "new_name": "9091.1-R PAPAYA kg RETURN FOC"
+  },
+  {
+    "Id": "867",
+    "old_name": "9111 BEETROOT 甜菜根 (ctn)",
+    "new_name": "9111 BEETROOT 甜菜根 ctn"
+  },
+  {
+    "Id": "969",
+    "old_name": "AA 50\" AUS. SOLUNA APP °ÄÖÞÆ»¹û",
+    "new_name": "AA 50 AUS SOLUNA APP ÄÖÞÆ ¹û"
+  },
+  {
+    "Id": "970",
+    "old_name": "AC 5kg 28mm+ SA. CHERRY 南非樱桃",
+    "new_name": "AC 5kg 28mm SA CHERRY 南非樱桃"
+  },
+  {
+    "Id": "1271",
+    "old_name": "ADDON.1 Add-On Wooden Crate for Fruit",
+    "new_name": "ADDON.1 Add On Wooden Crate for Fruit"
+  },
+  {
+    "Id": "972",
+    "old_name": "AVO 4.5kg VIETNAM LONG AVOCADO 越南牛油果",
+    "new_name": "AVO 4 5kg VIETNAM LONG AVOCADO 越南牛油果"
+  },
+  {
+    "Id": "973",
+    "old_name": "AVO.1 23\" AUS. AVOCADO",
+    "new_name": "AVO.1 23 AUS AVOCADO"
+  },
+  {
+    "Id": "974",
+    "old_name": "BH BUDDHA HAND ·ðÊÖ",
+    "new_name": "BH BUDDHA HAND ðÊÖ"
+  },
+  {
+    "Id": "975",
+    "old_name": "BT.1 8\" BING TANG LI 冰糖梨",
+    "new_name": "BT.1 8 BING TANG LI 冰糖梨"
+  },
+  {
+    "Id": "1167",
+    "old_name": "BT.2 20\" BING TANG LI 冰糖梨",
+    "new_name": "BT.2 20 BING TANG LI 冰糖梨"
+  },
+  {
+    "Id": "1212",
+    "old_name": "BT.3 18\" BING TANG LI 冰糖梨",
+    "new_name": "BT.3 18 BING TANG LI 冰糖梨"
+  },
+  {
+    "Id": "1235",
+    "old_name": "BT.4 6\" BING TANG LI 冰糖梨",
+    "new_name": "BT.4 6 BING TANG LI 冰糖梨"
+  },
+  {
+    "Id": "1246",
+    "old_name": "BT.5 9\" BING TANG LI 冰糖梨",
+    "new_name": "BT.5 9 BING TANG LI 冰糖梨"
+  },
+  {
+    "Id": "977",
+    "old_name": "CANDY 1 X 12\" SA CANDY APPLE",
+    "new_name": "CANDY 1 X 12 SA CANDY APPLE"
+  },
+  {
+    "Id": "978",
+    "old_name": "CC CARRIER (pcs)",
+    "new_name": "CC CARRIER pcs"
+  },
+  {
+    "Id": "979",
+    "old_name": "CENA 8\" CN. CENTURY APPLE 世界一苹果",
+    "new_name": "CENA 8 CN CENTURY APPLE 世界一苹果"
+  },
+  {
+    "Id": "980",
+    "old_name": "CHERRY AUSTRALIA CHERRY PLUM 澳洲樱桃李 (ctn)",
+    "new_name": "CHERRY AUSTRALIA CHERRY PLUM 澳洲樱桃李 ctn"
+  },
+  {
+    "Id": "981",
+    "old_name": "CN CHINA ORANGE (pcs)",
+    "new_name": "CN CHINA ORANGE pcs"
+  },
+  {
+    "Id": "985",
+    "old_name": "CN-2 GREEN CN ORANGE (ctn)",
+    "new_name": "CN-2 GREEN CN ORANGE ctn"
+  },
+  {
+    "Id": "982",
+    "old_name": "CN.1 CN GN GRAPE 1 X 10\" ÖÐ¹úÇàÆÏÌÑ",
+    "new_name": "CN.1 CN GN GRAPE 1 X 10 ÖÐ¹úÇàÆÏÌÑ"
+  },
+  {
+    "Id": "983",
+    "old_name": "CN.2 CNREDGRAPES 1 X 10\" ÖÐ¹úºìÆÏÌÑ",
+    "new_name": "CN.2 CNREDGRAPES 1 X 10 ÖÐ¹úºìÆÏÌÑ"
+  },
+  {
+    "Id": "984",
+    "old_name": "CN.4 5kg CHINA RED PLUM 中国红李子",
+    "new_name": "CN.4 8kg CHINA RED PLUM ÖÐ¹úºìÀî Ó"
+  },
+  {
+    "Id": "986",
+    "old_name": "CNB 1 X 10\" CN. BLK GRAPES ºÚÆÏÌÑ",
+    "new_name": "CNB 1 X 10 CN BLK GRAPES ºÚÆÏÌÑ"
+  },
+  {
+    "Id": "988",
+    "old_name": "CNK 5kg SA. RUBY RED PLUM ºìÀî×Ó",
+    "new_name": "CNK 5kg SA RUBY RED PLUM ºìÀî Ó"
+  },
+  {
+    "Id": "989",
+    "old_name": "CNP 28\" USA RED PLUM (ctn) ºìÀî×Ó",
+    "new_name": "CNP 28 USA RED PLUM ctn ºìÀî Ó"
+  },
+  {
+    "Id": "1262",
+    "old_name": "CNR.14 [YELLOW] 9kg AUS ALLISON RED GRAPES 澳洲红葡萄",
+    "new_name": "CNR.14 YELLOW 9kg AUS ALLISON RED GRAPES 澳洲红葡萄"
+  },
+  {
+    "Id": "994",
+    "old_name": "CNS 8 x 330g D/C CHINA STRAWBERRY 中国草莓",
+    "new_name": "CNS 8 x 330g D C CHINA STRAWBERRY 中国草莓"
+  },
+  {
+    "Id": "995",
+    "old_name": "CNYP 12 X 2\" CN YELLOW PEACH »ÆÌÒ",
+    "new_name": "CNYP 12 X 2 CN YELLOW PEACH ÆÌÒ"
+  },
+  {
+    "Id": "996",
+    "old_name": "CORN WHITE CORN 白玉米 (ctn)",
+    "new_name": "CORN WHITE CORN 白玉米 ctn"
+  },
+  {
+    "Id": "999",
+    "old_name": "DATE EGY. DATE °£¼°Ôæ",
+    "new_name": "DATE EGY DATE ¼ Ôæ"
+  },
+  {
+    "Id": "1077",
+    "old_name": "DATE OF DELIVERY -",
+    "new_name": "DATE OF DELIVERY - DATE OF DELIVERY"
+  },
+  {
+    "Id": "1000",
+    "old_name": "DATE.1 1 X 10\" EGYPT DATES °£¼°Ôæ",
+    "new_name": "DATE.1 1 X 10 EGYPT DATES ¼ Ôæ"
+  },
+  {
+    "Id": "1002",
+    "old_name": "DINO 5\" CN. DINO MELON ¿ÖÁú¹Ï",
+    "new_name": "DINO 5 CN DINO MELON ÖÁú¹Ï"
+  },
+  {
+    "Id": "1003",
+    "old_name": "DO DOUGHNUT PEACH (pkt) ±âÌÒ °ü",
+    "new_name": "DO DOUGHNUT PEACH pkt âÌÒ ü"
+  },
+  {
+    "Id": "1004",
+    "old_name": "DP THAI KOSONG DUMPLING [REDSTRING] 泰国粽子",
+    "new_name": "DP THAI KOSONG DUMPLING REDSTRING 泰国粽子"
+  },
+  {
+    "Id": "1005",
+    "old_name": "DP.1 14 X 4\" USA. YELLOW DONUT PEACH 黄扁桃",
+    "new_name": "DP.1 14 X 4 USA YELLOW DONUT PEACH 黄扁桃"
+  },
+  {
+    "Id": "1006",
+    "old_name": "DP.2 1 X 10\" DOUGHNUT PEACH ±âÌÒ",
+    "new_name": "DP.2 1 X 10 DOUGHNUT PEACH âÌÒ"
+  },
+  {
+    "Id": "1007",
+    "old_name": "DP.3 14 x 4\" USA. JUMBO DONUT PEACH 美国特大扁桃",
+    "new_name": "DP.3 14 x 4 USA JUMBO DONUT PEACH 美国特大扁桃"
+  },
+  {
+    "Id": "1008",
+    "old_name": "DP.4 1 X 12\" JUMBO D.PEACH ´ó±âÌÒ",
+    "new_name": "DP.4 1 X 12 JUMBO D PEACH ó âÌÒ"
+  },
+  {
+    "Id": "1009",
+    "old_name": "DP.5 1 X 13\" JUMBO D.PEACH ±âÌÒ",
+    "new_name": "DP.5 1 X 13 JUMBO D PEACH âÌÒ"
+  },
+  {
+    "Id": "1243",
+    "old_name": "DP2 THAI DUMPLING [RED BEAN YELLOWSTRING] 泰国红豆沙粽子",
+    "new_name": "DP2 THAI DUMPLING RED BEAN YELLOWSTRING 泰国红豆沙粽子"
+  },
+  {
+    "Id": "1012",
+    "old_name": "DRIED.1 DRIED POTATOE (ctn)",
+    "new_name": "DRIED.1 DRIED POTATOE ctn"
+  },
+  {
+    "Id": "1013",
+    "old_name": "DRIED.2 48 X 2\" DRIED PERSSIMON ÊÁ±ý",
+    "new_name": "DRIED.2 48 X 2 DRIED PERSSIMON ÊÁ ý"
+  },
+  {
+    "Id": "1249",
+    "old_name": "DUMP1 THAI KOSONG DUMPLING [TAHO] 泰国粽子",
+    "new_name": "DUMP1 THAI KOSONG DUMPLING TAHO 泰国粽子"
+  },
+  {
+    "Id": "1014",
+    "old_name": "EV 80\" USA EVERYCRIPS 美国永脆苹果",
+    "new_name": "EV 80 USA EVERYCRIPS 美国永脆苹果"
+  },
+  {
+    "Id": "1015",
+    "old_name": "EV.1 36\" USA EVERYCRISP ÃÀ¹úÓÀ´à",
+    "new_name": "EV.1 36 USA EVERYCRISP ÃÀ¹úÓÀ à"
+  },
+  {
+    "Id": "1016",
+    "old_name": "EV.2 32\" USA EVERYCRISP ÃÀ¹úÓÀ´à",
+    "new_name": "EV.2 32 USA EVERYCRISP ÃÀ¹úÓÀ à"
+  },
+  {
+    "Id": "1017",
+    "old_name": "EV.3 40\" USA. HUNNYZ APP ÃÀ¹úÆ»¹û",
+    "new_name": "EV.3 40 USA HUNNYZ APP ÃÀ¹úÆ ¹û"
+  },
+  {
+    "Id": "1018",
+    "old_name": "EV.4 80\" USA. HUNNYZ APP 美国 HUNNYZ 苹果",
+    "new_name": "EV.4 80 USA HUNNYZ APP 美国 HUNNYZ 苹果"
+  },
+  {
+    "Id": "1219",
+    "old_name": "EV.5 80\" USA. EVERCRISP ÃÀ¹úÆ»¹û",
+    "new_name": "EV.5 80 USA EVERCRISP ÃÀ¹úÆ ¹û"
+  },
+  {
+    "Id": "1019",
+    "old_name": "FIG FIG (pkt)",
+    "new_name": "FIG FIG pkt"
+  },
+  {
+    "Id": "1020",
+    "old_name": "FOC",
+    "new_name": "FOC FOC"
+  },
+  {
+    "Id": "1022",
+    "old_name": "FSL 16\" FONG SUI LI ·áË®Àæ",
+    "new_name": "FSL 16 FONG SUI LI áË Àæ"
+  },
+  {
+    "Id": "1024",
+    "old_name": "G1.1 CN. DOUGHNUT NECTARINE ±âÌÒÀî",
+    "new_name": "G1.1 CN DOUGHNUT NECTARINE âÌÒÀî"
+  },
+  {
+    "Id": "1027",
+    "old_name": "G1.4 12.8kg USA HONEY RED PLUM",
+    "new_name": "G1.4 12 8kg USA HONEY RED PLUM"
+  },
+  {
+    "Id": "1030",
+    "old_name": "JAP2 3KG 12\" JAP MANDARIN SAGA",
+    "new_name": "JAP2 3KG 12 JAP MANDARIN SAGA"
+  },
+  {
+    "Id": "1031",
+    "old_name": "JY 90\" SA. JOYA APPLE ·ÇÖÞ´äºì",
+    "new_name": "JY 90 SA JOYA APPLE ÇÖÞ äºì"
+  },
+  {
+    "Id": "1032",
+    "old_name": "JY.1 100\" SA. JOYA APPLE ·ÇÖÞ´äºì",
+    "new_name": "JY.1 100 SA JOYA APPLE ÇÖÞ äºì"
+  },
+  {
+    "Id": "1033",
+    "old_name": "JY.2 120\" SA. JOYA APPLE 非洲翠红苹果",
+    "new_name": "JY.2 120 SA JOYA APPLE 非洲翠红苹果"
+  },
+  {
+    "Id": "1034",
+    "old_name": "JY.3 135\" SA. JOYA APPLE 非洲翠红苹果",
+    "new_name": "JY.3 135 SA JOYA APPLE 非洲翠红苹果"
+  },
+  {
+    "Id": "1035",
+    "old_name": "JY.4 165\" SA. JOYA APPLE 非洲翠红苹果",
+    "new_name": "JY.4 165 SA JOYA APPLE 非洲翠红苹果"
+  },
+  {
+    "Id": "1036",
+    "old_name": "JY.5 180\" SA. JOYA APPLE ·ÇÖÞ´äºì",
+    "new_name": "JY.5 180 SA JOYA APPLE ÇÖÞ äºì"
+  },
+  {
+    "Id": "1037",
+    "old_name": "JY.6 125\" FRENCH JOYA",
+    "new_name": "JY.6 125 FRENCH JOYA"
+  },
+  {
+    "Id": "1038",
+    "old_name": "JY.7 150\" SA. JOYA APPLE 非洲翠红苹果",
+    "new_name": "JY.7 150 SA JOYA APPLE 非洲翠红苹果"
+  },
+  {
+    "Id": "1039",
+    "old_name": "K KOREAN M.ORA HALLABONG º«¹ú¸Ì",
+    "new_name": "K KOREAN M ORA HALLABONG º ¹ú Ì"
+  },
+  {
+    "Id": "1040",
+    "old_name": "K.1 2 X 6\" KOREA PEACH º«¹úÌÒ",
+    "new_name": "K.1 2 X 6 KOREA PEACH º ¹úÌÒ"
+  },
+  {
+    "Id": "1041",
+    "old_name": "K.2 KOREAN M.ORA RED HYANG º«¹ú¸Ì",
+    "new_name": "K.2 KOREAN M ORA RED HYANG º ¹ú Ì"
+  },
+  {
+    "Id": "1042",
+    "old_name": "K1.2 KOREA MELON º«¹ú¹Ï",
+    "new_name": "K1.2 KOREA MELON º ¹ú¹Ï"
+  },
+  {
+    "Id": "1043",
+    "old_name": "K1.3 8\" KOREAN PEAR 韩国梨",
+    "new_name": "K1.3 8 KOREAN PEAR 韩国梨"
+  },
+  {
+    "Id": "1044",
+    "old_name": "KALE",
+    "new_name": "KALE KALE"
+  },
+  {
+    "Id": "1045",
+    "old_name": "KAM CHINA GOLDEN KAMQUAT (ctn) ½ð½Û",
+    "new_name": "KAM CHINA GOLDEN KAMQUAT ctn ½ð½Û"
+  },
+  {
+    "Id": "1046",
+    "old_name": "KAM.2 CHINA CNY KAMQUAT [SAT]",
+    "new_name": "KAM.2 CHINA CNY KAMQUAT SAT"
+  },
+  {
+    "Id": "1047",
+    "old_name": "KM.1 8/9\" USA. KISS MELON 美国亲亲瓜",
+    "new_name": "KM.1 8 9 USA KISS MELON 美国亲亲瓜"
+  },
+  {
+    "Id": "1048",
+    "old_name": "KM.2 11/12\" AUS. KISS MELON 美国亲亲瓜",
+    "new_name": "KM.2 11 12 AUS KISS MELON 美国亲亲瓜"
+  },
+  {
+    "Id": "1197",
+    "old_name": "KS1 250g USA. STRAWBERRY 美国草莓",
+    "new_name": "KS1 250g USA STRAWBERRY 美国草莓"
+  },
+  {
+    "Id": "1050",
+    "old_name": "KSM 24\" NAMSHUI PEAR 南水梨",
+    "new_name": "KSM 24 NAMSHUI PEAR 南水梨"
+  },
+  {
+    "Id": "1051",
+    "old_name": "KSM1 [KS F/D] 27\" NAMSHUI PEAR 南水梨",
+    "new_name": "KSM1 KS F D 27 NAMSHUI PEAR 南水梨"
+  },
+  {
+    "Id": "1052",
+    "old_name": "LC 1.5kg CHINA OSMANTHUS LYCHEE 中国桂花香荔枝",
+    "new_name": "LC 1 5kg CHINA OSMANTHUS LYCHEE 中国桂花香荔枝"
+  },
+  {
+    "Id": "1053",
+    "old_name": "M.ORA1 6\" PAPA M. ORANGE °Ò°Ò¸Ì",
+    "new_name": "M.ORA1 6 PAPA M ORANGE Ò Ò Ì"
+  },
+  {
+    "Id": "1054",
+    "old_name": "M.ORA2 KS XXXL PAPA M. ORANGE °Ò°Ò¸Ì",
+    "new_name": "M.ORA2 KS XXXL PAPA M ORANGE Ò Ò Ì"
+  },
+  {
+    "Id": "1055",
+    "old_name": "M.ORA3 KS XXL PAPA M. ORANGE °Ò°Ò¸Ì",
+    "new_name": "M.ORA3 KS XXL PAPA M ORANGE Ò Ò Ì"
+  },
+  {
+    "Id": "1056",
+    "old_name": "M.ORA4 RED 15\" PAPA M. ORA °Ò°Ò¸Ì",
+    "new_name": "M.ORA4 RED 15 PAPA M ORA Ò Ò Ì"
+  },
+  {
+    "Id": "1057",
+    "old_name": "M.ORA5 8\" PAPA M. ORANGE °Ò°Ò¸Ì",
+    "new_name": "M.ORA5 8 PAPA M ORANGE Ò Ò Ì"
+  },
+  {
+    "Id": "1058",
+    "old_name": "M.ORA6 KS XL PAPA M. ORANGE °Ò°Ò¸Ì",
+    "new_name": "M.ORA6 KS XL PAPA M ORANGE Ò Ò Ì"
+  },
+  {
+    "Id": "1059",
+    "old_name": "M.ORA7 6\" CN. GAN PING M ORA ¸ÊÆ½¸Ì",
+    "new_name": "M.ORA7 6 CN GAN PING M ORA ÊÆ½ Ì"
+  },
+  {
+    "Id": "1063",
+    "old_name": "MD4 1 X 12\" JORDAN MEDJOOL DATES 马来枣",
+    "new_name": "MD4 1 X 12 JORDAN MEDJOOL DATES 马来枣"
+  },
+  {
+    "Id": "1066",
+    "old_name": "MORA.1 12kg PAPA M. ORANGE °Ò°Ò¸Ì",
+    "new_name": "MORA.1 12kg PAPA M ORANGE Ò Ò Ì"
+  },
+  {
+    "Id": "1067",
+    "old_name": "MORA.2 38/40\" PAPA M. ORA °Ò°Ò¸Ì",
+    "new_name": "MORA.2 38 40 PAPA M ORA Ò Ò Ì"
+  },
+  {
+    "Id": "1068",
+    "old_name": "MORA.3 8\" SAKURA MANDARIN ORANGE",
+    "new_name": "MORA.3 8 SAKURA MANDARIN ORANGE"
+  },
+  {
+    "Id": "1069",
+    "old_name": "MORA.4 20\" SAKURA M. ORANGE Ó£»¨ÃÛ¸Ì",
+    "new_name": "MORA.4 20 SAKURA M ORANGE Ó ÃÛ Ì"
+  },
+  {
+    "Id": "1070",
+    "old_name": "MORA.5 SUNKIST M. ORANGE (10kg)",
+    "new_name": "MORA.5 SUNKIST M ORANGE 10kg"
+  },
+  {
+    "Id": "1071",
+    "old_name": "MORA.6 RED 18\" PAPA M. ORA °Ò°Ò¸Ì",
+    "new_name": "MORA.6 RED 18 PAPA M ORA Ò Ò Ì"
+  },
+  {
+    "Id": "1072",
+    "old_name": "MORA.8 10\" SAKURA MANDARIN ORANGE",
+    "new_name": "MORA.8 10 SAKURA MANDARIN ORANGE"
+  },
+  {
+    "Id": "1074",
+    "old_name": "O.1 OLIVE éÏé­ (10kg)",
+    "new_name": "O.1 OLIVE éÏé 10kg"
+  },
+  {
+    "Id": "1267",
+    "old_name": "OMA .1 OMAKASE - CLASSIC 水果盒",
+    "new_name": "OMA .1 OMAKASE CLASSIC 水果盒"
+  },
+  {
+    "Id": "1268",
+    "old_name": "OMA .2 OMAKASE - LUXURY 水果盒",
+    "new_name": "OMA .2 OMAKASE LUXURY 水果盒"
+  },
+  {
+    "Id": "1269",
+    "old_name": "OMA .3 OMAKASE - PREMIUM 水果盒",
+    "new_name": "OMA .3 OMAKASE PREMIUM 水果盒"
+  },
+  {
+    "Id": "1270",
+    "old_name": "OMA .4 OMAKASE - SIGNATURE 水果盒",
+    "new_name": "OMA .4 OMAKASE SIGNATURE 水果盒"
+  },
+  {
+    "Id": "1075",
+    "old_name": "OMA OMAKASE - REGULAR 水果盒",
+    "new_name": "OMA OMAKASE REGULAR 水果盒"
+  },
+  {
+    "Id": "1076",
+    "old_name": "OO11.1 32\" CN ORANGE ÖÐ¹ú³È",
+    "new_name": "OO11.1 32 CN ORANGE ÖÐ¹ú³È"
+  },
+  {
+    "Id": "1171",
+    "old_name": "OTHERS",
+    "new_name": "OTHERS OTHERS"
+  },
+  {
+    "Id": "1078",
+    "old_name": "P PLUMPKIN (kg)",
+    "new_name": "P PLUMPKIN kg"
+  },
+  {
+    "Id": "1080",
+    "old_name": "PANDAN PANDAN LEAF (kg)",
+    "new_name": "PANDAN PANDAN LEAF kg"
+  },
+  {
+    "Id": "1247",
+    "old_name": "PC PLASTIC CONTAINER 塑料盒 (pc)",
+    "new_name": "PC PLASTIC CONTAINER 塑料盒 pc"
+  },
+  {
+    "Id": "1081",
+    "old_name": "PFT 4.5kg BENE A/CRISPS GRAPES 澳洲青葡萄",
+    "new_name": "PFT 4 5kg BENE A CRISPS GRAPES 澳洲青葡萄"
+  },
+  {
+    "Id": "1082",
+    "old_name": "R 16 x 5\" ROCKIT APPLE 乐淇苹果",
+    "new_name": "R 16 x 5 ROCKIT APPLE 乐淇苹果"
+  },
+  {
+    "Id": "1083",
+    "old_name": "RA 135\" ROSE APPLE Ãµ¹åÆ»¹û",
+    "new_name": "RA 135 ROSE APPLE Ãµ¹åÆ ¹û"
+  },
+  {
+    "Id": "1216",
+    "old_name": "RC 5kg 4J (32mm+) CHILIE CHERRY",
+    "new_name": "RC 5kg 4J 32mm CHILIE CHERRY"
+  },
+  {
+    "Id": "1085",
+    "old_name": "RC.1 2kg 32mm+ AUS.CHERRY 澳洲樱桃",
+    "new_name": "RC.1 2kg 32mm AUS CHERRY 澳洲樱桃"
+  },
+  {
+    "Id": "1086",
+    "old_name": "RC.2 5kg 30-32mm SA. CHERRY 南非樱桃",
+    "new_name": "RC.2 5kg 30 32mm SA CHERRY 南非樱桃"
+  },
+  {
+    "Id": "1087",
+    "old_name": "RC.3 2.5kg 8.5R\" USA CHERRY 美国樱桃",
+    "new_name": "RC.3 2 5kg 8 5R USA CHERRY 美国樱桃"
+  },
+  {
+    "Id": "1088",
+    "old_name": "RC.4 2kg 8R\" USA CHERRY 美国樱桃",
+    "new_name": "RC.4 2kg 8R USA CHERRY 美国樱桃"
+  },
+  {
+    "Id": "1089",
+    "old_name": "RC.6 5kg 28mm\" TUR. CHERRY 土耳其樱桃",
+    "new_name": "RC.6 5kg 28mm TUR CHERRY 土耳其樱桃"
+  },
+  {
+    "Id": "1090",
+    "old_name": "RP 10KG AUS. BLACK PLUM 黑李子",
+    "new_name": "RP 10KG AUS BLACK PLUM 黑李子"
+  },
+  {
+    "Id": "1092",
+    "old_name": "S.1 VN SWEET POTATO (5kg) Ô½ÄÏ·¬Êí",
+    "new_name": "S.1 VN SWEET POTATO 5kg Ô½ÄÏ Êí"
+  },
+  {
+    "Id": "1094",
+    "old_name": "SAPP 18x450g STRAW APPLE ²ÝÝ®Æ»¹û",
+    "new_name": "SAPP 18x450g STRAW APPLE ²ÝÝ Æ ¹û"
+  },
+  {
+    "Id": "1095",
+    "old_name": "SAPP1 10x500G STRAWAPP ÖÐ¹ú²ÝÝ®Æ»¹û",
+    "new_name": "SAPP1 10x500G STRAWAPP ÖÐ¹ú²ÝÝ Æ ¹û"
+  },
+  {
+    "Id": "1097",
+    "old_name": "SFF SNAKE FRUIT ÉßÆ¤¹û 8kg",
+    "new_name": "SFF SNAKE FRUIT ÉßÆ ¹û 8kg"
+  },
+  {
+    "Id": "1169",
+    "old_name": "Snake Fruit 蛇皮果 (kg)",
+    "new_name": "Snake Fruit 蛇皮果 (kg) Snake Fruit 蛇皮果 kg"
+  },
+  {
+    "Id": "1098",
+    "old_name": "SPL 10kg 65mm AUS S/CANDY PLUM 澳洲红宝石李子",
+    "new_name": "SPL 10kg 65mm AUS S CANDY PLUM 澳洲红宝石李子"
+  },
+  {
+    "Id": "1099",
+    "old_name": "SPP 10 x 454g US SWEET PIXIE ºìÀî×Ó",
+    "new_name": "SPP 10 x 454g US SWEET PIXIE ºìÀî Ó"
+  },
+  {
+    "Id": "1101",
+    "old_name": "SUGAR 12.7kg 80mm USA SUGAR PRUNE 美国蜜枣",
+    "new_name": "SUGAR 12 7kg 80mm USA SUGAR PRUNE 美国蜜枣"
+  },
+  {
+    "Id": "1180",
+    "old_name": "T-S03 EGY. MANDARIN ORANGE (pcs) 柑",
+    "new_name": "T-S03 EGY MANDARIN ORANGE pcs 柑"
+  },
+  {
+    "Id": "1102",
+    "old_name": "TG 120\" TURKISH GALA ÍÁ¶úÆä¸ÂÀ²",
+    "new_name": "TG 120 TURKISH GALA ÍÁ úÆä ÂÀ²"
+  },
+  {
+    "Id": "1103",
+    "old_name": "TLH TANGERINE 柑仔 (pc)",
+    "new_name": "TLH TANGERINE 柑仔 pc"
+  },
+  {
+    "Id": "1104",
+    "old_name": "TONG 2.9kg CN WINTER DATES ¶¬Ôæ",
+    "new_name": "TONG 2 9kg CN WINTER DATES Ôæ"
+  },
+  {
+    "Id": "1106",
+    "old_name": "TURS 1 x 10\" TURKEY STRAWBERRY 土耳其草莓",
+    "new_name": "TURS 1 x 10 TURKEY STRAWBERRY 土耳其草莓"
+  },
+  {
+    "Id": "1107",
+    "old_name": "W-A03 138\" USA. GREEN APPLE 美国青苹果",
+    "new_name": "W-A03 138 USA GREEN APPLE 美国青苹果"
+  },
+  {
+    "Id": "1108",
+    "old_name": "W-A05 80\" SA. FLASH GALA 嘎啦苹果",
+    "new_name": "W-A05 80 SA FLASH GALA 嘎啦苹果"
+  },
+  {
+    "Id": "1109",
+    "old_name": "W-A06 NZ Rose (5pc/pkt)",
+    "new_name": "W-A06 NZ Rose 5pc pkt"
+  },
+  {
+    "Id": "1111",
+    "old_name": "W-A08 US Pacific Rose (5pc/pkt)",
+    "new_name": "W-A08 US Pacific Rose 5pc pkt"
+  },
+  {
+    "Id": "1113",
+    "old_name": "W-C01 US Sunkist (S) (5pc/pkt)",
+    "new_name": "W-C01 US Sunkist S 5pc pkt"
+  },
+  {
+    "Id": "1114",
+    "old_name": "W-C02 US Sunkist (M) (4pc/pkt)",
+    "new_name": "W-C02 US Sunkist M 4pc pkt"
+  },
+  {
+    "Id": "1115",
+    "old_name": "W-C03 US Sunkist (L) (3pc/pkt)",
+    "new_name": "W-C03 US Sunkist L 3pc pkt"
+  },
+  {
+    "Id": "1116",
+    "old_name": "W-C04 US Valen Sunkist (10pc/pkt)",
+    "new_name": "W-C04 US Valen Sunkist 10pc pkt"
+  },
+  {
+    "Id": "1117",
+    "old_name": "W-C05 Califonia Blue Jay (3pc/pkt)",
+    "new_name": "W-C05 Califonia Blue Jay 3pc pkt"
+  },
+  {
+    "Id": "1118",
+    "old_name": "W-C06 AUS LocS Navel (S) (5pc/pkt)",
+    "new_name": "W-C06 AUS LocS Navel S 5pc pkt"
+  },
+  {
+    "Id": "1119",
+    "old_name": "W-C07 AUS LocS Navel (M) (5pc/pkt)",
+    "new_name": "W-C07 AUS LocS Navel M 5pc pkt"
+  },
+  {
+    "Id": "1120",
+    "old_name": "W-C08 Grapefruit (5pc/pkt)",
+    "new_name": "W-C08 Grapefruit 5pc pkt"
+  },
+  {
+    "Id": "1121",
+    "old_name": "W-C10 Lemon (5pc/pkt)",
+    "new_name": "W-C10 Lemon 5pc pkt"
+  },
+  {
+    "Id": "1122",
+    "old_name": "W-C11 SA Navel (10pc/pkt)",
+    "new_name": "W-C11 SA Navel 10pc pkt"
+  },
+  {
+    "Id": "1137",
+    "old_name": "W-O02 THAI DUMPLING 泰国粽子 (kg)",
+    "new_name": "W-O02 THAI DUMPLING 泰国粽子 kg"
+  },
+  {
+    "Id": "1138",
+    "old_name": "W-O03 COCONUT THUMB 椰水 (pc)",
+    "new_name": "W-O03 COCONUT THUMB 椰水 pc"
+  },
+  {
+    "Id": "1140",
+    "old_name": "W-P01 AUS Green Pear (5pc/pkt)",
+    "new_name": "W-P01 AUS Green Pear 5pc pkt"
+  },
+  {
+    "Id": "1141",
+    "old_name": "W-P04 Forella Red Pear (5pc/pkt)",
+    "new_name": "W-P04 Forella Red Pear 5pc pkt"
+  },
+  {
+    "Id": "1142",
+    "old_name": "W-P05 Nam Shui Pear (3pc/pkt)",
+    "new_name": "W-P05 Nam Shui Pear 3pc pkt"
+  },
+  {
+    "Id": "1143",
+    "old_name": "W-P06 GOLDEN PEAR (3pc/pkt)",
+    "new_name": "W-P06 GOLDEN PEAR 3pc pkt"
+  },
+  {
+    "Id": "1144",
+    "old_name": "W-P07 FRAGRANT PEAR (5pc/pkt)",
+    "new_name": "W-P07 FRAGRANT PEAR 5pc pkt"
+  },
+  {
+    "Id": "1145",
+    "old_name": "W-S06 PASSIONFRUIT 百香果 (pc)",
+    "new_name": "W-S06 PASSIONFRUIT 百香果 pc"
+  },
+  {
+    "Id": "1146",
+    "old_name": "W-S07 CANDY MELON (pc) Ì«Ñô¹Ï Á£",
+    "new_name": "W-S07 CANDY MELON pc Ì Ñô¹Ï Á"
+  },
+  {
+    "Id": "1147",
+    "old_name": "W-S09 9\" XIANG SHAN HMR ÏóÉ½ºìÃÀÈË",
+    "new_name": "W-S09 9 XIANG SHAN HMR ÏóÉ½ºìÃÀÈË"
+  },
+  {
+    "Id": "1148",
+    "old_name": "W-S15 9kg AUS. BLK GRAPES M/K 澳洲黑葡萄",
+    "new_name": "W-S15 9kg AUS BLK GRAPES M K 澳洲黑葡萄"
+  },
+  {
+    "Id": "1149",
+    "old_name": "W-S19 JUMBO BLUEBERRY 大蓝莓 (pkt)",
+    "new_name": "W-S19 JUMBO BLUEBERRY 大蓝莓 pkt"
+  },
+  {
+    "Id": "1150",
+    "old_name": "W-S26 PERSIMMON (3pc/pkt)",
+    "new_name": "W-S26 PERSIMMON 3pc pkt"
+  },
+  {
+    "Id": "1151",
+    "old_name": "W-T01 JUMBU 水蓊 (kg)",
+    "new_name": "W-T01 JUMBU 水蓊 kg"
+  },
+  {
+    "Id": "1153",
+    "old_name": "W-T05 8\" CHINA YELLOW DRAGONFRUIT 黄色龙珠果",
+    "new_name": "W-T05 8 CHINA YELLOW DRAGONFRUIT 黄色龙珠果"
+  },
+  {
+    "Id": "1154",
+    "old_name": "W-T06 WHITE DRAGONFRUIT 白龙珠果 (pc)",
+    "new_name": "W-T06 WHITE DRAGONFRUIT 白龙珠果 pc"
+  },
+  {
+    "Id": "1155",
+    "old_name": "W-T07 RED DRAGONFRUIT (3pc/pkt)",
+    "new_name": "W-T07 RED DRAGONFRUIT 3pc pkt"
+  },
+  {
+    "Id": "1156",
+    "old_name": "W-T08 LONGAN 龙眼 (kg)",
+    "new_name": "W-T08 LONGAN 龙眼 kg"
+  },
+  {
+    "Id": "1158",
+    "old_name": "W-T15 10 X 700g\" HONG MEI REN ºìÃÀÈË",
+    "new_name": "W-T15 10 X 700g HONG MEI REN ºìÃÀÈË"
+  },
+  {
+    "Id": "1159",
+    "old_name": "W-T17 48\" CHINA ORANGE 中国橙",
+    "new_name": "W-T17 48 CHINA ORANGE 中国橙"
+  },
+  {
+    "Id": "1112",
+    "old_name": "WC WORKER'S CHARGE",
+    "new_name": "WC WORKER S CHARGE"
+  },
+  {
+    "Id": "1123",
+    "old_name": "WD1 18 X 350G WINTER DATES ¶¬Ôæ",
+    "new_name": "WD1 18 X 350G WINTER DATES Ôæ"
+  },
+  {
+    "Id": "1125",
+    "old_name": "WG.3 16X800g CN. WOGAM ÖÐ¹úÎÖ¸Ì",
+    "new_name": "WG.3 16X800g CN WOGAM ÖÐ¹úÎÖ Ì"
+  },
+  {
+    "Id": "1126",
+    "old_name": "WG1 10 x 800g CN. WOGAM 中国沃柑",
+    "new_name": "WG1 10 x 800g CN WOGAM 中国沃柑"
+  },
+  {
+    "Id": "1127",
+    "old_name": "WG2 48” CHINA WOGAM 沃柑",
+    "new_name": "WG2 48 CHINA WOGAM 沃柑"
+  },
+  {
+    "Id": "1129",
+    "old_name": "WG4 1 X 22” CHINA WOGAM 沃柑",
+    "new_name": "WG4 1 X 22 CHINA WOGAM 沃柑"
+  },
+  {
+    "Id": "1130",
+    "old_name": "WG5 36-40\" CHINA WOGAM 沃柑",
+    "new_name": "WG5 36 40 CHINA WOGAM 沃柑"
+  },
+  {
+    "Id": "1131",
+    "old_name": "WG6 8kg 80/85mm CHINA WOGAM 沃柑",
+    "new_name": "WG6 8kg 80 85mm CHINA WOGAM 沃柑"
+  },
+  {
+    "Id": "1132",
+    "old_name": "WG7 20\" CHINA WOGAM ÖÐ¹úÎÖ¸Ì",
+    "new_name": "WG7 20 CHINA WOGAM ÖÐ¹úÎÖ Ì"
+  },
+  {
+    "Id": "1133",
+    "old_name": "WG8 24\" CHINA WOGAM ÖÐ¹úÎÖ¸Ì",
+    "new_name": "WG8 24 CHINA WOGAM ÖÐ¹úÎÖ Ì"
+  },
+  {
+    "Id": "1134",
+    "old_name": "WG9 38\" CHINA WOGAM ÖÐ¹úÎÖ¸Ì",
+    "new_name": "WG9 38 CHINA WOGAM ÖÐ¹úÎÖ Ì"
+  },
+  {
+    "Id": "1160",
+    "old_name": "YAM YAM (kg) ÓóÍ· ¹«½ï",
+    "new_name": "YAM YAM kg ÓóÍ ¹ ½ï"
+  }
+]

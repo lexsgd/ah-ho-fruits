@@ -1,0 +1,20 @@
+Source inventory:
+  detected: .claude - primary source
+    file: .claude/.gitcredentials
+    dir: .claude/commands
+    file: .claude/settings.local.json
+    file: .claude/setup-git.sh
+Migration inventory:
+  inactive: instruction files - none found
+  inactive: skills - none found
+  active: command sources - 1 found
+    provider: source command (1)
+      - update-docs
+  inactive: subagents - none found
+Migration surfaces:
+  inactive: AGENTS.md - No supported instruction file found.
+  active: skills - 1 skill(s) converted.
+  inactive: MCP config - No settings or MCP config found.
+  inactive: subagents - No subagents found.
+Migration report:
+  manual_fix_required: .agents/skills/source-command-update-docs/SKILL.md - Converted source command `update-docs` to a single-file Codex skill; review invocation and template placeholder semantics.

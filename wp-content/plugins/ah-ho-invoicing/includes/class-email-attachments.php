@@ -29,6 +29,37 @@ class AH_HO_Email_Attachments {
     }
 
     /**
+     * Generate a PDF for an email attachment without ever letting a failure
+     * escape.
+     *
+     * The "New Order" admin email is sent SYNCHRONOUSLY inside the checkout
+     * request when an inline card/Express payment completes. If PDF generation
+     * throws here, it 500s that request *after* the payment has already
+     * succeeded — the shopper sees a false "Something went wrong" and places a
+     * duplicate order (confirmed incident 2026-07-16). A missing attachment is
+     * always preferable to a broken checkout; the slip stays generatable from
+     * the order screen.
+     *
+     * @param callable $generator Returns a PDF path (or false).
+     * @param int      $order_id
+     * @param string   $label     For logging.
+     * @return string|false
+     */
+    private static function safe_generate($generator, $order_id, $label) {
+        try {
+            return call_user_func($generator);
+        } catch (\Throwable $e) {
+            error_log(sprintf(
+                'Ah Ho Invoicing: %s PDF generation failed for Order #%d (attachment skipped; email and checkout unaffected): %s',
+                $label,
+                $order_id,
+                $e->getMessage()
+            ));
+            return false;
+        }
+    }
+
+    /**
      * Attach PDFs to WooCommerce emails based on email type
      *
      * @param array $attachments Existing email attachments
@@ -52,7 +83,9 @@ class AH_HO_Email_Attachments {
 
         // Attach invoice to "Order Completed" customer email
         if ($email_id === 'customer_completed_order' && $attach_invoice === 'yes') {
-            $invoice_path = AH_HO_Invoice::generate($order_id);
+            $invoice_path = self::safe_generate(function() use ($order_id) {
+                return AH_HO_Invoice::generate($order_id);
+            }, $order_id, 'Invoice');
             if ($invoice_path && file_exists($invoice_path)) {
                 $attachments[] = $invoice_path;
                 error_log("Ah Ho Invoicing: Attached invoice to Order Completed email for Order #{$order_id}");
@@ -61,7 +94,9 @@ class AH_HO_Email_Attachments {
 
         // Attach packing slip to "New Order" admin email
         if ($email_id === 'new_order' && $attach_packing === 'yes') {
-            $packing_path = AH_HO_Packing_Slip::generate($order_id);
+            $packing_path = self::safe_generate(function() use ($order_id) {
+                return AH_HO_Packing_Slip::generate($order_id);
+            }, $order_id, 'Packing slip');
             if ($packing_path && file_exists($packing_path)) {
                 $attachments[] = $packing_path;
                 error_log("Ah Ho Invoicing: Attached packing slip to New Order admin email for Order #{$order_id}");
@@ -70,7 +105,9 @@ class AH_HO_Email_Attachments {
 
         // Attach delivery order to "Out for Delivery" customer email
         if ($email_id === 'customer_out_for_delivery_order' && $attach_delivery === 'yes') {
-            $delivery_path = AH_HO_Delivery_Order::generate($order_id);
+            $delivery_path = self::safe_generate(function() use ($order_id) {
+                return AH_HO_Delivery_Order::generate($order_id);
+            }, $order_id, 'Delivery order');
             if ($delivery_path && file_exists($delivery_path)) {
                 $attachments[] = $delivery_path;
                 error_log("Ah Ho Invoicing: Attached delivery order to Out for Delivery email for Order #{$order_id}");
@@ -81,7 +118,9 @@ class AH_HO_Email_Attachments {
         if ($email_id === 'customer_processing_order') {
             $attach_invoice_processing = get_option('ah_ho_attach_invoice_to_processing', 'no');
             if ($attach_invoice_processing === 'yes') {
-                $invoice_path = AH_HO_Invoice::generate($order_id);
+                $invoice_path = self::safe_generate(function() use ($order_id) {
+                    return AH_HO_Invoice::generate($order_id);
+                }, $order_id, 'Invoice');
                 if ($invoice_path && file_exists($invoice_path)) {
                     $attachments[] = $invoice_path;
                 }

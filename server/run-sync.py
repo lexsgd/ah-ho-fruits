@@ -13,7 +13,8 @@ WHY an order did not record, not just that it did not.
 Usage:  python3 run-sync.py monthly
         python3 run-sync.py manual
 """
-import os, sys, json, re, subprocess
+import os, sys, json, re, smtplib, ssl, subprocess
+from email.message import EmailMessage
 from datetime import datetime, timezone, date
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -34,10 +35,94 @@ def since_date():
 
 
 def run(status, since):
+    # 500, not 100: the fetch pages now, so this is a real ceiling rather than a
+    # silent truncation. Ah Ho does ~25 orders/month, so this covers a long gap.
     p = subprocess.run([sys.executable, SYNC, '--status', status,
-                        '--limit', '100', '--since', since, '--execute'],
+                        '--limit', '500', '--since', since, '--execute'],
                        cwd=HERE, capture_output=True, text=True, timeout=900)
     return (p.stdout or '') + (p.stderr or '')
+
+
+def load_env():
+    e = {}
+    p = os.path.join(HERE, '.env')
+    if os.path.exists(p):
+        for line in open(p):
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                k, v = line.split('=', 1)
+                e[k.strip()] = v.strip().strip('"').strip("'")
+    return e
+
+
+def notify(result, env):
+    """Email the outcome. Silent on a clean manual run — only month-end
+    summaries and anything needing a human are worth an inbox interruption.
+
+    Recipients come from QBO_ALERT_TO (comma-separated) in .env; if it is not
+    set we send nothing rather than guess an address.
+    """
+    to = [a.strip() for a in (env.get('QBO_ALERT_TO') or '').split(',') if a.strip()]
+    needs_human = not result['ok']
+    # 'retry' is the safety net that runs on the 2nd in case the 1st never fired.
+    # Normally it finds nothing to do and stays quiet; if it DID post something,
+    # the monthly run failed silently and that is worth knowing about.
+    worth_sending = (needs_human
+                     or result['trigger'] == 'monthly'
+                     or (result['trigger'] == 'retry' and result['posted'] > 0))
+    if not to or not worth_sending:
+        return False
+
+    n_posted, n_there = result['posted'], result['already_there']
+    if needs_human:
+        subject = 'Ah Ho: some website orders did NOT reach QuickBooks'
+    else:
+        subject = f"Ah Ho: {n_posted} website order(s) added to QuickBooks"
+
+    lines = [
+        "Website orders -> QuickBooks" ,
+        "",
+        f"When    : {result['finished']} (UTC)",
+        f"Started by: {'automatic monthly run' if result['trigger'] == 'monthly' else 'the Sync now button'}",
+        f"Covering: orders from {result['since']} onwards",
+        "",
+        f"Added to QuickBooks : {n_posted} new invoice(s)",
+        f"Already there       : {n_there} (skipped, no duplicates)",
+    ]
+    if result['blocked']:
+        lines += ["", "NOT RECORDED - these products aren't matched to QuickBooks yet,",
+                  "so their whole order was held back rather than recording a wrong amount:"]
+        lines += [f"  - {b}" for b in result['blocked']]
+        lines += ["", "Send this list to Lex to match up, then press the button again."]
+    if result['errors']:
+        lines += ["", "FAILED TO SEND (please forward to Lex):"]
+        lines += [f"  - {e}" for e in result['errors']]
+    if result['ok']:
+        lines += ["", "All good - every order in the period is now in QuickBooks."]
+    lines += ["", "See WooCommerce > QuickBooks Sync in the website admin for detail."]
+
+    msg = EmailMessage()
+    msg['Subject'] = subject
+    msg['From'] = env.get('VODIEN_MAIL_USER', 'enquiry@ahhofruit.com')
+    msg['To'] = ', '.join(to)
+    msg.set_content("\n".join(lines))
+
+    try:
+        with smtplib.SMTP_SSL(env['VODIEN_MAIL_HOST'], int(env.get('VODIEN_MAIL_PORT', 465)),
+                              context=ssl.create_default_context(), timeout=60) as s:
+            s.login(env['VODIEN_MAIL_USER'], env['VODIEN_MAIL_PASS'])
+            s.send_message(msg)
+        return True
+    except Exception as exc:
+        # A failed notification must never mask the sync's own result — and the
+        # logging of that failure must not throw either (STATE may not exist yet).
+        try:
+            os.makedirs(STATE, exist_ok=True)
+            with open(os.path.join(STATE, 'notify-errors.log'), 'a') as f:
+                f.write(f"{datetime.now(timezone.utc).isoformat()} {exc!r}\n")
+        except Exception:
+            pass
+        return False
 
 
 def main():
@@ -82,7 +167,10 @@ def main():
         f.write(f"\n===== {result['finished']}  trigger={trigger}  since={since} =====\n")
         f.write(text + "\n")
 
-    print(f"posted={posted} already={skipped} blocked={len(blocked)} errors={len(errors)}")
+    sent = notify(result, load_env())
+
+    print(f"posted={posted} already={skipped} blocked={len(blocked)} "
+          f"errors={len(errors)} emailed={sent}")
     return 0 if result['ok'] else 1
 
 

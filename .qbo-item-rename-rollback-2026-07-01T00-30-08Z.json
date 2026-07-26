@@ -1,0 +1,62 @@
+[
+  {
+    "Id": "86",
+    "old_name": "1006",
+    "new_name": "5kg 8.5R\" USA. CHERRY 美国车厘子",
+    "sku": "AHF-8.5RUSC"
+  },
+  {
+    "Id": "88",
+    "old_name": "1007",
+    "new_name": "5kg 9R\" US. CHERRY 美国车厘子",
+    "sku": "AHF-9RUSC"
+  },
+  {
+    "Id": "89",
+    "old_name": "1008",
+    "new_name": "5kg 9.5R\" US. CHERRY 美国车厘子",
+    "sku": "AHF-9.5RUSC"
+  },
+  {
+    "Id": "87",
+    "old_name": "1006.1",
+    "new_name": "5kg 8.5R\" CAN. CHERRY 加拿大车厘子",
+    "sku": null
+  },
+  {
+    "Id": "24",
+    "old_name": "0004.1",
+    "new_name": "MANGO - CHINA 中国芒果 2kg",
+    "sku": null
+  },
+  {
+    "Id": "1190",
+    "old_name": "0007.4",
+    "new_name": "5kg AUS. GOLD KIWI 澳洲金奇异果",
+    "sku": null
+  },
+  {
+    "Id": "125",
+    "old_name": "1020.1",
+    "new_name": "5kg 63mm AUS. BLACK PLUM 黑李子",
+    "sku": null
+  },
+  {
+    "Id": "396",
+    "old_name": "3019.1",
+    "new_name": "72\" CHINA ORANGE 中国橙",
+    "sku": "AHF-ORANGE-CN-72"
+  },
+  {
+    "Id": "423",
+    "old_name": "3034.1",
+    "new_name": "40\" CHINA ORANGE 中国橙",
+    "sku": "AHF-ORANGE-CN-40"
+  },
+  {
+    "Id": "111",
+    "old_name": "1015.8",
+    "new_name": "5kg TURTLE EGG PLUM (ctn)",
+    "sku": null
+  }
+]

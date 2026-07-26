@@ -228,15 +228,31 @@ class QBO:
 
 # ---------- WooCommerce ----------
 def wc_orders(env, status, limit):
+    """Fetch up to `limit` orders, paging as needed.
+
+    WooCommerce caps per_page at 100. A single unpaginated request therefore
+    silently dropped the OLDEST orders whenever a window held more than 100 —
+    exactly the case after a long gap, when missing orders matter most.
+    """
     base = env["WC_BASE_URL"].rstrip("/")
-    qs = urllib.parse.urlencode({"per_page": limit, "status": status,
-                                 "orderby": "date", "order": "desc"})
     auth = base64.b64encode(f"{env['WC_CONSUMER_KEY']}:{env['WC_CONSUMER_SECRET']}".encode()).decode()
-    st, d = _req(f"{base}/wp-json/wc/v3/orders?{qs}", "GET",
-                 {"Authorization": f"Basic {auth}", "User-Agent": "ahho-qbo-sync/1.0"})
-    if st != 200:
-        sys.exit(f"[!] WC fetch failed ({st}): {str(d)[:160]}")
-    return d
+    headers = {"Authorization": f"Basic {auth}", "User-Agent": "ahho-qbo-sync/1.0"}
+
+    out, page = [], 1
+    while len(out) < limit:
+        want = min(100, limit - len(out))
+        qs = urllib.parse.urlencode({"per_page": want, "page": page, "status": status,
+                                     "orderby": "date", "order": "desc"})
+        st, d = _req(f"{base}/wp-json/wc/v3/orders?{qs}", "GET", headers)
+        if st != 200:
+            sys.exit(f"[!] WC fetch failed ({st}) on page {page}: {str(d)[:160]}")
+        if not isinstance(d, list) or not d:
+            break
+        out.extend(d)
+        if len(d) < want:          # short page = last page
+            break
+        page += 1
+    return out[:limit]
 
 
 # ---------- build + sync ----------

@@ -48,6 +48,40 @@ class AH_HO_PDF_Generator {
     // Uses Medium (500) weight because the variable font defaults to Thin (100)
     const CJK_FONT_BASE = 'noto_sans_sc_medium_6414f22937fa743cf56f4eb5b0fa1909';
 
+    /**
+     * Give a Dompdf render enough memory/time headroom — RAISING the ceilings
+     * only, never lowering them.
+     *
+     * Why this matters: this render can run INLINE during a frontend checkout
+     * request (the "New Order" admin email is sent synchronously right after an
+     * inline card/Express payment completes). A memory-exhaustion or
+     * max-execution fatal here is UNCATCHABLE by try/catch and 500s the
+     * checkout response *after* the payment already succeeded — the shopper
+     * sees a false "Something went wrong" and re-orders. Dompdf with the 17MB
+     * CJK font (subsetting disabled) is memory-hungry, so headroom matters.
+     *
+     * Strictly non-reducing: if the host already allows more (or is
+     * unlimited), we leave it alone rather than introducing a NEW ceiling.
+     */
+    private static function raise_limits_for_render() {
+        $target_bytes = 512 * 1024 * 1024; // 512M
+
+        if (function_exists('wp_convert_hr_to_bytes')) {
+            $current_bytes = wp_convert_hr_to_bytes(ini_get('memory_limit'));
+            // <= 0 means unlimited (-1) — never clamp that down.
+            if ($current_bytes > 0 && $current_bytes < $target_bytes) {
+                @ini_set('memory_limit', '512M');
+            }
+        }
+
+        // Only extend the execution ceiling when it is finite AND tighter than
+        // we need. 0 = unlimited (e.g. CLI/cron) — leave it alone.
+        $max_exec = (int) ini_get('max_execution_time');
+        if ($max_exec > 0 && $max_exec < 60 && function_exists('set_time_limit')) {
+            @set_time_limit(60);
+        }
+    }
+
     public static function generate_pdf($html, $filename, $cache = true) {
         // Auto-create cache directory if missing (may not exist after migration/deploy)
         if ($cache && !is_dir(AH_HO_INVOICING_CACHE_DIR)) {
@@ -70,6 +104,8 @@ class AH_HO_PDF_Generator {
         }
 
         try {
+            self::raise_limits_for_render();
+
             // Ensure CJK font is installed before generating PDF
             self::install_cjk_font();
 
@@ -121,7 +157,11 @@ class AH_HO_PDF_Generator {
             gc_collect_cycles();
 
             return $output; // Return raw PDF data as fallback
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
+            // Catch \Throwable (not just \Exception): Dompdf can raise PHP
+            // Errors (e.g. TypeError) which would otherwise escape this handler
+            // and 500 the request that triggered generation — including a live
+            // checkout request, after payment has already succeeded.
             error_log('Ah Ho Invoicing - PDF Generation Error: ' . $e->getMessage());
             return false;
         }
