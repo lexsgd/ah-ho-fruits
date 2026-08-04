@@ -11,6 +11,18 @@
 RedirectMatch 403 (?i)^/\.(git|env|svn|hg|ssh|bzr|idea|vscode)([./]|$)
 RedirectMatch 403 ^/(Jenkinsfile|docker-compose\.yml)$
 
+# Dev artifacts must never be served from the docroot. Apache delivers .py as
+# PLAIN TEXT rather than executing it, and the spreadsheets/documents that
+# collected here were Ah Ho's product-to-QuickBooks crosswalk and client docs —
+# all publicly downloadable until 2026-08-04. The deploy now excludes them and
+# the 21 stray files are deleted; this is the belt-and-braces so a stray copy
+# can never be served again.
+#
+# Deliberately anchored to a SINGLE path segment (^/[^/]+\.ext$) so it only
+# covers the docroot itself — legitimate customer downloads under
+# /wp-content/uploads/ are untouched.
+RedirectMatch 403 (?i)^/[^/]+\.(py|pyc|csv|xlsx|xls|docx|doc|sql|bak|log)$
+
 <IfModule mod_rewrite.c>
 RewriteEngine On
 
