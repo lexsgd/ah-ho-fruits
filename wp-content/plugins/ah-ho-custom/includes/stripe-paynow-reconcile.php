@@ -44,14 +44,11 @@ class Ah_Ho_Stripe_PayNow_Reconcile {
     const MIN_AGE_SECONDS  = 300;       // 5 min — give real webhook a chance
     const MAX_AGE_SECONDS  = 172800;    // 48 hr — don't scan ancient orders
     const STRIPE_API_BASE  = 'https://api.stripe.com/v1';
-    const SWEEP_LOCK       = 'ah_ho_paynow_sweep_lock';
-    const SWEEP_THROTTLE   = 300;       // 5 min between opportunistic sweeps
 
     public static function init() {
         add_action('init', [__CLASS__, 'schedule_cron']);
         add_action(self::CRON_HOOK, [__CLASS__, 'run']);
         add_filter('cron_schedules', [__CLASS__, 'register_interval']);
-        add_action('shutdown', [__CLASS__, 'maybe_sweep'], 99);
 
         add_action('wp_ajax_ah_ho_reconcile_order', [__CLASS__, 'ajax_reconcile_order']);
         add_action('woocommerce_admin_order_data_after_order_details', [__CLASS__, 'render_admin_button']);
@@ -86,32 +83,6 @@ class Ah_Ho_Stripe_PayNow_Reconcile {
         $statuses = array_keys(wc_get_order_statuses());
         $terminal = ['wc-cancelled', 'wc-refunded', 'wc-failed', 'wc-checkout-draft'];
         return array_values(array_diff($statuses, $terminal));
-    }
-
-    /**
-     * Opportunistic sweep, throttled to once per SWEEP_THROTTLE seconds.
-     *
-     * WP-Cron is disabled on this install (DISABLE_WP_CRON), so the scheduled
-     * hook never fires by itself. This runs on `shutdown` — after the response
-     * has been built, so the visitor never waits on Stripe — and swallows
-     * everything: a payment-reconciliation helper must never be able to take
-     * the shop down.
-     */
-    public static function maybe_sweep() {
-        if (wp_doing_cron()) {
-            return; // the scheduled hook already covers that path
-        }
-        if (get_transient(self::SWEEP_LOCK)) {
-            return;
-        }
-        // Claim the lock BEFORE working so concurrent requests don't stampede.
-        set_transient(self::SWEEP_LOCK, 1, self::SWEEP_THROTTLE);
-
-        try {
-            self::run();
-        } catch (\Throwable $e) {
-            self::log('Opportunistic sweep failed: ' . $e->getMessage());
-        }
     }
 
     public static function run() {
