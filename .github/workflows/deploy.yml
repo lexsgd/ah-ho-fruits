@@ -35,6 +35,9 @@ jobs:
             **/docs/**
             **/sql/**
             **/.env*
+            **/*.py
+            server/**
+            tools/**
             **/deploy-key*
             **/deploy.sh
             **/*.md
