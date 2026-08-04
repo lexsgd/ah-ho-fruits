@@ -1,7 +1,7 @@
 # Ah Ho Fruit — Website → QuickBooks Sync
 ## Complete Guide & Handover
 
-**Version:** 1.0
+**Version:** 1.1
 **Date:** 4 August 2026
 **Applies to:** ahhofruit.com (WooCommerce) → QuickBooks Online, "AH HO FRUIT TRADING COMPANY"
 **Runs on:** the Vodien web host — **not** on any Mac
@@ -94,10 +94,10 @@ can map it and re-run.
 |---|---|---|
 | **1st of month, 09:00** | monthly sync | Closes off the previous month |
 | **2nd of month, 09:00** | retry | Safety net if the 1st never fired. Normally does nothing and stays silent |
-| **Every 22 minutes** | watcher | Picks up the "Sync now" button from the website admin |
+| **Every 22 minutes** | watcher | Picks up the "Send orders to QuickBooks now" button from the website admin |
 
 So a website order placed in August normally reaches QuickBooks on **1 September**.
-If it's needed sooner, use the Sync now button ([section 6](#6-running-a-sync-by-hand)).
+If it's needed sooner, press the button on that page ([section 6](#6-running-a-sync-by-hand)).
 
 ---
 
@@ -110,6 +110,11 @@ Log in to the website admin and go to **WooCommerce → QuickBooks Sync**.
 The page shows the last run: when it ran, what period it covered, how many orders were added,
 how many were already there, and anything that needs attention. There's a "Show technical log"
 link for the full detail.
+
+The bracketed note after the date says what started the run — `(automatic monthly run)`,
+`(automatic follow-up check)` on the 2nd, or `(you pressed the button)`. Before 4 Aug 2026 this
+only tested for the monthly run and labelled everything else a button press, so the safety net
+reported itself as a manual action.
 
 **What "healthy" looks like:** a recent run, some number of orders "already there", and
 **zero** blocked and **zero** errors.
@@ -161,7 +166,7 @@ Re-running is always safe: orders already in QuickBooks are skipped by document 
 
 ## 6. Running a Sync by Hand
 
-**From the website admin (recommended):** WooCommerce → QuickBooks Sync → **Sync now**.
+**From the website admin (recommended):** WooCommerce → QuickBooks Sync → **Send orders to QuickBooks now**.
 This drops a request that the watcher picks up within 22 minutes.
 
 **On the server directly:**
@@ -191,7 +196,7 @@ manual run stays silent deliberately — no inbox noise for a routine check.
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| Admin page shows an old run | The 1st-of-month cron didn't fire | Check cron jobs exist in cPanel; use Sync now to catch up |
+| Admin page shows an old run | The 1st-of-month cron didn't fire | Check cron jobs exist in cPanel; press the button on that page to catch up |
 | `blocked` above zero | A product has no matching QuickBooks item | Map the SKU (or let the sync create it on the next `--execute` run), then re-run |
 | `errors` above zero | QuickBooks rejected something | Read `state/sync-<month>.log` for the order and the message |
 | `invalid_grant` when running locally | Expected — see the warning below | Run on the server instead |
@@ -206,7 +211,7 @@ manual run stays silent deliberately — no inbox noise for a routine check.
 Vodien host  /home2/contactl/ahho-qbo/          (outside the web root, dir 0700, .env 0600)
   ├── run-sync.py                    orchestrates a run, writes state, sends the alert
   ├── b2c-qbo-salesreceipt-sync.py   does the work: fetch orders -> build lines -> post
-  ├── watch-trigger.sh               picks up the admin "Sync now" request
+  ├── watch-trigger.sh               picks up the admin "Send orders now" request
   ├── QBO-WC-Crosswalk-FINAL-*.csv   283 SKU -> QuickBooks code mappings
   └── state/
       ├── last-run.json              full result of the last run (rendered in wp-admin)
@@ -224,6 +229,19 @@ Vodien host  /home2/contactl/ahho-qbo/          (outside the web root, dir 0700,
   WooCommerce. It uses an **absolute** path to `~/ahho-qbo` on purpose — the live site sits at
   `public_html/ah-ho-fruit/`, one level deeper than a path derived from `ABSPATH` would assume.
 - **No SSH shell** on this hosting account. Use `tools/cpanel.py` (cPanel API) for files and cron.
+
+### ⚠️ These files deploy by two different routes
+
+A `git push` does **not** update the sync. Only the wp-admin page ships that way.
+
+| File | How it reaches the server |
+|---|---|
+| `wp-content/plugins/ah-ho-custom/includes/qbo-sync-admin.php` | `git push` → GitHub Actions → FTP |
+| `server/run-sync.py`, `b2c-qbo-salesreceipt-sync.py`, the crosswalk | **cPanel upload only** — `server/**` and `**/*.py` are excluded from the deploy so they never land in the public web root |
+
+Caught the hard way on 2026-08-04: a label was fixed in both files and pushed, which corrected
+the admin page while the monthly email kept sending the old wrong text. Upload the Python
+separately and confirm it compiles on the server afterwards.
 
 ### ⚠️ The refresh token — the one thing that can break everything
 
@@ -252,7 +270,7 @@ is being persisted correctly.
    An order left in "Out for Delivery" never reaches QuickBooks until it moves to Completed.
 
 3. **Up to a month's lag.** By design the sync closes the previous month. An order placed on
-   2 August reaches QuickBooks on 1 September unless someone presses Sync now.
+   2 August reaches QuickBooks on 1 September unless someone presses the button on that page.
 
 4. **B2B is a separate system.** Wholesale orders (`processing-b2b`) are explicitly excluded here.
 
