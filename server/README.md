@@ -1,5 +1,8 @@
 # Where the QuickBooks sync runs
 
+> Operational notes only. The full guide — what it does, how often, how to check it,
+> what the numbers mean, troubleshooting — is `docs/QUICKBOOKS-SYNC-GUIDE.md`.
+
 **It runs on Vodien, not on any Mac.** Do not run `b2c-qbo-salesreceipt-sync.py`
 locally with `--execute`: Intuit rotates the refresh token on every refresh and
 the server persists the new one, so a local run will either fail with
