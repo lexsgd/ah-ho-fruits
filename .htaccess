@@ -4,7 +4,11 @@
 # so flush_rewrite_rules() won't wipe them.
 
 # Deny direct access to scanner targets (small 403 response body)
-RedirectMatch 403 (?i)^/\.(git|env|svn|hg|ssh|bzr|idea|vscode)(/|$)
+# The trailing (/|$) blocked a bare ".env" but NOT ".env.restored" /
+# ".env.local" — a real near-miss on 2026-08-04, when a committed
+# .env.restored full of live passwords was one push from the docroot.
+# ([./]|$) blocks those suffixed variants too.
+RedirectMatch 403 (?i)^/\.(git|env|svn|hg|ssh|bzr|idea|vscode)([./]|$)
 RedirectMatch 403 ^/(Jenkinsfile|docker-compose\.yml)$
 
 <IfModule mod_rewrite.c>

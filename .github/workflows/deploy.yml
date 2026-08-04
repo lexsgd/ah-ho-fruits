@@ -34,7 +34,7 @@ jobs:
             **/node_modules/**
             **/docs/**
             **/sql/**
-            **/.env
+            **/.env*
             **/deploy-key*
             **/deploy.sh
             **/*.md
