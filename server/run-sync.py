@@ -107,12 +107,43 @@ def notify(result, env):
     msg['To'] = ', '.join(to)
     msg.set_content("\n".join(lines))
 
-    try:
-        with smtplib.SMTP_SSL(env['VODIEN_MAIL_HOST'], int(env.get('VODIEN_MAIL_PORT', 465)),
-                              context=ssl.create_default_context(), timeout=60) as s:
-            s.login(env['VODIEN_MAIL_USER'], env['VODIEN_MAIL_PASS'])
+    # A missed alert is how a failed sync goes unnoticed, so don't rely on one
+    # transport: local MTA first, then plain localhost SMTP, then the SSL host.
+
+    def via_sendmail():
+        p = subprocess.run(['/usr/sbin/sendmail', '-t', '-oi'],
+                           input=msg.as_bytes(), capture_output=True, timeout=60)
+        if p.returncode != 0:
+            raise RuntimeError(f"sendmail rc={p.returncode} {p.stderr[:200]!r}")
+
+    def via_smtp(host, port, use_ssl, login):
+        cls = smtplib.SMTP_SSL if use_ssl else smtplib.SMTP
+        kw = {'context': ssl.create_default_context()} if use_ssl else {}
+        with cls(host, port, timeout=60, **kw) as s:
+            if not use_ssl:
+                try:
+                    s.starttls(context=ssl.create_default_context())
+                except Exception:
+                    pass
+            if login:
+                s.login(env['VODIEN_MAIL_USER'], env['VODIEN_MAIL_PASS'])
             s.send_message(msg)
-        return True
+
+    attempts = [
+        ('sendmail', via_sendmail),
+        ('localhost:587', lambda: via_smtp('localhost', 587, False, True)),
+        ('ssl-host', lambda: via_smtp(env.get('VODIEN_MAIL_HOST', ''),
+                                      int(env.get('VODIEN_MAIL_PORT', 465)), True, True)),
+    ]
+    errors_seen = []
+    try:
+        for kind, send in attempts:
+            try:
+                send()
+                return True
+            except Exception as exc:
+                errors_seen.append(f"{kind}: {exc!r}")
+        raise RuntimeError('; '.join(errors_seen))
     except Exception as exc:
         # A failed notification must never mask the sync's own result — and the
         # logging of that failure must not throw either (STATE may not exist yet).
