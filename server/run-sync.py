@@ -79,11 +79,21 @@ def notify(result, env):
     else:
         subject = f"Ah Ho: {n_posted} website order(s) added to QuickBooks"
 
+    # Three triggers, not two. Anything-but-monthly used to be reported as a
+    # button press, which told Michelle she had started the 2nd-of-month safety
+    # net herself. The button is also named "Send orders to QuickBooks now" —
+    # there has never been a "Sync now" button to press.
+    started_by = {
+        'monthly': 'automatic monthly run',
+        'retry':   'automatic follow-up check',
+        'manual':  'the "Send orders to QuickBooks now" button',
+    }.get(result['trigger'], result['trigger'])
+
     lines = [
         "Website orders -> QuickBooks" ,
         "",
         f"When    : {result['finished']} (UTC)",
-        f"Started by: {'automatic monthly run' if result['trigger'] == 'monthly' else 'the Sync now button'}",
+        f"Started by: {started_by}",
         f"Covering: orders from {result['since']} onwards",
         "",
         f"Added to QuickBooks : {n_posted} new invoice(s)",

@@ -140,15 +140,25 @@ function ah_ho_qbo_render_page() {
             $when = strtotime($last['finished']);
             $blocked = isset($last['blocked']) ? (array) $last['blocked'] : array();
             $errors  = isset($last['errors'])  ? (array) $last['errors']  : array();
+
+            // run-sync.py has THREE triggers, not two. Treating everything that
+            // isn't 'monthly' as a button press told Michelle she had started the
+            // 2nd-of-month safety net herself, which she had not. An unrecognised
+            // trigger says nothing rather than guessing wrong.
+            $trigger_labels = array(
+                'monthly' => __('(automatic monthly run)', 'ah-ho-custom'),
+                'retry'   => __('(automatic follow-up check)', 'ah-ho-custom'),
+                'manual'  => __('(you pressed the button)', 'ah-ho-custom'),
+            );
+            $trigger_key   = isset($last['trigger']) ? (string) $last['trigger'] : '';
+            $trigger_label = isset($trigger_labels[$trigger_key]) ? $trigger_labels[$trigger_key] : '';
             ?>
             <table class="widefat striped" style="max-width:46em">
                 <tbody>
                     <tr>
                         <th style="width:14em"><?php esc_html_e('When', 'ah-ho-custom'); ?></th>
                         <td><?php echo esc_html(wp_date('j M Y, g:ia', $when)); ?>
-                            <?php echo $last['trigger'] === 'monthly'
-                                ? esc_html__('(automatic monthly run)', 'ah-ho-custom')
-                                : esc_html__('(you pressed the button)', 'ah-ho-custom'); ?></td>
+                            <?php echo esc_html($trigger_label); ?></td>
                     </tr>
                     <tr>
                         <th><?php esc_html_e('Added to QuickBooks', 'ah-ho-custom'); ?></th>
