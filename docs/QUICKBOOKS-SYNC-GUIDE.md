@@ -1,7 +1,7 @@
 # Ah Ho Fruit — Website → QuickBooks Sync
 ## Complete Guide & Handover
 
-**Version:** 1.3
+**Version:** 1.4
 **Date:** 4 August 2026
 **Applies to:** ahhofruit.com (WooCommerce) → QuickBooks Online, "AH HO FRUIT TRADING COMPANY"
 **Runs on:** the Vodien web host — **not** on any Mac
@@ -275,11 +275,18 @@ is being persisted correctly.
    Re-scanning the extra month is free: anything already in QuickBooks is skipped by document
    number.
 
-   One interaction to watch: `FLOOR` (currently `2026-07-01`) marks the last period closed in
-   QuickBooks *at go-live*, and QBO rejects writes into a closed period. Michelle closed July on
-   2026-08-04. If a straggler from a since-closed month ever appears, QBO will reject it and it
-   will be reported as an error — loudly, not silently — and `FLOOR` should then be moved
-   forward to match what she has actually closed.
+   `FLOOR` in `run-sync.py` clamps the window so it can never reach into a period Michelle has
+   closed in QuickBooks — QBO rejects writes into one. **Move it forward each time she closes a
+   month**; it is a two-line edit with a dated comment recording who said what:
+
+   | Value | Set | Why |
+   |---|---|---|
+   | `2026-07-01` | go-live | June 2026 and earlier already closed |
+   | `2026-08-01` | 2026-08-04 | Michelle: *"I closed the July orders already today"* |
+
+   Raising it costs nothing when the month's orders are already synced — all 28 July orders were
+   in QuickBooks before she closed it. Until 1 Oct the floor is the binding constraint rather
+   than the two-month window; from October the two-month look-back applies in full again.
 
 4. **Up to a month's lag.** By design the sync closes the previous month. An order placed on
    2 August reaches QuickBooks on 1 September unless someone presses the button on that page.

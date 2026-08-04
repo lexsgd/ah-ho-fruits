@@ -21,9 +21,13 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 STATE = os.path.join(HERE, 'state')
 SYNC = os.path.join(HERE, 'b2c-qbo-salesreceipt-sync.py')
 
-# QBO rejects writes into a closed accounting period. June 2026 and earlier are
-# closed, so never build a window that reaches back past go-live.
-FLOOR = '2026-07-01'
+# QBO rejects writes into a closed accounting period, so never build a window
+# that reaches into one. Move this forward as Michelle closes each month.
+#   2026-07-01  go-live: June 2026 and earlier were closed
+#   2026-08-01  2026-08-04, Michelle: "I closed the July orders already today"
+# Costs nothing to raise: every July order was already in QuickBooks before she
+# closed it, so there is nothing back there left to sync.
+FLOOR = '2026-08-01'
 STATUSES = ('completed', 'processing')
 
 
