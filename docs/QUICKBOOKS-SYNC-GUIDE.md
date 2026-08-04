@@ -1,7 +1,7 @@
 # Ah Ho Fruit — Website → QuickBooks Sync
 ## Complete Guide & Handover
 
-**Version:** 1.1
+**Version:** 1.2
 **Date:** 4 August 2026
 **Applies to:** ahhofruit.com (WooCommerce) → QuickBooks Online, "AH HO FRUIT TRADING COMPANY"
 **Runs on:** the Vodien web host — **not** on any Mac
@@ -259,20 +259,28 @@ is being persisted correctly.
 
 ## 10. Known Limitations & Open Decisions
 
-1. **Invoices are created unpaid.** Website orders are prepaid by PayNow, but they arrive in
-   QuickBooks with the full amount outstanding:
+1. **Invoices are created unpaid — CONFIRMED INTENDED.** Website orders are prepaid by PayNow,
+   but they arrive in QuickBooks with the full amount outstanding:
    `Invoice #51406  Total=$80.00  Balance=$80.00 (unpaid)`.
-   Unless each is cleared against the bank deposit, receivables will show website sales as money
-   still owed. **This needs confirming with the bookkeeper** — it may be the intended manual
-   reconciliation, or it may need the sync to record payment as well.
+   Michelle confirmed on 2026-08-04: *"Good to go in as unpaid."* She clears them against the
+   bank deposit herself. No change needed — do not "fix" this.
 
 2. **Orders in custom statuses aren't synced.** Only Processing and Completed are picked up.
    An order left in "Out for Delivery" never reaches QuickBooks until it moves to Completed.
 
-3. **Up to a month's lag.** By design the sync closes the previous month. An order placed on
+3. **An order completed late can be missed entirely.** The window is chosen by *order date*
+   (`since_date()` returns the 1st of the previous month, and the fetch filters on
+   `date_paid or date_created`), **not** by when the status changed. So a July order that is
+   only marked Completed in mid-August falls below the September run's `since = 2026-08-01`
+   and is never picked up — July's own runs are long past.
+   Checked 2026-08-04: no order is currently exposed to this, and all 28 July orders reached
+   QuickBooks before Michelle closed them. The fix, if it ever bites, is to widen `since_date()`
+   to two months back — safe, because the sync skips anything already in QuickBooks.
+
+4. **Up to a month's lag.** By design the sync closes the previous month. An order placed on
    2 August reaches QuickBooks on 1 September unless someone presses the button on that page.
 
-4. **B2B is a separate system.** Wholesale orders (`processing-b2b`) are explicitly excluded here.
+5. **B2B is a separate system.** Wholesale orders (`processing-b2b`) are explicitly excluded here.
 
 ---
 
