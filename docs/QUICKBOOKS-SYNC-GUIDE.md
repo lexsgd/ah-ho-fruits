@@ -1,7 +1,7 @@
 # Ah Ho Fruit — Website → QuickBooks Sync
 ## Complete Guide & Handover
 
-**Version:** 1.2
+**Version:** 1.3
 **Date:** 4 August 2026
 **Applies to:** ahhofruit.com (WooCommerce) → QuickBooks Online, "AH HO FRUIT TRADING COMPANY"
 **Runs on:** the Vodien web host — **not** on any Mac
@@ -268,14 +268,18 @@ is being persisted correctly.
 2. **Orders in custom statuses aren't synced.** Only Processing and Completed are picked up.
    An order left in "Out for Delivery" never reaches QuickBooks until it moves to Completed.
 
-3. **An order completed late can be missed entirely.** The window is chosen by *order date*
-   (`since_date()` returns the 1st of the previous month, and the fetch filters on
-   `date_paid or date_created`), **not** by when the status changed. So a July order that is
-   only marked Completed in mid-August falls below the September run's `since = 2026-08-01`
-   and is never picked up — July's own runs are long past.
-   Checked 2026-08-04: no order is currently exposed to this, and all 28 July orders reached
-   QuickBooks before Michelle closed them. The fix, if it ever bites, is to widen `since_date()`
-   to two months back — safe, because the sync skips anything already in QuickBooks.
+3. **Orders completed late — FIXED 2026-08-04.** The window is chosen by *order date*, not by
+   when the status changed, so an order marked Completed weeks after it was placed used to fall
+   below the next run's cutoff while its own month's runs were long past — it reached QuickBooks
+   never. `since_date()` now reaches back **two** months instead of one, which covers the gap.
+   Re-scanning the extra month is free: anything already in QuickBooks is skipped by document
+   number.
+
+   One interaction to watch: `FLOOR` (currently `2026-07-01`) marks the last period closed in
+   QuickBooks *at go-live*, and QBO rejects writes into a closed period. Michelle closed July on
+   2026-08-04. If a straggler from a since-closed month ever appears, QBO will reject it and it
+   will be reported as an error — loudly, not silently — and `FLOOR` should then be moved
+   forward to match what she has actually closed.
 
 4. **Up to a month's lag.** By design the sync closes the previous month. An order placed on
    2 August reaches QuickBooks on 1 September unless someone presses the button on that page.

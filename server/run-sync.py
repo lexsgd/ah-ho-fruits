@@ -28,10 +28,29 @@ STATUSES = ('completed', 'processing')
 
 
 def since_date():
-    """First day of the previous month, never earlier than FLOOR."""
+    """First day of the month before last, never earlier than FLOOR.
+
+    Two months, not one, and deliberately so. The window is chosen by ORDER
+    DATE, but an order can be marked Completed weeks after it was placed — and
+    only Completed/Processing orders are synced. With a one-month window a July
+    order first completed in mid-August fell below the September run's cutoff
+    while July's own runs were long past, so it reached QuickBooks never.
+
+    Re-scanning the extra month costs nothing: anything already in QuickBooks is
+    skipped by document number, which is also why re-running is always safe.
+
+    FLOOR still applies, so this can never reach into a period closed before
+    go-live. Note that if a month is closed in QuickBooks after its orders have
+    synced, a straggler from it will be rejected by QBO and reported as an
+    error rather than lost silently — which is the outcome we want.
+    """
     t = date.today()
-    prev = date(t.year - 1, 12, 1) if t.month == 1 else date(t.year, t.month - 1, 1)
-    return max(prev.isoformat(), FLOOR)
+    month = t.month - 2
+    year = t.year
+    if month <= 0:
+        month += 12
+        year -= 1
+    return max(date(year, month, 1).isoformat(), FLOOR)
 
 
 def run(status, since):
