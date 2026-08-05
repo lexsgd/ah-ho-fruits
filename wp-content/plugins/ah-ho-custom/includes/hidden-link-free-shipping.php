@@ -176,6 +176,21 @@ function ah_ho_fs_prefer_free_rates($rates) {
     return empty($free) ? $rates : $free + $alt;
 }
 
+/**
+ * Make the Free Shipping method AVAILABLE to link holders.
+ *
+ * This has to come first. WooCommerce's Free Shipping method enforces its own
+ * "minimum order amount" ($60 here) inside is_available(), so below that the
+ * rate is never generated at all — and woocommerce_package_rates cannot promote
+ * a rate that does not exist. Filtering rates alone silently did nothing on a
+ * sub-$60 cart, which is exactly the bug this feature was meant to fix.
+ */
+add_filter('woocommerce_shipping_free_shipping_is_available', 'ah_ho_fs_force_free_shipping_available', 10, 3);
+
+function ah_ho_fs_force_free_shipping_available($is_available, $package, $method = null) {
+    return $is_available || ah_ho_fs_is_eligible();
+}
+
 add_filter('woocommerce_package_rates', 'ah_ho_fs_apply_free_shipping', 5, 2);
 
 function ah_ho_fs_apply_free_shipping($rates, $package) {
