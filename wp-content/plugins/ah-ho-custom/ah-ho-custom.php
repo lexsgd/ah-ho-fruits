@@ -100,6 +100,12 @@ function ah_ho_custom_init() {
     // Include shipping rules (free delivery >= $60)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/shipping-rules.php';
 
+    // Include order notes fix (ensure special requests always captured) [FIX #4783]
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/order-notes-fix.php';
+
+    // Include hidden link free shipping (apply free shipping to customers from private links) [FIX #4796]
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/hidden-link-free-shipping.php';
+
     // Include content fixes (text replacements for Avada builder content)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/content-fixes.php';
 
