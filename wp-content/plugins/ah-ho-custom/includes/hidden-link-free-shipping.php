@@ -154,29 +154,6 @@ function ah_ho_fs_is_eligible() {
  * ---------------------------------------------------------------------- */
 
 /**
- * Keep free shipping (and express / self-pickup as alternatives), drop standard
- * paid delivery. Same rule shipping-rules.php applies at the $60 threshold —
- * kept as a named helper so the two cannot drift apart in wording.
- *
- * If the zone offers no free_shipping method, rates are returned untouched
- * rather than leaving the customer with nothing that can deliver.
- */
-function ah_ho_fs_prefer_free_rates($rates) {
-    $free = array();
-    $alt  = array();
-
-    foreach ($rates as $id => $rate) {
-        if ($rate->method_id === 'free_shipping') {
-            $free[$id] = $rate;
-        } elseif (stripos($rate->label, 'express') !== false || $rate->method_id === 'local_pickup') {
-            $alt[$id] = $rate;
-        }
-    }
-
-    return empty($free) ? $rates : $free + $alt;
-}
-
-/**
  * Make the Free Shipping method AVAILABLE to link holders.
  *
  * This has to come first. WooCommerce's Free Shipping method enforces its own
@@ -198,7 +175,7 @@ function ah_ho_fs_apply_free_shipping($rates, $package) {
         return $rates;
     }
 
-    return ah_ho_fs_prefer_free_rates($rates);
+    return ah_ho_prefer_free_rates($rates);
 }
 
 /**

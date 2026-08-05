@@ -2,11 +2,29 @@
 /**
  * Shipping Rules
  *
- * Automatically applies free shipping when:
- * - Cart subtotal >= $60, OR
- * - Cart contains any product with the "omakase" shipping class
+ * Free delivery on this site comes from TWO independent places. Only one of
+ * them is this file:
  *
- * Express shipping and self-pickup remain available as alternatives.
+ * 1. Cart subtotal >= $60 — WooCommerce's own Free Shipping method, gated by
+ *    the "minimum order amount" set on the method in the shipping zone. This
+ *    file does not create that rate; it only promotes it to the default and
+ *    drops paid Standard Delivery once WooCommerce has offered it.
+ *
+ * 2. Omakase boxes — NOT handled here. The "omakase" shipping class has a $0
+ *    flat-rate cost configured against Standard Delivery in the WooCommerce
+ *    shipping zone, so an Omakase box ships free on its own at any price.
+ *    Change that in WooCommerce -> Settings -> Shipping, not in this file.
+ *
+ * Consequence, verified live 2026-08-05 and intentional: an Omakase box ALONE
+ * ships free ($50 box -> $0.00), but an Omakase box plus any non-omakase item
+ * under $60 pays normal delivery ($56.50 cart -> $10.00), because flat rate
+ * charges per shipping class and only the omakase class is zeroed.
+ *
+ * An earlier version of this file claimed "cart contains any omakase product
+ * -> free shipping" and looped over the cart to detect it. That check could
+ * never change the outcome: below $60 no free_shipping rate exists to promote,
+ * and at or above $60 the subtotal condition already matched. It has been
+ * removed rather than left looking load-bearing.
  *
  * @package AhHoCustom
  * @since 1.6.4
@@ -17,14 +35,40 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Auto-apply free shipping when cart subtotal >= $60.
+ * Put free shipping first and drop paid standard delivery.
  *
- * When the threshold is met:
- * - Free shipping is the default selected option (appears first)
- * - Express shipping and self-pickup remain available
- * - Standard/flat-rate shipping is removed
+ * Express and self-pickup are kept as alternatives. If the zone offers no
+ * free_shipping rate, rates are returned untouched — never leave a customer
+ * with nothing that can deliver to them.
  *
- * When below threshold: all regular shipping options show as normal.
+ * Shared with includes/hidden-link-free-shipping.php so the two callers cannot
+ * drift apart. Defined here because this file loads first and is the more
+ * foundational of the two.
+ *
+ * @param array $rates Shipping rates for the package.
+ * @return array Rates, free-first, or unchanged.
+ */
+function ah_ho_prefer_free_rates($rates) {
+    $free_rates  = array();
+    $other_rates = array();
+
+    foreach ($rates as $rate_id => $rate) {
+        if ($rate->method_id === 'free_shipping') {
+            $free_rates[$rate_id] = $rate;
+        } elseif (
+            stripos($rate->label, 'express') !== false ||
+            $rate->method_id === 'local_pickup'
+        ) {
+            $other_rates[$rate_id] = $rate;
+        }
+        // Standard / flat-rate delivery is dropped.
+    }
+
+    return empty($free_rates) ? $rates : $free_rates + $other_rates;
+}
+
+/**
+ * Make free shipping the default once WooCommerce has offered it (>= $60).
  *
  * @param array $rates Shipping rates for the package.
  * @param array $package Package data.
@@ -33,47 +77,12 @@ if (!defined('ABSPATH')) {
 add_filter('woocommerce_package_rates', 'ah_ho_auto_free_shipping', 10, 2);
 
 function ah_ho_auto_free_shipping($rates, $package) {
-    // Only apply when WooCommerce cart is available
     if (!WC()->cart) {
         return $rates;
     }
 
-    $cart_subtotal = WC()->cart->get_subtotal();
-    $free_shipping_threshold = 60; // SGD
-
-    // Check if any cart item has the "omakase" shipping class
-    $has_omakase = false;
-    foreach (WC()->cart->get_cart() as $cart_item) {
-        $product = $cart_item['data'];
-        if ($product && $product->get_shipping_class() === 'omakase') {
-            $has_omakase = true;
-            break;
-        }
-    }
-
-    if ($has_omakase || $cart_subtotal >= $free_shipping_threshold) {
-        $free_rates    = array();
-        $other_rates   = array();
-
-        foreach ($rates as $rate_id => $rate) {
-            if ($rate->method_id === 'free_shipping') {
-                // Keep free shipping (will be placed first as default)
-                $free_rates[$rate_id] = $rate;
-            } elseif (
-                stripos($rate->label, 'express') !== false ||
-                $rate->method_id === 'local_pickup'
-            ) {
-                // Keep express shipping and self-pickup
-                $other_rates[$rate_id] = $rate;
-            }
-            // Only flat rate / standard delivery is dropped
-        }
-
-        // Free shipping first (becomes default selected), then express + pickup
-        if (!empty($free_rates)) {
-            $rates = $free_rates + $other_rates;
-        }
-        // If no free shipping method is configured, don't remove anything
+    if (WC()->cart->get_subtotal() >= 60) {   // SGD, matches the method's minimum
+        $rates = ah_ho_prefer_free_rates($rates);
     }
 
     return $rates;
