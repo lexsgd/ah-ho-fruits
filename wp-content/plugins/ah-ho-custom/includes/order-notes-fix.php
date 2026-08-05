@@ -46,29 +46,33 @@ function ah_ho_add_checkout_notes_field() {
 add_action('woocommerce_checkout_create_order', 'ah_ho_save_checkout_notes_to_order', 10, 2);
 
 function ah_ho_save_checkout_notes_to_order($order, $data) {
-    $special_notes = isset($_POST['post_data']) ? 
-        array_filter(explode('&', $_POST['post_data']), function($pair) {
-            return strpos($pair, 'ah_ho_checkout_special_notes=') === 0;
-        }) : array();
-    
-    if (!empty($special_notes)) {
-        $param = array_shift($special_notes);
-        list($key, $value) = explode('=', $param);
-        $notes = urldecode($value);
-        
-        if (!empty(trim($notes))) {
-            // Add to order notes
-            $order->add_order_note(
-                sprintf(
-                    __('Special Requests from Checkout: %s', 'ah-ho-fruits'),
-                    sanitize_textarea_field($notes)
-                ),
-                0
-            );
-            
-            // Also save to order meta for easy retrieval
-            $order->update_meta_data('_ah_ho_special_requests', sanitize_textarea_field($notes));
-        }
+    // Read the field directly. The previous version hand-parsed
+    // $_POST['post_data'], which only exists in the classic AJAX checkout
+    // payload — the field would have gone silently missing on any non-AJAX
+    // submit or if this site ever moves to the WooCommerce Checkout block.
+    $notes = '';
+    if (isset($data['ah_ho_checkout_special_notes'])) {
+        $notes = $data['ah_ho_checkout_special_notes'];
+    } elseif (isset($_POST['ah_ho_checkout_special_notes'])) {
+        $notes = wp_unslash($_POST['ah_ho_checkout_special_notes']);
+    }
+
+    if (is_string($notes) && trim($notes) !== '') {
+        // Match the maxlength the field advertises; that attribute is
+        // client-side only and cannot be relied on.
+        $notes = sanitize_textarea_field(mb_substr($notes, 0, 500));
+
+        $order->add_order_note(
+            sprintf(
+                /* translators: %s: the customer's special requests */
+                __('Special Requests from Checkout: %s', 'ah-ho-fruits'),
+                $notes
+            ),
+            0
+        );
+
+        // Also save to order meta for easy retrieval
+        $order->update_meta_data('_ah_ho_special_requests', $notes);
     }
 }
 
