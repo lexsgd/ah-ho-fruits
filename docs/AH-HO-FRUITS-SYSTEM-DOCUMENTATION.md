@@ -471,6 +471,7 @@ curl -s -o /dev/null -w "%{http_code}" "https://fruits.heymag.app/wp-admin/"  # 
 | `_has_returns` | bool | ah-ho-custom (fulfillment) |
 | `_total_returned_quantity` | int | ah-ho-custom (fulfillment) |
 | `_po_number` | string | Manual entry |
+| `_ah_ho_guest_account_linked` | string | ah-ho-custom (guest account linking) — `created` or `matched` |
 
 ### Refund Meta Keys (on WC_Order_Refund objects)
 
@@ -613,6 +614,14 @@ curl -s -o /dev/null -w "%{http_code}" "https://fruits.heymag.app/wp-admin/"  # 
 - Item returns via WooCommerce refund system: `wc_create_refund()` with `refund_payment: false`, auto-restocking, COD/credit term awareness
 - Commission auto-recalculation on returns: adjusts both percentage (reduced total) and per-carton (reduced qty) commission models
 - COD return orders flagged for manual monetary refund; credit term orders simply reduce invoice amount
+
+### Phase 10: Guest Account Linking (Aug 2026)
+- **Problem:** guest checkout is on and the Blocks checkout's "create an account" tickbox is optional and unticked by default, so most shoppers paid without ever getting a `wp_users` row. They appeared under WooCommerce → Customers but password reset told them the email was unknown. At the time of the fix, 32 of 46 guest emails had no account, including repeat buyers with 4–6 orders.
+- `includes/guest-account-linking.php` hooks `woocommerce_store_api_checkout_order_processed` (Blocks) and `woocommerce_checkout_order_processed` (classic). For any order with `customer_id = 0`, it attaches the order to the existing user matching the billing email, or creates a `customer` account via `wc_create_new_customer()`.
+- Username and password are left blank so WooCommerce generates them and sends its "New account" email with a set-password link — no password is ever invented for the customer.
+- Billing and shipping address are copied onto the user profile so My Account is not empty on first login.
+- Idempotent via the `_ah_ho_guest_account_linked` order meta; every run leaves an order note. Suppress per-order with the `ah_ho_auto_create_guest_account` filter.
+- **Note:** the `woocommerce_create_account_default_checked` filter (pre-ticking the box) only reaches the *classic* checkout template. This store runs the Blocks checkout, where that default lives in front-end state — which is why the fix is applied server-side, after the order exists.
 
 ---
 

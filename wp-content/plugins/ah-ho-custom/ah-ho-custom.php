@@ -3,7 +3,7 @@
  * Plugin Name: Ah Ho Fruit Custom
  * Plugin URI: https://heymag.app
  * Description: Custom functionality for Ah Ho Fruit - WooCommerce custom order statuses
- * Version: 1.7.0
+ * Version: 1.7.1
  * Author: Ah Ho Fruit
  * Author URI: https://heymag.app
  * Text Domain: ah-ho-custom
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AH_HO_CUSTOM_VERSION', '1.7.0');
+define('AH_HO_CUSTOM_VERSION', '1.7.1');
 define('AH_HO_CUSTOM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AH_HO_CUSTOM_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -119,6 +119,11 @@ function ah_ho_custom_init() {
 
     // Include QuickBooks sync admin page ("Send orders to QuickBooks now" button)
     require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/qbo-sync-admin.php';
+
+    // Include guest account linking (guest checkout leaves shoppers without a
+    // login, so password reset says "email not recognised" - attach or create
+    // a customer account for every guest order)
+    require_once AH_HO_CUSTOM_PLUGIN_DIR . 'includes/guest-account-linking.php';
 
 }
 add_action('plugins_loaded', 'ah_ho_custom_init');
