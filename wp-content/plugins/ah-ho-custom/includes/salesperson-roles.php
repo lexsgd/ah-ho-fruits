@@ -733,19 +733,21 @@ function ah_ho_restrict_salesperson_user_editing($allcaps, $caps, $args, $user) 
         }
     }
 
-    // Only allow editing customers created by this staff member
-    $created_by = get_user_meta($target_user_id, '_created_by_staff_id', true);
-    if ($created_by && (int) $created_by !== $user->ID) {
-        $allcaps['edit_users'] = false;
-        return $allcaps;
-    }
-    // Also block if customer has no creator meta (created by admin/web)
-    if (!$created_by) {
+    // Staff answer the phone for whoever calls, so any customer is fair game -
+    // including the ones who signed up on the website and were never touched by
+    // a staff member. This used to be gated on _created_by_staff_id, which gave
+    // each salesperson a private book and left web signups editable by nobody
+    // but an admin. That stamp is still recorded for provenance, it just no
+    // longer decides who may help.
+    //
+    // The gate is now the role itself: customers yes, anything else no. That is
+    // stricter than the old rule in one respect - a roleless or subscriber
+    // account slipped through before if it happened to carry a stamp.
+    if (!in_array('customer', $target_roles, true)) {
         $allcaps['edit_users'] = false;
         return $allcaps;
     }
 
-    // Allow editing - customer was created by this staff member
     return $allcaps;
 }
 
@@ -785,17 +787,15 @@ function ah_ho_filter_user_list_for_salesperson($query) {
         return;
     }
 
-    // Only show customers
+    // Customers only - never admins, shop managers or other staff.
     $query->set('role', 'customer');
 
-    // Only show customers created by this staff member
-    $meta_query = $query->get('meta_query') ?: array();
-    $meta_query[] = array(
-        'key'     => '_created_by_staff_id',
-        'value'   => get_current_user_id(),
-        'compare' => '='
-    );
-    $query->set('meta_query', $meta_query);
+    // Deliberately NOT narrowed to _created_by_staff_id. Staff serve whoever
+    // calls, so they need to find any customer - including the ~800 who signed
+    // up through the website and carry no staff stamp at all. Restricting the
+    // list to a salesperson's own signups made those customers unfindable and
+    // was the reason a caller could "exist" yet look missing to the person
+    // trying to help her.
 }
 
 /**
