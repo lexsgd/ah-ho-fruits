@@ -622,6 +622,8 @@ curl -s -o /dev/null -w "%{http_code}" "https://fruits.heymag.app/wp-admin/"  # 
 - Billing and shipping address are copied onto the user profile so My Account is not empty on first login.
 - Idempotent via the `_ah_ho_guest_account_linked` order meta; every run leaves an order note. Suppress per-order with the `ah_ho_auto_create_guest_account` filter.
 - **Note:** the `woocommerce_create_account_default_checked` filter (pre-ticking the box) only reaches the *classic* checkout template. This store runs the Blocks checkout, where that default lives in front-end state — which is why the fix is applied server-side, after the order exists.
+- `includes/guest-account-backfill.php` — **WooCommerce → Backfill Guest Accounts**, an admin tool (`manage_woocommerce` + nonce + confirm) for the historic backlog. Groups guest orders by billing email, previews before acting, and offers a quiet mode (no customer email, suppressed via `woocommerce_email_enabled_customer_new_account`) or a notify mode. Idempotent via `_ah_ho_guest_account_backfilled`; profile address is taken from the customer's newest order.
+- **Backfill executed 14 Aug 2026 in quiet mode:** 32 accounts created, 14 emails linked to accounts that already existed, 78 orders attached, 0 failures. Every one of the 122 orders now belongs to a customer account. No email was sent to any customer — new accounts hold a WooCommerce-generated random password nobody knows, so customers get in via "Lost your password?", which now works because the account exists.
 
 ---
 
