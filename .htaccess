@@ -23,6 +23,15 @@ RedirectMatch 403 ^/(Jenkinsfile|docker-compose\.yml)$
 # /wp-content/uploads/ are untouched.
 RedirectMatch 403 (?i)^/[^/]+\.(py|pyc|csv|xlsx|xls|docx|doc|sql|bak|log)$
 
+# One-off setup/debug scripts at the docroot. create-salesman.php lived here
+# from Feb to Aug 2026 and would create five salesperson accounts on the live
+# store, with a hardcoded password, for anyone who guessed a fixed query key --
+# no login required. The .php extension is deliberately absent from the list
+# above, because the docroot legitimately serves index.php, wp-login.php and
+# friends. So these are named rather than matched by extension.
+RedirectMatch 403 (?i)^/(create|setup)-[^/]*\.php$
+RedirectMatch 403 (?i)^/(check-|test-|verify-|phpinfo|opcache|clear-opcache|ah-ho-debug|wp-test|font-check)[^/]*\.php$
+
 <IfModule mod_rewrite.c>
 RewriteEngine On
 
