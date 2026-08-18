@@ -1,0 +1,17 @@
+{
+  "$comment": "Project permissions. Tracked in git on purpose so git worktrees inherit it \u2014 approvals clicked inside a worktree are discarded with the worktree. Generic rules (file reads, grep, git status/diff) live in ~/.claude/settings.json.",
+  "permissions": {
+    "allow": [
+      "Edit(///Users/lexnaweiming/ah-ho-fruits/**)",
+      "Write(///Users/lexnaweiming/ah-ho-fruits/**)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr merge:*)",
+      "mcp__supabase__apply_migration",
+      "mcp__supabase__execute_sql",
+      "mcp__supabase__deploy_edge_function"
+    ]
+  }
+}
